@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Definir Senha | StudyFlow</title>
+  <!-- Fonte Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #5568FE;
+      --text-title: #2E2E38;
+      --text-body: #6B6B78;
+      --bg-light: #F8F9FF;
+      --border: #D1D5DB;
+      --input-bg: #FFFFFF;
+      --radius: 6px;
+      --font: 'Inter', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font);
+      color: var(--text-body);
+      background-color: var(--bg-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      display: flex;
+      background: #fff;
+      border-radius: var(--radius);
+      overflow: hidden;
+      max-width: 1100px;
+      width: 100%;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .image-panel, .form-panel { flex: 1; }
+    .image-panel {
+      background-color: #D5DCFF;
+    }
+    .image-panel img {
+      display: block;
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .form-panel {
+      padding: 60px 40px;
+    }
+    .logo {
+      display: flex; align-items: center;
+      font-weight: 700; font-size: 24px;
+      color: var(--text-title);
+      margin-bottom: 40px;
+    }
+    .logo-icon { width: 32px; height: 32px; margin-right: 8px; }
+    h2 {
+      color: var(--text-title);
+      font-size: 28px; font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .subtitle { margin-bottom: 32px; }
+    form { width: 100%; }
+    .form-group {
+      display: flex; flex-direction: column;
+      margin-bottom: 16px;
+    }
+    label {
+      margin-bottom: 4px;
+      font-size: 14px;
+      color: var(--text-title);
+    }
+    input[type="password"] {
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--input-bg);
+      font-size: 14px;
+      color: var(--text-title);
+    }
+    .btn-primary {
+      width: 100%; padding: 14px;
+      background: var(--primary); border: none;
+      color: #fff; font-size: 16px; font-weight: 600;
+      border-radius: var(--radius);
+      cursor: pointer;
+      margin-top: 8px;
+      margin-bottom: 24px;
+    }
+    .login-link {
+      text-align: center; font-size: 14px;
+      color: var(--text-body);
+    }
+    .login-link a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      margin-left: 4px;
+    }
+    @media (max-width: 768px) {
+      .container { flex-direction: column-reverse; }
+      .image-panel { height: 200px; }
+      .form-panel { padding: 40px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="image-panel">
+      <img src="C:\Users\itovi\OneDrive\Desktop\TCC\HTML\imgs\moca_meditando.jpeg" alt="Ilustração Estudante">
+    </div>
+    <div class="form-panel">
+      <div class="logo">
+        <img class="logo-icon" src="C:\Users\itovi\OneDrive\Desktop\TCC\HTML\imgs\logo.jpeg" alt="Logo StudyFlow">
+        StudyFlow
+      </div>
+      <h2>Definir Senha</h2>
+      <p class="subtitle">Escolha uma nova senha para sua conta.</p>
+      <form>
+        <div class="form-group">
+          <label for="nova-senha">Nova Senha</label>
+          <input type="password" id="nova-senha" name="nova-senha" placeholder="••••••••" required>
+        </div>
+        <div class="form-group">
+          <label for="confirmar-senha">Confirmar Senha</label>
+          <input type="password" id="confirmar-senha" name="confirmar-senha" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn-primary">Definir Senha</button>
+      </form>
+      <div class="login-link">
+        Voltar ao <a href="login.html">Login</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
