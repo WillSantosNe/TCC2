@@ -1,0 +1,74 @@
+:root {
+  --primary: #5568FE;
+  --text-title: #2E2E38;
+  --text-body: #6B6B78;
+  --bg-light: #F8F9FF;
+  --border: #D1D5DB;
+  --radius: 6px;
+  --font: 'Inter', sans-serif;
+}
+
+body {
+  font-family: var(--font);
+  background-color: var(--bg-light);
+  color: var(--text-body);
+}
+
+.container-lg {
+  max-width: 1100px;
+}
+
+/* Panels */
+.image-panel {
+  overflow: hidden;
+}
+.image-panel img {
+  object-fit: cover;
+}
+.form-panel {
+  background: #fff;
+}
+h2 {
+  color: var(--text-title);
+}
+.subtitle {
+  color: var(--text-body);
+}
+.text-sm {
+  font-size: 0.875rem;
+}
+
+.form-label {
+  font-weight: 500;
+  color: var(--text-title);
+}
+.form-control {
+  border-radius: var(--radius);
+  border-color: var(--border);
+}
+
+.btn-primary {
+  background-color: var(--primary) !important;
+  border-color: var(--primary) !important;
+  border-radius: var(--radius);
+}
+.btn-primary:hover {
+  filter: brightness(0.9);
+}
+.btn-link {
+  font-weight: 600;
+  text-decoration: none;
+}
+.btn-link:hover {
+  text-decoration: underline;
+}
+
+a.text-primary {
+  color: var(--primary) !important;
+}
+
+@media (max-width: 768px) {
+  .form-panel {
+    padding: 1.5rem !important;
+  }
+}
