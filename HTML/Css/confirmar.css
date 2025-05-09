@@ -1,0 +1,28 @@
+:root {
+  --primary: #5568FE;
+  --text-title: #2E2E38;
+  --text-body: #6B6B78;
+  --bg-light: #F8F9FF;
+  --border: #D1D5DB;
+  --input-bg: #FFFFFF;
+  --radius: 6px;
+  --font: 'Inter', sans-serif;
+}
+
+body {
+  font-family: var(--font);
+}
+
+.object-fit-cover {
+  object-fit: cover;
+}
+
+@media (max-width: 768px) {
+  .container-lg {
+    flex-direction: column !important;
+  }
+
+  .d-md-block {
+    display: block !important;
+  }
+}
