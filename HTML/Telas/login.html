@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Código de Verificação | StudyFlow</title>
+  <title>Login | StudyFlow</title>
   <!-- Fonte Inter -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
@@ -37,7 +37,9 @@
       width: 100%;
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
-    .image-panel, .form-panel { flex: 1; }
+    .image-panel, .form-panel {
+      flex: 1;
+    }
     .image-panel {
       background-color: #D5DCFF;
     }
@@ -72,7 +74,9 @@
     .subtitle {
       margin-bottom: 32px;
     }
-    form { width: 100%; }
+    form {
+      width: 100%;
+    }
     .form-group {
       display: flex;
       flex-direction: column;
@@ -83,7 +87,8 @@
       font-size: 14px;
       color: var(--text-title);
     }
-    input[type="text"] {
+    input[type="email"],
+    input[type="password"] {
       padding: 12px;
       border: 1px solid var(--border);
       border-radius: var(--radius);
@@ -92,17 +97,24 @@
       color: var(--text-title);
     }
     .options-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 16px;
       font-size: 14px;
     }
-    .text-btn {
-      background: none;
-      border: none;
-      padding: 0;
-      font-size: 14px;
+    .options-row .remember {
+      display: flex;
+      align-items: center;
+    }
+    .options-row .remember input {
+      margin-right: 8px;
+      width: 16px;
+      height: 16px;
+    }
+    .options-row .forgot {
       color: var(--primary);
-      text-decoration: underline;
-      cursor: pointer;
+      text-decoration: none;
     }
     .btn-primary {
       width: 100%;
@@ -114,21 +126,57 @@
       font-weight: 600;
       border-radius: var(--radius);
       cursor: pointer;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
     }
-    .login-link {
+    .signup-link {
       text-align: center;
       font-size: 14px;
       color: var(--text-body);
+      margin-bottom: 24px;
     }
-    .login-link a {
+    .signup-link a {
       color: var(--primary);
       text-decoration: none;
       font-weight: 600;
       margin-left: 4px;
     }
+    .divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin-bottom: 24px;
+      color: var(--text-body);
+      font-size: 14px;
+    }
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .divider::before { margin-right: 8px; }
+    .divider::after  { margin-left: 8px; }
+    .btn-google {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--primary);
+      border-radius: var(--radius);
+      background: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-google img {
+      width: 20px;
+      height: 20px;
+      margin-right: 8px;
+    }
     @media (max-width: 768px) {
-      .container { flex-direction: column-reverse; }
+      .container { flex-direction: column; }
       .image-panel { height: 200px; }
       .form-panel { padding: 40px 20px; }
     }
@@ -137,29 +185,37 @@
 <body>
   <div class="container">
     <div class="image-panel">
-      <img src="C:\Users\itovi\OneDrive\Desktop\TCC\HTML\imgs\moca_feliz.jpeg" alt="Ilustração Estudante">
+      <img src="..\imgs\oculos_feliz.jpeg" alt="Ilustração Estudante">
     </div>
     <div class="form-panel">
       <div class="logo">
-        <img class="logo-icon" src="C:\Users\itovi\OneDrive\Desktop\TCC\HTML\imgs\logo.jpeg" alt="Logo StudyFlow">
+        <img class="logo-icon" src="..\imgs\logo.jpeg" alt="Logo StudyFlow">
         StudyFlow
       </div>
-      <h2>Código de Verificação</h2>
-      <p class="subtitle">Insira o código que enviamos para seu email.</p>
+      <h2>Login</h2>
+      <p class="subtitle">Bem-vindo de volta! Faça login com seu email e senha.</p>
       <form>
         <div class="form-group">
-          <label for="codigo">Código</label>
-          <input type="text" id="codigo" name="codigo" placeholder="Digite seu código" required>
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="seu@email.com" required>
+        </div>
+        <div class="form-group">
+          <label for="senha">Senha</label>
+          <input type="password" id="senha" placeholder="••••••••" required>
         </div>
         <div class="options-row">
-          <span>Não recebeu o código?</span>
-          <button type="button" class="text-btn">Reenviar código</button>
+          <label class="remember"><input type="checkbox" id="remember"> Mantenha-me conectado</label>
+          <a href="esqueceu_senha.html" class="forgot">Esqueceu a senha?</a>
         </div>
-        <button type="submit" class="btn-primary">Verificar</button>
+        <button type="submit" class="btn-primary">Entrar</button>
       </form>
-      <div class="login-link">
-        <a href="confirmar.html">Voltar para definir senha</a>
+      <div class="signup-link">
+        Não tem uma conta?<a href="cadastro.html"> Cadastre‑se</a>
       </div>
+      <div class="divider">Ou, entrar com:</div>
+      <button class="btn-google">
+        <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google"> Google
+      </button>
     </div>
   </div>
 </body>
