@@ -1,220 +1,62 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Login | StudyFlow</title>
+
   <!-- Fonte Inter -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #5568FE;
-      --text-title: #2E2E38;
-      --text-body: #6B6B78;
-      --bg-light: #F8F9FF;
-      --border: #D1D5DB;
-      --input-bg: #FFFFFF;
-      --radius: 6px;
-      --font: 'Inter', sans-serif;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: var(--font);
-      color: var(--text-body);
-      background-color: var(--bg-light);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 20px;
-    }
-    .container {
-      display: flex;
-      background: #fff;
-      border-radius: var(--radius);
-      overflow: hidden;
-      max-width: 1100px;
-      width: 100%;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    }
-    .image-panel, .form-panel {
-      flex: 1;
-    }
-    .image-panel {
-      background-color: #D5DCFF;
-    }
-    .image-panel img {
-      display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .form-panel {
-      padding: 60px 40px;
-    }
-    .logo {
-      display: flex;
-      align-items: center;
-      font-weight: 700;
-      font-size: 24px;
-      color: var(--text-title);
-      margin-bottom: 40px;
-    }
-    .logo-icon {
-      width: 32px;
-      height: 32px;
-      margin-right: 8px;
-    }
-    h2 {
-      color: var(--text-title);
-      font-size: 28px;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-    .subtitle {
-      margin-bottom: 32px;
-    }
-    form {
-      width: 100%;
-    }
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 16px;
-    }
-    label {
-      margin-bottom: 4px;
-      font-size: 14px;
-      color: var(--text-title);
-    }
-    input[type="email"],
-    input[type="password"] {
-      padding: 12px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: var(--input-bg);
-      font-size: 14px;
-      color: var(--text-title);
-    }
-    .options-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-      font-size: 14px;
-    }
-    .options-row .remember {
-      display: flex;
-      align-items: center;
-    }
-    .options-row .remember input {
-      margin-right: 8px;
-      width: 16px;
-      height: 16px;
-    }
-    .options-row .forgot {
-      color: var(--primary);
-      text-decoration: none;
-    }
-    .btn-primary {
-      width: 100%;
-      padding: 14px;
-      background: var(--primary);
-      border: none;
-      color: #fff;
-      font-size: 16px;
-      font-weight: 600;
-      border-radius: var(--radius);
-      cursor: pointer;
-      margin-bottom: 16px;
-    }
-    .signup-link {
-      text-align: center;
-      font-size: 14px;
-      color: var(--text-body);
-      margin-bottom: 24px;
-    }
-    .signup-link a {
-      color: var(--primary);
-      text-decoration: none;
-      font-weight: 600;
-      margin-left: 4px;
-    }
-    .divider {
-      display: flex;
-      align-items: center;
-      text-align: center;
-      margin-bottom: 24px;
-      color: var(--text-body);
-      font-size: 14px;
-    }
-    .divider::before,
-    .divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
-    .divider::before { margin-right: 8px; }
-    .divider::after  { margin-left: 8px; }
-    .btn-google {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      padding: 12px;
-      border: 1px solid var(--primary);
-      border-radius: var(--radius);
-      background: #fff;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .btn-google img {
-      width: 20px;
-      height: 20px;
-      margin-right: 8px;
-    }
-    @media (max-width: 768px) {
-      .container { flex-direction: column; }
-      .image-panel { height: 200px; }
-      .form-panel { padding: 40px 20px; }
-    }
-  </style>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- CSS Personalizado -->
+   
+  <link rel="stylesheet" href="../Css/login.css" />
 </head>
-<body>
-  <div class="container">
-    <div class="image-panel">
-      <img src="..\imgs\oculos_feliz.jpeg" alt="Ilustração Estudante">
+<body class="d-flex align-items-center justify-content-center bg-light vh-100">
+  <div class="container-lg d-flex flex-column flex-md-row-reverse bg-white rounded shadow overflow-hidden">
+    <div class="image-panel col-md-6 p-0">
+      <img src="../imgs/oculos_feliz.jpeg" alt="Ilustração Estudante" class="w-100 h-100 object-fit-cover">
     </div>
-    <div class="form-panel">
-      <div class="logo">
-        <img class="logo-icon" src="..\imgs\logo.jpeg" alt="Logo StudyFlow">
-        StudyFlow
+    <div class="form-panel col-md-6 p-4 p-md-5">
+      <div class="logo d-flex align-items-center mb-4">
+        <img class="logo-icon me-2" src="../imgs/logo.jpeg" alt="Logo StudyFlow">
+        <span class="fw-bold fs-4 text-dark">StudyFlow</span>
       </div>
-      <h2>Login</h2>
-      <p class="subtitle">Bem-vindo de volta! Faça login com seu email e senha.</p>
+      <h2 class="text-dark fw-semibold mb-2">Login</h2>
+      <p class="subtitle mb-4">Bem-vindo de volta! Faça login com seu email e senha.</p>
+
       <form>
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" placeholder="seu@email.com" required>
+        <div class="form-group mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input type="email" id="email" class="form-control" placeholder="seu@email.com" required>
         </div>
-        <div class="form-group">
-          <label for="senha">Senha</label>
-          <input type="password" id="senha" placeholder="••••••••" required>
+        <div class="form-group mb-3">
+          <label for="senha" class="form-label">Senha</label>
+          <input type="password" id="senha" class="form-control" placeholder="••••••••" required>
         </div>
-        <div class="options-row">
-          <label class="remember"><input type="checkbox" id="remember"> Mantenha-me conectado</label>
-          <a href="esqueceu_senha.html" class="forgot">Esqueceu a senha?</a>
+        <div class="d-flex justify-content-between align-items-center mb-3 text-sm">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="remember">
+            <label class="form-check-label" for="remember">Mantenha-me conectado</label>
+          </div>
+          <a href="esqueceu_senha.html" class="text-primary text-decoration-none">Esqueceu a senha?</a>
         </div>
-        <button type="submit" class="btn-primary">Entrar</button>
+        <button type="submit" class="btn btn-primary w-100 mb-3">Entrar</button>
       </form>
-      <div class="signup-link">
-        Não tem uma conta?<a href="cadastro.html"> Cadastre‑se</a>
+
+      <div class="text-center mb-3 text-sm">
+        Não tem uma conta?
+        <a href="cadastro.html" class="fw-semibold text-primary text-decoration-none ms-1">Cadastre‑se</a>
       </div>
-      <div class="divider">Ou, entrar com:</div>
-      <button class="btn-google">
-        <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google"> Google
+
+      <div class="divider text-center mb-3">Ou, entrar com:</div>
+
+      <button class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center">
+        <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" class="me-2" width="20" height="20">
+        Google
       </button>
     </div>
   </div>

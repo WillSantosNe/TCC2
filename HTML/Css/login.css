@@ -1,0 +1,67 @@
+:root {
+  --primary: #5568FE;
+  --text-title: #2E2E38;
+  --text-body: #6B6B78;
+  --bg-light: #F8F9FF;
+  --border: #D1D5DB;
+  --input-bg: #FFFFFF;
+  --radius: 6px;
+  --font: 'Inter', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font);
+  color: var(--text-body);
+  background-color: var(--bg-light);
+  margin: 0;
+  min-height: 100vh;
+}
+
+.image-panel {
+  background-color: #D5DCFF;
+}
+
+.object-fit-cover {
+  object-fit: cover;
+}
+
+.form-panel {
+  background-color: #fff;
+}
+
+.logo-icon {
+  width: 32px;
+  height: 32px;
+}
+
+.subtitle {
+  color: var(--text-body);
+}
+
+.divider {
+  position: relative;
+  color: var(--text-body);
+  font-size: 14px;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 45%;
+  height: 1px;
+  background-color: var(--border);
+}
+
+.divider::before {
+  left: 0;
+}
+
+.divider::after {
+  right: 0;
+}
