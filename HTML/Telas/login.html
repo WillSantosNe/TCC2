@@ -14,9 +14,11 @@
   <!-- CSS Personalizado -->
    
   <link rel="stylesheet" href="../Css/login.css" />
-
   <link rel="stylesheet" href="../Css/geral.css" />
 
+  <!-- JS -->
+  <script src="../Scripts/login.js" defer></script>
+  
 </head>
 <body class="d-flex align-items-center justify-content-center bg-light vh-100">
   <!--Aqui podemos inverter o lugar da imagen
@@ -37,7 +39,7 @@
       <h2 class="text-dark fw-semibold mb-2">Login</h2>
       <p class="subtitle mb-4">Bem-vindo de volta! Faça login com seu email e senha.</p>
 
-      <form>
+      <form id="loginForm">
         <div class="form-group mb-3">
           <label for="email" class="form-label">Email</label>
           <input type="email" id="email" class="form-control" placeholder="seu@email.com" required>
