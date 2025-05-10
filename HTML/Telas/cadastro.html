@@ -5,98 +5,79 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Cadastro | StudyFlow</title>
 
-  <!-- Fonte Inter -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-  <!-- CSS Personalizado -->
-  <link rel="stylesheet" href="../Css/cadastro.css" />
   <link rel="stylesheet" href="../Css/geral.css" />
+
 </head>
-<body class="d-flex align-items-center justify-content-center bg-light vh-100">
-
-  <!-- Estrutura principal: imagem à direita -->
-  <div class="container-lg d-flex flex-column flex-md-row-reverse bg-white rounded shadow overflow-hidden">
+<body class="auth-body"> <div class="main-auth-card container-xl d-flex flex-column flex-md-row"> 
     
-    <!-- Painel da imagem -->
-    <div class="image-panel col-md-6 p-0">
-      <img src="../imgs/carinha_feliz.jpeg" alt="Ilustração Estudante" class="w-100 h-100 object-fit-cover">
-    </div>
-
-    <!-- Painel do formulário -->
-    <div class="form-panel col-md-6 p-4 p-md-5">
-      <div class="logo d-flex align-items-center mb-4">
-        <img class="logo-icon me-2" src="../imgs/logo.png" alt="Logo StudyFlow">
-        <span class="fw-bold fs-4 text-dark">StudyFlow</span>
-      </div>
-
-      <h2 class="text-dark fw-semibold mb-2">Cadastro</h2>
-      <p class="subtitle mb-4">Crie sua conta e personalize sua jornada de estudos!</p>
-
-      <form>
-        <div class="row mb-3">
-          <div class="col">
-            <label for="nome" class="form-label">Nome</label>
-            <input type="text" id="nome" class="form-control" placeholder="Aluno" required>
-          </div>
-          <div class="col">
-            <label for="sobrenome" class="form-label">Sobrenome</label>
-            <input type="text" id="sobrenome" class="form-control" placeholder="Silva" required>
-          </div>
+    <div class="form-panel col-md-6 p-4 p-md-5"> <div class="form-content-wrapper">
+        <div class="logo d-flex align-items-center mb-4">
+          <img class="logo-icon me-2" src="../imgs/logo.png" alt="Logo StudyFlow">
+          <span class="fw-bold fs-4 text-dark">StudyFlow</span>
         </div>
 
-        <div class="row mb-3">
-          <div class="col">
+        <h2>Cadastro</h2> <p class="subtitle mb-4">Crie sua conta e personalize sua jornada de estudos!</p>
+
+        <form id="cadastroForm">
+          <div class="row">
+            <div class="col-sm-6 form-group mb-3">
+              <label for="nome" class="form-label">Nome</label>
+              <input type="text" id="nome" class="form-control" placeholder="Seu nome" required>
+            </div>
+            <div class="col-sm-6 form-group mb-3">
+              <label for="sobrenome" class="form-label">Sobrenome</label>
+              <input type="text" id="sobrenome" class="form-control" placeholder="Seu sobrenome" required>
+            </div>
+          </div>
+
+          <div class="form-group mb-3">
             <label for="email" class="form-label">Email</label>
-            <input type="email" id="email" class="form-control" placeholder="aluno@email.com" required>
+            <input type="email" id="email" class="form-control" placeholder="seu@email.com" required>
           </div>
-          <div class="col">
-            <label for="celular" class="form-label">Celular</label>
-            <input type="tel" id="celular" class="form-control" placeholder="(41) 99999-8888">
+          
+          <div class="form-group mb-3">
+            <label for="senha" class="form-label">Senha</label>
+            <input type="password" id="senha" class="form-control" placeholder="••••••••" required>
           </div>
+
+          <div class="form-group mb-3">
+            <label for="confirmarSenha" class="form-label">Confirmar Senha</label>
+            <input type="password" id="confirmarSenha" class="form-control" placeholder="••••••••" required>
+          </div>
+
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" value="" id="termos" required>
+            <label class="form-check-label" for="termos">
+              Eu concordo com os <a href="#" class="text-primary">termos</a> e a <a href="#" class="text-primary">política de privacidade</a>.
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100 mb-3">Criar Conta</button>
+        </form>
+
+        <div class="text-center mb-3 text-sm">
+          Já tem uma conta?
+          <a href="login.html" class="fw-semibold text-primary ms-1">Entrar</a>
         </div>
 
-        <div class="mb-3 position-relative">
-          <label for="senha" class="form-label">Senha</label>
-          <input type="password" id="senha" class="form-control" placeholder="••••••••" required>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" class="position-absolute" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="24" height="24" style="top: 50%; right: 12px; transform: translateY(-50%); cursor: pointer;">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.522 5.25 12 5.25c4.478 0 8.268 2.693 9.542 6.75-1.274 4.057-5.064 6.75-9.542 6.75-4.478 0-8.268-2.693-9.542-6.75z" />
-          </svg>
-        </div>
+        <div class="divider text-center mb-3">Ou, cadastrar com:</div>
 
-        <div class="mb-3">
-          <label for="confirmar-senha" class="form-label">Confirmar Senha</label>
-          <input type="password" id="confirmar-senha" class="form-control" placeholder="••••••••" required>
-        </div>
-
-        <button type="button" class="btn btn-outline-primary w-100 mb-3">Ler e aceitar termos e política</button>
-
-        <div class="form-check mb-3">
-          <input class="form-check-input" type="checkbox" id="termos" required>
-          <label class="form-check-label" for="termos">
-            Eu concordo com os termos e a política de privacidade
-          </label>
-        </div>
-
-        <button type="submit" class="btn btn-primary w-100 mb-3">Criar Conta</button>
-      </form>
-
-      <div class="text-center mb-3 text-sm">
-        Já tem uma conta?
-        <a href="login.html" class="fw-semibold text-primary text-decoration-none ms-1">Entrar</a>
+        <button class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center">
+          <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" class="me-2" style="width: 20px; height: 20px;">
+          Google
+        </button>
       </div>
-
-      <div class="divider text-center mb-3">Ou, entrar com:</div>
-
-      <button class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center">
-        <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" class="me-2" width="20" height="20">
-        Google
-      </button>
     </div>
+
+    <div class="image-panel col-md-6 p-0"> 
+      <img src="../imgs/cadastro.jpg" alt="Ilustração Cadastro StudyFlow" class="auth-image"> </div>
+
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

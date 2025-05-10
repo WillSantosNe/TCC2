@@ -5,71 +5,56 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Login | StudyFlow</title>
 
-  <!-- Fonte Inter -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-
-  <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- CSS Personalizado -->
-   
-  <link rel="stylesheet" href="../Css/login.css" />
+  
   <link rel="stylesheet" href="../Css/geral.css" />
 
-  <!-- JS -->
   <script src="../Scripts/login.js" defer></script>
-
 </head>
-<body class="d-flex align-items-center justify-content-center bg-light vh-100">
-  <!--Aqui podemos inverter o lugar da imagen
-  Direita
-  <div class="container-lg d-flex flex-column flex-md-row-reverse bg-white rounded shadow overflow-hidden">
-  Esquerda
-  <div class="container-lg d-flex flex-column flex-md-row bg-white rounded shadow overflow-hidden">
-  -->
-  <div class="container-lg d-flex flex-column flex-md-row-reverse bg-white rounded shadow overflow-hidden">
-    <div class="image-panel col-md-6 p-0">
-      <img src="../imgs/oculos_feliz.jpeg" alt="Ilustração Estudante" class="w-100 h-100 object-fit-cover">
-    </div>
-    <div class="form-panel col-md-6 p-4 p-md-5">
-      <div class="logo d-flex align-items-center mb-4">
-        <img class="logo-icon me-2" src="../imgs/logo.png" alt="Logo StudyFlow">
-        <span class="fw-bold fs-4 text-dark">StudyFlow</span>
-      </div>
-      <h2 class="text-dark fw-semibold mb-2">Login</h2>
-      <p class="subtitle mb-4">Bem-vindo de volta! Faça login com seu email e senha.</p>
+<body class="auth-body"> <div class="main-auth-card container-xl d-flex flex-column flex-md-row-reverse"> 
+    
+    <div class="image-panel col-md-6 p-0"> 
+      <img src="../imgs/oculos_feliz.jpeg" alt="Ilustração Estudante" class="auth-image"> </div>
 
-      <form id="loginForm">
-        <div class="form-group mb-3">
-          <label for="email" class="form-label">Email</label>
-          <input type="email" id="email" class="form-control" placeholder="seu@email.com" required>
-        </div>
-        <div class="form-group mb-3">
-          <label for="senha" class="form-label">Senha</label>
-          <input type="password" id="senha" class="form-control" placeholder="••••••••" required>
-        </div>
-        <div class="d-flex justify-content-between align-items-center mb-3 text-sm">
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="remember">
-            <label class="form-check-label" for="remember">Mantenha-me conectado</label>
+    <div class="form-panel col-md-6 p-4 p-md-5"> <div class="form-content-wrapper">
+        <div class="logo d-flex align-items-center mb-4">
+          <img class="logo-icon me-2" src="../imgs/logo.png" alt="Logo StudyFlow">
+          <span class="fw-bold fs-4 text-dark">StudyFlow</span> </div>
+        <h2>Login</h2> <p class="subtitle mb-4">Bem-vindo de volta! Faça login com seu email e senha.</p>
+
+        <form id="loginForm">
+          <div class="form-group mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" id="email" class="form-control" placeholder="seu@email.com" required>
           </div>
-          <a href="esqueceu_senha.html" class="text-primary text-decoration-none">Esqueceu a senha?</a>
+          <div class="form-group mb-3">
+            <label for="senha" class="form-label">Senha</label>
+            <input type="password" id="senha" class="form-control" placeholder="••••••••" required>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mb-3 text-sm">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="remember">
+              <label class="form-check-label" for="remember">Mantenha-me conectado</label>
+            </div>
+            <a href="esqueceu_senha.html" class="text-primary">Esqueceu a senha?</a> </div>
+          <button type="submit" class="btn btn-primary w-100 mb-3">Entrar</button>
+        </form>
+
+        <div class="text-center mb-3 text-sm">
+          Não tem uma conta?
+          <a href="cadastro.html" class="fw-semibold text-primary ms-1">Cadastre‑se</a>
         </div>
-        <button type="submit" class="btn btn-primary w-100 mb-3">Entrar</button>
-      </form>
 
-      <div class="text-center mb-3 text-sm">
-        Não tem uma conta?
-        <a href="cadastro.html" class="fw-semibold text-primary text-decoration-none ms-1">Cadastre‑se</a>
+        <div class="divider text-center mb-3">Ou, entrar com:</div>
+
+        <button class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center">
+          <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" class="me-2" style="width: 20px; height: 20px;">
+          Google
+        </button>
       </div>
-
-      <div class="divider text-center mb-3">Ou, entrar com:</div>
-
-      <button class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center">
-        <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" class="me-2" width="20" height="20">
-        Google
-      </button>
     </div>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

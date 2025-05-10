@@ -1,4 +1,283 @@
-.logo-icon {
-  width: 48px;
-  height: 48px;
+/* VARIAVEIS GLOBAIS DE ESTILO (UNIFICADAS) */
+:root {
+  --primary-color: #5568FE;         /* Era --primary no login.css */
+  --text-title-color: #2E2E38;    /* Era --text-title no login.css */
+  --text-body-color: #6B6B78;     /* Era --text-body no login.css */
+  --background-light-color: #F8F9FF; /* Era --bg-light no login.css */
+  --border-color: #D1D5DB;        /* Era --border no login.css */
+  --input-background-color: #FFFFFF;/* Era --input-bg no login.css */
+  --default-radius: 6px;          /* Era --radius no login.css */
+  --default-font: 'Inter', sans-serif; /* Era --font no login.css */
+
+  /* CONFIGURAÇÕES DO CARD DE AUTENTICAÇÃO */
+  --auth-card-max-height: 680px; 
+  --auth-card-min-height: 500px; 
+  --auth-body-padding: 1.5rem; 
+
+  /* SOMBRA PADRÃO PARA OS CARDS (igual ao que estava no geral.css antes, um pouco mais suave que o padrão Bootstrap) */
+  --auth-card-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
+  /* Se preferir a sombra padrão do Bootstrap, você pode remover esta variável 
+     e a regra box-shadow no .main-auth-card, e adicionar a classe .shadow no HTML.
+     Mas para consistência customizada, vamos usar esta: */
 }
+
+/* RESET BÁSICO E CONFIGURAÇÃO DO BODY */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+}
+
+body.auth-body { /* Aplicar esta classe aos <body> das páginas de login e cadastro */
+  font-family: var(--default-font);
+  color: var(--text-body-color);
+  background-color: var(--background-light-color);
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--auth-body-padding);
+  overflow-x: hidden;
+}
+
+/* CARD DE AUTENTICAÇÃO PRINCIPAL */
+.main-auth-card {
+  /* Classes Bootstrap no HTML: .container-xl, .d-flex, .flex-column, .flex-md-row (ou .flex-md-row-reverse para login) */
+  width: 100%;
+  height: auto;
+  min-height: var(--auth-card-min-height);
+  max-height: var(--auth-card-max-height);
+  max-height: calc(100vh - (2 * var(--auth-body-padding))); /* Limita à altura da viewport */
+
+  background-color: var(--input-background-color);
+  border-radius: var(--default-radius);
+  box-shadow: var(--auth-card-shadow); /* SOMBRA APLICADA AQUI */
+  overflow: hidden;
+}
+
+/* PAINÉIS INTERNOS (IMAGEM E FORMULÁRIO) */
+.image-panel, .form-panel {
+  /* .col-md-6 do Bootstrap cuida da largura em telas >= md */
+  height: 100%; 
+}
+
+.image-panel {
+  background-color: #eef2ff; /* Fundo suave. Era #D5DCFF no login.css - unificar se desejar */
+  /* .p-0 (padding: 0) deve ser aplicado via classe do Bootstrap no HTML do image-panel */
+}
+
+.auth-image { /* Classe para as <img> dentro do image-panel */
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.form-panel {
+  /* .p-4 .p-md-5 são classes do Bootstrap para padding interno, aplicadas no HTML */
+  padding: 2rem 2.5rem; /* Fallback ou override se as classes BS não estiverem presentes ou para ajuste fino */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; 
+}
+
+.form-content-wrapper {
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin-top: auto; /* Para centralização vertical do bloco de conteúdo */
+  margin-bottom: auto;
+}
+
+/* ESTILOS DE FORMULÁRIO (LOGO, TÍTULOS, INPUTS, BOTÕES) */
+.logo { /* Classe já presente no HTML de ambos */
+  /* .d-flex .align-items-center .mb-4 são do Bootstrap */
+}
+.logo-icon { /* Tamanho do ícone da logo */
+  width: 40px; 
+  height: 40px;
+  /* .me-2 é do Bootstrap */
+}
+.logo span { /* Estilo para o nome "StudyFlow" ao lado do ícone */
+ /* .fw-bold .fs-4 .text-dark são do Bootstrap */
+}
+
+.main-auth-card h2 { /* Título "Login" ou "Cadastro" */
+  color: var(--text-title-color);
+  font-weight: 600; /* No login.html era fw-semibold (que é 600). No cadastro.html era 700. Unificando para 600. */
+  font-size: 1.75rem; /* Equivalente a fs-4 do Bootstrap se a base for 16px. Ajuste se necessário. */
+  /* .mb-2 é do Bootstrap */
+}
+
+.subtitle { /* Subtítulo abaixo do h2 */
+  color: var(--text-body-color);
+  font-size: 0.95rem;
+  margin-bottom: 1.8rem; /* Padrão que definimos */
+}
+
+.form-label {
+  font-weight: 500;
+  margin-bottom: 0.4rem;
+  color: var(--text-title-color);
+  font-size: 0.875rem;
+}
+
+.form-control {
+  border-radius: var(--default-radius);
+  border: 1px solid var(--border-color);
+  background-color: var(--input-background-color);
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  color: var(--text-body-color); /* Garante cor do texto do input */
+}
+.form-control::placeholder { /* Estilo do placeholder */
+    color: #adb5bd; /* Um cinza suave */
+}
+.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(85, 104, 254, 0.25); /* Cor exata da sua variável primária com alfa */
+}
+
+.form-check-label {
+  font-size: 0.875rem;
+  color: var(--text-body-color);
+}
+.form-check-input:checked { /* Cor do checkbox marcado */
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  border-radius: var(--default-radius);
+  padding: 0.85rem 1rem;
+  font-weight: 600;
+  color: white;
+  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+.btn-primary:hover {
+  background-color: #4a5adf; 
+  border-color: #4a5adf;
+}
+
+.btn-outline-primary {
+  border: 1px solid var(--primary-color); /* Garante borda de 1px */
+  color: var(--primary-color);
+  border-radius: var(--default-radius);
+  padding: 0.85rem 1rem;
+  font-weight: 600;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+.btn-outline-primary:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+.btn-outline-primary img { 
+  filter: none !important;
+}
+
+
+.text-sm { /* Usado para "Não tem conta?" e "Esqueceu a senha?" */
+  font-size: 0.875rem;
+  color: var(--text-body-color);
+}
+a.text-primary, .form-check-label a, .text-sm a { /* Estilo unificado para links */
+  color: var(--primary-color) !important;
+  text-decoration: none;
+  font-weight: 500;
+}
+a.text-primary:hover, .form-check-label a:hover, .text-sm a:hover {
+  text-decoration: underline !important;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: var(--text-body-color);
+  font-size: 0.8rem; 
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: var(--border-color);
+  margin: 0 0.75rem;
+}
+
+
+/* No Css/geral.css, dentro da seção de botões ou links */
+.btn-link {
+  color: var(--primary-color); /* Para ter a cor primária como outros links */
+  font-weight: 500; /* Consistente com .text-primary */
+  text-decoration: none;
+}
+.btn-link:hover,
+.btn-link:focus { /* Adicionar foco para acessibilidade */
+  text-decoration: underline;
+  color: #4a5adf; /* Tom mais escuro da cor primária no hover, se desejado */
+}
+
+
+
+
+
+/* AJUSTES DE RESPONSIVIDADE PARA TELAS MENORES */
+@media (max-width: 767.98px) { 
+  body.auth-body {
+    padding: var(--auth-body-padding) 0; 
+    align-items: flex-start; 
+  }
+
+  .main-auth-card {
+    height: auto; 
+    max-height: none; 
+    min-height: 0; 
+    border-radius: 0; 
+    box-shadow: none; 
+    width: 100%; /* Em vez de 100vw, para respeitar o box-sizing */
+    /* Se .container-xl está no .main-auth-card, ele adiciona paddings.
+       Para que toque as bordas, os paddings do container precisam ser removidos
+       ou o card não deve ser um .container-xl diretamente em telas pequenas.
+       Se o card em si *é* o .container-xl: */
+  }
+  .main-auth-card.container-xl { /* Remove paddings do .container-xl em telas pequenas */
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+
+  .image-panel, .form-panel {
+    width: 100% !important; 
+    height: auto; 
+    /* .col-md-6 não se aplica mais, .flex-column está ativo */
+  }
+  
+  .image-panel {
+     min-height: 200px; 
+     max-height: 35vh;  
+  }
+
+  .form-panel {
+    padding: 1.5rem; 
+  }
+
+  .form-content-wrapper {
+    overflow-y: visible; 
+    overflow-x: hidden;
+    margin-top: 0; 
+    margin-bottom: 0; 
+  }
+}
+
+
