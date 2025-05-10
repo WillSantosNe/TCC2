@@ -1,27 +1,31 @@
-/* VARIAVEIS GLOBAIS DE ESTILO (UNIFICADAS) */
+/* -------------------------------------------------------------------------- */
+/* VARIÁVEIS GLOBAIS DE ESTILO                                                */
+/* -------------------------------------------------------------------------- */
 :root {
-  --primary-color: #5568FE;         /* Era --primary no login.css */
-  --text-title-color: #2E2E38;    /* Era --text-title no login.css */
-  --text-body-color: #6B6B78;     /* Era --text-body no login.css */
-  --background-light-color: #F8F9FF; /* Era --bg-light no login.css */
-  --border-color: #D1D5DB;        /* Era --border no login.css */
-  --input-background-color: #FFFFFF;/* Era --input-bg no login.css */
-  --default-radius: 6px;          /* Era --radius no login.css */
-  --default-font: 'Inter', sans-serif; /* Era --font no login.css */
+  /* Paleta de Cores Principal */
+  --primary-color: #5568FE;
+  --text-title-color: #2E2E38;
+  --text-body-color: #6B6B78;
+  --background-light-color: #F8F9FF; /* Cor de fundo do body para páginas de autenticação */
+  --border-color: #D1D5DB;
+  --input-background-color: #FFFFFF; /* Fundo dos inputs e do card principal */
 
-  /* CONFIGURAÇÕES DO CARD DE AUTENTICAÇÃO */
-  --auth-card-max-height: 680px; 
-  --auth-card-min-height: 500px; 
-  --auth-body-padding: 1.5rem; 
+  /* Tipografia e Bordas */
+  --default-font: 'Inter', sans-serif;
+  --default-radius: 6px;
 
-  /* SOMBRA PADRÃO PARA OS CARDS (igual ao que estava no geral.css antes, um pouco mais suave que o padrão Bootstrap) */
+  /* Configurações Específicas do Card de Autenticação */
+  --auth-card-min-height: 500px;  /* Altura mínima para o card em desktops maiores */
+  --auth-body-padding: 1.5rem;    /* Espaçamento externo do card em relação à viewport */
   --auth-card-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
-  /* Se preferir a sombra padrão do Bootstrap, você pode remover esta variável 
-     e a regra box-shadow no .main-auth-card, e adicionar a classe .shadow no HTML.
-     Mas para consistência customizada, vamos usar esta: */
+
+  /* Altura de corte da centralização vertical (se a viewport ficar menor que isso, o card cola no topo) */
+  --centralize-breakpoint-height: 650px;
 }
 
-/* RESET BÁSICO E CONFIGURAÇÃO DO BODY */
+/* -------------------------------------------------------------------------- */
+/* RESET BÁSICO E ESTILO DO BODY                                              */
+/* -------------------------------------------------------------------------- */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -29,49 +33,61 @@
 }
 
 html {
-  font-size: 16px;
+  font-size: 16px; /* base para rem */
 }
 
-body.auth-body { /* Aplicar esta classe aos <body> das páginas de login e cadastro */
+body.auth-body {
   font-family: var(--default-font);
   color: var(--text-body-color);
   background-color: var(--background-light-color);
-  
+
   display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
+  align-items: center;               /* centraliza verticalmente quando há espaço */
+  justify-content: center;           /* centraliza horizontalmente */
+
+  min-height: 100vh;                 /* ocupa ao menos toda a viewport */
   padding: var(--auth-body-padding);
-  overflow-x: hidden;
+  overflow-x: hidden;                /* evita scroll lateral acidental */
 }
 
-/* CARD DE AUTENTICAÇÃO PRINCIPAL */
+/* Quando a viewport ficar baixa, cola o cartão no topo para que a PÁGINA role */
+@media (max-height: var(--centralize-breakpoint-height)) {
+  body.auth-body {
+    align-items: flex-start;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* CARD PRINCIPAL DE AUTENTICAÇÃO                                             */
+/* -------------------------------------------------------------------------- */
 .main-auth-card {
-  /* Classes Bootstrap no HTML: .container-xl, .d-flex, .flex-column, .flex-md-row (ou .flex-md-row-reverse para login) */
   width: 100%;
-  height: auto;
+  height: auto;                      /* cresce conforme o conteúdo */
   min-height: var(--auth-card-min-height);
-  max-height: var(--auth-card-max-height);
-  max-height: calc(100vh - (2 * var(--auth-body-padding))); /* Limita à altura da viewport */
 
   background-color: var(--input-background-color);
   border-radius: var(--default-radius);
-  box-shadow: var(--auth-card-shadow); /* SOMBRA APLICADA AQUI */
-  overflow: hidden;
+  box-shadow: var(--auth-card-shadow);
+  overflow: hidden;                  /* corta a imagem lateral se necessário */
+
+  display: flex;                     /* permite layout lado‑a‑lado */
+  /* direção controlada pelas classes Bootstrap no HTML (column / row) */
 }
 
-/* PAINÉIS INTERNOS (IMAGEM E FORMULÁRIO) */
-.image-panel, .form-panel {
-  /* .col-md-6 do Bootstrap cuida da largura em telas >= md */
-  height: 100%; 
+/* -------------------------------------------------------------------------- */
+/* PAINÉIS INTERNOS (IMAGEM E FORMULÁRIO)                                     */
+/* -------------------------------------------------------------------------- */
+.image-panel,
+.form-panel {
+  display: flex;
+  flex-direction: column;
 }
 
 .image-panel {
-  background-color: #eef2ff; /* Fundo suave. Era #D5DCFF no login.css - unificar se desejar */
-  /* .p-0 (padding: 0) deve ser aplicado via classe do Bootstrap no HTML do image-panel */
+  background-color: #eef2ff;         /* fallback suave caso a imagem não carregue */
 }
 
-.auth-image { /* Classe para as <img> dentro do image-panel */
+.auth-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -80,45 +96,38 @@ body.auth-body { /* Aplicar esta classe aos <body> das páginas de login e cadas
 }
 
 .form-panel {
-  /* .p-4 .p-md-5 são classes do Bootstrap para padding interno, aplicadas no HTML */
-  padding: 2rem 2.5rem; /* Fallback ou override se as classes BS não estiverem presentes ou para ajuste fino */
-  display: flex;
-  flex-direction: column;
-  overflow: hidden; 
+  padding: 2rem 2.5rem;
 }
 
+/* Envólucro interna do formulário: centraliza quando cabe, mas NÃO gera scroll próprio */
 .form-content-wrapper {
   width: 100%;
-  overflow-y: auto;
+  flex-grow: 1;
+  overflow-y: visible;
   overflow-x: hidden;
-  margin-top: auto; /* Para centralização vertical do bloco de conteúdo */
+
+  margin-top: auto;
   margin-bottom: auto;
 }
 
-/* ESTILOS DE FORMULÁRIO (LOGO, TÍTULOS, INPUTS, BOTÕES) */
-.logo { /* Classe já presente no HTML de ambos */
-  /* .d-flex .align-items-center .mb-4 são do Bootstrap */
-}
-.logo-icon { /* Tamanho do ícone da logo */
-  width: 40px; 
+/* -------------------------------------------------------------------------- */
+/* ESTILOS DOS ELEMENTOS DE FORMULÁRIO                                        */
+/* -------------------------------------------------------------------------- */
+.logo-icon {
+  width: 40px;
   height: 40px;
-  /* .me-2 é do Bootstrap */
-}
-.logo span { /* Estilo para o nome "StudyFlow" ao lado do ícone */
- /* .fw-bold .fs-4 .text-dark são do Bootstrap */
 }
 
-.main-auth-card h2 { /* Título "Login" ou "Cadastro" */
+.main-auth-card h2 {
   color: var(--text-title-color);
-  font-weight: 600; /* No login.html era fw-semibold (que é 600). No cadastro.html era 700. Unificando para 600. */
-  font-size: 1.75rem; /* Equivalente a fs-4 do Bootstrap se a base for 16px. Ajuste se necessário. */
-  /* .mb-2 é do Bootstrap */
+  font-weight: 600;
+  font-size: 1.75rem;
 }
 
-.subtitle { /* Subtítulo abaixo do h2 */
+.subtitle {
   color: var(--text-body-color);
   font-size: 0.95rem;
-  margin-bottom: 1.8rem; /* Padrão que definimos */
+  margin-bottom: 1.8rem;
 }
 
 .form-label {
@@ -134,66 +143,96 @@ body.auth-body { /* Aplicar esta classe aos <body> das páginas de login e cadas
   background-color: var(--input-background-color);
   padding: 0.75rem 1rem;
   font-size: 0.95rem;
-  color: var(--text-body-color); /* Garante cor do texto do input */
+  color: var(--text-body-color);
 }
-.form-control::placeholder { /* Estilo do placeholder */
-    color: #adb5bd; /* Um cinza suave */
+
+.form-control::placeholder {
+  color: #adb5bd;
 }
+
 .form-control:focus {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 0.2rem rgba(85, 104, 254, 0.25); /* Cor exata da sua variável primária com alfa */
+  box-shadow: 0 0 0 0.2rem rgba(85, 104, 254, 0.25);
 }
 
 .form-check-label {
   font-size: 0.875rem;
   color: var(--text-body-color);
 }
-.form-check-input:checked { /* Cor do checkbox marcado */
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
+
+.form-check-input:checked {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
 }
 
+/* -------------------------------------------------------------------------- */
+/* ESTILOS DE BOTÕES                                                          */
+/* -------------------------------------------------------------------------- */
 .btn-primary {
   background-color: var(--primary-color);
   border-color: var(--primary-color);
   border-radius: var(--default-radius);
   padding: 0.85rem 1rem;
   font-weight: 600;
-  color: white;
+  color: #fff;
   transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
 }
+
 .btn-primary:hover {
-  background-color: #4a5adf; 
+  background-color: #4a5adf;
   border-color: #4a5adf;
 }
 
 .btn-outline-primary {
-  border: 1px solid var(--primary-color); /* Garante borda de 1px */
+  border: 1px solid var(--primary-color);
   color: var(--primary-color);
   border-radius: var(--default-radius);
   padding: 0.85rem 1rem;
   font-weight: 600;
   transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
 }
+
 .btn-outline-primary:hover {
   background-color: var(--primary-color);
-  color: white;
+  color: #fff;
 }
-.btn-outline-primary img { 
+
+.btn-outline-primary img {
   filter: none !important;
 }
 
+.btn-link {
+  color: var(--primary-color);
+  font-weight: 500;
+  text-decoration: none;
+  padding: 0;
+}
 
-.text-sm { /* Usado para "Não tem conta?" e "Esqueceu a senha?" */
+.btn-link:hover,
+.btn-link:focus {
+  text-decoration: underline;
+  color: #4a5adf;
+}
+
+/* -------------------------------------------------------------------------- */
+/* UTILITÁRIOS DE TEXTO                                                       */
+/* -------------------------------------------------------------------------- */
+.text-sm {
   font-size: 0.875rem;
   color: var(--text-body-color);
 }
-a.text-primary, .form-check-label a, .text-sm a { /* Estilo unificado para links */
+
+a.text-primary,
+.form-check-label a,
+.text-sm a {
   color: var(--primary-color) !important;
   text-decoration: none;
   font-weight: 500;
 }
-a.text-primary:hover, .form-check-label a:hover, .text-sm a:hover {
+
+a.text-primary:hover,
+.form-check-label a:hover,
+.text-sm a:hover {
   text-decoration: underline !important;
 }
 
@@ -202,10 +241,11 @@ a.text-primary:hover, .form-check-label a:hover, .text-sm a:hover {
   align-items: center;
   text-align: center;
   color: var(--text-body-color);
-  font-size: 0.8rem; 
+  font-size: 0.8rem;
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
 }
+
 .divider::before,
 .divider::after {
   content: '';
@@ -215,69 +255,48 @@ a.text-primary:hover, .form-check-label a:hover, .text-sm a:hover {
   margin: 0 0.75rem;
 }
 
-
-/* No Css/geral.css, dentro da seção de botões ou links */
-.btn-link {
-  color: var(--primary-color); /* Para ter a cor primária como outros links */
-  font-weight: 500; /* Consistente com .text-primary */
-  text-decoration: none;
-}
-.btn-link:hover,
-.btn-link:focus { /* Adicionar foco para acessibilidade */
-  text-decoration: underline;
-  color: #4a5adf; /* Tom mais escuro da cor primária no hover, se desejado */
-}
-
-
-
-
-
-/* AJUSTES DE RESPONSIVIDADE PARA TELAS MENORES */
-@media (max-width: 767.98px) { 
+/* -------------------------------------------------------------------------- */
+/* RESPONSIVIDADE POR LARGURA (IMAGEM SOME EM TELAS > MOBILE)                 */
+/* -------------------------------------------------------------------------- */
+@media (max-width: 1100px) {
   body.auth-body {
-    padding: var(--auth-body-padding) 0; 
-    align-items: flex-start; 
+    padding: 0;
+    align-items: stretch;
   }
 
   .main-auth-card {
-    height: auto; 
-    max-height: none; 
-    min-height: 0; 
-    border-radius: 0; 
-    box-shadow: none; 
-    width: 100%; /* Em vez de 100vw, para respeitar o box-sizing */
-    /* Se .container-xl está no .main-auth-card, ele adiciona paddings.
-       Para que toque as bordas, os paddings do container precisam ser removidos
-       ou o card não deve ser um .container-xl diretamente em telas pequenas.
-       Se o card em si *é* o .container-xl: */
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+    border-radius: 0;
+    box-shadow: none;
   }
-  .main-auth-card.container-xl { /* Remove paddings do .container-xl em telas pequenas */
+
+  .main-auth-card.container-xl {
     padding-left: 0;
     padding-right: 0;
   }
 
-
-  .image-panel, .form-panel {
-    width: 100% !important; 
-    height: auto; 
-    /* .col-md-6 não se aplica mais, .flex-column está ativo */
-  }
-  
   .image-panel {
-     min-height: 200px; 
-     max-height: 35vh;  
+    display: none !important;
   }
 
   .form-panel {
-    padding: 1.5rem; 
+    width: 100% !important;
+    height: 100%;
+    min-height: 100%;
+    padding: 2rem 1.5rem;
   }
 
   .form-content-wrapper {
-    overflow-y: visible; 
+    overflow-y: visible;
     overflow-x: hidden;
-    margin-top: 0; 
-    margin-bottom: 0; 
+    width: 100%;
+    flex-grow: 1;
+    margin-top: 0;
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 }
-
-
