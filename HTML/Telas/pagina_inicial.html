@@ -65,7 +65,15 @@
           <img class="welcome-illu" src="../imgs/welcome-illustration.svg" alt="Ilustração de boas‑vindas" />
         </section>
 
-        <!-- Disciplinas Matriculadas -->
+        <!-- Calendário ao lado do banner -->
+        <div class="calendar-widget widget" aria-label="Calendário">
+          <h4 class="section-header"><i class="bi bi-calendar-week me-2"></i>Calendário</h4>
+          <div class="calendar-box">
+            <iframe src="https://calendar.google.com/calendar/embed?src=seu_email%40gmail.com&ctz=America%2FSao_Paulo" style="border:0" width="100%" height="300" frameborder="0" scrolling="no"></iframe>
+          </div>
+        </div>
+
+        <!-- Disciplinas ao lado de Tarefas -->
         <section class="disciplines" aria-label="Disciplinas Matriculadas">
           <h4 class="section-header"><i class="bi bi-book me-2"></i>Disciplinas Matriculadas<a href="#" class="link-sm ms-auto">Ver tudo ›</a></h4>
           <div class="cards">
@@ -101,23 +109,26 @@
               <ul>
                 <li><i class="icon bi bi-person-fill"></i>Prof. Priyazda</li>
                 <li><i class="icon bi bi-calendar-event"></i>Quinta-Feira</li>
-                <li><i class="icon bi bi-clock"></i><time>19:00</time>–<time>21:50</time></li>
+                <li><i class="icon bi bi-clock"></i><time>19:00</time>–<time>21:50<
+                /time></li>
                 <li><i class="icon bi bi-geo-alt"></i>Studio de Animação 3</li>
               </ul>
             </article>
           </div>
         </section>
 
-        <!-- Calendário (embed Google Calendar) -->
-        <div class="calendar-widget widget" aria-label="Calendário">
-          <h4 class="section-header"><i class="bi bi-calendar-week me-2"></i>Calendário</h4>
-          <div class="calendar-box">
-            <!-- Exemplo de embed do Google Calendar -->
-            <iframe src="https://calendar.google.com/calendar/embed?src=seu_email%40gmail.com&ctz=America%2FSao_Paulo" style="border:0" width="100%" height="300" frameborder="0" scrolling="no"></iframe>
-          </div>
+        <div class="tasks-widget widget" aria-label="Tarefas">
+          <h4 class="section-header"><i class="bi bi-card-checklist me-2"></i>Tarefas<a href="#" class="link-sm ms-auto">Ver tudo ›</a></h4>
+          <ul class="task-list">
+            <li class="task-item"><span class="text-success">Fundamentos Gráficos</span> – Projeto: Design 1 – 10 Fev 2025</li>
+            <li class="task-item"><span class="text-success">Web Design Avançado</span> – Projeto: Website Responsivo – 5 Mar 2025</li>
+            <li class="task-item"><span class="text-warning">Pesquisa de UX</span> – Relatório de Teste – 18 Abr 2025</li>
+            <li class="task-item"><span class="text-danger">Fotografia Digital</span> – Fotojornalismo – 8 Abr 2025</li>
+            <li class="task-item"><span class="text-danger">Animação 3D</span> – Personagem – 20 Mai 2025</li>
+          </ul>
         </div>
 
-        <!-- Plataforma de Provas -->
+        <!-- Plataforma de Provas (abaixo) -->
         <section class="exams" aria-label="Plataforma de Provas">
           <h4 class="section-header"><i class="bi bi-journal-text me-2"></i>Plataforma de Provas<a href="#" class="link-sm ms-auto">Ver tudo ›</a></h4>
           <div class="exam-table">
@@ -133,18 +144,6 @@
             </table>
           </div>
         </section>
-
-        <!-- Tarefas -->
-        <div class="tasks-widget widget" aria-label="Tarefas">
-          <h4 class="section-header"><i class="bi bi-card-checklist me-2"></i>Tarefas<a href="#" class="link-sm ms-auto">Ver tudo ›</a></h4>
-          <ul class="task-list">
-            <li class="task-item"><span class="text-success">Fundamentos Gráficos</span> – Projeto: Design 1 – 10 Fev 2025</li>
-            <li class="task-item"><span class="text-success">Web Design Avançado</span> – Projeto: Website Responsivo – 5 Mar 2025</li>
-            <li class="task-item"><span class="text-warning">Pesquisa de UX</span> – Relatório de Teste – 18 Abr 2025</li>
-            <li class="task-item"><span class="text-danger">Fotografia Digital</span> – Fotojornalismo – 8 Abr 2025</li>
-            <li class="task-item"><span class="text-danger">Animação 3D</span> – Personagem – 20 Mai 2025</li>
-          </ul>
-        </div>
 
       </div>
     </main>

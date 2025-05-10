@@ -23,6 +23,18 @@ a { text-decoration:none; color: var(--primary); }
 a:hover { text-decoration:underline; }
 
 /* ======= SIDEBAR ======= */
+
+/* centraliza título e empurra o link “Ver tudo ›” para o fim */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--gap);
+}
+.section-header .link-sm {
+  margin-left: auto;
+}
+
 .sidebar {
   position:fixed; top:0; left:0; bottom:0;
   width:240px; background: var(--secondary); color:#fff;
@@ -70,53 +82,97 @@ a:hover { text-decoration:underline; }
 
 /* ======= DASHBOARD GRID ======= */
 .dashboard-grid {
-  display:grid;
+  display: grid;
   grid-template-areas:
-    "banner banner"
-    "disciplines calendar"
+    "banner   calendar"
+    "disciplines tasks"
     "exams      tasks";
-  grid-template-columns:2fr 1fr;
+  grid-template-columns: 2fr 1fr;
+  grid-auto-rows: auto;
   gap: var(--gap);
 }
-.welcome-banner { grid-area: banner; }
-.disciplines    { grid-area: disciplines; }
-.calendar-widget{ grid-area: calendar; }
-.exams          { grid-area: exams; }
-.tasks-widget   { grid-area: tasks; }
+
+/* Mapeando as áreas */
+.welcome-banner   { grid-area: banner; }
+.calendar-widget  { grid-area: calendar; }
+.disciplines      { grid-area: disciplines; }
+.tasks-widget     { grid-area: tasks; }
+.exams            { grid-area: exams; }
+
+
 
 /* ======= BANNER ======= */
 .welcome-banner {
-  background:#fff; border-radius:var(--radius);
+  background: #f1f5f9; /* fundo cinza claro */
+  border-radius: var(--radius);
   box-shadow: var(--shadow);
-  display:flex; align-items:center;
+  display: flex;
+  align-items: center;
   padding: var(--gap);
   gap: var(--gap);
+  justify-content: space-between;
 }
-.welcome-banner .banner-text h3 { font-size:1.25rem; margin-bottom:.5rem; }
-.welcome-banner .banner-text p { font-size:.875rem; color:#475569; }
-.welcome-illu { max-width:220px; }
+
+/* Ajusta a largura máxima do texto */
+.welcome-banner .banner-text {
+  max-width: 600px;
+}
+
+.welcome-banner .banner-text h3 {
+  font-size: 1.25rem;
+  margin-bottom: .5rem;
+}
+
+.welcome-banner .banner-text p {
+  font-size: .875rem;
+  color: #475569;
+}
+
+/* Mantém a imagem ao lado */
+.welcome-illu {
+  max-width: 220px;
+  height: auto;
+}
 
 /* ======= DISCIPLINAS ======= */
-.section-header {
-  display:flex; align-items:center;
-  font-size:1rem; margin-bottom: var(--gap);
+.disciplines .section-header {
+  margin-bottom: var(--gap);
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
 }
-.section-header .link-sm { margin-left:auto; }
 .cards {
-  display:flex; gap: var(--gap); flex-wrap:wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--gap);
 }
 .card {
-  background:#fff; border-radius:var(--radius);
-  box-shadow: var(--shadow);
+  background: #fff;
+  border-radius: var(--radius);
   padding: var(--gap);
+  box-shadow: var(--shadow);
   transition: transform .2s;
-  min-width:220px; flex:1 1 calc(25% - var(--gap));
 }
-.card:hover { transform: translateY(-4px); }
-.card h5 { margin-bottom:.5rem; font-size:1rem; }
-.card ul { list-style:none; }
-.card ul li { display:flex; align-items:center; font-size:.875rem; margin-bottom:.25rem; }
-.card ul li .icon { color:var(--primary); margin-right:.5rem; }
+.card:hover {
+  transform: translateY(-4px);
+}
+.card h5 {
+  margin-bottom: .5rem;
+  font-size: 1rem;
+}
+.card ul {
+  list-style: none;
+}
+.card ul li {
+  display: flex;
+  align-items: center;
+  font-size: .875rem;
+  margin-bottom: .25rem;
+}
+.card ul li .icon {
+  color: var(--primary);
+  margin-right: .5rem;
+}
 .pastel-purple { background: var(--purple-light); border-left: 6px solid #C4B5FD; }
 .pastel-yellow { background: var(--yellow-light); border-left: 6px solid #FDE047; }
 .pastel-blue   { background: var(--blue-light);   border-left: 6px solid #93C5FD; }
@@ -143,12 +199,41 @@ a:hover { text-decoration:underline; }
 .status-done { background:var(--status-done-bg); color:var(--status-done-color); }
 .status-pending { background:var(--status-pending-bg); color:var(--status-pending-color); }
 
-/* ======= TASKS WIDGET ======= */
-.tasks-widget .section-header { margin-bottom: var(--gap); }
-.tasks-widget .task-list { list-style:none; display:flex; flex-direction:column; gap: var(--gap); }
-.task-item { background:#fff; border-radius:var(--radius);
-  box-shadow: var(--shadow); padding:var(--gap);
-  display:flex; justify-content:space-between;
+/* ======= TASKS WIDGET COM BORDAS COLORIDAS ======= */
+.tasks-widget .task-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
 }
-.task-item span { font-weight:600; }
-.task-item .due { color:#475569; }
+
+.task-item {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: var(--gap);
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid #e2e8f0;       /* borda cinza clara em todos */
+  border-left-width: 4px;           /* borda mais grossa na esquerda */
+}
+
+/* Cores na borda esquerda conforme o tipo/ordem da tarefa */
+.tasks-widget .task-item:nth-child(1),
+.tasks-widget .task-item:nth-child(2) {
+  border-left-color: var(--status-done-color);    /* verde para concluídas */
+}
+.tasks-widget .task-item:nth-child(3) {
+  border-left-color: var(--status-pending-color); /* azul claro para pendentes */
+}
+.tasks-widget .task-item:nth-child(4),
+.tasks-widget .task-item:nth-child(5) {
+  border-left-color: #dc2626;                     /* vermelho para atrasadas */
+}
+
+.task-item span {
+  font-weight: 600;
+}
+.task-item .due {
+  color: #475569;
+}
