@@ -1,271 +1,102 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Cadastro | StudyFlow</title>
+
   <!-- Fonte Inter -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #5568FE;
-      --text-title: #2E2E38;
-      --text-body: #6B6B78;
-      --bg-light: #F8F9FF;
-      --border: #D1D5DB;
-      --input-bg: #FFFFFF;
-      --radius: 6px;
-      --font: 'Inter', sans-serif;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: var(--font);
-      color: var(--text-body);
-      background-color: var(--bg-light);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 20px;
-    }
-    .container {
-      display: flex;
-      background: #fff;
-      border-radius: var(--radius);
-      overflow: hidden;
-      max-width: 1100px;
-      width: 100%;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    }
-    .image-panel, .form-panel {
-      flex: 1;
-    }
-    .image-panel {
-      background-color: #D5DCFF;
-    }
-    .image-panel img {
-      display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .form-panel {
-      padding: 60px 40px;
-    }
-    .logo {
-      display: flex;
-      align-items: center;
-      font-weight: 700;
-      font-size: 24px;
-      color: var(--text-title);
-      margin-bottom: 40px;
-    }
-    .logo-icon {
-      width: 32px;
-      height: 32px;
-      margin-right: 8px;
-    }
-    h2 {
-      color: var(--text-title);
-      font-size: 28px;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-    .subtitle {
-      margin-bottom: 32px;
-    }
-    form {
-      width: 100%;
-    }
-    .row {
-      display: flex;
-      gap: 16px;
-      margin-bottom: 16px;
-    }
-    .row.full { flex-direction: column; gap: 8px; }
-    .form-group {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-    label {
-      margin-bottom: 4px;
-      font-size: 14px;
-      color: var(--text-title);
-    }
-    input[type="text"],
-    input[type="email"],
-    input[type="tel"],
-    input[type="password"] {
-      padding: 12px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: var(--input-bg);
-      font-size: 14px;
-      color: var(--text-title);
-    }
-    .input-icon {
-      position: relative;
-    }
-    .input-icon svg {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      cursor: pointer;
-      stroke: var(--text-body);
-    }
-    .checkbox-group {
-      display: flex;
-      align-items: center;
-      margin-bottom: 24px;
-    }
-    .checkbox-group input {
-      margin-right: 8px;
-      width: 16px;
-      height: 16px;
-    }
-    .btn-termos {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 16px;
-      background: none;
-      border: 1px solid var(--primary);
-      border-radius: var(--radius);
-      color: var(--primary);
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .btn-primary {
-      width: 100%;
-      padding: 14px;
-      background: var(--primary);
-      border: none;
-      color: #fff;
-      font-size: 16px;
-      font-weight: 600;
-      border-radius: var(--radius);
-      cursor: pointer;
-      margin-bottom: 16px;
-    }
-    .login-link {
-      text-align: center;
-      margin-bottom: 24px;
-    }
-    .login-link a {
-      color: var(--primary);
-      text-decoration: none;
-      font-weight: 600;
-    }
-    .divider {
-      display: flex;
-      align-items: center;
-      text-align: center;
-      margin-bottom: 24px;
-      color: var(--text-body);
-      font-size: 14px;
-    }
-    .divider::before,
-    .divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
-    .divider::before { margin-right: 8px; }
-    .divider::after { margin-left: 8px; }
-    .btn-google {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      padding: 12px;
-      border: 1px solid var(--primary);
-      border-radius: var(--radius);
-      background: #fff;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .btn-google img {
-      width: 20px;
-      height: 20px;
-      margin-right: 8px;
-    }
-    @media (max-width: 768px) {
-      .container { flex-direction: column; }
-      .image-panel { height: 200px; }
-      .form-panel { padding: 40px 20px; }
-    }
-  </style>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- CSS Personalizado -->
+  <link rel="stylesheet" href="../Css/cadastro.css" />
+  <link rel="stylesheet" href="../Css/geral.css" />
 </head>
-<body>
-  <div class="container">
-    <div class="image-panel">
-      <img src="..\imgs\carinha_feliz.jpeg" alt="Ilustração Estudante">
+<body class="d-flex align-items-center justify-content-center bg-light vh-100">
+
+  <!-- Estrutura principal: imagem à direita -->
+  <div class="container-lg d-flex flex-column flex-md-row-reverse bg-white rounded shadow overflow-hidden">
+    
+    <!-- Painel da imagem -->
+    <div class="image-panel col-md-6 p-0">
+      <img src="../imgs/carinha_feliz.jpeg" alt="Ilustração Estudante" class="w-100 h-100 object-fit-cover">
     </div>
-    <div class="form-panel">
-      <div class="logo">
-        <img class="logo-icon" src="..\imgs\logo.jpeg" alt="Logo StudyFlow">
-        StudyFlow
+
+    <!-- Painel do formulário -->
+    <div class="form-panel col-md-6 p-4 p-md-5">
+      <div class="logo d-flex align-items-center mb-4">
+        <img class="logo-icon me-2" src="../imgs/logo.png" alt="Logo StudyFlow">
+        <span class="fw-bold fs-4 text-dark">StudyFlow</span>
       </div>
-      <h2>Cadastro</h2>
-      <p class="subtitle">Crie sua conta e personalize sua jornada de estudos!</p>
+
+      <h2 class="text-dark fw-semibold mb-2">Cadastro</h2>
+      <p class="subtitle mb-4">Crie sua conta e personalize sua jornada de estudos!</p>
+
       <form>
-        <div class="row">
-          <div class="form-group">
-            <label for="nome">Nome</label>
-            <input type="text" id="nome" placeholder="Aluno">
+        <div class="row mb-3">
+          <div class="col">
+            <label for="nome" class="form-label">Nome</label>
+            <input type="text" id="nome" class="form-control" placeholder="Aluno" required>
           </div>
-          <div class="form-group">
-            <label for="sobrenome">Sobrenome</label>
-            <input type="text" id="sobrenome" placeholder="Silva">
-          </div>
-        </div>
-        <div class="row">
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" placeholder="aluno@email.com">
-          </div>
-          <div class="form-group">
-            <label for="celular">Celular</label>
-            <input type="tel" id="celular" placeholder="(41) 99999-8888">
+          <div class="col">
+            <label for="sobrenome" class="form-label">Sobrenome</label>
+            <input type="text" id="sobrenome" class="form-control" placeholder="Silva" required>
           </div>
         </div>
-        <div class="row full">
-          <div class="form-group input-icon">
-            <label for="senha">Senha</label>
-            <input type="password" id="senha" placeholder="••••••••••••••••">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="24" height="24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.522 5.25 12 5.25c4.478 0 8.268 2.693 9.542 6.75-1.274 4.057-5.064 6.75-9.542 6.75-4.478 0-8.268-2.693-9.542-6.75z" />
-            </svg>
+
+        <div class="row mb-3">
+          <div class="col">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" id="email" class="form-control" placeholder="aluno@email.com" required>
+          </div>
+          <div class="col">
+            <label for="celular" class="form-label">Celular</label>
+            <input type="tel" id="celular" class="form-control" placeholder="(41) 99999-8888">
           </div>
         </div>
-        <div class="row full">
-          <div class="form-group input-icon">
-            <label for="confirmar-senha">Confirmar senha</label>
-            <input type="password" id="confirmar-senha" placeholder="••••••••••••••••">
-          </div>
+
+        <div class="mb-3 position-relative">
+          <label for="senha" class="form-label">Senha</label>
+          <input type="password" id="senha" class="form-control" placeholder="••••••••" required>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" class="position-absolute" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="24" height="24" style="top: 50%; right: 12px; transform: translateY(-50%); cursor: pointer;">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.522 5.25 12 5.25c4.478 0 8.268 2.693 9.542 6.75-1.274 4.057-5.064 6.75-9.542 6.75-4.478 0-8.268-2.693-9.542-6.75z" />
+          </svg>
         </div>
-        <!-- Botão para ler e aceitar termos -->
-        <button type="button" class="btn-termos">Ler e aceitar termos e política</button>
-        <!-- Checkbox de termos -->
-        <div class="checkbox-group">
-          <input type="checkbox" id="termos">
-          <label for="termos">Eu concordo com os termos e a política de privacidade</label>
+
+        <div class="mb-3">
+          <label for="confirmar-senha" class="form-label">Confirmar Senha</label>
+          <input type="password" id="confirmar-senha" class="form-control" placeholder="••••••••" required>
         </div>
-        <button type="submit" class="btn-primary">Criar Conta</button>
+
+        <button type="button" class="btn btn-outline-primary w-100 mb-3">Ler e aceitar termos e política</button>
+
+        <div class="form-check mb-3">
+          <input class="form-check-input" type="checkbox" id="termos" required>
+          <label class="form-check-label" for="termos">
+            Eu concordo com os termos e a política de privacidade
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 mb-3">Criar Conta</button>
       </form>
-      <div class="login-link">
-        Já tenho uma conta! <a href="login.html">Entrar</a>
+
+      <div class="text-center mb-3 text-sm">
+        Já tem uma conta?
+        <a href="login.html" class="fw-semibold text-primary text-decoration-none ms-1">Entrar</a>
       </div>
-      <div class="divider">Ou, entrar com:</div>
-      <button class="btn-google">
-        <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google"> Google
+
+      <div class="divider text-center mb-3">Ou, entrar com:</div>
+
+      <button class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center">
+        <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" class="me-2" width="20" height="20">
+        Google
       </button>
     </div>
   </div>
+
 </body>
 </html>
