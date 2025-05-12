@@ -7,14 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     e.stopPropagation();
 
-    // limpa estados anteriores
     [novaSenha, confirma].forEach(i => {
       i.classList.remove('is-invalid');
     });
 
     let valid = true;
 
-    // 1) Ambos os campos obrigatórios
     if (!novaSenha.value.trim()) {
       setErro(novaSenha, 'Por favor, insira a nova senha.');
       valid = false;
@@ -24,7 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
       valid = false;
     }
 
-    // 2) Se ambos preenchidos, verifica se coincidem
     if (novaSenha.value && confirma.value && novaSenha.value !== confirma.value) {
       setErro(confirma, 'As senhas não coincidem. Tente novamente.');
       valid = false;
@@ -32,8 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (valid) {
       alert('Senha alterada com sucesso!');
-      // Redirecionamento opcional:
-      // window.location.href = 'login.html';
+      window.location.href = 'login.html';
     }
   });
 
