@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (email === 'admin@admin' && senha === '1234') {
       // Redireciona para a página inicial
-      window.location.href = 'pagina_inicial.html';
+      window.location.href = 'principal.html';
     } else {
       // Mostra mensagem de erro
       alert('Email ou senha inválidos!');

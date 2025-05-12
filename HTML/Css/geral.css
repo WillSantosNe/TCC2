@@ -23,6 +23,69 @@
   --centralize-breakpoint-height: 650px;
 }
 
+
+/* -------------------------------------------------------------------------- */
+/* ESTILOS PARA BOTÃO DE VISUALIZAR SENHA                                     */
+/* -------------------------------------------------------------------------- */
+.input-group {
+  position: relative; /* O .input-group é o container relativo para o ícone */
+}
+
+.password-toggle-icon {
+  display: flex;
+  align-items: center;   /* Centraliza o <i> verticalmente dentro do span */
+  justify-content: center;
+  
+  position: absolute;
+  top: 0;
+  bottom: 0;   /* Faz o span ter a mesma altura do .input-group (que é a altura do input) */
+  right: 0.75rem; /* Distância da borda direita do .input-group */
+  
+  padding-left: 0.75rem; /* Espaçamento interno do span clicável */
+  padding-right: 0.75rem;
+  
+  cursor: pointer;
+  color: var(--text-body-color);
+  z-index: 5; /* Para ficar sobre o input, mas abaixo de autocompletes do navegador */
+}
+
+/* Quando o input (irmão ANTERIOR do span) tem feedback de validação do Bootstrap,
+   movemos nosso ícone de olho para a esquerda para dar espaço ao ícone de validação do BS.
+   O ícone de validação do BS é um background-image no próprio .form-control. */
+.form-control.is-invalid ~ .password-toggle-icon, /* Usa o seletor de irmão geral ~ */
+.form-control.is-valid ~ .password-toggle-icon {
+  right: 2.5rem; /* Ajuste este valor conforme necessário */
+                 /* Este valor (2.5rem) + a largura do seu ícone de olho + algum espaço
+                    deve ser menor que o padding-right do input (pe-5 que é 3rem) */
+}
+
+.password-toggle-icon.visible {
+  display: flex; /* Mostra o ícone */
+}
+.password-toggle-icon:not(.visible) {
+  display: none; /* Esconde o ícone se a classe .visible não estiver presente */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* -------------------------------------------------------------------------- */
 /* RESET BÁSICO E ESTILO DO BODY                                              */
 /* -------------------------------------------------------------------------- */
