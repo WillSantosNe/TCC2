@@ -1,24 +1,25 @@
 document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById("cadastroForm");
-  const camposObrigatorios = ["nome", "sobrenome", "email", "senha", "confirmarSenha"];
-  const senha = document.getElementById("senha");
-  const confirmarSenha = document.getElementById("confirmarSenha");
+  const campos = {
+    nome: document.getElementById("nome"),
+    sobrenome: document.getElementById("sobrenome"),
+    email: document.getElementById("email"),
+    senha: document.getElementById("senha"),
+    confirmarSenha: document.getElementById("confirmarSenha"),
+  };
+  const termos = document.getElementById("termos");
 
   form.addEventListener("submit", function (event) {
-    event.preventDefault(); // impede envio
+    event.preventDefault();
 
     let isValid = true;
+    limparErros();
 
-    // Limpa mensagens antigas
-    document.querySelectorAll(".invalid-feedback").forEach(el => el.remove());
-
-    // Verifica campos vazios
-    camposObrigatorios.forEach(id => {
-      const campo = document.getElementById(id);
+    // Verifica campos obrigatórios
+    Object.entries(campos).forEach(([key, campo]) => {
       campo.classList.remove("is-invalid", "is-valid");
 
       if (!campo.value.trim()) {
-        campo.classList.add("is-invalid");
         mostrarErro(campo, "Este campo é obrigatório.");
         isValid = false;
       } else {
@@ -26,44 +27,65 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    // Verifica senha mínima
-    if (senha.value && senha.value.length < 8) {
-      senha.classList.add("is-invalid");
-      mostrarErro(senha, "A senha deve ter no mínimo 8 caracteres.");
+    // Validação de senha
+    if (campos.senha.value && campos.senha.value.length < 8) {
+      mostrarErro(campos.senha, "A senha deve ter no mínimo 8 caracteres.");
       isValid = false;
     }
 
-    // Verifica se as senhas coincidem
-    if (senha.value !== confirmarSenha.value) {
-      confirmarSenha.classList.add("is-invalid");
-      mostrarErro(confirmarSenha, "As senhas não coincidem.");
+    // Confirmação de senha
+    if (campos.senha.value !== campos.confirmarSenha.value) {
+      mostrarErro(campos.confirmarSenha, "As senhas não coincidem.");
       isValid = false;
     }
 
-    // Se tudo ok, submete
+    // Verificação de aceite dos termos
+    if (!termos.checked) {
+      mostrarErro(termos, "Você deve aceitar os termos e condições.");
+      termos.classList.add("is-invalid");
+      isValid = false;
+    } else {
+      termos.classList.remove("is-invalid");
+    }
+
+    // Se tudo válido, simula cadastro e redireciona
     if (isValid) {
-      form.submit();
+      // Aqui você poderia fazer um fetch() para API de cadastro, se tivesse backend
+      alert("Cadastro realizado com sucesso!");
+      window.location.href = "login.html"; // redireciona para a página de login
     }
   });
 
-  // Remove erro ao digitar
-  camposObrigatorios.forEach(id => {
-    const campo = document.getElementById(id);
-    campo.addEventListener("input", () => {
-      campo.classList.remove("is-invalid", "is-valid");
-      removerMensagemErro(campo);
-    });
+  // Remove erro ao digitar ou interagir
+  Object.values(campos).forEach(campo => {
+    campo.addEventListener("input", () => limparErroCampo(campo));
   });
+  termos.addEventListener("change", () => termos.classList.remove("is-invalid"));
 
   function mostrarErro(campo, mensagem) {
     const feedback = document.createElement("div");
-    feedback.className = "invalid-feedback";
+    feedback.className = "invalid-feedback d-block";
     feedback.innerText = mensagem;
-    campo.parentNode.appendChild(feedback);
+    campo.classList.add("is-invalid");
+
+    // Se for checkbox, coloca o erro depois do label
+    if (campo.type === "checkbox") {
+      campo.parentNode.appendChild(feedback);
+    } else {
+      campo.parentNode.appendChild(feedback);
+    }
   }
 
-  function removerMensagemErro(campo) {
+  function limparErroCampo(campo) {
+    campo.classList.remove("is-invalid", "is-valid");
     const feedback = campo.parentNode.querySelector(".invalid-feedback");
     if (feedback) feedback.remove();
+  }
+
+  function limparErros() {
+    document.querySelectorAll(".invalid-feedback").forEach(el => el.remove());
+    document.querySelectorAll(".is-invalid, .is-valid").forEach(el => {
+      el.classList.remove("is-invalid", "is-valid");
+    });
   }
 });
