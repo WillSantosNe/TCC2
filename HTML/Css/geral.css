@@ -28,63 +28,29 @@
 /* ESTILOS PARA BOTÃO DE VISUALIZAR SENHA                                     */
 /* -------------------------------------------------------------------------- */
 .input-group {
-  position: relative; /* O .input-group é o container relativo para o ícone */
+  position: relative;
+  min-width: 0;
 }
 
 .password-toggle-icon {
   display: flex;
-  align-items: center;   /* Centraliza o <i> verticalmente dentro do span */
+  align-items: center;
   justify-content: center;
-  
   position: absolute;
   top: 0;
-  bottom: 0;   /* Faz o span ter a mesma altura do .input-group (que é a altura do input) */
-  right: 0.75rem; /* Distância da borda direita do .input-group */
-  
-  padding-left: 0.75rem; /* Espaçamento interno do span clicável */
+  bottom: 0;
+  right: 0.75rem;
+  padding-left: 0.75rem;
   padding-right: 0.75rem;
-  
   cursor: pointer;
   color: var(--text-body-color);
-  z-index: 5; /* Para ficar sobre o input, mas abaixo de autocompletes do navegador */
+  z-index: 5;
 }
 
-/* Quando o input (irmão ANTERIOR do span) tem feedback de validação do Bootstrap,
-   movemos nosso ícone de olho para a esquerda para dar espaço ao ícone de validação do BS.
-   O ícone de validação do BS é um background-image no próprio .form-control. */
-.form-control.is-invalid ~ .password-toggle-icon, /* Usa o seletor de irmão geral ~ */
+.form-control.is-invalid ~ .password-toggle-icon,
 .form-control.is-valid ~ .password-toggle-icon {
-  right: 2.5rem; /* Ajuste este valor conforme necessário */
-                 /* Este valor (2.5rem) + a largura do seu ícone de olho + algum espaço
-                    deve ser menor que o padding-right do input (pe-5 que é 3rem) */
+  right: 2.5rem;
 }
-
-.password-toggle-icon.visible {
-  display: flex; /* Mostra o ícone */
-}
-.password-toggle-icon:not(.visible) {
-  display: none; /* Esconde o ícone se a classe .visible não estiver presente */
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* -------------------------------------------------------------------------- */
 /* RESET BÁSICO E ESTILO DO BODY                                              */
@@ -96,7 +62,7 @@
 }
 
 html {
-  font-size: 16px; /* base para rem */
+  font-size: 16px;
 }
 
 body.auth-body {
@@ -105,15 +71,14 @@ body.auth-body {
   background-color: var(--background-light-color);
 
   display: flex;
-  align-items: center;               /* centraliza verticalmente quando há espaço */
-  justify-content: center;           /* centraliza horizontalmente */
+  align-items: center;
+  justify-content: center;
 
-  min-height: 100vh;                 /* ocupa ao menos toda a viewport */
+  min-height: 100vh;
   padding: var(--auth-body-padding);
-  overflow-x: hidden;                /* evita scroll lateral acidental */
+  overflow-x: hidden; /* Cuidado com possíveis efeitos colaterais */
 }
 
-/* Quando a viewport ficar baixa, cola o cartão no topo para que a PÁGINA role */
 @media (max-height: var(--centralize-breakpoint-height)) {
   body.auth-body {
     align-items: flex-start;
@@ -125,16 +90,14 @@ body.auth-body {
 /* -------------------------------------------------------------------------- */
 .main-auth-card {
   width: 100%;
-  height: auto;                      /* cresce conforme o conteúdo */
+  height: auto;
   min-height: var(--auth-card-min-height);
 
   background-color: var(--input-background-color);
   border-radius: var(--default-radius);
   box-shadow: var(--auth-card-shadow);
-  overflow: hidden;                  /* corta a imagem lateral se necessário */
-
-  display: flex;                     /* permite layout lado‑a‑lado */
-  /* direção controlada pelas classes Bootstrap no HTML (column / row) */
+  overflow: hidden;
+  display: flex;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -147,7 +110,7 @@ body.auth-body {
 }
 
 .image-panel {
-  background-color: #eef2ff;         /* fallback suave caso a imagem não carregue */
+  background-color: #eef2ff;
 }
 
 .auth-image {
@@ -162,13 +125,10 @@ body.auth-body {
   padding: 2rem 2.5rem;
 }
 
-/* Envólucro interna do formulário: centraliza quando cabe, mas NÃO gera scroll próprio */
 .form-content-wrapper {
   width: 100%;
   flex-grow: 1;
-  overflow-y: visible;
   overflow-x: hidden;
-
   margin-top: auto;
   margin-bottom: auto;
 }
@@ -261,105 +221,8 @@ body.auth-body {
 }
 
 .btn-outline-primary img {
-  filter: none !important;
-}
-
-.btn-link {
-  color: var(--primary-color);
-  font-weight: 500;
-  text-decoration: none;
-  padding: 0;
-}
-
-.btn-link:hover,
-.btn-link:focus {
-  text-decoration: underline;
-  color: #4a5adf;
-}
-
-/* -------------------------------------------------------------------------- */
-/* UTILITÁRIOS DE TEXTO                                                       */
-/* -------------------------------------------------------------------------- */
-.text-sm {
-  font-size: 0.875rem;
-  color: var(--text-body-color);
-}
-
-a.text-primary,
-.form-check-label a,
-.text-sm a {
-  color: var(--primary-color) !important;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-a.text-primary:hover,
-.form-check-label a:hover,
-.text-sm a:hover {
-  text-decoration: underline !important;
-}
-
-.divider {
-  display: flex;
-  align-items: center;
-  text-align: center;
-  color: var(--text-body-color);
-  font-size: 0.8rem;
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.divider::before,
-.divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background-color: var(--border-color);
-  margin: 0 0.75rem;
-}
-
-/* -------------------------------------------------------------------------- */
-/* RESPONSIVIDADE POR LARGURA (IMAGEM SOME EM TELAS > MOBILE)                 */
-/* -------------------------------------------------------------------------- */
-@media (max-width: 1100px) {
-  body.auth-body {
-    padding: 0;
-    align-items: stretch;
-  }
-
-  .main-auth-card {
-    width: 100%;
-    height: 100%;
-    min-height: 100vh;
-    border-radius: 0;
-    box-shadow: none;
-  }
-
-  .main-auth-card.container-xl {
-    padding-left: 0;
-    padding-right: 0;
-  }
-
-  .image-panel {
-    display: none !important;
-  }
-
-  .form-panel {
-    width: 100% !important;
-    height: 100%;
-    min-height: 100%;
-    padding: 2rem 1.5rem;
-  }
-
-  .form-content-wrapper {
-    overflow-y: visible;
-    overflow-x: hidden;
-    width: 100%;
-    flex-grow: 1;
-    margin-top: 0;
-    margin-bottom: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
+  display: inline-block;
+  vertical-align: middle;
+  max-height: 1em;
+  margin-left: 0.5rem;
 }

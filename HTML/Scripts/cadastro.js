@@ -1,4 +1,21 @@
 document.addEventListener("DOMContentLoaded", function () {
+  // === Show/Hide password toggle ===
+  const toggles = document.querySelectorAll('.password-toggle-icon');
+  toggles.forEach(toggle => {
+    const icon = toggle.querySelector('i');
+    const input = toggle.closest('.input-group').querySelector('input');
+    toggle.addEventListener('click', () => {
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.replace('bi-eye-slash', 'bi-eye');
+      } else {
+        input.type = 'password';
+        icon.classList.replace('bi-eye', 'bi-eye-slash');
+      }
+    });
+  });
+  // ==================================
+
   const form = document.getElementById("cadastroForm");
   const campos = {
     nome: document.getElementById("nome"),
@@ -50,9 +67,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Se tudo válido, simula cadastro e redireciona
     if (isValid) {
-      // Aqui você poderia fazer um fetch() para API de cadastro, se tivesse backend
       alert("Cadastro realizado com sucesso!");
-      window.location.href = "login.html"; // redireciona para a página de login
+      window.location.href = "login.html";
     }
   });
 
@@ -67,13 +83,7 @@ document.addEventListener("DOMContentLoaded", function () {
     feedback.className = "invalid-feedback d-block";
     feedback.innerText = mensagem;
     campo.classList.add("is-invalid");
-
-    // Se for checkbox, coloca o erro depois do label
-    if (campo.type === "checkbox") {
-      campo.parentNode.appendChild(feedback);
-    } else {
-      campo.parentNode.appendChild(feedback);
-    }
+    campo.parentNode.appendChild(feedback);
   }
 
   function limparErroCampo(campo) {
