@@ -1,42 +1,124 @@
-/* === VARIÁVEIS GLOBAIS === */
+/* Css/geral.css */
+
+/* === VARIÁVEIS GLOBAIS (MESCLAR COM AS SUAS EXISTENTES) === */
 :root {
+  /* Suas variáveis existentes */
   --primary-color: #5568FE;
   --text-title-color: #2E2E38;
   --text-body-color: #6B6B78;
-  --background-light-color: #F8F9FF; /* Fundo de páginas de autenticação */
+  --background-light-color: #F8F9FF;
   --border-color: #D1D5DB;
   --input-background-color: #FFFFFF;
-
   --default-font: 'Inter', sans-serif;
   --default-radius: 6px;
-
   --auth-card-min-height: 500px;
   --auth-body-padding: 1.5rem;
   --auth-card-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
-  --centralize-breakpoint-height: 650px; /* Altura para desativar centralização vertical */
+  --centralize-breakpoint-height: 650px;
+
+  /* Variáveis do layout principal/dashboard (se não estiverem em tela_principal.css) */
+  --sidebar-width: 256px;
+  --header-height: 64px;
 }
 
-/* === ESTILOS DO ÍCONE DE VISUALIZAR SENHA === */
-.input-group {
-  position: relative;
-  min-width: 0; /* Correção para flexbox em alguns cenários */
+/* === ESTILOS GLOBAIS PARA MODAIS <dialog> === */
+dialog {
+    /* Centralização */
+    position: fixed; /* Comportamento padrão de showModal(), mas bom definir */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    width: 60%;
+    max-width: 700px; /* Limite para modais padrão */
+    border: 0px;
+    border-radius: .75rem;
+    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.2);
+    padding: 0;
+    overflow: hidden; /* Para cantos arredondados do conteúdo interno */
+    z-index: 1060; /* Acima da sidebar (1055) e outros elementos */
 }
 
-.password-toggle-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  top: 50%; /* Para centralizar verticalmente */
-  transform: translateY(-50%); /* Para centralizar verticalmente */
-  right: 1rem; /* Posição padrão do ícone de olho */
-  padding: 0.25rem; /* Pequeno padding para aumentar área de clique */
-  cursor: pointer;
-  color: var(--text-body-color);
-  z-index: 5; /* Para ficar acima do input */
+dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.6);
 }
+
+/* Estrutura interna padrão para modais (cabeçalho, corpo, rodapé) */
+.modal-header-custom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-color); /* Usando sua variável */
+    background-color: #f8f9fa;
+}
+
+.modal-title-wrapper { /* Para alinhar avatar e título */
+    display: flex;
+    align-items: center;
+}
+
+.modal-header-custom .user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 0.75rem;
+}
+
+.modal-title-custom {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-title-color);
+    margin-bottom: 0;
+}
+
+.btn-close-custom {
+    padding: 0.5rem;
+    margin: -0.5rem -0.75rem -0.5rem auto;
+    background: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat;
+    border: 0;
+    border-radius: 0.375rem;
+    opacity: 0.6;
+    cursor: pointer;
+    transition: opacity 0.15s ease-in-out;
+}
+.btn-close-custom:hover {
+    opacity: 0.9;
+}
+
+.modal-body-custom {
+    padding: 1.5rem;
+    position: relative;
+    max-height: calc(100vh - 200px); /* Altura máxima antes de scrollar (100px topo + 100px base ~ header+footer modal) */
+    overflow-y: auto;
+}
+
+.modal-footer-custom {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border-color); /* Usando sua variável */
+    background-color: #f8f9fa;
+    gap: 0.75rem;
+}
+
+/* Estilos para inputs dentro de qualquer modal que use esta estrutura */
+dialog .form-label { /* Mais genérico que #modalProva .form-label */
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+    font-size: 0.875rem;
+}
+
+dialog .form-control,
+dialog .form-select {
+    font-size: 0.9rem;
+}
+
 
 /* === RESET BÁSICO E ESTILO DO BODY (AUTENTICAÇÃO) === */
+/* ... (seu CSS existente para *, html, body.auth-body, etc.) ... */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -44,7 +126,7 @@
 }
 
 html {
-  font-size: 16px; /* Define a base para unidades rem */
+  font-size: 16px;
 }
 
 body.auth-body {
@@ -56,17 +138,18 @@ body.auth-body {
   justify-content: center;
   min-height: 100vh;
   padding: var(--auth-body-padding);
-  overflow-x: hidden; /* Evita scroll horizontal indesejado */
+  overflow-x: hidden;
 }
 
-/* Ajuste para viewports menores em altura */
 @media (max-height: var(--centralize-breakpoint-height)) {
   body.auth-body {
-    align-items: flex-start; /* Card cola no topo */
+    align-items: flex-start;
   }
 }
 
+
 /* === CARD PRINCIPAL DE AUTENTICAÇÃO === */
+/* ... (seus estilos existentes para .main-auth-card, etc.) ... */
 .main-auth-card {
   width: 100%;
   height: auto;
@@ -74,110 +157,94 @@ body.auth-body {
   background-color: var(--input-background-color);
   border-radius: var(--default-radius);
   box-shadow: var(--auth-card-shadow);
-  overflow: hidden; /* Para border-radius funcionar com imagem interna */
-  display: flex; /* Para layout de painéis lado a lado */
+  overflow: hidden;
+  display: flex;
 }
 
+
 /* === PAINÉIS INTERNOS (IMAGEM E FORMULÁRIO) === */
+/* ... (seus estilos existentes) ... */
 .image-panel,
 .form-panel {
   display: flex;
-  flex-direction: column; /* Conteúdo empilhado verticalmente */
+  flex-direction: column;
 }
 
 .image-panel {
-  background-color: #eef2ff; /* Cor de fundo sutil para o painel da imagem */
+  background-color: #eef2ff;
 }
 
 .auth-image {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Garante que a imagem cubra sem distorcer */
+  object-fit: cover;
   object-position: center;
   display: block;
 }
 
 .form-panel {
-  padding: 2rem 2.5rem; /* Espaçamento interno do painel do formulário */
+  padding: 2rem 2.5rem;
 }
 
-/* Wrapper para centralizar conteúdo do formulário verticalmente se necessário */
 .form-content-wrapper {
   width: 100%;
   flex-grow: 1;
-  display: flex; /* Permite centralizar conteúdo com auto margins */
+  display: flex;
   flex-direction: column;
-  justify-content: center; /* Centraliza o conteúdo verticalmente */
+  justify-content: center;
   overflow-x: hidden;
 }
 
-/* === ELEMENTOS DE FORMULÁRIO === */
+
+/* === ELEMENTOS DE FORMULÁRIO (GENÉRICOS) === */
+/* ... (seus estilos existentes para .logo-icon, .form-label, .form-control, etc.) ... */
 .logo-icon {
   width: 40px;
   height: 40px;
 }
 
-.main-auth-card h2 {
+.main-auth-card h2 { /* Específico para o card de auth, pode ficar aqui ou ser mais genérico */
   color: var(--text-title-color);
   font-weight: 600;
   font-size: 1.75rem;
 }
 
-.subtitle {
+.subtitle { /* Também pode ser genérico ou específico do auth card */
   color: var(--text-body-color);
   font-size: 0.95rem;
-  margin-bottom: 1.8rem; /* Espaçamento abaixo do subtítulo */
+  margin-bottom: 1.8rem;
 }
 
-.form-label {
-  font-weight: 500;
-  margin-bottom: 0.4rem;
-  color: var(--text-title-color);
-  font-size: 0.875rem;
-}
+/* Sobrescreve .form-label dentro de dialog se necessário, ou use uma classe mais específica */
+/* .form-label já definido em geral.css para dialogs */
 
-.form-control {
+.form-control { /* Estilo base para form-control */
   border-radius: var(--default-radius);
   border: 1px solid var(--border-color);
   background-color: var(--input-background-color);
-  padding: 0.75rem 1rem; /* Padding padrão (vertical e horizontal esquerdo) */
+  padding: 0.75rem 1rem;
   font-size: 0.95rem;
   color: var(--text-body-color);
 }
 
-/* Padding padrão à direita para inputs DENTRO de .input-group (para acomodar o ícone de olho) */
 .input-group .form-control {
-  /* Este padding acomoda o ícone de olho na sua posição padrão (right: 1rem) */
-  /* (1rem para posição do ícone + ~1.5rem para largura visual do ícone + ~0.5rem de folga) */
-  padding-right: 3rem;
+  padding-right: 3rem; /* Espaço para ícone de olho padrão */
 }
 
 .form-control::placeholder {
-  color: #adb5bd; /* Cor padrão do Bootstrap para placeholders */
+  color: #adb5bd;
 }
 
 .form-control:focus {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 0.2rem rgba(85, 104, 254, 0.25); /* Sombra de foco padrão do Bootstrap */
+  box-shadow: 0 0 0 0.2rem rgba(85, 104, 254, 0.25);
 }
 
-/* AJUSTES QUANDO HÁ VALIDAÇÃO (ERRO/SUCESSO) NOS CAMPOS DE SENHA */
-
-/* 1. Deslocar o ÍCONE DE OLHO para a esquerda para dar espaço ao ícone de validação do Bootstrap */
-.input-group .form-control.is-invalid ~ .password-toggle-icon,
-.input-group .form-control.is-valid ~ .password-toggle-icon {
-  right: 2.75rem; /* Ajuste este valor se necessário (ex: 2.5rem, 3rem) */
-}
-
-/* 2. Aumentar o PADDING DO INPUT para acomodar AMBOS os ícones (validação + olho) */
 .input-group .form-control.is-invalid,
 .input-group .form-control.is-valid {
-  /* Este padding precisa ser maior que a nova posição 'right' do ícone de olho (ex: 2.75rem)
-     mais o espaço visual que seu ícone de olho ocupa (ex: ~1.5rem).
-     (2.75rem + ~1.5rem + ~0.25rem de folga = ~4.5rem)
-  */
-  padding-right: 4.5rem !important; /* Ajuste este valor se o TEXTO ficar embaixo dos ícones */
+  padding-right: 4.5rem !important; /* Espaço para ícone de olho + ícone de validação */
 }
+
 
 .form-check-label {
   font-size: 0.875rem;
@@ -189,7 +256,30 @@ body.auth-body {
   border-color: var(--primary-color);
 }
 
+
+/* === ESTILOS DO ÍCONE DE VISUALIZAR SENHA === */
+/* ... (seus estilos existentes) ... */
+.input-group .password-toggle-icon { /* Adicionado .input-group para especificidade */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 1rem;
+  padding: 0.25rem;
+  cursor: pointer;
+  color: var(--text-body-color);
+  z-index: 5;
+}
+
+.input-group .form-control.is-invalid ~ .password-toggle-icon,
+.input-group .form-control.is-valid ~ .password-toggle-icon {
+  right: 2.75rem;
+}
+
 /* === BOTÕES === */
+/* ... (seus estilos de botão existentes) ... */
 .btn-primary {
   background-color: var(--primary-color);
   border-color: var(--primary-color);
@@ -201,7 +291,7 @@ body.auth-body {
 }
 
 .btn-primary:hover {
-  background-color: #4a5adf; /* Cor primária um pouco mais escura */
+  background-color: #4a5adf;
   border-color: #4a5adf;
 }
 
@@ -220,18 +310,17 @@ body.auth-body {
 }
 
 .btn-outline-primary img {
-  display: inline-block; /* Para alinhar corretamente com o texto */
+  display: inline-block;
   vertical-align: middle;
-  max-height: 1em; /* Controla o tamanho do ícone do Google */
+  max-height: 1em;
 }
 
+
 /* === REMOÇÃO DE ÍCONES NATIVOS DE NAVEGADOR === */
-/* Remove o "olho" de senha no Edge/IE */
 input[type="password"]::-ms-reveal {
   display: none !important;
 }
 
-/* Remove o "X" de limpar campo no Edge/IE */
 input[type="password"]::-ms-clear {
   display: none !important;
 }

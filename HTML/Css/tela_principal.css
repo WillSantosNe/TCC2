@@ -1,3 +1,12 @@
+/* Css/tela_principal.css */
+
+/* :root já deve estar em geral.css ou definido antes.
+   Se precisar de variáveis específicas para este layout, defina aqui.
+   As variáveis --sidebar-width, --header-height, --card-1, etc. podem ficar aqui
+   ou em geral.css se forem usadas em mais lugares.
+   Para este exemplo, vamos assumir que estão aqui ou já em geral.css.
+*/
+/*
 :root {
   --sidebar-width: 256px;
   --header-height: 64px;
@@ -5,14 +14,8 @@
   --card-2: #ffedc5;
   --card-3: #d9f1ff;
   --card-4: #d3f8e4;
-  /* Adicione aqui --background-light-color e --border-color se não estiverem em geral.css
-     ou se quiser sobrescrevê-los especificamente para esta tela.
-     Exemplo, caso não estejam em geral.css:
-     --background-light-color: #F8F9FF;
-     --border-color: #D1D5DB;
-     --text-title-color: #2E2E38;
-  */
 }
+*/
 
 /* --------- SIDEBAR ÚNICA --------- */
 #sidebar {
@@ -26,14 +29,13 @@
   z-index: 1055 !important; /* Mantém acima do backdrop do offcanvas do Bootstrap */
 }
 
-/* quando *não* é offcanvas (≥ lg) queremos que continue FIXA */
 @media (min-width: 992px) {
   #sidebar {
     position: fixed !important;
     top: 0;
     left: 0;
-    transform: none !important; /* garante que não deslize */
-    visibility: visible !important; /* Garante que esteja visível */
+    transform: none !important;
+    visibility: visible !important;
   }
 }
 
@@ -52,7 +54,7 @@
   font-size: .95rem;
   font-weight: 500;
   padding: .6rem .9rem;
-  border-radius: 6px;
+  border-radius: 6px; /* Usar var(--default-radius) se preferir */
   text-decoration: none;
   transition: background-color .2s;
 }
@@ -77,10 +79,10 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--background-light-color); /* Certifique-se que esta variável está definida */
+  background: var(--background-light-color); /* Certifique-se que esta variável está definida em :root */
 }
 
-@media (max-width: 991.98px) { /* sidebar vira off-canvas: conteúdo 100% */
+@media (max-width: 991.98px) {
   .sf-main {
     margin-left: 0;
     width: 100%;
@@ -91,14 +93,14 @@
 .sf-header {
   height: var(--header-height);
   background: #fff;
-  border-bottom: 1px solid var(--border-color); /* Certifique-se que esta variável está definida */
+  border-bottom: 1px solid var(--border-color); /* Certifique-se que esta variável está definida em :root */
   display: flex;
   align-items: center;
-  justify-content: flex-end; /* Alterado para flex-end para alinhar o avatar à direita */
+  justify-content: flex-end;
   padding: 0 1.5rem;
   position: sticky;
   top: 0;
-  z-index: 1000; /* Abaixo da sidebar quando offcanvas */
+  z-index: 1000; /* Abaixo da sidebar quando offcanvas (1055) e abaixo de modais (1060) */
 }
 
 .sf-header-brand {
@@ -119,28 +121,46 @@
 .sf-header-brand span {
   font-weight: 700;
   font-size: 1.35rem;
-  color: var(--text-title-color); /* Certifique-se que esta variável está definida */
+  color: var(--text-title-color); /* Certifique-se que esta variável está definida em :root */
 }
 
 .btn-menu {
   border: none;
   background: transparent;
   font-size: 1.6rem;
-  color: #0f1a35; /* Cor para o ícone do menu */
+  color: #0f1a35;
 }
 
-/* --------- CONTEÚDO --------------- */
+/* --------- CONTEÚDO (Layout Geral da Página da Dashboard) --------------- */
 .sf-content {
   padding: 2rem 2rem 3rem;
-  flex-grow: 1; /* Faz o conteúdo ocupar o espaço restante no sf-main */
+  flex-grow: 1;
 }
 
+/* Adiciona a classe dashboard-body ao body para evitar conflitos com auth-body se necessário */
+body.dashboard-body {
+    background-color: var(--background-light-color);
+    display: block; /* Reset para layout de página normal */
+    align-items: initial;
+    justify-content: initial;
+    padding: 0; /* Reset padding de auth-body */
+}
+
+/* Ajustes para texto pequeno (ex: "Ver tudo") */
+.text-sm {
+    font-size: 0.875em;
+}
+.btn-link.text-sm {
+    text-decoration: none;
+}
+
+/* Estilos de Cards da Dashboard (hero, calendar, course, task) */
 .hero-card {
   background: #fff;
-  border-radius: 6px;
+  border-radius: var(--default-radius);
   box-shadow: 0 1px 4px rgba(0, 0, 0, .06);
   padding: 2rem;
-  height: 100%; /* Para ocupar a altura da coluna do grid */
+  height: 100%;
 }
 
 .hero-title {
@@ -151,51 +171,47 @@
 .hero-subtitle {
   font-size: 1.4rem;
   font-weight: 700;
-  color: var(--text-title-color); /* Certifique-se que esta variável está definida */
+  color: var(--text-title-color);
 }
 
 .calendar-widget {
   background: #fff;
-  border-radius: 6px;
+  border-radius: var(--default-radius);
   box-shadow: 0 1px 4px rgba(0, 0, 0, .06);
   padding: 1rem;
-  height: 100%; /* Para ocupar a altura da coluna do grid */
+  height: 100%;
 }
 
 .course-card {
-  background: #fff; /* Fundo padrão, será sobrescrito pelas cores específicas */
-  border-radius: 6px;
+  border-radius: var(--default-radius);
   box-shadow: 0 1px 3px rgba(0, 0, 0, .05);
   padding: 1rem 1.25rem;
-  border-left: 6px solid var(--primary-color); /* Cor padrão da borda, será sobrescrita */
+  border-left-width: 6px;
+  border-left-style: solid;
   font-size: .9rem;
-  height: 100%; /* Para ocupar a altura da coluna do grid */
-  display: flex; /* Para usar gap e empilhar spans */
+  height: 100%;
+  display: flex;
   flex-direction: column;
-  gap: 0.25rem; /* Pequeno espaçamento entre os textos da disciplina */
+  gap: 0.25rem;
 }
 
 .course-card strong,
 .course-card span {
-    display: block; /* Para que ocupem a linha inteira e o gap funcione */
+    display: block;
 }
-
 
 .course-1 {
-  border-left-color: #8f7bff !important; /* Usar !important para sobrescrever se necessário */
+  border-left-color: #8f7bff !important;
   background: var(--card-1) !important;
 }
-
 .course-2 {
   border-left-color: #ffca63 !important;
   background: var(--card-2) !important;
 }
-
 .course-3 {
   border-left-color: #45a6ff !important;
   background: var(--card-3) !important;
 }
-
 .course-4 {
   border-left-color: #31c979 !important;
   background: var(--card-4) !important;
@@ -203,9 +219,7 @@
 
 .task-item {
   background: #fff;
-  /* border-left já está sendo aplicado inline, mas podemos definir um padrão */
-  /* border-left: 4px solid var(--primary-color); */
-  border-radius: 6px;
+  border-radius: var(--default-radius);
   padding: .9rem 1rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, .05);
   font-size: .85rem;
@@ -215,27 +229,4 @@
   font-size: .65rem;
   font-weight: 600;
   text-transform: uppercase;
-}
-
-.exam-table .badge {
-  font-size: .65rem;
-  text-transform: uppercase;
-}
-
-/* Adiciona a classe dashboard-body ao body para evitar conflitos com auth-body se necessário */
-body.dashboard-body {
-    background-color: var(--background-light-color); /* Garante o fundo correto */
-    /* Removendo flex e justify-content para permitir layout normal da página com sidebar */
-    display: block; /* Ou o que for necessário para o layout da dashboard */
-    align-items: initial;
-    justify-content: initial;
-    padding: 0; /* Remove o padding de auth-body se não for desejado aqui */
-}
-
-/* Ajustes para texto pequeno (ex: "Ver tudo") */
-.text-sm {
-    font-size: 0.875em; /* ou o valor que preferir */
-}
-.btn-link.text-sm {
-    text-decoration: none; /* Remove sublinhado se desejar */
 }
