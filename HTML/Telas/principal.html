@@ -1,4 +1,3 @@
-<!-- Telas/principal.html | Sidebar única — fixa em desktop, off-canvas em mobile -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -6,80 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Dashboard | StudyFlow</title>
 
-  <!-- Fonts & Bootstrap -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
-  <!-- Estilos globais do projeto -->
   <link rel="stylesheet" href="../Css/geral.css">
+  <link rel="stylesheet" href="../Css/tela_principal.css">
 
-  <style>
-    :root{
-      --sidebar-width:256px;
-      --header-height:64px;
-      --card-1:#e6e2ff; --card-2:#ffedc5; 
-      --card-3:#d9f1ff; --card-4:#d3f8e4;
-    }
-    /* --------- SIDEBAR ÚNICA --------- */
-    #sidebar{
-        width:var(--sidebar-width);
-        height:100vh;
-        background:#0f1a35 !important;
-        color:#fff;
-        display:flex;
-        flex-direction:column;
-        padding:1.75rem 1rem;
-
-        z-index:1055 !important;   /* <-- antes era 1030                      */
-    }
-    /* quando *não* é offcanvas (≥ lg) queremos que continue FIXA */
-    @media (min-width:992px){
-      #sidebar{
-        position:fixed !important;
-        top:0; left:0;
-        transform:none !important;           /* garante que não deslize */
-        visibility:visible !important;
-      }
-    }
-
-    .brand-text{font-size:.9rem;font-weight:600;line-height:1.25;margin-bottom:2.25rem}
-    .sf-nav-link{display:flex;align-items:center;gap:.5rem;color:#fff;font-size:.95rem;font-weight:500;padding:.6rem .9rem;border-radius:6px;text-decoration:none;transition:background-color .2s}
-    .sf-nav-link:hover,.sf-nav-link.active{background:rgba(255,255,255,.12)}
-    .sf-sidebar-section{font-size:.75rem;text-transform:uppercase;opacity:.6;margin:2rem 0 .5rem;padding-left:.9rem}
-
-    /* --------- LAYOUT PRINCIPAL ------- */
-    .sf-main{margin-left:var(--sidebar-width);width:calc(100% - var(--sidebar-width));min-height:100vh;display:flex;flex-direction:column;background:var(--background-light-color)}
-    @media (max-width:991.98px){  /* sidebar vira off-canvas: conteúdo 100% */
-      .sf-main{margin-left:0;width:100%}
-    }
-
-    /* --------- HEADER COM LOGO -------- */
-    .sf-header{height:var(--header-height);background:#fff;border-bottom:1px solid var(--border-color);display:flex;align-items:center;justify-content:end;padding:0 1.5rem;position:sticky;top:0;z-index:1000}
-    .sf-header-brand{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:.55rem}
-      .sf-header-brand img{width:34px;height:34px}
-      .sf-header-brand span{font-weight:700;font-size:1.35rem;color:var(--text-title-color)}
-    .btn-menu{border:none;background:transparent;font-size:1.6rem}
-
-    /* --------- CONTEÚDO --------------- */
-    .sf-content{padding:2rem 2rem 3rem}
-    .hero-card{background:#fff;border-radius:6px;box-shadow:0 1px 4px rgba(0,0,0,.06);padding:2rem;height:100%}
-      .hero-title{font-size:1rem;font-weight:600}
-      .hero-subtitle{font-size:1.4rem;font-weight:700;color:var(--text-title-color)}
-    .calendar-widget{background:#fff;border-radius:6px;box-shadow:0 1px 4px rgba(0,0,0,.06);padding:1rem;height:100%}
-    .course-card{background:#fff;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.05);padding:1rem 1.25rem;border-left:6px solid var(--primary-color);font-size:.9rem;height:100%}
-      .course-1{border-color:#8f7bff;background:var(--card-1)}
-      .course-2{border-color:#ffca63;background:var(--card-2)}
-      .course-3{border-color:#45a6ff;background:var(--card-3)}
-      .course-4{border-color:#31c979;background:var(--card-4)}
-    .task-item{background:#fff;border-left:4px solid var(--primary-color);border-radius:6px;padding:.9rem 1rem;box-shadow:0 1px 3px rgba(0,0,0,.05);font-size:.85rem}
-      .task-status{font-size:.65rem;font-weight:600;text-transform:uppercase}
-    .exam-table .badge{font-size:.65rem;text-transform:uppercase}
-  </style>
 </head>
 <body class="auth-body dashboard-body">
 
-  <!-- SIDEBAR (offcanvas em < lg, fixa em ≥ lg) -->
   <aside id="sidebar" class="offcanvas-lg offcanvas-start" tabindex="-1">
     <div class="brand-text">“Aprenda. Pratique. Evolua.”</div>
 
@@ -101,29 +36,22 @@
     </nav>
   </aside>
 
-  <!-- MAIN -->
   <div class="sf-main">
 
-    <!-- HEADER -->
     <header class="sf-header position-relative">
-      <!-- botão hambúrguer -->
       <button class="btn-menu me-auto d-lg-none"
               data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-label="Abrir menu">
         <i class="bi bi-list"></i>
       </button>
 
-      <!-- logo central -->
       <div class="sf-header-brand">
         <img src="../imgs/logo.png" alt="Logo"><span>StudyFlow</span>
       </div>
 
-      <!-- avatar -->
       <img src="../imgs/avatar.jpg" class="rounded-circle" style="width:40px;height:40px" alt="Avatar do usuário">
     </header>
 
-    <!-- CONTEÚDO -->
     <main class="sf-content container-fluid">
-      <!-- HERO -->
       <div class="row g-4 mb-4">
         <div class="col-lg-9">
           <div class="hero-card d-flex flex-column flex-md-row align-items-md-center justify-content-between h-100">
@@ -141,19 +69,16 @@
           </div>
         </div>
 
-        <div class="col-lg-3">
+        <div class="col-lg-3 d-none d-lg-block">
           <div class="calendar-widget d-flex align-items-center justify-content-center h-100">
             <span class="text-muted">Calendário (widget)</span>
           </div>
         </div>
       </div>
 
-      <!-- COLUNAS CENTRAL + DIREITA -->
       <div class="row g-4">
-        <!-- CENTRAL -->
         <div class="col-lg-9 d-flex flex-column gap-4">
 
-          <!-- Disciplinas -->
           <section>
             <div class="d-flex justify-content-between align-items-center mb-2">
               <h6 class="fw-semibold m-0">Disciplinas Matriculadas</h6>
@@ -167,7 +92,6 @@
             </div>
           </section>
 
-          <!-- Provas -->
           <section>
             <div class="d-flex justify-content-between align-items-center mb-2">
               <h6 class="fw-semibold m-0">Plataforma de Provas</h6>
@@ -187,17 +111,16 @@
           </section>
         </div>
 
-        <!-- COLUNA DIREITA: Tarefas -->
         <div class="col-lg-3">
           <div class="d-flex justify-content-between align-items-center mb-2">
             <h6 class="fw-semibold m-0">Tarefas</h6>
             <a class="btn-link text-sm" href="#">Ver tudo</a>
           </div>
           <div class="vstack gap-3">
-            <div class="task-item border-start" style="border-color:#ffa94d"><div class="d-flex justify-content-between"><strong class="text-sm">Fundamentos Gráficos</strong><span class="badge bg-warning-subtle text-warning task-status">Em andamento</span></div><small class="d-block">Projeto: Design 1</small><small>Entrega: 10 Fev 2025</small></div>
-            <div class="task-item border-start" style="border-color:#31c979"><div class="d-flex justify-content-between"><strong class="text-sm">Web Design Avançado</strong><span class="badge bg-success-subtle text-success task-status">Completo</span></div><small class="d-block">Projeto: Website Responsivo</small><small>Entrega: 05 Mar 2025</small></div>
-            <div class="task-item border-start" style="border-color:#ae83ff"><div class="d-flex justify-content-between"><strong class="text-sm">Pesquisa de UX</strong><span class="badge bg-light text-dark border task-status">Em revisão</span></div><small class="d-block">Relatório de Teste com Usuário</small><small>Entrega: 15 Abr 2025</small></div>
-            <div class="task-item border-start" style="border-color:#ff7d7d"><div class="d-flex justify-content-between"><strong class="text-sm">Animação 3D</strong><span class="badge bg-danger-subtle text-danger task-status">Atrasada</span></div><small class="d-block">Projeto: Personagem 3D</small><small>Entrega: 20 Mai 2025</small></div>
+            <div class="task-item border-start" style="border-color:#ffa94d !important"><div class="d-flex justify-content-between"><strong class="text-sm">Fundamentos Gráficos</strong><span class="badge bg-warning-subtle text-warning task-status">Em andamento</span></div><small class="d-block">Projeto: Design 1</small><small>Entrega: 10 Fev 2025</small></div>
+            <div class="task-item border-start" style="border-color:#31c979 !important"><div class="d-flex justify-content-between"><strong class="text-sm">Web Design Avançado</strong><span class="badge bg-success-subtle text-success task-status">Completo</span></div><small class="d-block">Projeto: Website Responsivo</small><small>Entrega: 05 Mar 2025</small></div>
+            <div class="task-item border-start" style="border-color:#ae83ff !important"><div class="d-flex justify-content-between"><strong class="text-sm">Pesquisa de UX</strong><span class="badge bg-light text-dark border task-status">Em revisão</span></div><small class="d-block">Relatório de Teste com Usuário</small><small>Entrega: 15 Abr 2025</small></div>
+            <div class="task-item border-start" style="border-color:#ff7d7d !important"><div class="d-flex justify-content-between"><strong class="text-sm">Animação 3D</strong><span class="badge bg-danger-subtle text-danger task-status">Atrasada</span></div><small class="d-block">Projeto: Personagem 3D</small><small>Entrega: 20 Mai 2025</small></div>
           </div>
         </div>
       </div>

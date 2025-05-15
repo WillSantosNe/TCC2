@@ -1,35 +1,25 @@
-/* -------------------------------------------------------------------------- */
-/* VARIÁVEIS GLOBAIS DE ESTILO                                                */
-/* -------------------------------------------------------------------------- */
+/* === VARIÁVEIS GLOBAIS === */
 :root {
-  /* Paleta de Cores Principal */
   --primary-color: #5568FE;
   --text-title-color: #2E2E38;
   --text-body-color: #6B6B78;
-  --background-light-color: #F8F9FF; /* Cor de fundo do body para páginas de autenticação */
+  --background-light-color: #F8F9FF; /* Fundo de páginas de autenticação */
   --border-color: #D1D5DB;
-  --input-background-color: #FFFFFF; /* Fundo dos inputs e do card principal */
+  --input-background-color: #FFFFFF;
 
-  /* Tipografia e Bordas */
   --default-font: 'Inter', sans-serif;
   --default-radius: 6px;
 
-  /* Configurações Específicas do Card de Autenticação */
-  --auth-card-min-height: 500px;  /* Altura mínima para o card em desktops maiores */
-  --auth-body-padding: 1.5rem;    /* Espaçamento externo do card em relação à viewport */
+  --auth-card-min-height: 500px;
+  --auth-body-padding: 1.5rem;
   --auth-card-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
-
-  /* Altura de corte da centralização vertical (se a viewport ficar menor que isso, o card cola no topo) */
-  --centralize-breakpoint-height: 650px;
+  --centralize-breakpoint-height: 650px; /* Altura para desativar centralização vertical */
 }
 
-
-/* -------------------------------------------------------------------------- */
-/* ESTILOS PARA BOTÃO DE VISUALIZAR SENHA                                     */
-/* -------------------------------------------------------------------------- */
+/* === ESTILOS DO ÍCONE DE VISUALIZAR SENHA === */
 .input-group {
   position: relative;
-  min-width: 0;
+  min-width: 0; /* Correção para flexbox em alguns cenários */
 }
 
 .password-toggle-icon {
@@ -37,24 +27,16 @@
   align-items: center;
   justify-content: center;
   position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0.75rem;
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
+  top: 50%; /* Para centralizar verticalmente */
+  transform: translateY(-50%); /* Para centralizar verticalmente */
+  right: 1rem; /* Posição padrão do ícone de olho */
+  padding: 0.25rem; /* Pequeno padding para aumentar área de clique */
   cursor: pointer;
   color: var(--text-body-color);
-  z-index: 5;
+  z-index: 5; /* Para ficar acima do input */
 }
 
-.form-control.is-invalid ~ .password-toggle-icon,
-.form-control.is-valid ~ .password-toggle-icon {
-  right: 2.5rem;
-}
-
-/* -------------------------------------------------------------------------- */
-/* RESET BÁSICO E ESTILO DO BODY                                              */
-/* -------------------------------------------------------------------------- */
+/* === RESET BÁSICO E ESTILO DO BODY (AUTENTICAÇÃO) === */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -62,80 +44,74 @@
 }
 
 html {
-  font-size: 16px;
+  font-size: 16px; /* Define a base para unidades rem */
 }
 
 body.auth-body {
   font-family: var(--default-font);
   color: var(--text-body-color);
   background-color: var(--background-light-color);
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   min-height: 100vh;
   padding: var(--auth-body-padding);
-  overflow-x: hidden; /* Cuidado com possíveis efeitos colaterais */
+  overflow-x: hidden; /* Evita scroll horizontal indesejado */
 }
 
+/* Ajuste para viewports menores em altura */
 @media (max-height: var(--centralize-breakpoint-height)) {
   body.auth-body {
-    align-items: flex-start;
+    align-items: flex-start; /* Card cola no topo */
   }
 }
 
-/* -------------------------------------------------------------------------- */
-/* CARD PRINCIPAL DE AUTENTICAÇÃO                                             */
-/* -------------------------------------------------------------------------- */
+/* === CARD PRINCIPAL DE AUTENTICAÇÃO === */
 .main-auth-card {
   width: 100%;
   height: auto;
   min-height: var(--auth-card-min-height);
-
   background-color: var(--input-background-color);
   border-radius: var(--default-radius);
   box-shadow: var(--auth-card-shadow);
-  overflow: hidden;
-  display: flex;
+  overflow: hidden; /* Para border-radius funcionar com imagem interna */
+  display: flex; /* Para layout de painéis lado a lado */
 }
 
-/* -------------------------------------------------------------------------- */
-/* PAINÉIS INTERNOS (IMAGEM E FORMULÁRIO)                                     */
-/* -------------------------------------------------------------------------- */
+/* === PAINÉIS INTERNOS (IMAGEM E FORMULÁRIO) === */
 .image-panel,
 .form-panel {
   display: flex;
-  flex-direction: column;
+  flex-direction: column; /* Conteúdo empilhado verticalmente */
 }
 
 .image-panel {
-  background-color: #eef2ff;
+  background-color: #eef2ff; /* Cor de fundo sutil para o painel da imagem */
 }
 
 .auth-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: cover; /* Garante que a imagem cubra sem distorcer */
   object-position: center;
   display: block;
 }
 
 .form-panel {
-  padding: 2rem 2.5rem;
+  padding: 2rem 2.5rem; /* Espaçamento interno do painel do formulário */
 }
 
+/* Wrapper para centralizar conteúdo do formulário verticalmente se necessário */
 .form-content-wrapper {
   width: 100%;
   flex-grow: 1;
+  display: flex; /* Permite centralizar conteúdo com auto margins */
+  flex-direction: column;
+  justify-content: center; /* Centraliza o conteúdo verticalmente */
   overflow-x: hidden;
-  margin-top: auto;
-  margin-bottom: auto;
 }
 
-/* -------------------------------------------------------------------------- */
-/* ESTILOS DOS ELEMENTOS DE FORMULÁRIO                                        */
-/* -------------------------------------------------------------------------- */
+/* === ELEMENTOS DE FORMULÁRIO === */
 .logo-icon {
   width: 40px;
   height: 40px;
@@ -150,7 +126,7 @@ body.auth-body {
 .subtitle {
   color: var(--text-body-color);
   font-size: 0.95rem;
-  margin-bottom: 1.8rem;
+  margin-bottom: 1.8rem; /* Espaçamento abaixo do subtítulo */
 }
 
 .form-label {
@@ -164,18 +140,43 @@ body.auth-body {
   border-radius: var(--default-radius);
   border: 1px solid var(--border-color);
   background-color: var(--input-background-color);
-  padding: 0.75rem 1rem;
+  padding: 0.75rem 1rem; /* Padding padrão (vertical e horizontal esquerdo) */
   font-size: 0.95rem;
   color: var(--text-body-color);
 }
 
+/* Padding padrão à direita para inputs DENTRO de .input-group (para acomodar o ícone de olho) */
+.input-group .form-control {
+  /* Este padding acomoda o ícone de olho na sua posição padrão (right: 1rem) */
+  /* (1rem para posição do ícone + ~1.5rem para largura visual do ícone + ~0.5rem de folga) */
+  padding-right: 3rem;
+}
+
 .form-control::placeholder {
-  color: #adb5bd;
+  color: #adb5bd; /* Cor padrão do Bootstrap para placeholders */
 }
 
 .form-control:focus {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 0.2rem rgba(85, 104, 254, 0.25);
+  box-shadow: 0 0 0 0.2rem rgba(85, 104, 254, 0.25); /* Sombra de foco padrão do Bootstrap */
+}
+
+/* AJUSTES QUANDO HÁ VALIDAÇÃO (ERRO/SUCESSO) NOS CAMPOS DE SENHA */
+
+/* 1. Deslocar o ÍCONE DE OLHO para a esquerda para dar espaço ao ícone de validação do Bootstrap */
+.input-group .form-control.is-invalid ~ .password-toggle-icon,
+.input-group .form-control.is-valid ~ .password-toggle-icon {
+  right: 2.75rem; /* Ajuste este valor se necessário (ex: 2.5rem, 3rem) */
+}
+
+/* 2. Aumentar o PADDING DO INPUT para acomodar AMBOS os ícones (validação + olho) */
+.input-group .form-control.is-invalid,
+.input-group .form-control.is-valid {
+  /* Este padding precisa ser maior que a nova posição 'right' do ícone de olho (ex: 2.75rem)
+     mais o espaço visual que seu ícone de olho ocupa (ex: ~1.5rem).
+     (2.75rem + ~1.5rem + ~0.25rem de folga = ~4.5rem)
+  */
+  padding-right: 4.5rem !important; /* Ajuste este valor se o TEXTO ficar embaixo dos ícones */
 }
 
 .form-check-label {
@@ -188,9 +189,7 @@ body.auth-body {
   border-color: var(--primary-color);
 }
 
-/* -------------------------------------------------------------------------- */
-/* ESTILOS DE BOTÕES                                                          */
-/* -------------------------------------------------------------------------- */
+/* === BOTÕES === */
 .btn-primary {
   background-color: var(--primary-color);
   border-color: var(--primary-color);
@@ -202,7 +201,7 @@ body.auth-body {
 }
 
 .btn-primary:hover {
-  background-color: #4a5adf;
+  background-color: #4a5adf; /* Cor primária um pouco mais escura */
   border-color: #4a5adf;
 }
 
@@ -221,8 +220,18 @@ body.auth-body {
 }
 
 .btn-outline-primary img {
-  display: inline-block;
+  display: inline-block; /* Para alinhar corretamente com o texto */
   vertical-align: middle;
-  max-height: 1em;
-  margin-left: 0.5rem;
+  max-height: 1em; /* Controla o tamanho do ícone do Google */
+}
+
+/* === REMOÇÃO DE ÍCONES NATIVOS DE NAVEGADOR === */
+/* Remove o "olho" de senha no Edge/IE */
+input[type="password"]::-ms-reveal {
+  display: none !important;
+}
+
+/* Remove o "X" de limpar campo no Edge/IE */
+input[type="password"]::-ms-clear {
+  display: none !important;
 }

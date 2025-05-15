@@ -1,0 +1,241 @@
+:root {
+  --sidebar-width: 256px;
+  --header-height: 64px;
+  --card-1: #e6e2ff;
+  --card-2: #ffedc5;
+  --card-3: #d9f1ff;
+  --card-4: #d3f8e4;
+  /* Adicione aqui --background-light-color e --border-color se não estiverem em geral.css
+     ou se quiser sobrescrevê-los especificamente para esta tela.
+     Exemplo, caso não estejam em geral.css:
+     --background-light-color: #F8F9FF;
+     --border-color: #D1D5DB;
+     --text-title-color: #2E2E38;
+  */
+}
+
+/* --------- SIDEBAR ÚNICA --------- */
+#sidebar {
+  width: var(--sidebar-width);
+  height: 100vh;
+  background: #0f1a35 !important;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 1.75rem 1rem;
+  z-index: 1055 !important; /* Mantém acima do backdrop do offcanvas do Bootstrap */
+}
+
+/* quando *não* é offcanvas (≥ lg) queremos que continue FIXA */
+@media (min-width: 992px) {
+  #sidebar {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    transform: none !important; /* garante que não deslize */
+    visibility: visible !important; /* Garante que esteja visível */
+  }
+}
+
+.brand-text {
+  font-size: .9rem;
+  font-weight: 600;
+  line-height: 1.25;
+  margin-bottom: 2.25rem;
+}
+
+.sf-nav-link {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  color: #fff;
+  font-size: .95rem;
+  font-weight: 500;
+  padding: .6rem .9rem;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background-color .2s;
+}
+
+.sf-nav-link:hover,
+.sf-nav-link.active {
+  background: rgba(255, 255, 255, .12);
+}
+
+.sf-sidebar-section {
+  font-size: .75rem;
+  text-transform: uppercase;
+  opacity: .6;
+  margin: 2rem 0 .5rem;
+  padding-left: .9rem;
+}
+
+/* --------- LAYOUT PRINCIPAL ------- */
+.sf-main {
+  margin-left: var(--sidebar-width);
+  width: calc(100% - var(--sidebar-width));
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--background-light-color); /* Certifique-se que esta variável está definida */
+}
+
+@media (max-width: 991.98px) { /* sidebar vira off-canvas: conteúdo 100% */
+  .sf-main {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+/* --------- HEADER COM LOGO -------- */
+.sf-header {
+  height: var(--header-height);
+  background: #fff;
+  border-bottom: 1px solid var(--border-color); /* Certifique-se que esta variável está definida */
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* Alterado para flex-end para alinhar o avatar à direita */
+  padding: 0 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 1000; /* Abaixo da sidebar quando offcanvas */
+}
+
+.sf-header-brand {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+}
+
+.sf-header-brand img {
+  width: 34px;
+  height: 34px;
+}
+
+.sf-header-brand span {
+  font-weight: 700;
+  font-size: 1.35rem;
+  color: var(--text-title-color); /* Certifique-se que esta variável está definida */
+}
+
+.btn-menu {
+  border: none;
+  background: transparent;
+  font-size: 1.6rem;
+  color: #0f1a35; /* Cor para o ícone do menu */
+}
+
+/* --------- CONTEÚDO --------------- */
+.sf-content {
+  padding: 2rem 2rem 3rem;
+  flex-grow: 1; /* Faz o conteúdo ocupar o espaço restante no sf-main */
+}
+
+.hero-card {
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .06);
+  padding: 2rem;
+  height: 100%; /* Para ocupar a altura da coluna do grid */
+}
+
+.hero-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.hero-subtitle {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-title-color); /* Certifique-se que esta variável está definida */
+}
+
+.calendar-widget {
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .06);
+  padding: 1rem;
+  height: 100%; /* Para ocupar a altura da coluna do grid */
+}
+
+.course-card {
+  background: #fff; /* Fundo padrão, será sobrescrito pelas cores específicas */
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .05);
+  padding: 1rem 1.25rem;
+  border-left: 6px solid var(--primary-color); /* Cor padrão da borda, será sobrescrita */
+  font-size: .9rem;
+  height: 100%; /* Para ocupar a altura da coluna do grid */
+  display: flex; /* Para usar gap e empilhar spans */
+  flex-direction: column;
+  gap: 0.25rem; /* Pequeno espaçamento entre os textos da disciplina */
+}
+
+.course-card strong,
+.course-card span {
+    display: block; /* Para que ocupem a linha inteira e o gap funcione */
+}
+
+
+.course-1 {
+  border-left-color: #8f7bff !important; /* Usar !important para sobrescrever se necessário */
+  background: var(--card-1) !important;
+}
+
+.course-2 {
+  border-left-color: #ffca63 !important;
+  background: var(--card-2) !important;
+}
+
+.course-3 {
+  border-left-color: #45a6ff !important;
+  background: var(--card-3) !important;
+}
+
+.course-4 {
+  border-left-color: #31c979 !important;
+  background: var(--card-4) !important;
+}
+
+.task-item {
+  background: #fff;
+  /* border-left já está sendo aplicado inline, mas podemos definir um padrão */
+  /* border-left: 4px solid var(--primary-color); */
+  border-radius: 6px;
+  padding: .9rem 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .05);
+  font-size: .85rem;
+}
+
+.task-status {
+  font-size: .65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.exam-table .badge {
+  font-size: .65rem;
+  text-transform: uppercase;
+}
+
+/* Adiciona a classe dashboard-body ao body para evitar conflitos com auth-body se necessário */
+body.dashboard-body {
+    background-color: var(--background-light-color); /* Garante o fundo correto */
+    /* Removendo flex e justify-content para permitir layout normal da página com sidebar */
+    display: block; /* Ou o que for necessário para o layout da dashboard */
+    align-items: initial;
+    justify-content: initial;
+    padding: 0; /* Remove o padding de auth-body se não for desejado aqui */
+}
+
+/* Ajustes para texto pequeno (ex: "Ver tudo") */
+.text-sm {
+    font-size: 0.875em; /* ou o valor que preferir */
+}
+.btn-link.text-sm {
+    text-decoration: none; /* Remove sublinhado se desejar */
+}
