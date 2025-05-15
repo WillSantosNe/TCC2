@@ -12,6 +12,21 @@
   <link rel="stylesheet" href="../Css/geral.css">
   <link rel="stylesheet" href="../Css/tela_principal.css">
 
+   <script src="../Scripts/tarefas_add.js" defer></script>
+
+  <style>
+		dialog{
+			width: 70%;
+			border: 0px;
+			border-radius: 10px;
+			box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+		}
+		dialog::backdrop{
+			background-color: rgba(0, 0, 0, 0.8);
+		}
+	</style>
+
+
 </head>
 <body class="auth-body dashboard-body">
 
@@ -51,8 +66,14 @@
       <img src="../imgs/avatar.jpg" class="rounded-circle" style="width:40px;height:40px" alt="Avatar do usuário">
     </header>
 
+    <a href="#" id="abrirModal">Abrir Modal</a>
 
+    <dialog id="meuModal">
+        <h2>Título Modal</h2>
+        <p>Lorem ipsum dolor sit amet...</p>
+        <a href="#" id="fecharModal">Fechar Modal</a>
+    </dialog>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
