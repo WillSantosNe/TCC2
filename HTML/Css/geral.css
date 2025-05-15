@@ -1,81 +1,202 @@
 /* Css/geral.css */
 
-/* === VARIÁVEIS GLOBAIS (MESCLAR COM AS SUAS EXISTENTES) === */
+/* === VARIÁVEIS GLOBAIS === */
 :root {
-  /* Suas variáveis existentes */
+  /* Cores Principais e de Texto */
   --primary-color: #5568FE;
   --text-title-color: #2E2E38;
   --text-body-color: #6B6B78;
-  --background-light-color: #F8F9FF;
   --border-color: #D1D5DB;
-  --input-background-color: #FFFFFF;
+
+  /* Cores de Fundo */
+  --background-light-color: #F8F9FF; /* Fundo de páginas (auth e dashboard) */
+  --input-background-color: #FFFFFF;   /* Fundo de inputs e cards */
+  --modal-header-footer-bg: #f8f9fa; /* Fundo para cabeçalho/rodapé de modais */
+
+  /* Tipografia */
   --default-font: 'Inter', sans-serif;
+
+  /* Bordas e Sombras */
   --default-radius: 6px;
+  --auth-card-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
+  --modal-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.2);
+
+  /* Layout Específico (Autenticação) */
   --auth-card-min-height: 500px;
   --auth-body-padding: 1.5rem;
-  --auth-card-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
   --centralize-breakpoint-height: 650px;
 
-  /* Variáveis do layout principal/dashboard (se não estiverem em tela_principal.css) */
+  /* Layout Específico (Dashboard/Principal) */
   --sidebar-width: 256px;
   --header-height: 64px;
+
+  /* Cores de Cards da Dashboard (se usadas globalmente) */
+  --card-1: #e6e2ff;
+  --card-2: #ffedc5;
+  --card-3: #d9f1ff;
+  --card-4: #d3f8e4;
+}
+
+/* === RESET BÁSICO E ESTILOS DE BODY === */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px; /* Base para unidades rem */
+}
+
+body { /* Estilos comuns a todos os bodys */
+    font-family: var(--default-font);
+    color: var(--text-body-color);
+    background-color: var(--background-light-color);
+    line-height: 1.6; /* Melhor legibilidade */
+}
+
+/* Estilos específicos para body em páginas de autenticação */
+body.auth-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--auth-body-padding);
+  overflow-x: hidden; /* Evita scroll horizontal indesejado */
+}
+
+@media (max-height: var(--centralize-breakpoint-height)) {
+  body.auth-body {
+    align-items: flex-start; /* Card cola no topo em viewports baixas */
+  }
+}
+
+/* Estilos específicos para body em páginas de dashboard */
+body.dashboard-body {
+  display: block; /* Layout normal, não flex centralizado */
+  padding: 0; /* Remove padding se não for desejado */
+  /* overflow-x: hidden; /* Já pode estar no body geral ou auth-body */
+}
+
+
+/* === CARD PRINCIPAL DE AUTENTICAÇÃO === */
+.main-auth-card {
+  width: 100%;
+  height: auto;
+  min-height: var(--auth-card-min-height);
+  background-color: var(--input-background-color);
+  border-radius: var(--default-radius);
+  box-shadow: var(--auth-card-shadow);
+  overflow: hidden;
+  display: flex;
+}
+
+.image-panel { /* Painel de imagem no card de autenticação */
+  display: flex;
+  flex-direction: column;
+  background-color: #eef2ff; /* Cor de fundo sutil */
+}
+
+.auth-image { /* Imagem no card de autenticação */
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.form-panel { /* Painel de formulário no card de autenticação */
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 2.5rem;
+}
+
+.form-content-wrapper { /* Wrapper para centralizar conteúdo do form auth */
+  width: 100%;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow-x: hidden;
+}
+
+.logo-icon { /* Ícone do logo */
+  width: 40px;
+  height: 40px;
+}
+
+.main-auth-card h2 { /* Título no card de auth */
+  color: var(--text-title-color);
+  font-weight: 600;
+  font-size: 1.75rem;
+}
+
+.subtitle { /* Subtítulo no card de auth */
+  color: var(--text-body-color);
+  font-size: 0.95rem;
+  margin-bottom: 1.8rem;
 }
 
 /* === ESTILOS GLOBAIS PARA MODAIS <dialog> === */
 dialog {
-    /* Centralização */
-    position: fixed; /* Comportamento padrão de showModal(), mas bom definir */
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-
-    width: 60%;
-    max-width: 700px; /* Limite para modais padrão */
-    border: 0px;
+    width: 60%; /* Largura padrão, modais específicos podem ajustar */
+    max-width: 700px; /* Máximo padrão */
+    border: 0;
     border-radius: .75rem;
-    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.2);
+    box-shadow: var(--modal-shadow);
     padding: 0;
-    overflow: hidden; /* Para cantos arredondados do conteúdo interno */
-    z-index: 1060; /* Acima da sidebar (1055) e outros elementos */
+    overflow: hidden; /* Para cantos do conteúdo interno não vazarem */
+    z-index: 1070; /* Alto para sobrepor outros elementos */
+}
+
+dialog[open] {
+    display: block; /* ou flex, dependendo do layout interno do dialog */
 }
 
 dialog::backdrop {
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.6); /* Backdrop um pouco mais escuro */
 }
 
-/* Estrutura interna padrão para modais (cabeçalho, corpo, rodapé) */
+/* Estrutura interna padrão para modais */
 .modal-header-custom {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 1rem 1.5rem;
-    border-bottom: 1px solid var(--border-color); /* Usando sua variável */
-    background-color: #f8f9fa;
+    border-bottom: 1px solid var(--border-color);
+    background-color: var(--modal-header-footer-bg);
 }
 
-.modal-title-wrapper { /* Para alinhar avatar e título */
+.modal-title-wrapper {
     display: flex;
     align-items: center;
+    gap: 0.75rem;
 }
 
+.modal-header-custom .user-avatar,
+.modal-header-custom .modal-logo-icon {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
 .modal-header-custom .user-avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-right: 0.75rem;
+    border-radius: 50%; /* Específico para avatar */
 }
 
 .modal-title-custom {
     font-size: 1.25rem;
-    font-weight: 600;
+    font-weight: 600; /* Título do modal mais destacado */
     color: var(--text-title-color);
     margin-bottom: 0;
 }
 
-.btn-close-custom {
+.btn-close-custom { /* Botão 'X' de fechar modal */
     padding: 0.5rem;
-    margin: -0.5rem -0.75rem -0.5rem auto;
+    margin: -0.5rem -0.75rem -0.5rem auto; /* Ajuste de alinhamento */
     background: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat;
     border: 0;
     border-radius: 0.375rem;
@@ -89,9 +210,9 @@ dialog::backdrop {
 
 .modal-body-custom {
     padding: 1.5rem;
-    position: relative;
-    max-height: calc(100vh - 200px); /* Altura máxima antes de scrollar (100px topo + 100px base ~ header+footer modal) */
-    overflow-y: auto;
+    position: relative; /* Para posicionamento de elementos filhos, se necessário */
+    max-height: calc(100vh - 210px); /* (header ~60 + footer ~70 + margens ~80) */
+    overflow-y: auto; /* Scroll se conteúdo for maior */
 }
 
 .modal-footer-custom {
@@ -99,126 +220,43 @@ dialog::backdrop {
     justify-content: flex-end;
     align-items: center;
     padding: 1rem 1.5rem;
-    border-top: 1px solid var(--border-color); /* Usando sua variável */
-    background-color: #f8f9fa;
-    gap: 0.75rem;
+    border-top: 1px solid var(--border-color);
+    background-color: var(--modal-header-footer-bg);
+    gap: 0.75rem; /* Espaço entre botões no rodapé */
 }
 
-/* Estilos para inputs dentro de qualquer modal que use esta estrutura */
-dialog .form-label { /* Mais genérico que #modalProva .form-label */
+/* Estilos para inputs e labels DENTRO de qualquer <dialog> */
+dialog .form-label {
     font-weight: 500;
     margin-bottom: 0.3rem;
     font-size: 0.875rem;
+    color: var(--text-title-color); /* Cor padrão para labels em modais */
 }
 
 dialog .form-control,
-dialog .form-select {
+dialog .form-select,
+dialog textarea.form-control {
     font-size: 0.9rem;
+    border-radius: var(--default-radius); /* Raio padrão */
+    border: 1px solid var(--border-color); /* Borda padrão */
+}
+dialog .form-control:focus,
+dialog .form-select:focus,
+dialog textarea.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(85, 104, 254, 0.25); /* Substitua pela sua var(--primary-color-rgb) */
 }
 
 
-/* === RESET BÁSICO E ESTILO DO BODY (AUTENTICAÇÃO) === */
-/* ... (seu CSS existente para *, html, body.auth-body, etc.) ... */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html {
-  font-size: 16px;
-}
-
-body.auth-body {
-  font-family: var(--default-font);
-  color: var(--text-body-color);
-  background-color: var(--background-light-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: var(--auth-body-padding);
-  overflow-x: hidden;
-}
-
-@media (max-height: var(--centralize-breakpoint-height)) {
-  body.auth-body {
-    align-items: flex-start;
-  }
-}
-
-
-/* === CARD PRINCIPAL DE AUTENTICAÇÃO === */
-/* ... (seus estilos existentes para .main-auth-card, etc.) ... */
-.main-auth-card {
-  width: 100%;
-  height: auto;
-  min-height: var(--auth-card-min-height);
-  background-color: var(--input-background-color);
-  border-radius: var(--default-radius);
-  box-shadow: var(--auth-card-shadow);
-  overflow: hidden;
-  display: flex;
-}
-
-
-/* === PAINÉIS INTERNOS (IMAGEM E FORMULÁRIO) === */
-/* ... (seus estilos existentes) ... */
-.image-panel,
-.form-panel {
-  display: flex;
-  flex-direction: column;
-}
-
-.image-panel {
-  background-color: #eef2ff;
-}
-
-.auth-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  display: block;
-}
-
-.form-panel {
-  padding: 2rem 2.5rem;
-}
-
-.form-content-wrapper {
-  width: 100%;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  overflow-x: hidden;
-}
-
-
-/* === ELEMENTOS DE FORMULÁRIO (GENÉRICOS) === */
-/* ... (seus estilos existentes para .logo-icon, .form-label, .form-control, etc.) ... */
-.logo-icon {
-  width: 40px;
-  height: 40px;
-}
-
-.main-auth-card h2 { /* Específico para o card de auth, pode ficar aqui ou ser mais genérico */
+/* === ELEMENTOS DE FORMULÁRIO GERAIS (FORA DE MODAIS) === */
+.form-label { /* Label padrão para formulários gerais */
+  font-weight: 500;
+  margin-bottom: 0.4rem;
   color: var(--text-title-color);
-  font-weight: 600;
-  font-size: 1.75rem;
+  font-size: 0.875rem;
 }
 
-.subtitle { /* Também pode ser genérico ou específico do auth card */
-  color: var(--text-body-color);
-  font-size: 0.95rem;
-  margin-bottom: 1.8rem;
-}
-
-/* Sobrescreve .form-label dentro de dialog se necessário, ou use uma classe mais específica */
-/* .form-label já definido em geral.css para dialogs */
-
-.form-control { /* Estilo base para form-control */
+.form-control { /* Input padrão para formulários gerais */
   border-radius: var(--default-radius);
   border: 1px solid var(--border-color);
   background-color: var(--input-background-color);
@@ -226,60 +264,55 @@ body.auth-body {
   font-size: 0.95rem;
   color: var(--text-body-color);
 }
-
-.input-group .form-control {
-  padding-right: 3rem; /* Espaço para ícone de olho padrão */
-}
-
 .form-control::placeholder {
   color: #adb5bd;
 }
-
 .form-control:focus {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 0.2rem rgba(85, 104, 254, 0.25);
+  box-shadow: 0 0 0 0.2rem rgba(85, 104, 254, 0.25); /* Use sua variável --primary-color-rgb se tiver */
 }
 
+/* Específico para input groups com ícone de senha */
+.input-group {
+  position: relative;
+  min-width: 0;
+}
+.input-group .form-control { /* Padding para acomodar o ícone de olho */
+  padding-right: 3rem;
+}
 .input-group .form-control.is-invalid,
-.input-group .form-control.is-valid {
-  padding-right: 4.5rem !important; /* Espaço para ícone de olho + ícone de validação */
+.input-group .form-control.is-valid { /* Padding para acomodar olho + validação */
+  padding-right: 4.5rem !important;
 }
 
-
-.form-check-label {
-  font-size: 0.875rem;
-  color: var(--text-body-color);
-}
-
-.form-check-input:checked {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
-}
-
-
-/* === ESTILOS DO ÍCONE DE VISUALIZAR SENHA === */
-/* ... (seus estilos existentes) ... */
-.input-group .password-toggle-icon { /* Adicionado .input-group para especificidade */
+.password-toggle-icon {
   display: flex;
   align-items: center;
   justify-content: center;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  right: 1rem;
+  right: 1rem; /* Posição padrão */
   padding: 0.25rem;
   cursor: pointer;
   color: var(--text-body-color);
   z-index: 5;
 }
-
 .input-group .form-control.is-invalid ~ .password-toggle-icon,
 .input-group .form-control.is-valid ~ .password-toggle-icon {
-  right: 2.75rem;
+  right: 2.75rem; /* Desloca para a esquerda quando há ícone de validação */
 }
 
-/* === BOTÕES === */
-/* ... (seus estilos de botão existentes) ... */
+.form-check-label {
+  font-size: 0.875rem;
+  color: var(--text-body-color);
+}
+.form-check-input:checked {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* === BOTÕES GERAIS === */
 .btn-primary {
   background-color: var(--primary-color);
   border-color: var(--primary-color);
@@ -289,9 +322,8 @@ body.auth-body {
   color: #fff;
   transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
 }
-
 .btn-primary:hover {
-  background-color: #4a5adf;
+  background-color: #4a5adf; /* Cor primária um pouco mais escura no hover */
   border-color: #4a5adf;
 }
 
@@ -303,24 +335,21 @@ body.auth-body {
   font-weight: 600;
   transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
 }
-
 .btn-outline-primary:hover {
   background-color: var(--primary-color);
   color: #fff;
 }
-
-.btn-outline-primary img {
+.btn-outline-primary img { /* Ícone dentro de botão outline (ex: Google) */
   display: inline-block;
   vertical-align: middle;
   max-height: 1em;
+  /* margin-left: 0.5rem; /* Ajuste conforme necessário */
 }
-
 
 /* === REMOÇÃO DE ÍCONES NATIVOS DE NAVEGADOR === */
 input[type="password"]::-ms-reveal {
   display: none !important;
 }
-
 input[type="password"]::-ms-clear {
   display: none !important;
 }
