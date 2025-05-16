@@ -131,11 +131,15 @@ dialog#modalProva .btn-modal-save:hover { background-color: #242E47; border-colo
 
 /* Estilos específicos da página de Provas */
 .sf-page-title { font-weight: 600; color: var(--text-title-color); margin-bottom: 0.25rem; }
-.sf-page-subtitle { font-size: 0.95rem; color: var(--text-body-color); margin-bottom: 1.5rem; }
+.sf-page-subtitle { font-size: 0.95rem; color: var(--text-body-color); margin-bottom: 1.5rem; } /* Aumenta margem inferior */
 
-.btn-add-proof { font-weight: 500; }
+/* .page-header-actions foi removido pois o DataTables controla essa linha */
+/* .page-title-container foi removido */
+/* .actions-buttons-container é agora .dt-buttons-container (gerado pelo DataTables) */
+
+.btn-add-proof { font-weight: 500; } /* Estilo para o botão de adicionar prova original e o clonado */
 .btn-add-proof i { font-size: 0.9em; }
-.btn-icon-only { padding: 0.375rem 0.75rem; font-size: 1rem; }
+.btn-icon-only { padding: 0.375rem 0.75rem; font-size: 1rem; } /* Para botões que são só ícone */
 
 /* Tabela de Provas */
 .provas-table th { font-weight: 600; font-size: 0.85rem; text-transform: uppercase; color: var(--text-body-color); white-space: nowrap; }
@@ -271,74 +275,15 @@ div.dataTables_wrapper div.dataTables_filter input {
     gap: 0.5rem;
 }
 
-/* --- AJUSTES NOS CONTROLES DO DATATABLES --- */
-
-/* A row que contém o filtro e os botões */
-/* As classes 'justify-content-between' e 'align-items-center' já são aplicadas via string 'dom' no JS */
-#tabelaProvas_wrapper .dt-custom-header {
-    /* margin-bottom: 1rem; já está na string do DOM */
-    /* display: flex; align-items: center; justify-content: space-between; (já via classes Bootstrap no DOM) */
-}
-
-/* Div do Filtro (gerada pelo 'f' no DataTables dom) */
-#tabelaProvas_wrapper div.dataTables_filter {
-    padding: 0;
-    margin: 0;
-    text-align: left;
-    /* display: flex; */ /* Para alinhar o label e input se o label estiver visível */
-    /* align-items: center; */
-}
-
-/* Label do filtro (ex: "Buscar:") */
-#tabelaProvas_wrapper div.dataTables_filter label {
-    margin-bottom: 0;
-    font-weight: normal;
-    font-size: 0.9rem;
-    /* Se o label estiver visível e você quiser que ele e o input fiquem na mesma linha: */
-    /* display: flex; */
-    /* align-items: center; */
-    /* gap: 0.5rem; */
-    width: 100%; /* Faz o label ocupar a largura da coluna do filtro */
-}
-
-/* Input de busca do DataTables */
-#tabelaProvas_wrapper div.dataTables_filter input {
-    margin-left: 0; /* Removido o margin-left padrão do DataTables */
-    border-radius: var(--default-radius, 6px);
-    /* O JS adiciona form-control form-control-sm e width: 100% */
-    /* Para garantir que o input tenha uma altura similar ao botão: */
-    height: calc(1.5em + 0.75rem + 2px); /* Altura padrão de form-control do Bootstrap */
-    padding: 0.375rem 0.75rem; /* Padding padrão de form-control do Bootstrap */
-    font-size: 1rem; /* Tamanho de fonte padrão do Bootstrap */
-    line-height: 1.5; /* Line-height padrão do Bootstrap */
-    min-width: 250px; /* Aumenta a largura mínima */
-    max-width: 450px; /* Define uma largura máxima para não ficar excessivamente grande */
-    width: 100%; /* Ocupa o espaço da coluna do filtro, limitado pelo max-width */
-}
-
-/* Container para os botões (Adicionar Prova / Ícones Mobile) */
-.dt-buttons-container {
-    display: flex;
-    align-items: center; /* Já estava, mas importante para alinhar os botões internos */
-    gap: 0.5rem;
-}
-/* Garante que o botão dentro do container de botões tenha a mesma altura do input */
-.dt-buttons-container .btn {
-    height: calc(1.5em + 0.75rem + 2px); /* Mesma altura do input */
-    display: inline-flex; /* Para alinhar o ícone e texto verticalmente dentro do botão */
-    align-items: center;
-}
-
-
-/* Coluna do filtro em telas grandes */
+/* Seletor para a coluna do filtro em telas grandes para dar mais espaço */
 #tabelaProvas_wrapper .dt-custom-header > .col-md-auto:has(div.dataTables_filter) {
-    flex-grow: 1; /* Permite que a coluna do filtro se expanda */
-    margin-right: 1rem; /* Adiciona um espaço entre o filtro e os botões */
+    flex-grow: 1; /* Faz a coluna do filtro crescer e empurrar os botões */
+    /* max-width: 450px; */ /* Opcional: Limitar a largura máxima do campo de busca */
 }
-/* Coluna dos botões em telas grandes */
+/* Garante que o container de botões não cresça */
 #tabelaProvas_wrapper .dt-custom-header > .dt-buttons-container.col-md-auto {
-    flex-grow: 0; /* Não permite que a coluna de botões se expanda */
-    flex-shrink: 0; /* Impede que a coluna de botões encolha */
+    flex-grow: 0;
+    flex-shrink: 0; /* Não encolhe */
 }
 
 

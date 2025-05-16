@@ -126,8 +126,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             },
             dom:
-                '<"row dt-custom-header justify-content-between align-items-center mb-3"' + // Adicionado justify-content-between aqui
-                    '<"col-12 col-md-auto"f>' + // Filtro (sem me-md-auto para que o space-between funcione)
+                '<"row dt-custom-header align-items-center mb-3"' +
+                    '<"col-12 col-md-auto me-md-auto"f>' + // Filtro
                     '<"col-12 col-md-auto dt-buttons-container">' + // Container para botões
                 '>' +
                 't' + // Tabela
@@ -137,15 +137,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 '>',
             scrollY: calcularAlturaCorpoTabela(),
             scrollCollapse: true,
-            paging: false,
+            paging: false, // Mantenha false se não quiser paginação
             language: {
                 url: 'https://cdn.datatables.net/plug-ins/2.0.7/i18n/pt-BR.json',
-                search: "",
+                search: "", // Placeholder será usado
                 searchPlaceholder: "Buscar provas...",
                 info: "Total de _TOTAL_ provas",
                 infoEmpty: "Nenhuma prova encontrada",
                 infoFiltered: "(filtrado de _MAX_ provas)",
-                paginate: {
+                paginate: { // Adicionado para traduzir botões de paginação, se habilitar
                     first: "Primeiro",
                     last: "Último",
                     next: "Próximo",
@@ -153,26 +153,22 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             },
             columnDefs: [
-                { orderable: false, targets: 'no-sort' },
-                { responsivePriority: 1, targets: 0 },
-                { responsivePriority: 10001, targets: 1 },
-                { responsivePriority: 2, targets: 2 },
-                { responsivePriority: 10002, targets: 3 },
-                { responsivePriority: 3, targets: 4 },
-                { responsivePriority: 4, targets: 5, className: "dt-actions-column no-export dtr-control" }
+                { orderable: false, targets: 'no-sort' }, // Coluna de Ações
+                { responsivePriority: 1, targets: 0 },   // Disciplina
+                { responsivePriority: 10001, targets: 1 }, // Nota (colapsa primeiro)
+                { responsivePriority: 2, targets: 2 },   // Data & Horário
+                { responsivePriority: 10002, targets: 3 }, // Local (colapsa em seguida)
+                { responsivePriority: 3, targets: 4 },   // Status
+                { responsivePriority: 4, targets: 5, className: "dt-actions-column no-export dtr-control" } // Ações
             ],
             initComplete: function (settings, json) {
                 const api = this.api();
                 const searchInput = $('#tabelaProvas_filter input');
-                // Ajuste para o input de busca ocupar mais espaço se necessário
-                // A div #tabelaProvas_filter já é col-12 col-md-auto, o input pode precisar de width: 100% dentro dela
-                searchInput.addClass('form-control form-control-sm').css('width', '100%'); // Ocupa 100% da coluna do filtro
+                searchInput.addClass('form-control form-control-sm').css('width', 'auto'); // Ajuste de largura
                 searchInput.attr('aria-label', 'Buscar provas na tabela');
-
 
                 const buttonsContainer = $('.dt-buttons-container');
                 if (abrirModalNovaProvaBtnOriginal && buttonsContainer.length) {
-                    // ... (lógica de clonagem do botão Adicionar Prova - sem alterações aqui)
                     const abrirModalNovaProvaBtnClone = abrirModalNovaProvaBtnOriginal.cloneNode(true);
                     abrirModalNovaProvaBtnClone.id = 'abrirModalNovaProvaDt';
                     $(abrirModalNovaProvaBtnClone).off('click').on('click', (e) => {
@@ -183,34 +179,36 @@ document.addEventListener("DOMContentLoaded", function () {
                     abrirModalNovaProvaBtnOriginal.style.display = 'none';
                 }
 
+                // Adicionar "Remover Prova" aos dropdowns existentes no HTML inicial
                 $('#tabelaProvas tbody tr').each(function() {
-                    // ... (lógica de adicionar "Remover Prova" aos dropdowns existentes - sem alterações aqui)
                     const dropdownMenu = $(this).find('.dropdown-menu');
                     if (dropdownMenu.find('.btn-remover-prova').length === 0) {
-                        dropdownMenu.append('<li><hr class="dropdown-divider"></li>');
+                        dropdownMenu.append('<li><hr class="dropdown-divider"></li>'); // Adiciona divisor antes
                         dropdownMenu.append('<li><a class="dropdown-item btn-remover-prova text-danger" href="#"><i class="bi bi-trash me-2"></i>Remover Prova</a></li>');
                     }
                 });
 
-                handleResponsiveControls(api);
-                $(window).off('resize.dtProvas').on('resize.dtProvas', () => handleResponsiveControls(api)); // Recriar listener com off para evitar múltiplos
+
+                handleResponsiveControls(api); // Chamada inicial
+                $(window).on('resize.dtProvas', () => handleResponsiveControls(api)); // Usar namespace para resize
 
                 if (modalBusca) modalBusca.style.display = 'none';
-                api.columns.adjust().responsive.recalc();
+                api.columns.adjust().responsive.recalc(); // Ajuste inicial
             }
         });
     }
 
     // Função para lidar com a responsividade dos controles de busca e adicionar
     function handleResponsiveControls(dataTableApi) {
-        const searchContainer = $('#tabelaProvas_filter'); // Este é o div que envolve o input
+        const searchContainer = $('#tabelaProvas_filter');
         const buttonsContainer = $('.dt-buttons-container');
         const abrirModalNovaProvaBtnDt = $('#abrirModalNovaProvaDt');
 
+        // Limpa botões de ícone antes de recriar para evitar duplicatas
         $('#abrirBuscaModalMobile, #abrirModalNovaProvaIconMobile').remove();
 
-        if (window.innerWidth < 767.98) { // Telas pequenas
-            if (searchContainer.length) searchContainer.hide(); // Esconde a div do filtro padrão
+        if (window.innerWidth < 767.98) {
+            if (searchContainer.length) searchContainer.hide();
 
             const btnLupa = $('<button id="abrirBuscaModalMobile" class="btn btn-light btn-search-icon-mobile" aria-label="Buscar Provas"><i class="bi bi-search"></i></button>');
             btnLupa.on('click', (e) => {
@@ -224,21 +222,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 abrirModalFormProva();
             });
 
-            // Esvazia o container de botões e adiciona os ícones
-            buttonsContainer.empty().append(btnLupa).append(btnAdicionarIcone);
+            buttonsContainer.append(btnLupa).append(btnAdicionarIcone);
             if (abrirModalNovaProvaBtnDt.length) abrirModalNovaProvaBtnDt.hide();
 
-        } else { // Telas grandes
-            if (searchContainer.length) {
-                searchContainer.show(); // Mostra a div do filtro padrão
-                // Garante que o input dentro do filtro esteja visível e com estilo correto
-                searchContainer.find('input').addClass('form-control form-control-sm').css('width', '100%');
-            }
-            // Esvazia o container de botões e adiciona o botão de "Adicionar Prova" completo se ele existir
-            buttonsContainer.empty();
+        } else {
+            if (searchContainer.length) searchContainer.show();
             if (abrirModalNovaProvaBtnDt.length) {
-                buttonsContainer.append(abrirModalNovaProvaBtnDt); // Adiciona o botão clonado
                 abrirModalNovaProvaBtnDt.show();
+                // Garantir que o texto e ícone estejam corretos para desktop
                 abrirModalNovaProvaBtnDt.find('span').removeClass('d-none').addClass('d-sm-inline');
                 abrirModalNovaProvaBtnDt.find('i').addClass('me-sm-2');
             }
