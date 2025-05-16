@@ -8,7 +8,7 @@ dialog#modalProva {
     border: none; /* Adicionado para remover borda padrão do dialog */
     padding: 0; /* Adicionado para remover padding padrão do dialog */
     box-shadow: 0px 8px 24px rgba(20, 20, 22, 0.15);
-    /* Centralização e overflow:hidden; vêm de 'dialog' em geral.css (se existir) */
+    /* Centralização e overflow:hidden; vêm de 'dialog' em general.css (se existir) */
 }
 dialog#modalProva::backdrop { /* Estilização do fundo ao abrir o modal */
     background-color: rgba(0, 0, 0, 0.5);
@@ -120,7 +120,7 @@ dialog#modalProva .btn-modal-cancel:hover { background-color: #E2E6EB; border-co
 
 dialog#modalProva .btn-modal-save {
     background-color: #2E3A59; /* Usar sua variável --primary-color aqui seria ideal */
-    border-color: #2E3A59;   /* var(--primary-color) */
+    border-color: #2E3A59; /* var(--primary-color) */
     color: #FFFFFF;
     padding: 0.6rem 1.3rem;
     border-radius: 8px;
@@ -133,13 +133,23 @@ dialog#modalProva .btn-modal-save:hover { background-color: #242E47; border-colo
 .sf-page-title { font-weight: 600; color: var(--text-title-color); margin-bottom: 0.25rem; }
 .sf-page-subtitle { font-size: 0.95rem; color: var(--text-body-color); margin-bottom: 1.5rem; } /* Aumenta margem inferior */
 
-/* .page-header-actions foi removido pois o DataTables controla essa linha */
-/* .page-title-container foi removido */
-/* .actions-buttons-container é agora .dt-buttons-container (gerado pelo DataTables) */
 
-.btn-add-proof { font-weight: 500; } /* Estilo para o botão de adicionar prova original e o clonado */
-.btn-add-proof i { font-size: 0.9em; }
+/*
+ * Ajustes para alinhar verticalmente o botão "Adicionar Prova"
+ * com o campo de busca, corrigindo a diferença de padding vertical.
+ * O input de busca tem padding vertical de 0.75rem.
+ */
+.btn-add-proof, /* Aplica ao botão original no HTML */
+#abrirModalNovaProvaDt { /* Aplica ao botão clonado pelo JS para o header do DataTables */
+    padding-top: 0.75rem; /* Define o padding superior igual ao do input */
+    padding-bottom: 0.75rem; /* Define o padding inferior igual ao do input */
+    /* Mantenha o padding horizontal original se desejar */
+    /* padding-left: 1rem; */
+    /* padding-right: 1rem; */
+}
+
 .btn-icon-only { padding: 0.375rem 0.75rem; font-size: 1rem; } /* Para botões que são só ícone */
+
 
 /* Tabela de Provas */
 .provas-table th { font-weight: 600; font-size: 0.85rem; text-transform: uppercase; color: var(--text-body-color); white-space: nowrap; }
@@ -154,9 +164,40 @@ dialog#modalProva .btn-modal-save:hover { background-color: #242E47; border-colo
     min-width: 50px;
 }
 /* Para o controle de expandir/colapsar do DataTables Responsive */
-.provas-table td.dtr-control, .provas-table th.dtr-control {
-    text-align: center !important;
-    cursor: pointer;
+table.dataTable.dtr-inline.collapsed > tbody > tr > td.dtr-control,
+table.dataTable.dtr-inline.collapsed > tbody > tr > th.dtr-control {
+  text-align: center !important;
+  cursor: pointer;
+}
+
+/* Estilos para o ícone +/- do DataTables Responsive */
+table.dataTable.dtr-inline.collapsed > tbody > tr > td.dtr-control::before,
+table.dataTable.dtr-inline.collapsed > tbody > tr > th.dtr-control::before {
+  top: 50%;
+  left: 0.5rem; /* Ajuste para não ficar colado na borda */
+  height: 1.2em; /* Aumenta um pouco o tamanho */
+  width: 1.2em;
+  margin-top: -0.6em; /* Metade da altura */
+  display: flex; /* Para centralizar o conteúdo (+) */
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  color: white;
+  border: none; /* Remove borda do ícone, o fundo já faz o círculo */
+  border-radius: 50%; /* Círculo perfeito */
+  box-shadow: 0 1px 3px rgba(0,0,0,.2);
+  box-sizing: border-box; /* Mudado para border-box */
+  text-align: center;
+  font-family: "Inter", sans-serif; /* Usar a fonte do projeto */
+  font-weight: bold;
+  line-height: 1.2em;
+  content: "+";
+  background-color: var(--primary-color, #5568FE); /* Cor primária */
+}
+table.dataTable.dtr-inline.collapsed > tbody > tr.parent > td.dtr-control::before,
+table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th.dtr-control::before {
+  content: "–"; /* Usar um traço mais adequado (en dash) */
+  background-color: #d33333; /* Vermelho para estado aberto */
 }
 
 
@@ -170,31 +211,24 @@ dialog#modalProva .btn-modal-save:hover { background-color: #242E47; border-colo
 
 /* Scroll da tabela e overflow do dropdown */
 div.dataTables_scrollBody {
-    border: 1px solid var(--border-color, #dee2e6);
-    border-top: none;
-    border-bottom-left-radius: var(--default-radius, 6px);
-    border-bottom-right-radius: var(--default-radius, 6px);
+  border: 1px solid var(--border-color, #dee2e6);
+  border-top: none;
+  border-bottom-left-radius: var(--default-radius, 6px);
+  border-bottom-right-radius: var(--default-radius, 6px);
 }
 /* Essencial para dropdowns dentro de tabelas com scroll funcionarem corretamente */
 div.dataTables_scrollBody,
 #tabelaProvas_wrapper,
 .table-container {
-    overflow: visible !important;
+  overflow: visible !important;
 }
 #tabelaProvas_wrapper .table-responsive { /* Se DataTables adicionar essa classe */
-    overflow: visible !important;
+  overflow: visible !important;
 }
 
 
-/* Estilos para o modal de busca (se precisar ser diferente do dialog padrão) */
-#modalBuscaProvas { width: 90%; max-width: 450px; border-radius: 12px; border:none; padding:0; }
-#modalBuscaProvas::backdrop { background-color: rgba(0,0,0,0.5); }
-#modalBuscaProvas .modal-header-custom { padding: 1.25rem 1.5rem; border-bottom: 1px solid #E9E9F0; display:flex; justify-content: space-between; align-items: center;}
-#modalBuscaProvas .modal-title-custom { font-size: 1.3rem; color: #2E3A59; font-weight: 600;}
-#modalBuscaProvas .btn-close-custom { filter: grayscale(1) brightness(1.5); background:none; border:none; font-size:1.5rem; }
-#modalBuscaProvas .modal-body-custom { padding: 1.5rem 1.75rem; }
-#modalBuscaProvas .modal-body-custom input { margin-bottom: 0; }
-#modalBuscaProvas .modal-footer-custom { padding: 1.25rem 1.75rem; border-top: 1px solid #E9E9F0; display:flex; justify-content: flex-end; }
+/* REMOVIDOS: Estilos para o modal de busca que não será mais usado */
+/* Keep these commented out as they are no longer needed */
 
 
 /* Estilos para o modal de Detalhes */
@@ -212,170 +246,182 @@ div.dataTables_scrollBody,
 #modalDetalhesProva .modal-footer-custom { padding: 1.25rem 1.75rem; border-top: 1px solid #E9E9F0; display:flex; justify-content: flex-end; }
 
 
-/* Estilos para o DataTables Responsive (ícone '+') */
-table.dataTable.dtr-inline.collapsed > tbody > tr > td.dtr-control::before,
-table.dataTable.dtr-inline.collapsed > tbody > tr > th.dtr-control::before {
-    top: 50%;
-    left: 0.5rem; /* Ajuste para não ficar colado na borda */
-    height: 1.2em; /* Aumenta um pouco o tamanho */
-    width: 1.2em;
-    margin-top: -0.6em; /* Metade da altura */
-    display: flex; /* Para centralizar o conteúdo (+) */
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    color: white;
-    border: none; /* Remove borda do ícone, o fundo já faz o círculo */
-    border-radius: 50%; /* Círculo perfeito */
-    box-shadow: 0 1px 3px rgba(0,0,0,.2);
-    box-sizing: border-box; /* Mudado para border-box */
-    text-align: center;
-    font-family: "Inter", sans-serif; /* Usar a fonte do projeto */
-    font-weight: bold;
-    line-height: 1.2em;
-    content: "+";
-    background-color: var(--primary-color, #5568FE); /* Cor primária */
-}
-table.dataTable.dtr-inline.collapsed > tbody > tr.parent > td.dtr-control::before,
-table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th.dtr-control::before {
-    content: "–"; /* Usar um traço mais adequado (en dash) */
-    background-color: #d33333; /* Vermelho para estado aberto */
-}
-
 /* Ajustes nos controles do DataTables (Filtro, Length, etc.) */
 /* A row que contém o filtro e os botões já tem as classes do Bootstrap para layout */
-/* via string 'dom' no JS: dt-custom-header justify-content-between align-items-center */
+/* via string 'dom' no JS: dt-custom-header align-items-center mb-3 */
 
-/* Div do Filtro (gerada pelo 'f' no DataTables dom) */
-div.dataTables_wrapper div.dataTables_filter {
-    padding: 0; /* Remove padding padrão se houver */
-    margin:0; /* Remove margem padrão se houver */
-    text-align: left; /* Garante alinhamento do conteúdo interno */
+/*
+ * Ajustes para alinhar a barra de busca e o botão Adicionar com as bordas da tabela.
+ * As classes col-12 e col-md-auto do Bootstrap adicionam padding.
+ * Removemos esse padding para que o conteúdo interno (busca e botão)
+ * fique alinhado com a borda da tabela.
+ * Mantenha esta regra.
+ */
+#tabelaProvas_wrapper .dt-custom-header > div[class*="col-"] {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
 }
-/* Label do filtro (ex: "Buscar:") - geralmente escondido se searchPlaceholder é usado */
+
+
+/* Style for the filter div (generated by 'f' in DataTables dom) */
+div.dataTables_wrapper div.dataTables_filter {
+    padding: 0;
+    margin: 0;
+    text-align: left;
+    flex-grow: 1; /* Allow the filter container to occupy available space */
+    display: flex; /* Make the filter container a flex container */
+    align-items: center; /* Vertically align items within the filter (label and input) */
+}
+/* Label of the filter (usually hidden, but contains the input) */
 div.dataTables_wrapper div.dataTables_filter label {
     margin-bottom: 0;
     font-weight: normal;
     font-size: 0.9rem;
-    width: 100%; /* Para o input ocupar a largura */
+    width: 100%; /* Make the label (and its content, the input) occupy the flexible width in the filter container */
+    display: flex; /* Make the label a flex container for the input */
+    align-items: center; /* Vertically align the input within the label */
+    gap: 0.5rem; /* Spacing between "Buscar provas..." (if visible) and the input */
 }
-/* Input de busca do DataTables */
+/* Input of the DataTables filter */
 div.dataTables_wrapper div.dataTables_filter input {
-    /* width: auto; */ /* Removido para permitir que o css('width', '100%') do JS funcione */
-    margin-left: 0; /* Removido margin-left, pois o label pode estar escondido */
+    width: 100%; /* Occupy 100% of the width of its flexible container (the label) */
+    margin-left: 0;
     border-radius: var(--default-radius, 6px);
-    /* O JS adiciona form-control form-control-sm e width: 100% */
-    min-width: 200px; /* Largura mínima para o campo de busca */
+    /* The JS adds form-control form-control-sm */
+    min-width: auto; /* Allow input to shrink more on small screens */
+    flex-grow: 1; /* Occupy flexible space within the label */
 }
 
-/* Container para os botões (Adicionar Prova / Ícones Mobile) */
+/* Container for the buttons (now only the cloned Add button) */
 .dt-buttons-container {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    display: flex; /* Is a flex container for the + button (and any others) */
+    align-items: center; /* Vertically align the + button */
+    gap: 0.5rem; /* Spacing between buttons within this container */
+    /* ms-auto already pushes to the right via Bootstrap class in the DOM */
 }
 
-/* Seletor para a coluna do filtro em telas grandes para dar mais espaço */
-#tabelaProvas_wrapper .dt-custom-header > .col-md-auto:has(div.dataTables_filter) {
-    flex-grow: 1; /* Faz a coluna do filtro crescer e empurrar os botões */
-    /* max-width: 450px; */ /* Opcional: Limitar a largura máxima do campo de busca */
+/* Ensure the DataTables info and pagination elements are styled */
+.dataTables_info { /* Standard DataTables class for "Showing X of Y..." */
+  padding-top: 0.85rem !important; /* Override if necessary */
+  font-size: 0.9rem;
+  color: var(--text-body-color);
 }
-/* Garante que o container de botões não cresça */
-#tabelaProvas_wrapper .dt-custom-header > .dt-buttons-container.col-md-auto {
-    flex-grow: 0;
-    flex-shrink: 0; /* Não encolhe */
-}
-
-
-/* Ajuste para o controle de "mostrar X entradas" (length), se você usar */
-div.dataTables_wrapper div.dataTables_length {
-    padding: 0;
-    margin: 0;
-    text-align: left;
-}
-div.dataTables_wrapper div.dataTables_length label {
-    margin-bottom: 0;
-    font-weight: normal;
-    font-size: 0.9rem;
-}
-div.dataTables_wrapper div.dataTables_length select {
-    width: auto;
-    display: inline-block;
-    margin: 0 0.5em;
-    padding: 0.375rem 1.75rem 0.375rem 0.75rem;
-    font-size: 0.875rem;
-    border-radius: var(--default-radius, 6px);
-}
-
-
-/* Info e Paginação */
-.dataTables_info { /* Classe padrão do DataTables para "Mostrando X de Y..." */
-    padding-top: 0.85rem !important; /* Sobrescreve se necessário */
-    font-size: 0.9rem;
-    color: var(--text-body-color);
-}
-.dataTables_paginate_wrapper .pagination { /* Classe padrão do DataTables para paginação */
-    justify-content: flex-end;
-    margin-bottom: 0; /* Remove margem inferior da paginação */
+.dataTables_paginate_wrapper .pagination { /* Standard DataTables class for pagination */
+  justify-content: flex-end;
+  margin-bottom: 0; /* Remove bottom margin from pagination */
 }
 .dataTables_paginate_wrapper .page-item .page-link {
-    font-size: 0.9rem;
+  font-size: 0.9rem;
 }
 
 
-@media (max-width: 767.98px) { /* Telas pequenas (Mobile) */
-    /* A row que contém o filtro e os botões */
+@media (max-width: 767.98px) { /* Small screens (Mobile) */
+    /* Ensure the header row behaves as a flex container in a row direction */
     #tabelaProvas_wrapper .dt-custom-header {
-        flex-direction: column;
-        align-items: stretch; /* Itens ocupam toda a largura */
-    }
-    /* Coluna do filtro (que estará escondida pelo JS) e coluna dos botões */
-    #tabelaProvas_wrapper .dt-custom-header > .col-12 {
-        margin-bottom: 0.75rem;
-        width: 100% !important; /* Garante que ocupem toda a largura */
-    }
-    #tabelaProvas_wrapper .dt-custom-header > .col-12:last-child {
-        margin-bottom: 0;
+        flex-direction: row; /* Ensure row direction on mobile */
+        flex-wrap: wrap; /* Allow wrapping if necessary */
+        align-items: center; /* Vertically align items */
+        gap: 0.5rem; /* Add gap between the columns */
     }
 
-    /* O JS esconde #tabelaProvas_filter e mostra os ícones no .dt-buttons-container */
-    .dt-buttons-container {
-        width: 100%;
-        justify-content: flex-start; /* Ícones alinhados à esquerda */
+    /* Override Bootstrap's col-12 behavior for the columns inside the header */
+    #tabelaProvas_wrapper .dt-custom-header > div.col-12.col-md-auto {
+        /* Remove Bootstrap col-12 specific flex/width on mobile */
+        flex: 0 0 auto; /* Reset flex basis, grow, shrink */
+        width: auto; /* Allow width to be determined by content or flex */
+        max-width: none; /* Remove max-width constraint */
+        margin-bottom: 0 !important; /* Remove bottom margin from stacked columns */
     }
 
-    /* Ajustes para os ícones em tela pequena */
-    .btn-search-icon-mobile,
-    .btn-add-proof-icon-mobile {
-        padding: 0.5rem 0.75rem;
-        font-size: 1.1rem;
+    /* Make the filter column take available space */
+    #tabelaProvas_wrapper .dt-custom-header > div.col-12.col-md-auto:has(div.dataTables_filter) {
+        flex-grow: 1;
+         /* Ensure the content inside this column is also a flex container if needed for alignment */
+         display: flex;
+         align-items: center;
     }
 
-    /* Esconder o texto do botão Adicionar Prova em mobile (se o original for usado)
-       Mas o JS já deve estar trocando para o botão só com ícone. */
-    #abrirModalNovaProvaDt span.d-sm-inline,
-    button#abrirModalNovaProva span.d-sm-inline { /* Para o original e o clonado */
-        display: none !important;
+     /* Ensure the buttons container column does not grow */
+    #tabelaProvas_wrapper .dt-custom-header > div.col-12.col-md-auto.dt-buttons-container {
+         flex-grow: 0;
+         flex-shrink: 0;
+         /* Ensure the content inside this column (buttons) is a flex container for alignment */
+         display: flex;
+         align-items: center;
+         gap: 0.5rem; /* Space between buttons within the container */
     }
-    #abrirModalNovaProvaDt i,
-    button#abrirModalNovaProva i {
+
+     /* Remove margin-right-auto from filter column on mobile */
+    #tabelaProvas_wrapper .dt-custom-header > div.col-12.col-md-auto.me-md-auto {
         margin-right: 0 !important;
     }
 
-    /* Ocultar colunas menos prioritárias (DataTables Responsive já faz isso com base na prioridade) */
-    /* Se precisar forçar, use classes como .d-none .d-md-table-cell no HTML dos <th> */
-    .provas-table {
-        /* Força quebra de linha em todas as colunas se necessário em telas muito pequenas */
-        /* white-space: normal !important; */
+    /* Specific style for the cloned add button on mobile (icon-only) */
+     #abrirModalNovaProvaDt {
+         padding: 0.75rem !important; /* Make padding equal on all sides for square button */
+         /* The font-size is likely controlled by the icon class or inherited */
+     }
+     /* Ensure the text span is hidden on mobile */
+     #abrirModalNovaProvaDt span.d-none {
+        display: none !important;
+     }
+     /* Ensure the icon margin is correct on mobile */
+     #abrirModalNovaProvaDt i.me-0 {
+        margin-right: 0 !important;
+     }
+
+    /* Ensure the original button is always hidden */
+    #abrirModalNovaProva {
+        display: none !important;
     }
-    .provas-table td, .provas-table th {
-        /* white-space: normal !important; */ /* Permite quebra de linha */
-        /* vertical-align: top; */ /* Alinha ao topo se houver quebra */
-    }
+
 }
 
-/* Estilos que estavam como .dataTable-info-custom e .dataTable-pagination-custom
-   foram mesclados com os seletores padrão do DataTables (.dataTables_info, .dataTables_paginate_wrapper)
-   para maior compatibilidade. Se você tiver esses wrappers customizados no seu DOM,
-   mantenha-os ou ajuste os seletores.
-*/
+/* Ensure desktop styles are correct when coming from mobile size */
+@media (min-width: 768px) { /* Medium and larger screens (Desktop) */
+    /* Restore margin-right-auto for filter column on desktop */
+    #tabelaProvas_wrapper .dt-custom-header > div.col-md-auto.me-md-auto {
+        margin-right: auto !important;
+         /* Reset flex properties applied for mobile */
+         flex-grow: 0;
+         display: block; /* Reset display flex from mobile column */
+    }
+     /* Reset flex properties for the buttons column on desktop */
+     #tabelaProvas_wrapper .dt-custom-header > div.col-md-auto.dt-buttons-container {
+        flex-grow: 0;
+        flex-shrink: 0;
+        display: flex; /* Keep flex for button alignment */
+        gap: 0.5rem; /* Keep gap */
+     }
+      /* Reset margin on the filter div */
+      div.dataTables_wrapper div.dataTables_filter {
+        margin-right: 0; /* Remove mobile spacing */
+        display: block; /* Reset display flex from mobile filter div */
+     }
+      /* Reset flex properties on the filter label for desktop */
+      div.dataTables_wrapper div.dataTables_filter label {
+         width: auto; /* Allow width to be determined by content */
+         display: inline-flex; /* Or inline-block */
+         gap: 0.5rem; /* Keep gap */
+      }
+      /* Reset flex-grow on input for desktop if needed, although auto width usually handles this */
+       div.dataTables_wrapper div.dataTables_filter input {
+           flex-grow: 0;
+           width: auto;
+       }
+
+     /* Restore desktop padding and text visibility for the add button */
+     #abrirModalNovaProvaDt {
+         /* Restore original padding defined outside media query or by other rules */
+         padding-left: 1.3rem; /* Example from .btn-modal-save, adjust as needed */
+         padding-right: 1.3rem; /* Example from .btn-modal-save, adjust as needed */
+     }
+      /* Ensure the text span is visible on desktop */
+     #abrirModalNovaProvaDt span.d-sm-inline {
+        display: inline !important; /* Or inline-block */
+     }
+     /* Ensure the icon margin is correct on desktop */
+      #abrirModalNovaProvaDt i.me-sm-2 {
+        margin-right: 0.5rem !important; /* Or whatever value me-sm-2 provides */
+     }
+}

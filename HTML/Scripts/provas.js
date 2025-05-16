@@ -18,11 +18,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const provaObservacoesInput = document.getElementById('provaObservacoes');
     const provaNotaObtidaInput = document.getElementById('provaNotaObtida');
 
-    const modalBusca = document.querySelector("#modalBuscaProvas");
-    // const abrirModalBuscaMobileBtn = document.querySelector("#abrirBuscaModal"); // Pode ser removido se o botão for sempre dinâmico
-    const fecharModalBuscaBtn = document.querySelector("#fecharModalBusca");
-    const inputBuscaProvasModal = document.querySelector("#inputBuscaProvas");
-    const aplicarBuscaProvasBtn = document.querySelector("#aplicarBuscaProvas");
+    // Remove references and logic related to the separate mobile search modal
+    const modalBusca = document.querySelector("#modalBuscaProvas"); // Still needed for the element, but logic for triggering it from a button is removed
+    const fecharModalBuscaBtn = document.querySelector("#fecharModalBusca"); // Still needed for closing the modal itself
+    const inputBuscaProvasModal = document.querySelector("#inputBuscaProvas"); // Still needed for the modal input
+    const aplicarBuscaProvasBtn = document.querySelector("#aplicarBuscaProvas"); // Still needed for applying search from modal
 
     const modalDetalhes = document.querySelector("#modalDetalhesProva");
     const fecharModalDetalhesBtn = document.querySelector("#fecharModalDetalhes");
@@ -31,6 +31,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const modalDetalhesProvaLabel = document.querySelector("#modalDetalhesProvaLabel");
 
     let tabelaProvasDt;
+    let resizeDebounceTimer; // Timer for debouncing the resize event
 
     // Lista de disciplinas completa (ajustada para incluir todas do HTML)
     const listaDisciplinas = [
@@ -115,17 +116,8 @@ document.addEventListener("DOMContentLoaded", function () {
         provaDisciplinaSelect.addEventListener('change', atualizarProfessorInput);
     }
 
-    // Esta função não é mais usada para o scrollY fixo, mas pode ser útil para outros cálculos de layout se necessário.
-    // Se não for usada em mais nenhum lugar, pode ser removida.
-    function calcularAlturaCorpoTabela() {
-       const alturaMediaLinha = 45;
-       const numLinhasDesktop = 10; // Este número agora é apenas uma referência visual para o scrollY fixo
-       const numLinhasMobile = 8;
-       const alturaMinimaTBody = alturaMediaLinha * 3;
-       const numLinhas = window.innerWidth < 768 ? numLinhasMobile : numLinhasDesktop;
-       let alturaCalculada = numLinhas * alturaMediaLinha;
-       return Math.max(alturaCalculada, alturaMinimaTBody) + 'px';
-    }
+    // This function is not needed for fixed scrollY and can be removed if not used elsewhere.
+    // function calcularAlturaCorpoTabela() { ... }
 
 
     // --- INICIALIZAÇÃO DO DATATABLE ---
@@ -140,7 +132,6 @@ document.addEventListener("DOMContentLoaded", function () {
             $('#tabelaProvas').DataTable().destroy();
              // Limpar o DOM gerado pelo DataTables antes de re-inicializar
             $('#tabelaProvas tbody').empty(); // Limpa o tbody, o HTML original será re-usado
-            // Pode ser necessário limpar outras partes do wrapper se o DOM 'dom' for muito customizado
         }
 
 
@@ -182,28 +173,42 @@ document.addEventListener("DOMContentLoaded", function () {
                      previous: "Anterior"
                 }
             },
-            columnDefs: [
+             columnDefs: [
                 { orderable: false, targets: 'no-sort' }, // Coluna de Ações
-                { responsivePriority: 1, targets: 0 },   // Disciplina
-                { responsivePriority: 10001, targets: 1 }, // Nota (colapsa primeiro se responsivo)
-                { responsivePriority: 2, targets: 2 },   // Data & Horário
-                { responsivePriority: 10002, targets: 3 }, // Local (colapsa em seguida se responsivo)
-                { responsivePriority: 3, targets: 4 },   // Status
-                // Classe dtr-control REMOVIDA desta coluna para não conflitar com o dropdown
-                { responsivePriority: 4, targets: 5, className: "dt-actions-column no-export" } // Ações
+                { responsivePriority: 1, targets: 0 },  // Disciplina (Prioridade Alta)
+                { responsivePriority: 10001, targets: 1 }, // Nota (Colapsa cedo)
+                { responsivePriority: 2, targets: 2 },  // Data & Horário
+                { responsivePriority: 10002, targets: 3 }, // Local (Colapsa cedo)
+                { responsivePriority: 3, targets: 4 },  // Status
+                // Ações coluna deve ter alta prioridade para ficar visível
+                { responsivePriority: 1, targets: 5, className: "dt-actions-column no-export" } // Ações (Prioridade Alta)
             ],
-             // Esta função pode ser útil se você precisar copiar data attributes do HTML estático inicial
-            createdRow: function (row, data, dataIndex) {
-                 // DataTables já deve ter lido os data attributes do HTML estático
-                 // Se você adicionar linhas via API depois, precisará setar os data attributes
-                 // manualmente ou usar .data() do jQuery no nó da linha
-             },
+             // This function can be useful if you need to copy data attributes from the initial static HTML
+             // aoColumnDefs is an older alternative to columnDefs. You can consolidate if you want.
+             // The important thing is that the data attributes of the TR are accessible (via .data() of jQuery).
+             aoColumnDefs: [
+                {
+                     targets: '_all', // Applies to all columns
+                     createdCell: function (td, cellData, rowData, row, col) {
+                         // Try to get data attributes from the original HTML cell
+                         const originalCell = $(td).closest('tr').find('td').eq(col);
+                         if (originalCell.length) {
+                              // Use $.each to iterate over all data attributes of the original cell
+                              $.each(originalCell.data(), function (key, value) {
+                                   // Store the data attributes in the cell generated by DataTables
+                                   $(td).data(key, value);
+                               });
+                         }
+                     }
+                }
+            ],
             initComplete: function (settings, json) {
                 const api = this.api();
                 const searchInput = $('#tabelaProvas_filter input');
-                // Adicionado width: 100% para mobile e auto para desktop via handleResponsiveControls
-                searchInput.addClass('form-control form-control-sm').css('width', 'auto'); // Largura inicial em desktop
+                // Add form-control classes and set initial width for desktop
+                searchInput.addClass('form-control form-control-sm').css('width', 'auto');
                 searchInput.attr('aria-label', 'Buscar provas na tabela');
+
 
                 const buttonsContainer = $('.dt-buttons-container');
                 // Clonar e mover o botão "Adicionar Prova"
@@ -214,134 +219,122 @@ document.addEventListener("DOMContentLoaded", function () {
                          abrirModalNovaProvaBtnClone.id = 'abrirModalNovaProvaDt';
                          // Remove listeners antigos antes de adicionar novos
                          $(abrirModalNovaProvaBtnClone).off('click').on('click', (e) => {
-                             e.preventDefault();
-                             abrirModalFormProva();
+                              e.preventDefault();
+                              abrirModalFormProva();
                          });
+                         // Append the cloned button to the buttons container
                          buttonsContainer.append(abrirModalNovaProvaBtnClone);
                     }
-                     // Ocultar o botão original em todas as situações
+                     // Always hide the original button in the HTML
                     abrirModalNovaProvaBtnOriginal.style.display = 'none';
                 }
 
 
-                // Adicionar "Remover Prova" aos dropdowns existentes no HTML inicial (útil para dados estáticos)
-                // Esta parte agora é menos crítica se você gerencia as linhas via DataTables API, mas não faz mal manter.
-                 $('#tabelaProvas tbody tr').each(function() {
+                // Add "Remover Prova" to the dropdowns for existing static HTML rows
+                // This is less critical if you manage rows via DataTables API but harmless to keep.
+                $('#tabelaProvas tbody tr').each(function() {
                      const dropdownMenu = $(this).find('.dropdown-menu');
                       if (dropdownMenu.find('.btn-remover-prova').length === 0) {
-                          // Adiciona um divisor antes do Remover, se ele não for o primeiro item e não houver divisor
-                          // Verifica se há algum item ANTES do Remover
-                          const existingItemsCount = dropdownMenu.children('li').length;
-                          if(existingItemsCount > 0 && dropdownMenu.find('.dropdown-divider').last().length === 0) {
-                               dropdownMenu.append('<li><hr class="dropdown-divider"></li>');
-                          }
-                          dropdownMenu.append('<li><a class="dropdown-item btn-remover-prova text-danger" href="#"><i class="bi bi-trash me-2"></i>Remover Prova</a></li>');
+                           // Add a divider if it's not the first item and no divider exists
+                           const existingItemsCount = dropdownMenu.children('li').length;
+                           if(existingItemsCount > 0 && dropdownMenu.find('.dropdown-divider').last().length === 0) {
+                                dropdownMenu.append('<li><hr class="dropdown-divider"></li>');
+                           }
+                           dropdownMenu.append('<li><a class="dropdown-item btn-remover-prova text-danger" href="#"><i class="bi bi-trash me-2"></i>Remover Prova</a></li>');
                       }
-                 });
-
-
-                handleResponsiveControls(api); // Chamada inicial para ajustar layout e botões de responsividade
-                // Listener de resize debounce para ajustar colunas e layout
-                $(window).off('resize.dtProvasGlobal').on('resize.dtProvasGlobal', function () { // Usar namespace global e remover listeners anteriores
-                     handleResponsiveControls(tabelaProvasDt); // Reajusta botões de responsividade (mobile/desktop)
-                     // Debounce para ajustar as colunas da tabela e scroll
-                     clearTimeout(resizeDebounceTimer);
-                     resizeDebounceTimer = setTimeout(function () {
-                         if (tabelaProvasDt) {
-                             // Com scrollY fixo, apenas ajustamos as colunas e responsividade.
-                             // O DataTables cuida da altura do scrollBody.
-                             tabelaProvasDt.columns.adjust().responsive.recalc();
-                         }
-                     }, 250); // Tempo do debounce em ms
                 });
 
 
-                if (modalBusca) modalBusca.style.display = 'none'; // Garante que o modal de busca esteja oculto inicialmente
-                // Removido o ajuste final de colunas daqui, pois já é feito no resize handler inicial se necessário
-            },
-            // Adiciona data attributes do HTML estático para serem facilmente acessíveis via .data()
-            // aoColumnDefs é uma alternativa mais antiga a columnDefs. Você pode consolidar se quiser.
-            // O importante é que os data attributes do TR sejam acessíveis (via .data() do jQuery).
-            aoColumnDefs: [
-                 {
-                     targets: '_all', // Aplica a todas as colunas
-                     createdCell: function (td, cellData, rowData, row, col) {
-                         // Tenta obter os data attributes da célula original do HTML
-                         const originalCell = $(td).closest('tr').find('td').eq(col);
-                         if (originalCell.length) {
-                              // Use $.each para iterar sobre todos os data attributes da célula original
-                              $.each(originalCell.data(), function (key, value) {
-                                 // Armazena os data attributes na célula gerada pelo DataTables
-                                 $(td).data(key, value);
-                              });
-                         }
-                     }
-                 }
-            ]
+                handleResponsiveControls(api); // Initial call to adjust layout and button visibility
+                // Debounce resize listener to adjust columns and layout
+                $(window).off('resize.dtProvasGlobal').on('resize.dtProvasGlobal', function () { // Use a global namespace
+                    // No need to call handleResponsiveControls here, it's called separately below
+                    clearTimeout(resizeDebounceTimer);
+                    resizeDebounceTimer = setTimeout(function () {
+                        if (tabelaProvasDt) {
+                             // With fixed scrollY, just adjust columns and responsive visibility.
+                             // DataTables manages the height of the scrollBody.
+                            tabelaProvasDt.columns.adjust().responsive.recalc();
+                        }
+                    }, 250); // Debounce time in ms
+                });
 
+                // Add a separate resize listener for layout adjustments that don't need debouncing
+                $(window).off('resize.dtLayoutProvas').on('resize.dtLayoutProvas', function() {
+                     handleResponsiveControls(tabelaProvasDt); // Call handleResponsiveControls on every resize
+                });
+
+
+                 // Ensure the mobile search modal is hidden initially if it exists
+                if (modalBusca) modalBusca.style.display = 'none';
+            }
         });
 
-        return tabelaProvasDt; // Retorna a instância do DataTable
+        return tabelaProvasDt; // Return the DataTable instance
     }
 
 
-    // Função para lidar com a responsividade dos controles de busca e adicionar na área do header
+    // Function to handle the responsiveness of search controls and add button
     function handleResponsiveControls(dataTableApi) {
         const searchContainer = $('#tabelaProvas_filter'); // Container do input de busca gerado pelo DataTables
         const searchInput = searchContainer.find('input');
+        // The DataTables DOM structure places the filter in a column and buttons in another column
+        const filterColumn = searchContainer.closest('.col-12, .col-md-auto'); // Get the column element containing the filter
         const buttonsContainer = $('.dt-buttons-container'); // Container customizado para os botões (definido no 'dom')
         const abrirModalNovaProvaBtnDt = $('#abrirModalNovaProvaDt'); // Botão "Adicionar Prova" clonado
 
-        // Remove botões de ícone mobile existentes para evitar duplicatas ao rodar em resize
+        // Remove any dynamically created mobile icon buttons (from previous versions or logic)
+        // We are no longer creating a separate search icon or add icon button dynamically.
         $('#abrirBuscaModalMobile, #abrirModalNovaProvaIconMobile').remove();
+
 
         // Verifica a largura da janela para alternar entre layout mobile e desktop
         if (window.innerWidth < 768) { // Breakpoint 'md' do Bootstrap
-            // Layout Mobile: Esconde a busca inline
-            if (searchContainer.length) searchInput.css('width', '100%').parent().hide(); // Força 100% de largura no input antes de esconder
-
-            // Layout Mobile: Adiciona botões de ícone de busca e adicionar
-            if (buttonsContainer.length) {
-                 // Botão de busca (lupa)
-                 const btnLupa = $('<button id="abrirBuscaModalMobile" class="btn btn-light btn-search-icon-mobile" aria-label="Buscar Provas"><i class="bi bi-search"></i></button>');
-                 btnLupa.on('click', (e) => {
-                     e.preventDefault();
-                     abrirModalDeBusca(); // Abre o modal de busca em mobile
-                 });
-
-                 // Botão de adicionar (só ícone)
-                 const btnAdicionarIcone = $('<button id="abrirModalNovaProvaIconMobile" class="btn btn-primary btn-add-proof-icon-mobile ms-2" aria-label="Adicionar Nova Prova"><i class="bi bi-plus-lg"></i></button>');
-                 btnAdicionarIcone.on('click', (e) => {
-                     e.preventDefault();
-                     abrirModalFormProva(); // Abre o modal de adicionar/editar
-                 });
-
-                 // Adiciona os botões de ícone ao container
-                 buttonsContainer.append(btnLupa).append(btnAdicionarIcone);
+            // Layout Mobile: Show the inline search and the cloned add button (as icon)
+            if (filterColumn.length) {
+                filterColumn.show(); // Ensure the filter column is shown
+                // CSS will handle making the input take full width and the filter container grow.
             }
 
-             // Esconde o botão "Adicionar Prova" completo (com texto) se ele existir no container de botões
-            if (abrirModalNovaProvaBtnDt.length) abrirModalNovaProvaBtnDt.hide();
+            // Layout Mobile: Show the cloned add button (#abrirModalNovaProvaDt) and style it as icon-only
+            // This button is already in the buttonsContainer.
+            if (abrirModalNovaProvaBtnDt.length) {
+                 abrirModalNovaProvaBtnDt.show(); // Ensure the cloned button is shown
+                 // Use Bootstrap classes and custom CSS to make it icon-only on mobile
+                 // The CSS will handle hiding the text and adjusting padding.
+                 abrirModalNovaProvaBtnDt.find('span').addClass('d-none'); // Ensure text is hidden
+                 abrirModalNovaProvaBtnDt.find('i').removeClass('me-sm-2').addClass('me-0'); // Remove desktop margin from icon
+                 // CSS will add specific padding for the icon-only version
+            }
+
+            // Ensure the separate mobile search modal is closed if it was open
+            // This modal and its trigger are not used in the new mobile layout.
+             if (modalBusca) modalBusca.style.display = 'none'; // Ensure the modal element is hidden
 
         } else { // Layout Desktop (>= 768px)
-             // Layout Desktop: Mostra a busca inline
-             if (searchContainer.length) searchInput.css('width', 'auto').parent().show(); // Restaura largura e mostra o container
+            // Layout Desktop: Show the inline search
+            if (filterColumn.length) {
+                filterColumn.show(); // Ensure the filter column is shown
+                // CSS will handle desktop width and non-growing behavior.
+            }
 
-             // Layout Desktop: Remove os botões de ícone mobile
-             $('#abrirBuscaModalMobile, #abrirModalNovaProvaIconMobile').remove();
+             // Layout Desktop: Remove any lingering mobile icon buttons (should not be created)
+            $('#abrirModalNovaProvaIconMobile').remove(); // Safety removal
 
-             // Layout Desktop: Mostra o botão "Adicionar Prova" completo se ele existir
+            // Layout Desktop: Show the full "Adicionar Prova" button
             if (abrirModalNovaProvaBtnDt.length) {
                  abrirModalNovaProvaBtnDt.show();
-                 // Garante que o texto e ícone estejam corretos para desktop (usa classes d-none, d-sm-inline do Bootstrap)
-                 abrirModalNovaProvaBtnDt.find('span').removeClass('d-none').addClass('d-sm-inline');
-                 abrirModalNovaProvaBtnDt.find('i').addClass('me-sm-2').removeClass('me-0'); // Adiciona margem no ícone em desktop
-             }
+                 // Ensure text and icon are correct for desktop
+                 abrirModalNovaProvaBtnDt.find('span').removeClass('d-none').addClass('d-sm-inline'); // Show text on small+ screens
+                 abrirModalNovaProvaBtnDt.find('i').addClass('me-sm-2').removeClass('me-0'); // Add desktop margin
+            }
         }
 
-         // Não force ajuste de colunas aqui, ele é feito no debounce do resize global
-         // if(dataTableApi) dataTableApi.columns.adjust().responsive.recalc();
+        // DataTables columns adjustment and responsive recalc is handled by the debounce resize listener.
+        // handleResponsiveControls is now called on every resize to manage element visibility and classes quickly.
+        // The debounce handles the more expensive DataTables adjustments.
     }
+
 
     // Inicializa o DataTable pela primeira vez ao carregar o DOM
     inicializarDataTable(); // Chama a função para criar a instância do DataTables
@@ -415,56 +408,59 @@ document.addEventListener("DOMContentLoaded", function () {
     // Função para fechar o modal de adicionar/editar prova
     function fecharModalFormProva() {
          if (modalProva) modalProva.close(); // Fecha o modal
-          // Opcional: limpar formulário e validações ao fechar sem salvar para o caso de reabrir logo em seguida para Adicionar
+          // Optional: clear form and validations when closing without saving to be ready for a new Add
           if (formProva) {
               formProva.reset();
                const fieldsToClearValidation = [
                   provaDisciplinaSelect, provaProfessorInput, provaDataInput, provaHorarioInput,
                   provaLocalInput, provaStatusSelect, provaValorNotaInput, provaConteudosInput,
                   provaObservacoesInput, provaNotaObtidaInput
-               ];
+                 ];
               fieldsToClearValidation.forEach(clearFieldError);
               delete formProva.dataset.provaId;
               delete formProva.dataset.rowIndex;
           }
     }
 
-    // Listeners para fechar modal de prova (o listener para o botão clonado #abrirModalNovaProvaDt é configurado em initComplete)
+    // Listeners para fechar modal de prova (the listener for the cloned button #abrirModalNovaProvaDt is set in initComplete)
     if (fecharModalProvaBtn) fecharModalProvaBtn.addEventListener("click", (e) => { e.preventDefault(); fecharModalFormProva(); });
     if (cancelarModalProvaBtn) cancelarModalProvaBtn.addEventListener("click", (e) => { e.preventDefault(); fecharModalFormProva(); });
-    // Fechar modal clicando fora (apenas para o elemento <dialog>)
+    // Close modal by clicking outside (only for the <dialog> element)
     if (modalProva) modalProva.addEventListener("click", e => { if (e.target === modalProva) fecharModalFormProva(); });
 
 
     // --- GERENCIAMENTO DO MODAL DE BUSCA ---
-    // Função para abrir o modal de busca (usado em layout mobile)
+    // The separate mobile search modal logic is being removed from the UI flow on mobile.
+    // Keeping the modal element and its close/apply logic in case it's used elsewhere or for desktop.
+    // Function to open the search modal (formerly used in mobile layout)
     function abrirModalDeBusca() {
-        // Abre o modal de busca em mobile. Em desktop, a busca é inline (controlado por handleResponsiveControls).
+        // This modal is no longer triggered by a button in the main mobile UI.
+        // If it's still needed elsewhere, keep this function.
         if (modalBusca && inputBuscaProvasModal && tabelaProvasDt) {
-             // Preenche o input do modal com o valor atual da busca do DataTables
+            // Preenche o input do modal com o valor atual da busca do DataTables
             inputBuscaProvasModal.value = tabelaProvasDt.search();
             modalBusca.showModal(); // Exibe o modal de busca
             inputBuscaProvasModal.focus(); // Foca no campo de busca ao abrir para digitação imediata
         }
     }
-    // Função para fechar o modal de busca
+    // Function to close the search modal
     function fecharModalDeBusca() { if (modalBusca) modalBusca.close(); }
 
-    // Função para aplicar o filtro digitado no modal de busca
+    // Function to apply the filter typed in the search modal
     function aplicarBuscaDoModal() {
         if (tabelaProvasDt && inputBuscaProvasModal) {
-             // Aplica o filtro do input do modal na tabela do DataTables e redesenha
+             // Applies the filter from the modal input to the DataTables table and redraws
             tabelaProvasDt.search(inputBuscaProvasModal.value).draw();
         }
-        fecharModalDeBusca(); // Fecha o modal após aplicar a busca
+        fecharModalDeBusca(); // Fecha o modal after applying the search
     }
 
-    // Listeners para o modal de busca (o listener para o botão mobile é dinâmico)
+    // Listeners for the search modal (the mobile button listener is removed from handleResponsiveControls)
     if (fecharModalBuscaBtn) { fecharModalBuscaBtn.addEventListener("click", (e) => { e.preventDefault(); fecharModalDeBusca(); }); }
     if (aplicarBuscaProvasBtn) { aplicarBuscaProvasBtn.addEventListener("click", (e) => { e.preventDefault(); aplicarBuscaDoModal(); }); }
-    // Permite aplicar a busca pressionando Enter no input do modal
+    // Allows applying the search by pressing Enter in the modal input
     if (inputBuscaProvasModal) { inputBuscaProvasModal.addEventListener('keypress', function (e) { if (e.key === 'Enter') { e.preventDefault(); aplicarBuscaDoModal(); } }); }
-    // Fechar modal clicando fora (apenas para o elemento <dialog>)
+    // Close modal by clicking outside (only for the <dialog> element)
     if (modalBusca) { modalBusca.addEventListener("click", e => { if (e.target === modalBusca) fecharModalDeBusca(); }); }
 
 
@@ -478,15 +474,15 @@ document.addEventListener("DOMContentLoaded", function () {
          }
 
          // Prepara os dados para exibição no modal de detalhes
-         // Preferir dados completos armazenados se disponíveis, fallback para dados da linha da tabela
+         // Prefer full stored data if available, fallback to table row data
          const disciplina = dadosCompletosProva?.disciplinaNome || dadosLinhaTabela[0] || 'N/A';
-         modalDetalhesProvaLabel.textContent = "Detalhes da Prova"; // Define o título do modal
+         modalDetalhesProvaLabel.textContent = "Detalhes da Prova"; // Define the modal title
 
-         // Tenta encontrar o professor na lista de disciplinas com base no ID ou nome, fallback para o dado armazenado ou 'Não informado'
+         // Try to find the professor in the full discipline list based on ID or name, fallback to stored data or 'Não informado'
          const professorDaLista = listaDisciplinas.find(d => d.id === dadosCompletosProva?.disciplinaId || d.nome === disciplina)?.professor;
          const professor = dadosCompletosProva?.professor || professorDaLista || "Não informado";
 
-         // Formata a nota para exibição (usa vírgula)
+         // Format the grade for display (uses comma)
          const notaObtidaOriginal = dadosCompletosProva?.notaObtida !== undefined ? dadosCompletosProva.notaObtida : (dadosLinhaTabela[1] !== '-' ? String(dadosLinhaTabela[1]).split('/')[0].trim().replace(',', '.') : '');
          const valorNotaOriginal = dadosCompletosProva?.valorNota || (dadosLinhaTabela[1] !== '-' ? String(dadosLinhaTabela[1]).split('/')[1]?.trim().replace(',', '.') : '10,0');
          const notaFormatada = notaObtidaOriginal && notaObtidaOriginal !== '-' ?
@@ -494,11 +490,11 @@ document.addEventListener("DOMContentLoaded", function () {
               (dadosLinhaTabela[1] === '-' && valorNotaOriginal ? `- / ${String(valorNotaOriginal).replace('.', ',')}` : '-');
 
 
-         const dataHorario = dadosLinhaTabela[2] || '-'; // Usa o valor já formatado na tabela (DD Mon YYYY, HH:MM AM/PM ou similar)
+         const dataHorario = dadosLinhaTabela[2] || '-'; // Use the already formatted value from the table (DD Mon YYYY, HH:MM AM/PM or similar)
          const local = dadosCompletosProva?.local !== undefined ? (dadosCompletosProva.local || '-') : (dadosLinhaTabela[3] || '-');
 
 
-         // Tenta obter o status em texto dos dados completos, fallback para o HTML do badge da célula da tabela
+         // Try to get the status text from complete data, fallback to the HTML of the badge from the table cell
          let statusParaDetalhes = dadosLinhaTabela[4];
          if (dadosCompletosProva?.status) {
              const statusBadgeClass = dadosCompletosProva.status === 'Agendado' ? 'bg-info-subtle text-info' :
@@ -506,213 +502,172 @@ document.addEventListener("DOMContentLoaded", function () {
                      'bg-danger-subtle text-danger');
              statusParaDetalhes = `<span class="badge ${statusBadgeClass}">${dadosCompletosProva.status}</span>`;
          } else {
-              // Se não tiver o status em texto nos dados completos, tenta extrair do HTML da célula (menos confiável)
+              // If status text is not available in complete data, try to extract from cell HTML (less reliable)
               const tempDiv = document.createElement('div');
               tempDiv.innerHTML = dadosLinhaTabela[4];
-              statusParaDetalhes = tempDiv.innerHTML || '-'; // Usa o HTML original da célula
+              statusParaDetalhes = tempDiv.innerHTML || '-'; // Use the original HTML of the cell
          }
 
          const conteudos = dadosCompletosProva?.conteudos || '-';
          const observacoes = dadosCompletosProva?.observacoes || '-';
 
-         // Monta o HTML do corpo do modal de detalhes usando os dados preparados
+         // Build the HTML for the details modal body using the prepared data
          modalDetalhesConteudo.innerHTML = `
-             <dl class="row">
-                 <dt class="col-sm-4 col-md-3">Disciplina:</dt>
-                 <dd class="col-sm-8 col-md-9">${disciplina}</dd>
-                 <dt class="col-sm-4 col-md-3">Professor:</dt>
-                 <dd class="col-sm-8 col-md-9">${professor}</dd>
-                 <dt class="col-sm-4 col-md-3">Data & Horário:</dt>
-                 <dd class="col-sm-8 col-md-9">${dataHorario}</dd>
-                 <dt class="col-sm-4 col-md-3">Local:</dt>
-                 <dd class="col-sm-8 col-md-9">${local}</dd>
-                 <dt class="col-sm-4 col-md-3">Status:</dt>
-                 <dd class="col-sm-8 col-md-9">${statusParaDetalhes}</dd>
-                 <dt class="col-sm-4 col-md-3">Valor da Prova:</dt>
-                 <dd class="col-sm-8 col-md-9">${String(valorNotaOriginal).replace('.', ',') || '-'}</dd>
-                 <dt class="col-sm-4 col-md-3">Nota Obtida:</dt>
-                 <dd class="col-sm-8 col-md-9">${notaFormatada}</dd>
-                 ${conteudos && conteudos !== '-' ? `
-                 <dt class="col-sm-12">Conteúdos:</dt>
-                 <dd class="col-sm-12"><pre>${conteudos.replace(/\n/g, '<br>')}</pre></dd>
-                 ` : ''}
-                 ${observacoes && observacoes !== '-' ? `
-                 <dt class="col-sm-12">Observações:</dt>
-                 <dd class="col-sm-12"><pre>${observacoes.replace(/\n/g, '<br>')}</pre></dd>
-                 ` : ''}
-             </dl>`;
-         modalDetalhes.showModal(); // Exibe o modal de detalhes
+              <dl class="row">
+                  <dt class="col-sm-4 col-md-3">Disciplina:</dt>
+                  <dd class="col-sm-8 col-md-9">${disciplina}</dd>
+                  <dt class="col-sm-4 col-md-3">Professor:</dt>
+                  <dd class="col-sm-8 col-md-9">${professor}</dd>
+                  <dt class="col-sm-4 col-md-3">Data & Horário:</dt>
+                  <dd class="col-sm-8 col-md-9">${dataHorario}</dd>
+                  <dt class="col-sm-4 col-md-3">Local:</dt>
+                  <dd class="col-sm-8 col-md-9">${local}</dd>
+                  <dt class="col-sm-4 col-md-3">Status:</dt>
+                  <dd class="col-sm-8 col-md-9">${statusParaDetalhes}</dd>
+                  <dt class="col-sm-4 col-md-3">Valor da Prova:</dt>
+                  <dd class="col-sm-8 col-md-9">${String(valorNotaOriginal).replace('.', ',') || '-'}</dd>
+                  <dt class="col-sm-4 col-md-3">Nota Obtida:</dt>
+                  <dd class="col-sm-8 col-md-9">${notaFormatada}</dd>
+                  ${conteudos && conteudos !== '-' ? `
+                  <dt class="col-sm-12">Conteúdos:</dt>
+                  <dd class="col-sm-12"><pre>${conteudos.replace(/\n/g, '<br>')}</pre></dd>
+                  ` : ''}
+                  ${observacoes && observacoes !== '-' ? `
+                  <dt class="col-sm-12">Observações:</dt>
+                  <dd class="col-sm-12"><pre>${observacoes.replace(/\n/g, '<br>')}</pre></dd>
+                  ` : ''}
+              </dl>`;
+         modalDetalhes.showModal(); // Show the details modal
     }
-    // Função para fechar o modal de detalhes
+    // Function to close the details modal
     function fecharModalDeDetalhes() { if (modalDetalhes) modalDetalhes.close(); }
-    // Listeners para fechar modal de detalhes
+    // Listeners to close details modal
     if (fecharModalDetalhesBtn) { fecharModalDetalhesBtn.addEventListener("click", (e) => { e.preventDefault(); fecharModalDeDetalhes(); }); }
     if (okModalDetalhesBtn) { okModalDetalhesBtn.addEventListener("click", (e) => { e.preventDefault(); fecharModalDeDetalhes(); }); }
-    // Fechar modal clicando fora (apenas para o elemento <dialog>)
+    // Close modal by clicking outside (only for the <dialog> element)
     if (modalDetalhes) modalDetalhes.addEventListener("click", e => { if (e.target === modalDetalhes) fecharModalDeDetalhes(); });
 
 
-    // --- AÇÕES NA TABELA (Usando delegação de eventos no tbody para botões de ação) ---
-    // Usamos delegação (.on('click', selector, handler)) no tbody para que os listeners
-    // funcionem mesmo para linhas adicionadas ou modificadas dinamicamente pelo DataTables.
+    // --- AÇÕES NA TABELA (Using event delegation on tbody for action buttons) ---
+    // We use delegation (.on('click', selector, handler)) on tbody so that the listeners
+    // work even for rows added or modified dynamically by DataTables.
 
-    // Listener para cliques nos botões de Editar (.btn-edit-proof)
+    // Listener for clicks on Edit buttons (.btn-edit-proof)
     $('#tabelaProvas tbody').on('click', '.btn-edit-proof', function (e) {
-         e.preventDefault(); // Evita o comportamento padrão do link
-         // Verifica se a instância do DataTables existe
+         e.preventDefault(); // Prevent default link behavior
+         // Check if the DataTables instance exists
          if (!tabelaProvasDt) return;
 
-         // Encontra a linha (tr) pai do botão clicado
+         // Find the parent row (tr) of the clicked button
          const trElement = $(this).closest('tr')[0];
-         // Obtém os dados visíveis da linha conforme gerenciados pelo DataTables
+         // Get the visible row data as managed by DataTables
          const rowDataArray = tabelaProvasDt.row(trElement).data();
-         // Obtém os dados completos da prova que foram armazenados no data attribute da TR
-         const dadosCompletosArmazenados = $(trElement).data();
+         // Get the full proof data that was stored in the TR's data attribute
+         const dadosCompletosArmazenados = $(trElement).data('completo'); // Retrieve the complete data object
 
-         // Verifica se conseguimos obter os dados da linha
-         if (!rowDataArray) {
+
+         // Check if we could get the row data
+         if (!rowDataArray || !dadosCompletosArmazenados) {
              console.error("Não foi possível obter os dados da linha para edição.");
              return;
          }
 
-          // Prepara os dados para preencher o formulário do modal de edição.
-          // Tenta usar os dados completos armazenados primeiro, fallback para os dados visíveis formatados.
+          // Prepare data to populate the edit modal form.
+          // Use the complete stored data which is more reliable.
 
-         let dataParaInput = '', horaParaInput = '';
-         // Se tiver data e hora nos dados completos (formato ISO ou similar), use-os
-         // Senão, tente parsear a string formatada da tabela
-         const dataHoraString = dadosCompletosArmazenados.data && dadosCompletosArmazenados.horario
-             ? `${dadosCompletosArmazenados.data} ${dadosCompletosArmazenados.horario}`
-             : rowDataArray[2];
-
-         if (dataHoraString && typeof dataHoraString === 'string' && dataHoraString !== '-') {
-              // Tenta parsear formatos comuns (ISO YYYY-MM-DD HH:mm ou DD Mon YYYY, HH:mm AM/PM)
-             if (dataHoraString.includes('-') && dataHoraString.includes(':')) { // Possível formato ISO YYYY-MM-DD HH:mm
-                  const [datePart, timePart] = dataHoraString.split(' ');
-                  dataParaInput = datePart;
-                  horaParaInput = timePart;
-             } else if (dataHoraString.includes(',') && dataHoraString.match(/\d{1,2} [a-zçãõ]{3,5} \d{4}/i)) { // Possível formato DD Mon YYYY, HH:mm AM/PM (Pt-BR meses)
-                  const partes = dataHoraString.split(',');
-                  dataParaInput = parsePtBrDateToIso(partes[0].trim()); // Converte a data
-                  if (partes.length > 1) horaParaInput = formatarHoraParaInput(partes[1].trim()); // Converte a hora
-             } else if (dataHoraString.match(/^\d{4}-\d{2}-\d{2}$/)) { // Só data ISO
-                  dataParaInput = dataHoraString;
-             } else if (dataHoraString.match(/^\d{1,2} [a-zçãõ]{3,5} \d{4}$/i)) { // Só data DD Mon YYYY (Pt-BR meses)
-                  dataParaInput = parsePtBrDateToIso(dataHoraString.trim());
-             } else if (dataHoraString.includes(':')) { // Só hora
-                  horaParaInput = formatarHoraParaInput(dataHoraString.trim());
-             }
-              // console.log(`Parseando "${dataHoraString}" -> Data: "${dataParaInput}", Hora: "${horaParaInput}"`); // Debugging
-         }
-
-
-          // Tenta obter o status dos dados completos primeiro, fallback para o texto do badge na tabela
-         const statusTexto = dadosCompletosArmazenados.status
-             ? dadosCompletosArmazenados.status
-             : ($(trElement).find('.badge').text().trim() || '');
-
-
-          // Tenta encontrar a disciplina na lista original usando o ID armazenado, fallback para o nome visível
-         const disciplinaIdArmazenada = dadosCompletosArmazenados.disciplinaId || '';
-         const disciplinaNomeDaTabela = String(rowDataArray[0]).trim();
-         const disciplinaEncontradaPorId = listaDisciplinas.find(d => d.id === disciplinaIdArmazenada);
-         const disciplinaEncontradaPorNome = listaDisciplinas.find(d => d.nome === disciplinaNomeDaTabela);
-
-         const disciplinaParaModal = disciplinaEncontradaPorId
-             ? disciplinaEncontradaPorId.id // Usa o ID se achou por ID (preferencial)
-             : (disciplinaEncontradaPorNome ? disciplinaEncontradaPorNome.id : disciplinaIdArmazenada || ''); // Senão, tenta ID da encontrada por nome, senão ID armazenado (mesmo que não encontre na lista)
-
-
-          // Objeto com os dados para preencher o modal de edição
          const dadosParaModal = {
-             id: dadosCompletosArmazenados.id || dadosCompletosArmazenados.provaId || 'tempID-' + new Date().getTime(), // ID da prova (usa o que foi armazenado, gera temporário se não existir)
-             disciplinaId: disciplinaParaModal, // O ID que será selecionado no <select>
-             // Os campos abaixo são usados para preencher os outros inputs do modal
-             disciplinaNome: disciplinaNomeDaTabela, // O nome visível na tabela (para referência)
-             professor: dadosCompletosArmazenados.professor || (disciplinaEncontradaPorId ? disciplinaEncontradaPorId.professor : (disciplinaEncontradaPorNome ? disciplinaEncontradaPorNome.professor : '')),
-             notaObtida: dadosCompletosArmazenados.notaObtida !== undefined ? String(dadosCompletosArmazenados.notaObtida).replace('.', ',') : (rowDataArray[1] === '-' ? '' : String(rowDataArray[1]).split('/')[0].trim()), // Nota obtida (formata para usar vírgula no input)
-             data: dataParaInput, // Data no formato YYYY-MM-DD para o input type="date"
-             horario: horaParaInput, // Horário no formato HH:mm para o input type="time"
-             local: dadosCompletosArmazenados.local !== undefined ? dadosCompletosArmazenados.local : (rowDataArray[3] === '-' ? '' : rowDataArray[3]),
-             status: statusTexto, // O texto do status (Agendada, Concluída, Cancelada)
-             valorNota: dadosCompletosArmazenados.valorNota !== undefined ? String(dadosCompletosArmazenados.valorNota).replace('.', ',') : (rowDataArray[1] === '-' ? '10,0' : (String(rowDataArray[1]).split('/')[1]?.trim() || '10,0').replace('.', ',')), // Valor da nota (formata para usar vírgula, fallback para 10,0)
-             conteudos: dadosCompletosArmazenados.conteudos || '',
-             observacoes: dadosCompletosArmazenados.observacoes || ''
+              id: dadosCompletosArmazenados.id || 'tempID-' + new Date().getTime(), // Use existing ID or generate temporary
+              disciplinaId: dadosCompletosArmazenados.disciplinaId || '', // Discipline ID for the select
+              // Use complete data for other fields
+              professor: dadosCompletosArmazenados.professor || '',
+              notaObtida: dadosCompletosArmazenados.notaObtida !== undefined ? String(dadosCompletosArmazenados.notaObtida).replace('.', ',') : '', // Format for input
+              data: dadosCompletosArmazenados.data || '', // YYYY-MM-DD for date input
+              horario: dadosCompletosArmazenados.horario || '', // HH:mm for time input
+              local: dadosCompletosArmazenados.local || '',
+              status: dadosCompletosArmazenados.status || 'Agendado', // Status text
+              valorNota: dadosCompletosArmazenados.valorNota !== undefined ? String(dadosCompletosArmazenados.valorNota).replace('.', ',') : '', // Format for input
+              conteudos: dadosCompletosArmazenados.conteudos || '',
+              observacoes: dadosCompletosArmazenados.observacoes || ''
          };
-          // console.log("Dados para o modal:", dadosParaModal); // Debugging: Verifique os dados que vão para o modal
+          // console.log("Dados para o modal:", dadosParaModal); // Debugging: Check data going to modal
 
-         // Abre o modal de edição, passando os dados e a referência da linha
+         // Open the edit modal, passing the data and the row reference
          abrirModalFormProva(true, dadosParaModal, trElement);
     });
 
-    // Listener para cliques nos botões Detalhar (.btn-detalhar-prova)
+    // Listener for Detail button clicks (.btn-detalhar-prova)
     $('#tabelaProvas tbody').on('click', '.btn-detalhar-prova', function (e) {
         e.preventDefault();
         if (!tabelaProvasDt) return;
         const trElement = $(this).closest('tr')[0];
-        const dadosDaLinhaTabela = tabelaProvasDt.row(trElement).data(); // Dados visíveis
-        const dadosCompletosArmazenados = $(trElement).data(); // Dados completos armazenados com .data()
+        const dadosDaLinhaTabela = tabelaProvasDt.row(trElement).data(); // Visible data (array)
+        const dadosCompletosArmazenados = $(trElement).data('completo'); // Full stored data object
 
         if (dadosDaLinhaTabela) {
-             abrirModalDeDetalhes(dadosDaLinhaTabela, dadosCompletosArmazenados); // Passa ambos os conjuntos de dados
+             abrirModalDeDetalhes(dadosDaLinhaTabela, dadosCompletosArmazenados); // Pass both sets of data
         }
     });
 
-    // Listener para cliques nos botões Marcar Concluída (.btn-marcar-concluida)
+    // Listener for Mark Completed button clicks (.btn-marcar-concluida)
     $('#tabelaProvas tbody').on('click', '.btn-marcar-concluida', function (e) {
         e.preventDefault();
         if (!tabelaProvasDt) return;
         const trElement = $(this).closest('tr')[0];
         const row = tabelaProvasDt.row(trElement);
-        let rowData = row.data(); // Dados visíveis da linha (array)
-        const dadosCompletosArmazenados = $(trElement).data(); // Dados completos armazenados
+        let rowData = row.data(); // Visible row data (array)
+        const dadosCompletosArmazenados = $(trElement).data('completo'); // Full stored data object
 
-        // Verifica se a prova já não está marcada como concluída nos dados completos
+
+        // Check if the proof is already marked as completed in the full data
         if (dadosCompletosArmazenados?.status === 'Concluída') {
              alert("Esta prova já está marcada como concluída.");
-             return; // Sai da função se já estiver concluída
+             return; // Exit if already completed
         }
 
-        // Altera o status nos dados completos armazenados
+        // Change the status in the full stored data
         if (dadosCompletosArmazenados) {
             dadosCompletosArmazenados.status = 'Concluída';
-            $(trElement).data('status', 'Concluída'); // Garante que o data attribute também seja atualizado
+            $(trElement).data('completo', dadosCompletosArmazenados); // Update the stored object
+             $(trElement).data('status', 'Concluída'); // Also update the individual status data attribute for convenience
         }
 
-        // Atualiza a célula de status visível na tabela (cria o HTML do badge de Concluída)
+        // Update the visible status cell in the table (create the HTML for the Completed badge)
         if (rowData) {
              rowData[4] = `<span class="badge bg-success-subtle text-success">Concluída</span>`;
-             // Atualiza os dados da linha no DataTables e redesenha (sem reordenar/repaginar - draw(false))
-            row.data(rowData).draw(false);
-            alert("Prova marcada como concluída!");
-             // Opcional: Chamar função para salvar essa mudança no backend
+             // Update row data in DataTables and redraw (without reordering/repaging - draw(false))
+             row.data(rowData).draw(false);
+             alert("Prova marcada como concluída!");
+             // Optional: Call function to save this change to the backend
+             // saveStatusChangeToBackend(dadosCompletosArmazenados.id, 'Concluída');
         } else {
             console.error("Não foi possível obter os dados da linha para marcar como concluída.");
         }
     });
 
-    // Listener para cliques nos botões Remover Prova (.btn-remover-prova)
+    // Listener for Remove Proof button clicks (.btn-remover-prova)
     $('#tabelaProvas tbody').on('click', '.btn-remover-prova', function (e) {
         e.preventDefault();
         if (!tabelaProvasDt) return;
-        const trElement = $(this).closest('tr'); // Encontra a TR pai
-        const row = tabelaProvasDt.row(trElement); // Obtém o objeto linha do DataTables
-        const rowData = row.data(); // Dados visíveis para a mensagem de confirmação
+        const trElement = $(this).closest('tr'); // Find the parent TR
+        const row = tabelaProvasDt.row(trElement); // Get the DataTables row object
+        const rowData = row.data(); // Visible data for confirmation message
 
         if (!rowData) {
             console.error("Não foi possível obter os dados da linha para remoção.");
             return;
         }
 
-        // Pega o nome da disciplina para a mensagem de confirmação (primeira célula)
+        // Get the discipline name for the confirmation message (first cell)
         const disciplinaNome = rowData[0] || "esta prova";
 
-        // Exibe um modal de confirmação nativo do navegador
+        // Show a native browser confirmation modal
         if (confirm(`Tem certeza que deseja remover a prova de "${disciplinaNome}"?`)) {
-            // Remove a linha do DataTables e redesenha (sem reordenar/repaginar)
-            row.remove().draw(false);
-            alert("Prova removida com sucesso!");
-             // Opcional: Chamar função para enviar requisição para o backend para remover permanentemente
+             // Remove the row from DataTables and redraw (without reordering/repaging)
+             row.remove().draw(false);
+             alert("Prova removida com sucesso!");
+             // Optional: Call function to send request to backend to permanently remove
+             // const provaId = $(trElement).data('id'); // Get the ID from stored data
+             // if(provaId) deleteProvaFromBackend(provaId);
         }
     });
 
@@ -720,65 +675,66 @@ document.addEventListener("DOMContentLoaded", function () {
     // --- SUBMIT DO FORMULÁRIO DE PROVA ---
     if (formProva) {
         formProva.addEventListener("submit", function (e) {
-            e.preventDefault(); // Impede o envio padrão do formulário (reload da página)
+            e.preventDefault(); // Prevent default form submission (page reload)
 
-            // Valida o formulário antes de prosseguir
+            // Validate the form before proceeding
             if (!validateFormProva()) {
                 console.warn("Formulário de prova inválido.");
-                return; // Se a validação falhar, para a execução da submissão
+                return; // Stop execution if validation fails
             }
 
-            // Verifica se a instância do DataTables existe
+            // Check if the DataTables instance exists
             if (!tabelaProvasDt) {
                 console.error("DataTables não inicializado.");
                 return;
             }
 
-             // Obtém dados do formulário e data attributes (ID e rowIndex para edição)
-            const provaId = formProva.dataset.provaId || 'newID-' + new Date().getTime(); // Usa o ID existente se estiver editando, senão gera um temporário único
-            const rowIndex = formProva.dataset.rowIndex !== undefined ? parseInt(formProva.dataset.rowIndex) : undefined; // Índice da linha se estiver editando
+             // Get form data and data attributes (ID and rowIndex for editing)
+            const provaId = formProva.dataset.provaId || 'newID-' + new Date().getTime(); // Use existing ID if editing, otherwise generate a temporary unique one
+            const rowIndex = formProva.dataset.rowIndex !== undefined ? parseInt(formProva.dataset.rowIndex) : undefined; // Row index if editing
 
-             // Encontra o objeto disciplina completo com base no ID selecionado no <select> para obter o nome e professor corretos
+             // Find the complete discipline object based on the selected ID in the <select> to get the correct name and professor
             const disciplinaSelecionadaObj = listaDisciplinas.find(d => d.id === provaDisciplinaSelect.value);
 
-             // Reúne *todos* os dados da prova a partir dos inputs do formulário em um objeto
+             // Gather *all* proof data from form inputs into an object
             const dadosCompletosProva = {
-                id: provaId, // Mantém ou gera o ID
-                disciplinaId: provaDisciplinaSelect.value, // ID da disciplina selecionada
-                disciplinaNome: disciplinaSelecionadaObj ? disciplinaSelecionadaObj.nome : (provaDisciplinaSelect.options[provaDisciplinaSelect.selectedIndex]?.text || 'N/A'), // Nome da disciplina (fallback para texto do select)
-                professor: provaProfessorInput.value.trim(), // Professor
-                data: provaDataInput.value, // Data em formato YYYY-MM-DD
-                horario: provaHorarioInput.value, // Horário em formato HH:mm
-                local: provaLocalInput.value.trim(), // Local
-                status: provaStatusSelect.value, // Status (Agendado, Concluída, Cancelada)
-                 // Nota e Valor Nota: Guarda como ponto para facilitar futuros cálculos se necessário, mas preenche/exibe com vírgula
-                valorNota: provaValorNotaInput.value.trim().replace(',', '.') || "10.0", // Valor da nota (converte vírgula para ponto, default 10.0)
-                conteudos: provaConteudosInput.value.trim(), // Conteúdos
-                observacoes: provaObservacoesInput.value.trim(), // Observações
-                notaObtida: provaNotaObtidaInput.value.trim().replace(',', '.') // Nota Obtida (converte vírgula para ponto)
+                 id: provaId, // Keep or generate the ID
+                 disciplinaId: provaDisciplinaSelect.value, // Selected discipline ID
+                 disciplinaNome: disciplinaSelecionadaObj ? disciplinaSelecionadaObj.nome : (provaDisciplinaSelect.options[provaDisciplinaSelect.selectedIndex]?.text || 'N/A'), // Discipline name (fallback to select text)
+                 professor: provaProfessorInput.value.trim(), // Professor
+                 data: provaDataInput.value, // Date in YYYY-MM-DD format
+                 horario: provaHorarioInput.value, // Time in HH:mm format
+                 local: provaLocalInput.value.trim(), // Local
+                 status: provaStatusSelect.value, // Status (Agendado, Concluída, Cancelada)
+                 // Grade and Value: Store with dot for easier calculations if needed, but fill/display with comma
+                 valorNota: provaValorNotaInput.value.trim().replace(',', '.') || "10.0", // Grade value (convert comma to dot, default 10.0)
+                 conteudos: provaConteudosInput.value.trim(), // Contents
+                 observacoes: provaObservacoesInput.value.trim(), // Observations
+                 notaObtida: provaNotaObtidaInput.value.trim().replace(',', '.') // Obtained grade (convert comma to dot)
             };
 
-             // Formata a data e horário para exibição na tabela (DD Mon YYYY, HH:mm AM/PM)
+             // Format date and time for display in the table (DD Mon YYYY, HH:mm AM/PM)
             let dataHoraFormatadaParaTabela = '-';
             if (dadosCompletosProva.data) {
                 const [year, month, day] = dadosCompletosProva.data.split('-');
-                // Usar Date.UTC para evitar problemas de fuso horário ao criar a data para formatação
+                // Use Date.UTC to avoid timezone issues when creating the date for formatting
                 const dataObj = new Date(Date.UTC(parseInt(year), parseInt(month) - 1, parseInt(day)));
                 const meses = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
                 dataHoraFormatadaParaTabela = `${dataObj.getUTCDate()} ${meses[dataObj.getUTCMonth()]} ${dataObj.getUTCFullYear()}`;
                 if (dadosCompletosProva.horario) {
-                    dataHoraFormatadaParaTabela += ', ' + formatarHora(dadosCompletosProva.horario);
+                     dataHoraFormatadaParaTabela += ', ' + formatarHora(dadosCompletosProva.horario);
                 }
             } else if (dadosCompletosProva.horario) {
-                 // Se só tiver horário, exibe apenas o horário formatado
+                 // If only time is available, display only the formatted time
                  dataHoraFormatadaParaTabela = formatarHora(dadosCompletosProva.horario);
             }
 
 
-             // Cria o HTML para a coluna de Status (Badge Bootstrap) com base no status em texto
+             // Create HTML for the Status column (Bootstrap Badge) based on status text
             const statusHtml = `<span class="badge ${dadosCompletosProva.status === 'Agendado' ? 'bg-info-subtle text-info' : (dadosCompletosProva.status === 'Concluída' ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger')}">${dadosCompletosProva.status}</span>`;
 
-             // Cria o HTML para a coluna de Ações (Dropdown Bootstrap)
+             // Create HTML for the Actions column (Bootstrap Dropdown)
+             // Ensure the dropdown-menu-end class is present for right alignment
             const dropdownHtml = `
                 <div class="dropdown">
                     <button class="btn btn-sm btn-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Ações da prova">
@@ -794,148 +750,150 @@ document.addEventListener("DOMContentLoaded", function () {
                     </ul>
                 </div>`;
 
-             // Prepara os dados visíveis para a linha da tabela (array na ordem das colunas)
-             const notaExibicao = dadosCompletosProva.notaObtida
-                ? `${String(dadosCompletosProva.notaObtida).replace('.', ',')} / ${String(dadosCompletosProva.valorNota).replace('.', ',')}` // Formata para exibição com vírgula
-                : '-';
+             // Prepare visible data for the table row (array in column order)
+            const notaExibicao = dadosCompletosProva.notaObtida && dadosCompletosProva.notaObtida !== '' ?
+                 `${String(dadosCompletosProva.notaObtida).replace('.', ',')} / ${String(dadosCompletosProva.valorNota).replace('.', ',')}` // Format for display with comma
+                 : (dadosCompletosProva.valorNota && dadosCompletosProva.valorNota !== '' ? `- / ${String(dadosCompletosProva.valorNota).replace('.', ',')}` : '-'); // Display value if obtained grade is empty
 
             const dadosLinhaTabela = [
                  dadosCompletosProva.disciplinaNome, // Coluna 0
-                 notaExibicao,   // Coluna 1
+                 notaExibicao,   // Coluna 1
                  dataHoraFormatadaParaTabela, // Coluna 2
                  dadosCompletosProva.local || '-', // Coluna 3
-                 statusHtml,   // Coluna 4
+                 statusHtml,   // Coluna 4
                  dropdownHtml // Coluna 5
             ];
 
-            let targetNode; // Variável para guardar o nó TR da linha manipulada
+            let targetRow; // Variable to hold the DataTables row object
 
-            // Verifica se estamos editando uma linha existente ou adicionando uma nova
-            if (provaId && rowIndex !== undefined && tabelaProvasDt.row(rowIndex).node()) { // Verifica se rowIndex é válido e se a linha existe no DataTables
-                 // Modo Edição: Obtém a linha pelo índice e atualiza seus dados
-                const linha = tabelaProvasDt.row(rowIndex);
-                linha.data(dadosLinhaTabela).draw(false); // Atualiza dados e redesenha (sem reordenar/repaginar)
-                targetNode = $(linha.node()); // Obtém o nó TR atualizado
-                alert("Prova atualizada com sucesso!");
+             // Check if we are editing an existing row or adding a new one
+             // Check if rowIndex is valid AND if the row exists in DataTables (important after filtering/sorting)
+            if (provaId && rowIndex !== undefined && tabelaProvasDt.row(rowIndex).node()) {
+                 // Edit Mode: Get the row by index and update its data
+                 targetRow = tabelaProvasDt.row(rowIndex);
+                 targetRow.data(dadosLinhaTabela).draw(false); // Update data and redraw (without reordering/repaging)
+                 alert("Prova atualizada com sucesso!");
             } else {
-                 // Modo Adicionar: Adiciona uma nova linha com os dados e obtém o nó TR
-                targetNode = $(tabelaProvasDt.row.add(dadosLinhaTabela).draw(false).node()); // Adiciona linha, redesenha e obtém o nó TR
-                alert("Prova adicionada com sucesso!");
+                 // Add Mode: Add a new row with the data
+                 targetRow = tabelaProvasDt.row.add(dadosLinhaTabela).draw(false); // Add row, redraw
+                 alert("Prova adicionada com sucesso!");
             }
 
-            // Armazenar todos os dados completos no nó TR usando jQuery .data()
-            // Isso é crucial para acessar os dados completos (como ID, conteúdos, observações, etc.)
-            // ao editar, detalhar ou marcar como concluída a prova novamente.
-            // jQuery .data() armazena no cache de dados e converte chaves para camelCase automaticamente.
-            if (targetNode && targetNode.length) {
-                 // Armazena o objeto completo
+            // Store all complete data in the TR node using jQuery .data()
+            // This is crucial for accessing the full data (like ID, contents, observations, etc.)
+            // when editing, detailing, or marking the proof as completed again.
+            // jQuery .data() stores in data cache and converts keys to camelCase automatically.
+            const targetNode = $(targetRow.node()); // Get the TR node of the manipulated row
+            if (targetNode.length) {
+                 // Store the complete object
                  targetNode.data('completo', dadosCompletosProva);
-                 // Também pode armazenar propriedades individuais se preferir, mas o objeto completo é mais eficiente
-                 targetNode.data('id', dadosCompletosProva.id); // Acessível via .data('id')
-                 targetNode.data('disciplinaId', dadosCompletosProva.disciplinaId); // Acessível via .data('disciplinaId')
+                 // Also store individual properties for easier access if preferred
+                 targetNode.data('id', dadosCompletosProva.id); // Accessible via .data('id')
+                 targetNode.data('disciplinaId', dadosCompletosProva.disciplinaId); // Accessible via .data('disciplinaId')
                  targetNode.data('professor', dadosCompletosProva.professor);
-                 targetNode.data('data', dadosCompletosProva.data); // Data em formato YYYY-MM-DD
-                 targetNode.data('horario', dadosCompletosProva.horario); // Horario em formato HH:mm
+                 targetNode.data('data', dadosCompletosProva.data); // Date in YYYY-MM-DD
+                 targetNode.data('horario', dadosCompletosProva.horario); // Time in HH:mm
                  targetNode.data('local', dadosCompletosProva.local);
-                 targetNode.data('status', dadosCompletosProva.status); // Status em texto
-                 targetNode.data('valorNota', dadosCompletosProva.valorNota); // Valor da nota original (com ponto)
+                 targetNode.data('status', dadosCompletosProva.status); // Status text
+                 targetNode.data('valorNota', dadosCompletosProva.valorNota); // Original value (with dot)
                  targetNode.data('conteudos', dadosCompletosProva.conteudos);
                  targetNode.data('observacoes', dadosCompletosProva.observacoes);
-                 targetNode.data('notaObtida', dadosCompletosProva.notaObtida); // Nota obtida original (com ponto)
+                 targetNode.data('notaObtida', dadosCompletosProva.notaObtida); // Original value (with dot)
 
-                 //console.log("Dados armazenados na TR:", targetNode.data('completo')); // Debugging: Verifique os dados armazenados
+                 //console.log("Dados stored in TR:", targetNode.data('completo')); // Debugging
             }
 
-             // Opcional: Chamar função para salvar os dados completos no backend (AJAX, Fetch API, etc.)
+
+             // Optional: Call function to save complete data to backend (AJAX, Fetch API, etc.)
              // saveProvaToBackend(dadosCompletosProva);
 
-            fecharModalFormProva(); // Fecha o modal após salvar/adicionar
-            // Ajustar colunas novamente após adicionar/editar (especialmente com responsive)
+            fecharModalFormProva(); // Close the modal after saving/adding
+            // Adjust columns again after adding/editing (especially with responsive)
             if (tabelaProvasDt) tabelaProvasDt.columns.adjust().responsive.recalc();
         });
     }
 
     // --- FUNÇÕES AUXILIARES DE FORMATAÇÃO ---
-    // Formata hora de formato HH:mm (do input type="time") para HH:mm AM/PM (para exibição na tabela)
+    // Formats time from HH:mm (from input type="time") to HH:mm AM/PM (for table display)
     function formatarHora(timeString) {
         if (!timeString) return '';
         const [hour, minute] = timeString.split(':');
         let h = parseInt(hour);
-        if (isNaN(h) || isNaN(parseInt(minute))) { console.warn("Formato de hora inválido para formatarHora:", timeString); return timeString; } // Retorna original se inválido
+        if (isNaN(h) || isNaN(parseInt(minute))) { console.warn("Invalid time format for formatarHora:", timeString); return timeString; } // Return original if invalid
         const ampm = h >= 12 ? 'PM' : 'AM';
         h = h % 12;
-        h = h ? h : 12; // '00' (meia-noite) e '12' (meio-dia) horas se tornam '12' no formato 12 horas
+        h = h ? h : 12; // '00' (midnight) and '12' (noon) hours become '12' in 12-hour format
         return `${h}:${String(minute).padStart(2, '0')} ${ampm}`;
     }
 
-    // Formata hora de formato HH:mm AM/PM (da exibição na tabela) para HH:mm (para o input type="time")
+    // Formats time from HH:mm AM/PM (from table display) to HH:mm (for input type="time")
     function formatarHoraParaInput(displayTime) {
         if (!displayTime || typeof displayTime !== 'string') return '';
         let timePart = displayTime.toUpperCase().trim();
         let modifier = "";
-        // Verifica se termina com AM ou PM
+        // Check if it ends with AM or PM
         if (timePart.endsWith('AM')) { modifier = 'AM'; timePart = timePart.slice(0, -2).trim(); }
         else if (timePart.endsWith('PM')) { modifier = 'PM'; timePart = timePart.slice(0, -2).trim(); }
-        // Note: Se a string não tiver AM/PM, a conversão pode ser imprecisa. Assume 24h se não especificado.
+        // Note: If the string doesn't have AM/PM, the conversion might be imprecise. Assume 24h if not specified.
 
         let [hoursStr, minutesStr] = timePart.split(':');
         let hours = parseInt(hoursStr, 10);
         let minutes = parseInt(minutesStr, 10);
 
-        if (isNaN(hours) || isNaN(minutes)) { console.warn("Formato de hora inválido para formatarHoraParaInput:", displayTime); return ''; }
+        if (isNaN(hours) || isNaN(minutes)) { console.warn("Invalid time format for formatarHoraParaInput:", displayTime); return ''; }
 
-        // Ajusta as horas para o formato 24h
+        // Adjust hours for 24h format
         if (modifier === 'PM' && hours < 12) hours += 12;
-        else if (modifier === 'AM' && hours === 12) hours = 0; // 12 AM (meia-noite) é 00:00
+        else if (modifier === 'AM' && hours === 12) hours = 0; // 12 AM (midnight) is 00:00
 
-        // Retorna no formato HH:mm para o input type="time"
+        // Return in HH:mm format for input type="time"
         return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
     }
 
-    // Converte data de formato DD Mon YYYY (Pt-BR, ex: "25 jan 2025") para ISO YYYY-MM-DD
+    // Converts date from DD Mon YYYY (Pt-BR, e.g.: "25 jan 2025") to ISO YYYY-MM-DD
     function parsePtBrDateToIso(dateStr) {
         if (!dateStr || typeof dateStr !== 'string') return "";
-        let parts = dateStr.trim().split(" "); // Espera "Dia MêsAno Ano"
+        let parts = dateStr.trim().split(" "); // Expects "Day MonthName Year"
         if (parts.length !== 3) {
-             // Tenta parsear formatos com separadores, mas o formato "DD Mon YYYY" é o que vem da tabela por padrão
-             const dateSeparators = dateStr.match(/(\d{1,2})[\/\-\. ]([a-zA-ZçÇãÃõÕ]{3,})[\/\-\. ](\d{4})/i); // Permite separadores comuns e meses pt-BR com/sem acento
+             // Try to parse formats with separators, but "DD Mon YYYY" is the default from the table
+             const dateSeparators = dateStr.match(/(\d{1,2})[\/\-\. ]([a-zA-ZçÇãÃõÕ]{3,})[\/\-\. ](\d{4})/i); // Allow common separators and Pt-BR months with/without accent
              if (dateSeparators && dateSeparators.length === 4) {
                  parts = [dateSeparators[1], dateSeparators[2], dateSeparators[3]];
-             } else { console.warn("Formato de data PtBr inesperado ou inválido para parsePtBrDateToIso:", dateStr); return ""; }
+             } else { console.warn("Unexpected or invalid PtBr date format for parsePtBrDateToIso:", dateStr); return ""; }
         }
-        const day = String(parts[0]).padStart(2,'0'); // Garante 2 dígitos para o dia
-        const monthStr = parts[1].toLowerCase().substring(0, 3); // Pega as 3 primeiras letras do mês (ex: jan, fev, mar...)
+        const day = String(parts[0]).padStart(2,'0'); // Ensure 2 digits for the day
+        const monthStr = parts[1].toLowerCase().substring(0, 3); // Get the first 3 letters of the month (e.g.: jan, fev, mar...)
         const year = parts[2];
 
-        // Mapa para converter abreviações de mês para números
+        // Map to convert month abbreviations to numbers
         const monthMap = {
-            'jan':'01','fev':'02','mar':'03','abr':'04',
-            'mai':'05','jun':'06','jul':'07','ago':'08',
-            'set':'09','out':'10','nov':'11','dez':'12'
+             'jan':'01','fev':'02','mar':'03','abr':'04',
+             'mai':'05','jun':'06','jul':'07','ago':'08',
+             'set':'09','out':'10','nov':'11','dez':'12'
         };
         const month = monthMap[monthStr];
 
-        // Validação básica dos componentes
+        // Basic validation of components
         if (!month || !/^\d{4}$/.test(year) || !/^\d{2}$/.test(day)) {
-             console.warn("Componentes de data PtBr inválidos após parse:", dateStr, "-> Dia:", day, "Mês:", monthStr, "Ano:", year);
-             return ""; // Retorna string vazia se a data não puder ser parseada corretamente
+             console.warn("Invalid PtBr date components after parse:", dateStr, "-> Day:", day, "Month:", monthStr, "Year:", year);
+             return ""; // Return empty string if the date cannot be parsed correctly
         }
 
-        // Retorna a data no formato ISO YYYY-MM-DD
+        // Return date in ISO YYYY-MM-DD format
         return `${year}-${month}-${day}`;
     }
 
 
-    // --- INICIALIZAÇÕES FINAIS ---
+    // --- FINAL INITIALIZATIONS ---
 
-    // Popula o select de disciplinas ao carregar a página pela primeira vez
+    // Populate the discipline select on page load for the first time
     popularDisciplinasSelect();
 
-    // A inicialização do DataTables é feita na função inicializarDataTable que é chamada
-    // uma vez no final deste script e também pode ser chamada para re-inicializar se necessário.
+    // DataTables initialization is done in the inicializarDataTable function which is called
+    // once at the end of this script and can also be called to re-initialize if necessary.
 
-    // O ajuste final da tabela e responsividade (columns.adjust().responsive.recalc())
-    // é feito em initComplete do DataTables e no listener de resize,
-    // para garantir que a tabela se ajuste corretamente ao conteúdo e ao layout da página.
+    // The final table and responsiveness adjustment (columns.adjust().responsive.recalc())
+    // is done in DataTables' initComplete and in the resize listener,
+    // to ensure the table adjusts correctly to content and page layout.
 
-}); 
+}); // End of DOMContentLoaded listener
