@@ -6,30 +6,36 @@ const professoresPorDisciplina = {
   "Técnicas de Animação 3D": "Jango"
 };
 
-$(document).ready(function() {
-  // Inicializa o DataTable
+$(document).ready(function () {
+  // Inicializa DataTable com dom customizado e sem seletor de quantidade
   const tabela = $('#tabelaTarefas').DataTable({
+    dom: 'rtip', // r = processing, t = table, i = info, p = paging (remove length menu)
+    searching: false, // desativa pesquisa padrão da tabela, pois usamos input externo
     language: {
       url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json'
     }
   });
 
-  // Atualiza professor ao mudar a disciplina
-  $('#disciplina').on('change', function() {
+  // Atualiza professor ao mudar a disciplina no modal
+  $('#disciplina').on('change', function () {
     const disciplina = $(this).val();
     const prof = professoresPorDisciplina[disciplina] || "Professor não definido";
     $('#professorLabel').text(prof);
     $('#professor').val(prof);
   });
 
-  // Aciona a atualização inicial do professor no modal ao abrir (se precisar)
+  // Atualiza professor ao abrir o modal (trigger para mostrar certo)
   $('#meuModal').on('shown.bs.modal', function () {
     $('#disciplina').trigger('change');
   });
 
-  // Salvar nova tarefa
-  $('#salvarBtn').on('click', function() {
-    // Captura valores do formulário
+  // Filtra tarefas usando input externo
+  $('#searchTarefas').on('keyup', function () {
+    tabela.search(this.value).draw();
+  });
+
+  // Salvar nova tarefa no DataTable e fechar modal
+  $('#salvarBtn').on('click', function () {
     const disciplina = $('#disciplina').val();
     const professor = $('#professor').val();
     const dataEntrega = $('#dataEntrega').val();
@@ -38,13 +44,11 @@ $(document).ready(function() {
     const status = $('#status').val();
     const nota = $('#nota').val();
 
-    // Validação simples (exemplo)
     if (!disciplina || !dataEntrega) {
       alert('Por favor, preencha pelo menos Disciplina e Data de Entrega.');
       return;
     }
 
-    // Adiciona linha na tabela DataTables
     tabela.row.add([
       disciplina,
       professor,
@@ -55,10 +59,9 @@ $(document).ready(function() {
       nota
     ]).draw(false);
 
-    // Fecha o modal
     $('#meuModal').modal('hide');
 
-    // Reseta o formulário
+    // Resetar formulário
     $('#tarefaForm')[0].reset();
     $('#professorLabel').text('Selecione uma disciplina');
     $('#professor').val('');
