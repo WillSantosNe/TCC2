@@ -938,4 +938,4 @@ document.addEventListener("DOMContentLoaded", function () {
     // é feito em initComplete do DataTables e no listener de resize,
     // para garantir que a tabela se ajuste corretamente ao conteúdo e ao layout da página.
 
-}); // Fim do DOMContentLoaded listener
+}); 
