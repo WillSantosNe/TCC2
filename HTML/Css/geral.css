@@ -49,10 +49,10 @@ html {
 }
 
 body { /* Estilos comuns a todos os bodys */
-    font-family: var(--default-font);
-    color: var(--text-body-color);
-    background-color: var(--background-light-color);
-    line-height: 1.6; /* Melhor legibilidade */
+  font-family: var(--default-font);
+  color: var(--text-body-color);
+  background-color: var(--background-light-color);
+  line-height: 1.6; /* Melhor legibilidade */
 }
 
 /* Estilos específicos para body em páginas de autenticação */
@@ -75,9 +75,7 @@ body.auth-body {
 body.dashboard-body {
   display: block; /* Layout normal, não flex centralizado */
   padding: 0; /* Remove padding se não for desejado */
-  /* overflow-x: hidden; /* Já pode estar no body geral ou auth-body */
 }
-
 
 /* === CARD PRINCIPAL DE AUTENTICAÇÃO === */
 .main-auth-card {
@@ -139,114 +137,113 @@ body.dashboard-body {
 
 /* === ESTILOS GLOBAIS PARA MODAIS <dialog> === */
 dialog {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 60%; /* Largura padrão, modais específicos podem ajustar */
-    max-width: 700px; /* Máximo padrão */
-    border: 0;
-    border-radius: .75rem;
-    box-shadow: var(--modal-shadow);
-    padding: 0;
-    overflow: hidden; /* Para cantos do conteúdo interno não vazarem */
-    z-index: 1070; /* Alto para sobrepor outros elementos */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60%; /* Largura padrão, modais específicos podem ajustar */
+  max-width: 700px; /* Máximo padrão */
+  border: 0;
+  border-radius: .75rem;
+  box-shadow: var(--modal-shadow);
+  padding: 0;
+  overflow: hidden; /* Para cantos do conteúdo interno não vazarem */
+  z-index: 1070; /* Alto para sobrepor outros elementos */
 }
 
 dialog[open] {
-    display: block; /* ou flex, dependendo do layout interno do dialog */
+  display: block; /* ou flex, dependendo do layout interno do dialog */
 }
 
 dialog::backdrop {
-    background-color: rgba(0, 0, 0, 0.6); /* Backdrop um pouco mais escuro */
+  background-color: rgba(0, 0, 0, 0.6); /* Backdrop um pouco mais escuro */
 }
 
 /* Estrutura interna padrão para modais */
 .modal-header-custom {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid var(--border-color);
-    background-color: var(--modal-header-footer-bg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--modal-header-footer-bg);
 }
 
 .modal-title-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .modal-header-custom .user-avatar,
 .modal-header-custom .modal-logo-icon {
-    width: 32px;
-    height: 32px;
-    object-fit: contain;
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
 }
 .modal-header-custom .user-avatar {
-    border-radius: 50%; /* Específico para avatar */
+  border-radius: 50%; /* Específico para avatar */
 }
 
 .modal-title-custom {
-    font-size: 1.25rem;
-    font-weight: 600; /* Título do modal mais destacado */
-    color: var(--text-title-color);
-    margin-bottom: 0;
+  font-size: 1.25rem;
+  font-weight: 600; /* Título do modal mais destacado */
+  color: var(--text-title-color);
+  margin-bottom: 0;
 }
 
 .btn-close-custom { /* Botão 'X' de fechar modal */
-    padding: 0.5rem;
-    margin: -0.5rem -0.75rem -0.5rem auto; /* Ajuste de alinhamento */
-    background: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat;
-    border: 0;
-    border-radius: 0.375rem;
-    opacity: 0.6;
-    cursor: pointer;
-    transition: opacity 0.15s ease-in-out;
+  padding: 0.5rem;
+  margin: -0.5rem -0.75rem -0.5rem auto; /* Ajuste de alinhamento */
+  background: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat;
+  border: 0;
+  border-radius: 0.375rem;
+  opacity: 0.6;
+  cursor: pointer;
+  transition: opacity 0.15s ease-in-out;
 }
 .btn-close-custom:hover {
-    opacity: 0.9;
+  opacity: 0.9;
 }
 
 .modal-body-custom {
-    padding: 1.5rem;
-    position: relative; /* Para posicionamento de elementos filhos, se necessário */
-    max-height: calc(100vh - 210px); /* (header ~60 + footer ~70 + margens ~80) */
-    overflow-y: auto; /* Scroll se conteúdo for maior */
+  padding: 1.5rem;
+  position: relative; /* Para posicionamento de elementos filhos, se necessário */
+  max-height: calc(100vh - 210px); /* (header ~60 + footer ~70 + margens ~80) */
+  overflow-y: auto; /* Scroll se conteúdo for maior */
 }
 
 .modal-footer-custom {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    padding: 1rem 1.5rem;
-    border-top: 1px solid var(--border-color);
-    background-color: var(--modal-header-footer-bg);
-    gap: 0.75rem; /* Espaço entre botões no rodapé */
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border-color);
+  background-color: var(--modal-header-footer-bg);
+  gap: 0.75rem; /* Espaço entre botões no rodapé */
 }
 
 /* Estilos para inputs e labels DENTRO de qualquer <dialog> */
 dialog .form-label {
-    font-weight: 500;
-    margin-bottom: 0.3rem;
-    font-size: 0.875rem;
-    color: var(--text-title-color); /* Cor padrão para labels em modais */
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+  font-size: 0.875rem;
+  color: var(--text-title-color); /* Cor padrão para labels em modais */
 }
 
 dialog .form-control,
 dialog .form-select,
 dialog textarea.form-control {
-    font-size: 0.9rem;
-    border-radius: var(--default-radius); /* Raio padrão */
-    border: 1px solid var(--border-color); /* Borda padrão */
+  font-size: 0.9rem;
+  border-radius: var(--default-radius); /* Raio padrão */
+  border: 1px solid var(--border-color); /* Borda padrão */
 }
 dialog .form-control:focus,
 dialog .form-select:focus,
 dialog textarea.form-control:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(85, 104, 254, 0.25); /* Substitua pela sua var(--primary-color-rgb) */
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(85, 104, 254, 0.25);
 }
-
 
 /* === ELEMENTOS DE FORMULÁRIO GERAIS (FORA DE MODAIS) === */
 .form-label { /* Label padrão para formulários gerais */
@@ -269,7 +266,7 @@ dialog textarea.form-control:focus {
 }
 .form-control:focus {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 0.2rem rgba(85, 104, 254, 0.25); /* Use sua variável --primary-color-rgb se tiver */
+  box-shadow: 0 0 0 0.2rem rgba(85, 104, 254, 0.25);
 }
 
 /* Específico para input groups com ícone de senha */
@@ -277,30 +274,45 @@ dialog textarea.form-control:focus {
   position: relative;
   min-width: 0;
 }
-.input-group .form-control { /* Padding para acomodar o ícone de olho */
+/* Padding para acomodar o ícone de olho */
+.input-group .form-control {
   padding-right: 3rem;
 }
+
 .input-group .form-control.is-invalid,
-.input-group .form-control.is-valid { /* Padding para acomodar olho + validação */
-  padding-right: 4.5rem !important;
+.input-group .form-control.is-valid {
+  padding-right: 3rem !important;
 }
 
 .password-toggle-icon {
+  position: absolute;
+  top: 0.76rem;
+  margin-right: 1rem;   /* antes era 0.4rem, agora está mais para o centro */
   display: flex;
   align-items: center;
   justify-content: center;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  right: 1rem; /* Posição padrão */
   padding: 0.25rem;
   cursor: pointer;
   color: var(--text-body-color);
   z-index: 5;
 }
-.input-group .form-control.is-invalid ~ .password-toggle-icon,
-.input-group .form-control.is-valid ~ .password-toggle-icon {
-  right: 2.75rem; /* Desloca para a esquerda quando há ícone de validação */
+
+/* Se faltar ainda espaço quando houver o ícone de erro, use este */
+.input-group .form-control.is-invalid ~ .password-toggle-icon {
+  right: 3rem;  /* ainda mais afastado da borda direita */
+}
+
+/* Remove outline ao focar */
+.password-toggle-icon:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Impede que o ícone interno capture o clique */
+.password-toggle-icon i {
+  pointer-events: none;
+  font-size: 1.1rem;
+  vertical-align: middle;
 }
 
 .form-check-label {
@@ -343,7 +355,6 @@ dialog textarea.form-control:focus {
   display: inline-block;
   vertical-align: middle;
   max-height: 1em;
-  /* margin-left: 0.5rem; /* Ajuste conforme necessário */
 }
 
 /* === REMOÇÃO DE ÍCONES NATIVOS DE NAVEGADOR === */
