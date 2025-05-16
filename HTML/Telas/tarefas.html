@@ -8,31 +8,22 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-
   <link rel="stylesheet" href="../Css/geral.css">
   <link rel="stylesheet" href="../Css/tela_principal.css">
 
-   <script src="../Scripts/tarefas_add.js" defer></script>
-
-  <style>
-		dialog{
-			width: 70%;
-			border: 0px;
-			border-radius: 10px;
-			box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
-		}
-		dialog::backdrop{
-			background-color: rgba(0, 0, 0, 0.8);
-		}
-	</style>
+  <!-- DataTables -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
 
+  <link rel="stylesheet" href="../Css/tarefas.css">
+  <script src="../Scripts/tarefas_add.js" defer></script>
 </head>
 <body class="auth-body dashboard-body">
 
   <aside id="sidebar" class="offcanvas-lg offcanvas-start" tabindex="-1">
     <div class="brand-text"></div>
-
     <nav class="nav flex-column">
       <a href="./principal.html" class="sf-nav-link">Dashboard</a>
 
@@ -52,7 +43,6 @@
   </aside>
 
   <div class="sf-main">
-
     <header class="sf-header position-relative">
       <button class="btn-menu me-auto d-lg-none"
               data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-label="Abrir menu">
@@ -66,14 +56,88 @@
       <img src="../imgs/avatar.jpg" class="rounded-circle" style="width:40px;height:40px" alt="Avatar do usuário">
     </header>
 
-    <a href="#" id="abrirModal">Abrir Modal</a>
+    <!-- Botão para abrir o modal -->
+    <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#meuModal">
+        Adicionar Tarefa
+    </button>
 
-    <dialog id="meuModal">
-        <h2>Título Modal</h2>
-        <p>Lorem ipsum dolor sit amet...</p>
-        <a href="#" id="fecharModal">Fechar Modal</a>
-    </dialog>
+    <!-- Tabela de Tarefas -->
+    <div class="mt-4">
+      <h5>Minhas Tarefas</h5>
+      <table id="tabelaTarefas" class="table table-striped table-bordered">
+        <thead>
+          <tr>
+            <th>Disciplina</th>
+            <th>Professor</th>
+            <th>Data de Entrega</th>
+            <th>Categoria</th>
+            <th>Formato</th>
+            <th>Status</th>
+            <th>Nota</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Modal do Bootstrap -->
+    <div class="modal fade" id="meuModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalLabel">Adicionar Tarefa</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <form id="tarefaForm">
+              <label for="disciplina">Disciplina:</label>
+              <select id="disciplina" class="form-control">
+                  <option value="Fundamentos Gráficos">Fundamentos Gráficos</option>
+                  <option value="Web Design Avançado">Web Design Avançado</option>
+                  <option value="Pesquisa de UX">Pesquisa de UX</option>
+                  <option value="Técnicas de Animação 3D">Técnicas de Animação 3D</option>
+              </select>
+
+              <label for="professor">Professor:</label>
+              <p id="professorLabel">Selecione uma disciplina</p>
+              <input type="hidden" id="professor">
+
+              <label for="dataEntrega">Data de Entrega:</label>
+              <input type="date" id="dataEntrega" class="form-control">
+
+              <label for="categoria">Categoria:</label>
+              <input type="text" id="categoria" class="form-control">
+
+              <label for="formato">Formato:</label>
+              <input type="text" id="formato" class="form-control">
+
+              <label for="status">Status:</label>
+              <select id="status" class="form-control">
+                  <option value="Agendado">Agendado</option>
+                  <option value="Em andamento">Em andamento</option>
+                  <option value="Concluído">Concluído</option>
+              </select>
+
+              <label for="nota">Nota:</label>
+              <input type="number" id="nota" class="form-control">
+
+              <label for="descritivo">Descritivo:</label>
+              <textarea id="descritivo" class="form-control"></textarea>
+
+              <label for="observacoes">Observações:</label>
+              <textarea id="observacoes" class="form-control"></textarea>
+            </form> 
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            <button type="button" class="btn btn-primary" id="salvarBtn">Salvar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div> <!-- /.sf-main -->
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

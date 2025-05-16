@@ -1,0 +1,4 @@
+.sf-main {
+  padding: 20px; /* espaçamento interno para dar "respiro" */
+  box-sizing: border-box; /* garante que o padding não estoure a largura */
+}
