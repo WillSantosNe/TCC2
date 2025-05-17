@@ -39,6 +39,13 @@
   }
 }
 
+@media (max-width: 768px) {
+  .calendar-widget {
+    display: none;
+  }
+}
+
+
 .brand-text {
   font-size: .9rem;
   font-weight: 600;
