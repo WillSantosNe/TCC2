@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="../Css/tela_principal.css">
   <link rel="stylesheet" href="../Css/disciplinas.css">
   <link rel="stylesheet" href="../Css/provas.css">
- </head>
+</head>
 <body class="auth-body dashboard-body">
 
   <aside id="sidebar" class="offcanvas-lg offcanvas-start" tabindex="-1">
@@ -27,7 +27,8 @@
       <div class="sf-sidebar-section">Acadêmico</div>
       <a class="sf-nav-link" href="./provas.html">Plataforma de Provas</a>
       <a class="sf-nav-link" href="./tarefas.html">Tarefas</a>
-      <a class="sf-nav-link active" href="./disciplinas.html">Disciplinas Matriculadas</a> <a class="sf-nav-link" href="#">Calendário</a>
+      <a class="sf-nav-link active" href="./disciplinas.html">Disciplinas Matriculadas</a>
+      <a class="sf-nav-link" href="#">Calendário</a>
       <a class="sf-nav-link" href="#">Anotações</a>
       <div class="sf-sidebar-section">Configurações</div>
       <a class="sf-nav-link" href="#">Configurações de Usuário</a>
@@ -51,88 +52,293 @@
     <main class="sf-content container-fluid">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
-            <h2 class="sf-page-title">Disciplinas Matriculadas</h2> <p class="text-muted sf-page-subtitle">Gerencie suas disciplinas, horários e locais.</p> </div>
-        <button class="btn btn-primary btn-add-proof" id="abrirModalNovaDisciplina"> <i class="bi bi-plus-lg me-sm-2"></i><span class="d-none d-sm-inline">Adicionar Disciplina</span> </button>
+            <h2 class="sf-page-title">Disciplinas Matriculadas</h2>
+            <p class="text-muted sf-page-subtitle">Gerencie suas disciplinas, horários e locais.</p>
+        </div>
+        <button class="btn btn-primary btn-add-proof" id="abrirModalNovaDisciplina">
+            <i class="bi bi-plus-lg me-sm-2"></i><span class="d-none d-sm-inline">Adicionar Disciplina</span>
+        </button>
       </div>
 
       <div class="table-container shadow-sm">
-        <table id="tabelaDisciplinas" class="table table-hover dt-responsive nowrap align-middle mb-0 bg-white border rounded-3 disciplinas-table" style="width:100%"> <thead class="table-light">
-            <tr>
-              <th data-priority="1">Disciplina</th>
-              <th data-priority="3">Professor</th>
-              <th data-priority="2">Dias da Semana</th>
-              <th data-priority="4">Horário</th>
-              <th data-priority="5">Local</th>
-              <th data-priority="1" class="no-sort dt-actions-column">Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr data-disciplina-id="ITD201" data-nome="Web Design Avançado – ITD201" data-professor="Prof. João Paulo" data-dias="Seg, Qua, Sex" data-horario-inicio="08:00" data-horario-fim="10:00" data-local="Sala B12">
-              <td>Web Design Avançado – ITD201</td>
-              <td>Prof. João Paulo</td>
-              <td>Seg, Qua, Sex</td>
-              <td>08:00 - 10:00 AM</td>
-              <td>Sala B12</td>
-               <td class="dt-actions-column">
-                   <div class="dropdown">
-
-                        <button class="btn btn-sm btn-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Ações da disciplina">
-                            <i class="bi bi-three-dots-vertical"></i>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-
-                        <li><a class="dropdown-item btn-edit-disciplina" href="#"><i class="bi bi-pencil-square me-2"></i>Editar Disciplina</a></li> <li><hr class="dropdown-divider"></li>
-
-                        <li><a class="dropdown-item btn-remover-disciplina text-danger" href="#"><i class="bi bi-trash me-2"></i>Remover Disciplina</a></li> </ul>
-
-                        </div>
+        <table id="tabelaDisciplinas" class="table table-hover dt-responsive nowrap align-middle mb-0 bg-white border rounded-3 disciplinas-table" style="width:100%">
+            <thead class="table-light">
+                <tr>
+                  <th data-priority="1">Disciplina</th>
+                  <th data-priority="3">Professor</th>
+                  <th data-priority="2">Dias da Semana</th>
+                  <th data-priority="4">Horário</th>
+                  <th data-priority="5">Local</th>
+                  <th data-priority="1" class="no-sort dt-actions-column">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-disciplina-id="ITD201" data-nome="Web Design Avançado – ITD201" data-professor="Prof. João Paulo" data-dias="Seg, Qua, Sex" data-horario-inicio="08:00" data-horario-fim="10:00" data-local="Sala B12">
+                  <td>Web Design Avançado – ITD201</td>
+                  <td>Prof. João Paulo</td>
+                  <td>Seg, Qua, Sex</td>
+                  <td>08:00 - 10:00 AM</td>
+                  <td>Sala B12</td>
+                    <td class="dt-actions-column">
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Ações da disciplina">
+                                <i class="bi bi-three-dots-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item btn-edit-disciplina" href="#"><i class="bi bi-pencil-square me-2"></i>Editar Disciplina</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item btn-remover-disciplina text-danger" href="#"><i class="bi bi-trash me-2"></i>Remover Disciplina</a></li>
+                            </ul>
+                        </div>
                     </td>
                 </tr>
-             </tbody>
+                <tr data-disciplina-id="ART101" data-nome="Fundamentos de Design Gráfico – ART101" data-professor="Prof. Jango" data-dias="Ter, Qui" data-horario-inicio="10:30" data-horario-fim="12:00" data-local="Estúdio C">
+                    <td>Fundamentos de Design Gráfico – ART101</td>
+                    <td>Prof. Jango</td>
+                    <td>Ter, Qui</td>
+                    <td>10:30 - 12:00 PM</td>
+                    <td>Estúdio C</td>
+                    <td class="dt-actions-column">
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Ações da disciplina"><i class="bi bi-three-dots-vertical"></i></button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item btn-edit-disciplina" href="#"><i class="bi bi-pencil-square me-2"></i>Editar Disciplina</a></li><li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item btn-remover-disciplina text-danger" href="#"><i class="bi bi-trash me-2"></i>Remover Disciplina</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-disciplina-id="UXD301" data-nome="Princípios de UX/UI Design – UXD301" data-professor="Prof. Jason" data-dias="Seg, Qua" data-horario-inicio="14:00" data-horario-fim="15:30" data-local="Laboratório UX">
+                    <td>Princípios de UX/UI Design – UXD301</td>
+                    <td>Prof. Jason</td>
+                    <td>Seg, Qua</td>
+                    <td>02:00 - 03:30 PM</td>
+                    <td>Laboratório UX</td>
+                    <td class="dt-actions-column">
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Ações da disciplina"><i class="bi bi-three-dots-vertical"></i></button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item btn-edit-disciplina" href="#"><i class="bi bi-pencil-square me-2"></i>Editar Disciplina</a></li><li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item btn-remover-disciplina text-danger" href="#"><i class="bi bi-trash me-2"></i>Remover Disciplina</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-disciplina-id="ANI301" data-nome="Técnicas de Animação 3D – ANI301" data-professor="Prof. Pryzado" data-dias="Sex" data-horario-inicio="09:00" data-horario-fim="12:00" data-local="Estúdio de Animação">
+                    <td>Técnicas de Animação 3D – ANI301</td>
+                    <td>Prof. Pryzado</td>
+                    <td>Sex</td>
+                    <td>09:00 - 12:00 PM</td>
+                    <td>Estúdio de Animação</td>
+                    <td class="dt-actions-column">
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Ações da disciplina"><i class="bi bi-three-dots-vertical"></i></button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item btn-edit-disciplina" href="#"><i class="bi bi-pencil-square me-2"></i>Editar Disciplina</a></li><li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item btn-remover-disciplina text-danger" href="#"><i class="bi bi-trash me-2"></i>Remover Disciplina</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-disciplina-id="HAR202" data-nome="História da Arte – HAR202" data-professor="Prof. Olivia" data-dias="Qua" data-horario-inicio="16:00" data-horario-fim="17:30" data-local="Auditório B">
+                    <td>História da Arte – HAR202</td>
+                    <td>Prof. Olivia</td>
+                    <td>Qua</td>
+                    <td>04:00 - 05:30 PM</td>
+                    <td>Auditório B</td>
+                    <td class="dt-actions-column">
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Ações da disciplina"><i class="bi bi-three-dots-vertical"></i></button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item btn-edit-disciplina" href="#"><i class="bi bi-pencil-square me-2"></i>Editar Disciplina</a></li><li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item btn-remover-disciplina text-danger" href="#"><i class="bi bi-trash me-2"></i>Remover Disciplina</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-disciplina-id="PHO110" data-nome="Fotografia Digital – PHO110" data-professor="Prof. Lucas" data-dias="Ter" data-horario-inicio="13:30" data-horario-fim="15:00" data-local="Estúdio Foto 1">
+                    <td>Fotografia Digital – PHO110</td>
+                    <td>Prof. Lucas</td>
+                    <td>Ter</td>
+                    <td>01:30 - 03:00 PM</td>
+                    <td>Estúdio Foto 1</td>
+                    <td class="dt-actions-column">
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Ações da disciplina"><i class="bi bi-three-dots-vertical"></i></button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item btn-edit-disciplina" href="#"><i class="bi bi-pencil-square me-2"></i>Editar Disciplina</a></li><li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item btn-remover-disciplina text-danger" href="#"><i class="bi bi-trash me-2"></i>Remover Disciplina</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-disciplina-id="CCO200" data-nome="Programação Orientada a Objetos – CCO200" data-professor="Prof. Ana" data-dias="Seg, Qua" data-horario-inicio="10:30" data-horario-fim="12:00" data-local="Lab C05">
+                    <td>Programação Orientada a Objetos – CCO200</td>
+                    <td>Prof. Ana</td>
+                    <td>Seg, Qua</td>
+                    <td>10:30 - 12:00 PM</td>
+                    <td>Lab C05</td>
+                    <td class="dt-actions-column">
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Ações da disciplina"><i class="bi bi-three-dots-vertical"></i></button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item btn-edit-disciplina" href="#"><i class="bi bi-pencil-square me-2"></i>Editar Disciplina</a></li><li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item btn-remover-disciplina text-danger" href="#"><i class="bi bi-trash me-2"></i>Remover Disciplina</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-disciplina-id="CCO210" data-nome="Banco de Dados – CCO210" data-professor="Prof. Carlos" data-dias="Ter, Qui" data-horario-inicio="08:00" data-horario-fim="09:30" data-local="Lab C06">
+                    <td>Banco de Dados – CCO210</td>
+                    <td>Prof. Carlos</td>
+                    <td>Ter, Qui</td>
+                    <td>08:00 - 09:30 AM</td>
+                    <td>Lab C06</td>
+                    <td class="dt-actions-column">
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Ações da disciplina"><i class="bi bi-three-dots-vertical"></i></button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item btn-edit-disciplina" href="#"><i class="bi bi-pencil-square me-2"></i>Editar Disciplina</a></li><li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item btn-remover-disciplina text-danger" href="#"><i class="bi bi-trash me-2"></i>Remover Disciplina</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-disciplina-id="CCO300" data-nome="Redes de Computadores – CCO300" data-professor="Prof. Beatriz" data-dias="Seg, Sex" data-horario-inicio="13:00" data-horario-fim="14:30" data-local="Lab Redes A">
+                    <td>Redes de Computadores – CCO300</td>
+                    <td>Prof. Beatriz</td>
+                    <td>Seg, Sex</td>
+                    <td>01:00 - 02:30 PM</td>
+                    <td>Lab Redes A</td>
+                    <td class="dt-actions-column">
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Ações da disciplina"><i class="bi bi-three-dots-vertical"></i></button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item btn-edit-disciplina" href="#"><i class="bi bi-pencil-square me-2"></i>Editar Disciplina</a></li><li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item btn-remover-disciplina text-danger" href="#"><i class="bi bi-trash me-2"></i>Remover Disciplina</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-disciplina-id="CCO401" data-nome="Inteligência Artificial – CCO401" data-professor="Prof. Eduardo" data-dias="Qua" data-horario-inicio="14:00" data-horario-fim="17:00" data-local="Lab IA">
+                    <td>Inteligência Artificial – CCO401</td>
+                    <td>Prof. Eduardo</td>
+                    <td>Qua</td>
+                    <td>02:00 - 05:00 PM</td>
+                    <td>Lab IA</td>
+                    <td class="dt-actions-column">
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Ações da disciplina"><i class="bi bi-three-dots-vertical"></i></button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item btn-edit-disciplina" href="#"><i class="bi bi-pencil-square me-2"></i>Editar Disciplina</a></li><li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item btn-remover-disciplina text-danger" href="#"><i class="bi bi-trash me-2"></i>Remover Disciplina</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-disciplina-id="MKT300" data-nome="Marketing Digital – MKT300" data-professor="Prof. Helena" data-dias="Ter" data-horario-inicio="18:30" data-horario-fim="21:30" data-local="Sala Online MKT">
+                    <td>Marketing Digital – MKT300</td>
+                    <td>Prof. Helena</td>
+                    <td>Ter</td>
+                    <td>06:30 - 09:30 PM</td>
+                    <td>Sala Online MKT</td>
+                    <td class="dt-actions-column">
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Ações da disciplina"><i class="bi bi-three-dots-vertical"></i></button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item btn-edit-disciplina" href="#"><i class="bi bi-pencil-square me-2"></i>Editar Disciplina</a></li><li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item btn-remover-disciplina text-danger" href="#"><i class="bi bi-trash me-2"></i>Remover Disciplina</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr data-disciplina-id="MOB400" data-nome="Desenvolvimento Mobile – MOB400" data-professor="Prof. Igor" data-dias="Qui" data-horario-inicio="19:00" data-horario-fim="22:00" data-local="Lab Mobile Dev">
+                    <td>Desenvolvimento Mobile – MOB400</td>
+                    <td>Prof. Igor</td>
+                    <td>Qui</td>
+                    <td>07:00 - 10:00 PM</td>
+                    <td>Lab Mobile Dev</td>
+                    <td class="dt-actions-column">
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Ações da disciplina"><i class="bi bi-three-dots-vertical"></i></button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item btn-edit-disciplina" href="#"><i class="bi bi-pencil-square me-2"></i>Editar Disciplina</a></li><li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item btn-remover-disciplina text-danger" href="#"><i class="bi bi-trash me-2"></i>Remover Disciplina</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
         </table>
       </div>
     </main>
-  </div> <dialog id="modalDisciplina"> <form id="formDisciplina" method="dialog" novalidate> <div class="modal-header-custom modal-header-studyflow">
+  </div>
+
+  <dialog id="modalDisciplina">
+    <form id="formDisciplina" method="dialog" novalidate>
+        <div class="modal-header-custom modal-header-studyflow">
             <div class="modal-title-wrapper">
                 <img src="../imgs/logo.png" class="modal-logo-icon" alt="StudyFlow Logo">
-                <h5 class="modal-title-custom" id="modalDisciplinaLabel">Adicionar Disciplina</h5> </div>
-            <button type="button" class="btn-close-custom" id="fecharModalDisciplina" aria-label="Fechar"></button> </div>
+                <h5 class="modal-title-custom" id="modalDisciplinaLabel">Adicionar Disciplina</h5>
+            </div>
+            <button type="button" class="btn-close-custom" id="fecharModalDisciplina" aria-label="Fechar"></button>
+        </div>
         <div class="modal-body-custom">
             <div class="mb-3">
-                <label for="disciplinaNome" class="form-label">Nome da Disciplina</label> <input type="text" class="form-control" id="disciplinaNome" required> <div class="invalid-feedback"></div>
+                <label for="disciplinaNome" class="form-label">Nome da Disciplina</label>
+                <input type="text" class="form-control" id="disciplinaNome" required>
+                <div class="invalid-feedback"></div>
             </div>
              <div class="mb-3">
-                <label for="disciplinaProfessor" class="form-label">Professor</label> <input type="text" class="form-control" id="disciplinaProfessor"> <div class="invalid-feedback"></div>
+                <label for="disciplinaProfessor" class="form-label">Professor</label>
+                <input type="text" class="form-control" id="disciplinaProfessor">
+                <div class="invalid-feedback"></div>
             </div>
              <div class="mb-3">
-                <label for="disciplinaDias" class="form-label">Dias da Semana (ex: Seg, Qua, Sex)</label> <input type="text" class="form-control" id="disciplinaDias" required> <div class="invalid-feedback"></div>
+                <label for="disciplinaDias" class="form-label">Dias da Semana (ex: Seg, Qua, Sex)</label>
+                <input type="text" class="form-control" id="disciplinaDias" required>
+                <div class="invalid-feedback"></div>
             </div>
              <div class="row mb-3">
                  <div class="col-sm-6">
-                     <label for="disciplinaHorarioInicio" class="form-label">Horário de Início</label> <input type="time" class="form-control" id="disciplinaHorarioInicio" required> <div class="invalid-feedback"></div>
-                 </div>
+                    <label for="disciplinaHorarioInicio" class="form-label">Horário de Início</label>
+                    <input type="time" class="form-control" id="disciplinaHorarioInicio" required>
+                    <div class="invalid-feedback"></div>
+                </div>
                  <div class="col-sm-6">
-                     <label for="disciplinaHorarioFim" class="form-label">Horário de Fim</label> <input type="time" class="form-control" id="disciplinaHorarioFim" required> <div class="invalid-feedback"></div>
-                 </div>
-             </div>
-             <div class="mb-3">
-                <label for="disciplinaLocal" class="form-label">Local</label> <input type="text" class="form-control" id="disciplinaLocal" required> <div class="invalid-feedback"></div>
+                    <label for="disciplinaHorarioFim" class="form-label">Horário de Fim</label>
+                    <input type="time" class="form-control" id="disciplinaHorarioFim" required>
+                    <div class="invalid-feedback"></div>
+                </div>
             </div>
-            <input type="hidden" id="disciplinaId"> </div>
+             <div class="mb-3">
+                <label for="disciplinaLocal" class="form-label">Local</label>
+                <input type="text" class="form-control" id="disciplinaLocal" required>
+                <div class="invalid-feedback"></div>
+            </div>
+            <input type="hidden" id="disciplinaId">
+        </div>
         <div class="modal-footer-custom modal-footer-studyflow">
-            <button type="button" class="btn btn-modal-cancel" id="cancelarModalDisciplina">Cancelar</button> <button type="submit" class="btn btn-modal-save">Salvar Disciplina</button> </div>
+            <button type="button" class="btn btn-modal-cancel" id="cancelarModalDisciplina">Cancelar</button>
+            <button type="submit" class="btn btn-modal-save">Salvar Disciplina</button>
+        </div>
     </form>
   </dialog>
 
-   <dialog id="modalDetalhesDisciplina"> <div class="modal-header-custom modal-header-studyflow">
-          <div class="modal-title-wrapper">
-              <img src="../imgs/logo.png" class="modal-logo-icon" alt="StudyFlow Logo">
-              <h5 class="modal-title-custom" id="modalDetalhesDisciplinaLabel">Detalhes da Disciplina</h5> </div>
-          <button type="button" class="btn-close-custom" id="fecharModalDetalhesDisciplina" aria-label="Fechar"></button> </div>
-     <div class="modal-body-custom" id="modalDetalhesDisciplinaConteudo"> <p>Carregando detalhes...</p>
-     </div>
-     <div class="modal-footer-custom modal-footer-studyflow">
-          <button type="button" class="btn btn-modal-save" id="okModalDetalhesDisciplina">OK</button> </div>
+   <dialog id="modalDetalhesDisciplina">
+        <div class="modal-header-custom modal-header-studyflow">
+            <div class="modal-title-wrapper">
+                <img src="../imgs/logo.png" class="modal-logo-icon" alt="StudyFlow Logo">
+                <h5 class="modal-title-custom" id="modalDetalhesDisciplinaLabel">Detalhes da Disciplina</h5>
+            </div>
+            <button type="button" class="btn-close-custom" id="fecharModalDetalhesDisciplina" aria-label="Fechar"></button>
+        </div>
+       <div class="modal-body-custom" id="modalDetalhesDisciplinaConteudo">
+           <p>Carregando detalhes...</p>
+       </div>
+       <div class="modal-footer-custom modal-footer-studyflow">
+            <button type="button" class="btn btn-modal-save" id="okModalDetalhesDisciplina">OK</button>
+        </div>
    </dialog>
 
 
@@ -143,5 +349,6 @@
   <script type="text/javascript" src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
   <script type="text/javascript" src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.bootstrap5.js"></script>
 
-  <script src="../Scripts/disciplinas.js" defer></script> </body>
+  <script src="../Scripts/disciplinas.js" defer></script>
+</body>
 </html>
