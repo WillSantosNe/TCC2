@@ -151,7 +151,7 @@ document.addEventListener("DOMContentLoaded", function () {
             scrollCollapse: true,
             lengthChange: false,
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/2.0.7/i18n/pt-BR.json', // CORRIGIDO: Removida formatação de Markdown
+                url: 'https://cdn.datatables.net/plug-ins/2.0.7/i18n/pt-BR.json',
                 search: "",
                 searchPlaceholder: "Buscar provas...",
                 info: "Total de _TOTAL_ provas",
@@ -173,7 +173,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 { responsivePriority: 3, targets: 4 },
                 { responsivePriority: 1, targets: 5, className: "dt-actions-column no-export" }
             ],
-            aoColumnDefs: [ // Nota: aoColumnDefs é uma sintaxe mais antiga, columnDefs é o preferido atualmente.
+            aoColumnDefs: [
                 {
                     targets: '_all',
                     createdCell: function (td, cellData, rowData, row, col) {
@@ -229,7 +229,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     if (!$dropdownMenu.parent().is('body')) {
                         $dropdownMenu.data('bs-dropdown-original-parent', $dropdown);
-                        $dropdownMenu.data('bs-dropdown-toggle-button', $(e.target));
+                        $dropdownMenu.data('bs-dropdown-toggle-button', $(e.target)); // $(e.target) é o botão que abriu
                         $dropdownMenu.appendTo('body');
                         const bsDropdown = bootstrap.Dropdown.getInstance(e.target);
                         if (bsDropdown && bsDropdown._popper) {
@@ -250,10 +250,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
                 // --- FIM Lógica para mover o dropdown ---
 
-
-                // handleResponsiveControls(api); // ATENÇÃO: Função 'handleResponsiveControls' não definida neste escopo.
-                                               // Isso causará um erro em tempo de execução se não for definida globalmente ou em um escopo acessível.
-                                               // Como a solicitação é "apenas sintaticamente", a chamada em si é válida.
+                // function handleResponsiveControls(api) { /* Defina ou remova esta chamada */ }
+                // $(window).off('resize.dtLayoutProvas').on('resize.dtLayoutProvas', function() {
+                //     handleResponsiveControls(tabelaProvasDt);
+                // });
 
                 $(window).off('resize.dtProvasGlobal').on('resize.dtProvasGlobal', function () {
                     clearTimeout(resizeDebounceTimer);
@@ -262,10 +262,6 @@ document.addEventListener("DOMContentLoaded", function () {
                             tabelaProvasDt.columns.adjust().responsive.recalc();
                         }
                     }, 250);
-                });
-
-                $(window).off('resize.dtLayoutProvas').on('resize.dtLayoutProvas', function() {
-                    // handleResponsiveControls(tabelaProvasDt); // Mesma atenção para handleResponsiveControls aqui.
                 });
 
                 if (modalBusca) modalBusca.style.display = 'none';
@@ -277,9 +273,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     // --- GERENCIAMENTO DO MODAL DE ADICIONAR/EDITAR PROVA ---
-    // Nota: modalProva.showModal() e .close() são para o elemento <dialog> nativo.
-    // Se estiver usando Modais Bootstrap, os métodos seriam new bootstrap.Modal(modalProva).show() e .hide().
-    // O código está sintaticamente correto para <dialog>.
     function abrirModalFormProva(isEditMode = false, dadosProva = null, targetTr = null) {
         if (!formProva || !modalProvaLabel || !modalProva || !provaDisciplinaSelect || !provaProfessorInput) {
             console.error("Elementos do modal de prova não encontrados."); return;
@@ -327,16 +320,27 @@ document.addEventListener("DOMContentLoaded", function () {
             provaDisciplinaSelect.value = "";
             provaProfessorInput.value = "";
         }
+
+        // Lógica para abrir modal (tentar <dialog> ou Bootstrap)
         if (modalProva && typeof modalProva.showModal === 'function') {
             modalProva.showModal();
+        } else if (window.bootstrap && modalProva) {
+             const bsModal = bootstrap.Modal.getInstance(modalProva) || new bootstrap.Modal(modalProva);
+             bsModal.show();
         } else {
-            console.error("modalProva não é um elemento <dialog> ou .showModal não é uma função.");
+            console.error("modalProva não é um elemento <dialog> válido ou Bootstrap Modal não está disponível.");
         }
     }
 
 
     function fecharModalFormProva() {
-        if (modalProva && typeof modalProva.close === 'function') modalProva.close();
+        if (modalProva && typeof modalProva.close === 'function') {
+             modalProva.close();
+        } else if (window.bootstrap && modalProva) {
+            const bsModal = bootstrap.Modal.getInstance(modalProva);
+            if (bsModal) bsModal.hide();
+        }
+
         if (formProva) {
             formProva.reset();
             const fieldsToClearValidation = [
@@ -352,7 +356,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (fecharModalProvaBtn) fecharModalProvaBtn.addEventListener("click", (e) => { e.preventDefault(); fecharModalFormProva(); });
     if (cancelarModalProvaBtn) cancelarModalProvaBtn.addEventListener("click", (e) => { e.preventDefault(); fecharModalFormProva(); });
-    if (modalProva) modalProva.addEventListener("click", e => { if (e.target === modalProva) fecharModalFormProva(); });
+    if (modalProva) modalProva.addEventListener("click", e => {
+        if (e.target === modalProva && typeof modalProva.close === 'function') {
+            fecharModalFormProva();
+        }
+    });
 
 
     // --- GERENCIAMENTO DO MODAL DE BUSCA ---
@@ -360,10 +368,20 @@ document.addEventListener("DOMContentLoaded", function () {
         if (modalBusca && inputBuscaProvasModal && tabelaProvasDt) {
             inputBuscaProvasModal.value = tabelaProvasDt.search();
             if (typeof modalBusca.showModal === 'function') modalBusca.showModal();
+            else if (window.bootstrap) {
+                const bsModal = bootstrap.Modal.getInstance(modalBusca) || new bootstrap.Modal(modalBusca);
+                bsModal.show();
+            }
             inputBuscaProvasModal.focus();
         }
     }
-    function fecharModalDeBusca() { if (modalBusca && typeof modalBusca.close === 'function') modalBusca.close(); }
+    function fecharModalDeBusca() {
+        if (modalBusca && typeof modalBusca.close === 'function') modalBusca.close();
+        else if (window.bootstrap && modalBusca) {
+            const bsModal = bootstrap.Modal.getInstance(modalBusca);
+            if (bsModal) bsModal.hide();
+        }
+    }
 
     function aplicarBuscaDoModal() {
         if (tabelaProvasDt && inputBuscaProvasModal) {
@@ -375,7 +393,11 @@ document.addEventListener("DOMContentLoaded", function () {
     if (fecharModalBuscaBtn) { fecharModalBuscaBtn.addEventListener("click", (e) => { e.preventDefault(); fecharModalDeBusca(); }); }
     if (aplicarBuscaProvasBtn) { aplicarBuscaProvasBtn.addEventListener("click", (e) => { e.preventDefault(); aplicarBuscaDoModal(); }); }
     if (inputBuscaProvasModal) { inputBuscaProvasModal.addEventListener('keypress', function (e) { if (e.key === 'Enter') { e.preventDefault(); aplicarBuscaDoModal(); } }); }
-    if (modalBusca) modalBusca.addEventListener("click", e => { if (e.target === modalBusca) fecharModalDeBusca(); });
+    if (modalBusca) modalBusca.addEventListener("click", e => {
+        if (e.target === modalBusca && typeof modalBusca.close === 'function') {
+            fecharModalDeBusca();
+        }
+    });
 
 
     // --- FUNÇÕES E LISTENERS DO MODAL DE DETALHES ---
@@ -385,34 +407,39 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        const disciplina = dadosCompletosProva?.disciplinaNome || dadosLinhaTabela[0] || 'N/A';
+        const disciplina = dadosCompletosProva?.disciplinaNome || (dadosLinhaTabela ? dadosLinhaTabela[0] : null) || 'N/A';
         modalDetalhesProvaLabel.textContent = "Detalhes da Prova";
 
         const professorDaLista = listaDisciplinas.find(d => d.id === dadosCompletosProva?.disciplinaId || d.nome === disciplina)?.professor;
         const professor = dadosCompletosProva?.professor || professorDaLista || "Não informado";
 
-        const notaObtidaOriginal = dadosCompletosProva?.notaObtida !== undefined ? dadosCompletosProva.notaObtida : (dadosLinhaTabela[1] !== '-' ? String(dadosLinhaTabela[1]).split('/')[0].trim().replace(',', '.') : '');
-        const valorNotaOriginal = dadosCompletosProva?.valorNota || (dadosLinhaTabela[1] !== '-' ? String(dadosLinhaTabela[1]).split('/')[1]?.trim().replace(',', '.') : '10,0'); // Assumido 10,0 se não houver
-        const notaFormatada = notaObtidaOriginal && notaObtidaOriginal !== '-' ?
+        let notaObtidaOriginal = '';
+        let valorNotaOriginal = '10.0'; // Default
+        if (dadosCompletosProva) {
+            notaObtidaOriginal = dadosCompletosProva.notaObtida !== undefined ? dadosCompletosProva.notaObtida : '';
+            valorNotaOriginal = dadosCompletosProva.valorNota || '10.0';
+        } else if (dadosLinhaTabela && dadosLinhaTabela[1] && dadosLinhaTabela[1] !== '-') {
+            const partesNota = String(dadosLinhaTabela[1]).split('/');
+            notaObtidaOriginal = partesNota[0]?.trim().replace(',', '.') || '';
+            valorNotaOriginal = partesNota[1]?.trim().replace(',', '.') || '10.0';
+        }
+
+        const notaFormatada = notaObtidaOriginal && notaObtidaOriginal !== '' ?
             `${String(notaObtidaOriginal).replace('.', ',')} / ${String(valorNotaOriginal).replace('.', ',')}` :
-            (dadosLinhaTabela[1] === '-' && valorNotaOriginal ? `- / ${String(valorNotaOriginal).replace('.', ',')}` : '-');
+            (valorNotaOriginal ? `- / ${String(valorNotaOriginal).replace('.', ',')}` : '-');
 
 
-        const dataHorario = dadosLinhaTabela[2] || '-';
-        const local = dadosCompletosProva?.local !== undefined ? (dadosCompletosProva.local || '-') : (dadosLinhaTabela[3] || '-');
+        const dataHorario = (dadosLinhaTabela ? dadosLinhaTabela[2] : null) || '-';
+        const local = dadosCompletosProva?.local !== undefined ? (dadosCompletosProva.local || '-') : ((dadosLinhaTabela ? dadosLinhaTabela[3] : null) || '-');
 
-        let statusParaDetalhes = dadosLinhaTabela[4];
+        let statusParaDetalhes = (dadosLinhaTabela ? dadosLinhaTabela[4] : null); // Assume que já é HTML com o badge
         if (dadosCompletosProva?.status) {
             const statusBadgeClass = dadosCompletosProva.status === 'Agendado' ? 'bg-info-subtle text-info' :
                 (dadosCompletosProva.status === 'Concluída' ? 'bg-success-subtle text-success' :
                     'bg-danger-subtle text-danger');
             statusParaDetalhes = `<span class="badge ${statusBadgeClass}">${dadosCompletosProva.status}</span>`;
-        } else if (dadosLinhaTabela[4]) { // Garante que dadosLinhaTabela[4] existe
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = dadosLinhaTabela[4]; // dadosLinhaTabela[4] já deve ser HTML se veio da tabela
-            statusParaDetalhes = tempDiv.innerHTML || '-';
-        } else {
-            statusParaDetalhes = '-';
+        } else if (typeof statusParaDetalhes !== 'string' || !String(statusParaDetalhes).includes('<span')) {
+            statusParaDetalhes = dadosCompletosProva?.status || String(statusParaDetalhes || '-') ;
         }
 
 
@@ -445,87 +472,149 @@ document.addEventListener("DOMContentLoaded", function () {
                 ` : ''}
             </dl>`;
         if (modalDetalhes && typeof modalDetalhes.showModal === 'function') modalDetalhes.showModal();
+        else if (window.bootstrap && modalDetalhes) {
+            const bsModal = bootstrap.Modal.getInstance(modalDetalhes) || new bootstrap.Modal(modalDetalhes);
+            bsModal.show();
+        }
     }
-    function fecharModalDeDetalhes() { if (modalDetalhes && typeof modalDetalhes.close === 'function') modalDetalhes.close(); }
+    function fecharModalDeDetalhes() {
+        if (modalDetalhes && typeof modalDetalhes.close === 'function') modalDetalhes.close();
+        else if (window.bootstrap && modalDetalhes) {
+            const bsModal = bootstrap.Modal.getInstance(modalDetalhes);
+            if (bsModal) bsModal.hide();
+        }
+    }
     if (fecharModalDetalhesBtn) { fecharModalDetalhesBtn.addEventListener("click", (e) => { e.preventDefault(); fecharModalDeDetalhes(); }); }
     if (okModalDetalhesBtn) { okModalDetalhesBtn.addEventListener("click", (e) => { e.preventDefault(); fecharModalDeDetalhes(); }); }
-    if (modalDetalhes) modalDetalhes.addEventListener("click", e => { if (e.target === modalDetalhes) fecharModalDeDetalhes(); });
+    if (modalDetalhes) modalDetalhes.addEventListener("click", e => {
+        if (e.target === modalDetalhes && typeof modalDetalhes.close === 'function') {
+            fecharModalDeDetalhes();
+        }
+    });
 
-
-    // --- AÇÕES NA TABELA (Using event delegation on tbody for action buttons) ---
+    // --- AÇÕES NA TABELA ---
     $('body').on('click', '.btn-detalhar-prova, .btn-marcar-concluida, .btn-edit-proof, .btn-remover-prova', function (e) {
         e.preventDefault();
 
         const $clickedItem = $(this);
         const $dropdownMenu = $clickedItem.closest('.dropdown-menu');
         const $originalButton = $dropdownMenu.data('bs-dropdown-toggle-button');
-        let trElement = $originalButton ? $originalButton.closest('tr')[0] : null;
 
+        // Função auxiliar para fechar o dropdown
+        const hideDropdown = () => {
+            if ($originalButton && $originalButton.length > 0 && window.bootstrap) {
+                const dropdownInstance = bootstrap.Dropdown.getInstance($originalButton[0]);
+                if (dropdownInstance) {
+                    dropdownInstance.hide();
+                } else {
+                     // console.warn("Instância do dropdown não encontrada para fechar.");
+                }
+            } else {
+                // console.warn("Botão original do dropdown não disponível para fechar o dropdown.");
+            }
+        };
+
+        if (!$originalButton || $originalButton.length === 0) {
+            console.error("Ação na Tabela: Botão original do dropdown não encontrado nos dados do menu. A ação pode falhar.");
+            // Tentar fechar qualquer dropdown visível como último recurso, embora menos preciso
+            if(window.bootstrap && $('.dropdown-menu.show').length > 0) {
+                // Esta é uma tentativa genérica, pode não ser o dropdown correto
+                // $('.dropdown-menu.show').each(function() {
+                //    const possibleToggle = $(this).data('bs-dropdown-toggle-button') || $(this).siblings('[data-bs-toggle="dropdown"]')[0];
+                //    if(possibleToggle) {
+                //        const instance = bootstrap.Dropdown.getInstance(possibleToggle);
+                //        if(instance) instance.hide();
+                //    }
+                // });
+            }
+            return;
+        }
+
+        let trElement = $originalButton.closest('tr')[0];
+
+        // Fallback original do seu código (usar com cautela, o método primário é mais confiável)
         if (!trElement) {
-            console.warn("Referência ao botão original não encontrada. Tentando fallback para encontrar a linha.");
+            console.warn("Ação Tabela: trElement não encontrado via $originalButton.closest('tr'). Tentando fallback...");
             const $associatedButtonFallback = $dropdownMenu.prev('.btn.btn-sm.btn-icon');
             if ($associatedButtonFallback.length) {
                 trElement = $associatedButtonFallback.closest('tr')[0];
+                 console.log("Ação Tabela: trElement encontrado via fallback.");
             }
         }
 
         if (!tabelaProvasDt || !trElement) {
-            console.error("DataTables não inicializado ou não foi possível encontrar a linha da tabela associada.");
+            console.error("Ação Tabela: DataTables não inicializado ou trElement não encontrado.");
+            hideDropdown(); // Tenta fechar antes de sair
             return;
         }
 
-        const rowDataArray = tabelaProvasDt.row(trElement).data();
-        const dadosCompletosArmazenados = $(trElement).data('completo');
+        const row = tabelaProvasDt.row(trElement);
+        if (!row || !row.length || !row.node()) {
+             console.error("Ação Tabela: Linha do DataTables não encontrada para o trElement:", trElement);
+             hideDropdown(); // Tenta fechar antes de sair
+             return;
+        }
 
+        const rowDataArray = row.data(); // Dados visíveis da linha
+        const dadosCompletosArmazenados = $(trElement).data('completo'); // Dados completos armazenados no TR
 
+        // --- LÓGICA DAS AÇÕES ---
         if ($clickedItem.hasClass('btn-detalhar-prova')) {
-            abrirModalDeDetalhes(rowDataArray, dadosCompletosArmazenados);
-        } else if ($clickedItem.hasClass('btn-marcar-concluida')) {
-            if (dadosCompletosArmazenados?.status === 'Concluída') {
-                alert("Esta prova já está marcada como concluída.");
-                return;
-            }
-
-            if (dadosCompletosArmazenados) {
-                dadosCompletosArmazenados.status = 'Concluída';
-                $(trElement).data('completo', dadosCompletosArmazenados);
-                $(trElement).data('status', 'Concluída'); // Atualiza o data-status individualmente também
-            }
-
-            if (rowDataArray) {
-                rowDataArray[4] = `<span class="badge bg-success-subtle text-success">Concluída</span>`;
-                tabelaProvasDt.row(trElement).data(rowDataArray).draw(false);
-                alert("Prova marcada como concluída!");
+            if (!dadosCompletosArmazenados && !rowDataArray) {
+                alert("Erro: Dados insuficientes para detalhar a prova.");
             } else {
-                console.error("Não foi possível obter os dados visíveis da linha para marcar como concluída.");
+                abrirModalDeDetalhes(rowDataArray, dadosCompletosArmazenados);
             }
+        } else if ($clickedItem.hasClass('btn-marcar-concluida')) {
+            if (!dadosCompletosArmazenados) {
+                console.error("Marcar Concluída: dadosCompletosArmazenados não encontrados para a linha TR:", trElement, "ID Debug:", $(trElement).attr('data-prova-id-debug'));
+                alert("Erro: Não foi possível obter os dados completos da prova para marcar como concluída.");
+            } else if (dadosCompletosArmazenados.status === 'Concluída') {
+                alert("Esta prova já está marcada como concluída.");
+            } else {
+                dadosCompletosArmazenados.status = 'Concluída';
+                $(trElement).data('completo', dadosCompletosArmazenados); // Atualiza os dados armazenados
 
+                if (rowDataArray) {
+                    rowDataArray[4] = `<span class="badge bg-success-subtle text-success">Concluída</span>`; // Atualiza a célula de status
+                    row.data(rowDataArray).draw(false); // Redesenha a linha
+                    alert("Prova marcada como concluída!");
+                } else {
+                    console.error("Marcar Concluída: rowDataArray não encontrado. A tabela pode não ser atualizada visualmente.");
+                    alert("Prova marcada como concluída (dados internos atualizados, mas pode haver erro na visualização).");
+                     // Forçar um redesenho geral pode ajudar se rowDataArray estiver dessincronizado, mas é melhor investigar a causa.
+                     // tabelaProvasDt.draw(false);
+                }
+            }
         } else if ($clickedItem.hasClass('btn-edit-proof')) {
             if (!dadosCompletosArmazenados) {
-                console.error("Não foi possível obter os dados completos da prova para edição.");
-                return;
+                console.error("Editar Prova: dadosCompletosArmazenados não encontrados para a linha TR:", trElement, "ID Debug:", $(trElement).attr('data-prova-id-debug'));
+                alert("Erro: Não foi possível obter os dados completos da prova para edição.");
+            } else {
+                const dadosParaModal = {
+                    id: dadosCompletosArmazenados.id || 'tempID-' + new Date().getTime(),
+                    disciplinaId: dadosCompletosArmazenados.disciplinaId || '',
+                    professor: dadosCompletosArmazenados.professor || '',
+                    notaObtida: dadosCompletosArmazenados.notaObtida !== undefined ? String(dadosCompletosArmazenados.notaObtida).replace('.', ',') : '',
+                    data: dadosCompletosArmazenados.data || '',
+                    horario: dadosCompletosArmazenados.horario || '',
+                    local: dadosCompletosArmazenados.local || '',
+                    status: dadosCompletosArmazenados.status || 'Agendado',
+                    valorNota: dadosCompletosArmazenados.valorNota !== undefined ? String(dadosCompletosArmazenados.valorNota).replace('.', ',') : '',
+                    conteudos: dadosCompletosArmazenados.conteudos || '',
+                    observacoes: dadosCompletosArmazenados.observacoes || ''
+                };
+                abrirModalFormProva(true, dadosParaModal, trElement);
             }
-            const dadosParaModal = {
-                id: dadosCompletosArmazenados.id || 'tempID-' + new Date().getTime(),
-                disciplinaId: dadosCompletosArmazenados.disciplinaId || '',
-                professor: dadosCompletosArmazenados.professor || '',
-                notaObtida: dadosCompletosArmazenados.notaObtida !== undefined ? String(dadosCompletosArmazenados.notaObtida).replace('.', ',') : '',
-                data: dadosCompletosArmazenados.data || '',
-                horario: dadosCompletosArmazenados.horario || '',
-                local: dadosCompletosArmazenados.local || '',
-                status: dadosCompletosArmazenados.status || 'Agendado',
-                valorNota: dadosCompletosArmazenados.valorNota !== undefined ? String(dadosCompletosArmazenados.valorNota).replace('.', ',') : '',
-                conteudos: dadosCompletosArmazenados.conteudos || '',
-                observacoes: dadosCompletosArmazenados.observacoes || ''
-            };
-            abrirModalFormProva(true, dadosParaModal, trElement);
         } else if ($clickedItem.hasClass('btn-remover-prova')) {
-            const disciplinaNome = rowDataArray[0] || "esta prova";
+            const disciplinaNome = rowDataArray ? (rowDataArray[0] || "esta prova") : "esta prova";
             if (confirm(`Tem certeza que deseja remover a prova de "${disciplinaNome}"?`)) {
-                tabelaProvasDt.row(trElement).remove().draw(false);
+                row.remove().draw(false);
                 alert("Prova removida com sucesso!");
             }
         }
+
+        hideDropdown(); // Chama a função para fechar o dropdown
     });
 
 
@@ -567,7 +656,6 @@ document.addEventListener("DOMContentLoaded", function () {
             let dataHoraFormatadaParaTabela = '-';
             if (dadosCompletosProva.data) {
                 const [year, month, day] = dadosCompletosProva.data.split('-');
-                // Usar UTC para evitar problemas com fuso horário ao criar o objeto Date apenas com data
                 const dataObj = new Date(Date.UTC(parseInt(year), parseInt(month) - 1, parseInt(day)));
                 const meses = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
                 dataHoraFormatadaParaTabela = `${dataObj.getUTCDate()} ${meses[dataObj.getUTCMonth()]} ${dataObj.getUTCFullYear()}`;
@@ -608,32 +696,32 @@ document.addEventListener("DOMContentLoaded", function () {
                 dropdownHtml
             ];
 
-            let targetRow;
+            let targetRowNode; // Alterado de targetRow para targetRowNode para clareza
 
             if (provaId && rowIndex !== undefined && tabelaProvasDt.row(rowIndex).node()) {
-                targetRow = tabelaProvasDt.row(rowIndex);
-                targetRow.data(dadosLinhaTabela).draw(false);
+                targetRowNode = tabelaProvasDt.row(rowIndex).data(dadosLinhaTabela).draw(false).node();
                 alert("Prova atualizada com sucesso!");
             } else {
-                targetRow = tabelaProvasDt.row.add(dadosLinhaTabela).draw(false);
+                targetRowNode = tabelaProvasDt.row.add(dadosLinhaTabela).draw(false).node();
                 alert("Prova adicionada com sucesso!");
             }
 
-            const targetNode = $(targetRow.node());
-            if (targetNode.length) {
-                targetNode.data('completo', dadosCompletosProva);
-                // As linhas abaixo são redundantes se 'completo' já armazena tudo, mas não são um erro sintático.
-                targetNode.data('id', dadosCompletosProva.id);
-                targetNode.data('disciplinaId', dadosCompletosProva.disciplinaId);
-                targetNode.data('professor', dadosCompletosProva.professor);
-                targetNode.data('data', dadosCompletosProva.data);
-                targetNode.data('horario', dadosCompletosProva.horario);
-                targetNode.data('local', dadosCompletosProva.local);
-                targetNode.data('status', dadosCompletosProva.status);
-                targetNode.data('valorNota', dadosCompletosProva.valorNota);
-                targetNode.data('conteudos', dadosCompletosProva.conteudos);
-                targetNode.data('observacoes', dadosCompletosProva.observacoes);
-                targetNode.data('notaObtida', dadosCompletosProva.notaObtida);
+            if (targetRowNode) { // Verifica se targetRowNode é válido
+                console.log("FORM SUBMIT: Armazenando dados 'completo' no TR Node:", targetRowNode, "Com dados:", dadosCompletosProva);
+                $(targetRowNode).data('completo', dadosCompletosProva);
+                // $(targetRowNode).attr('data-prova-id-debug', dadosCompletosProva.id); // Para ajudar na depuração
+
+                // Opcional: armazenar outros dados individualmente se necessário
+                $(targetRowNode).data('id', dadosCompletosProva.id);
+                $(targetRowNode).data('status', dadosCompletosProva.status);
+                 // ... etc.
+                const dadosVerificados = $(targetRowNode).data('completo');
+                console.log("FORM SUBMIT: Verificando 'completo' data após armazenamento:", dadosVerificados);
+                if (!dadosVerificados) {
+                    console.error("FORM SUBMIT: FALHA ao verificar os dados 'completo' imediatamente após o armazenamento no TR:", targetRowNode);
+                }
+            } else {
+                console.error("FORM SUBMIT: targetRowNode não foi definido. Dados 'completo' não foram armazenados.");
             }
 
             fecharModalFormProva();
