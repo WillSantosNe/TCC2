@@ -1,6 +1,5 @@
 // calendario.js - script completo para inicialização e interatividade do FullCalendar
 
-// Configurações iniciais do calendário
 document.addEventListener('DOMContentLoaded', function () {
   const calendarEl = document.getElementById('calendar');
 
@@ -10,17 +9,24 @@ document.addEventListener('DOMContentLoaded', function () {
     height: '100%',
     locale: 'pt-br',
 
-    // Toolbar personalizada
+    // Toolbar personalizada com menu de três pontinhos apenas
     headerToolbar: {
       left: 'prev,next today',
       center: 'title',
-      right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+      right: 'viewMenu'
     },
 
-    // Plugins necessários (caso use modular)
-    // plugins: [ dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin ],
+    // Botão customizado para o menu de views
+    customButtons: {
+      viewMenu: {
+        text: '⋯',
+        click: function() {
+          document.querySelector('.fc-view-dropdown').classList.toggle('show');
+        }
+      }
+    },
 
-    // Data dos eventos (pode ser substituído por fetch de API)
+    // Fonte dos eventos (substitua por sua API)
     events: fetchEvents,
 
     // Clique em um dia vazio para criar um novo evento
@@ -40,19 +46,39 @@ document.addEventListener('DOMContentLoaded', function () {
         end: info.event.endStr,
         allDay: info.event.allDay
       });
-    },
-
-    // Carregando eventos antes da renderização
-    loading: function(isLoading) {
-      if (isLoading) {
-        // opcional: mostrar spinner
-      } else {
-        // opcional: ocultar spinner
-      }
     }
   });
 
   calendar.render();
+
+  // --- INJEÇÃO DO DROPDOWN DE VIEWS ---
+  const switcherBtn     = document.querySelector('.fc-viewMenu-button');
+  const switcherWrapper = switcherBtn.parentNode;
+
+  const dropdown = document.createElement('div');
+  dropdown.className = 'fc-view-dropdown';
+  dropdown.innerHTML = `
+    <button data-view="dayGridMonth">Mês</button>
+    <button data-view="timeGridWeek">Semana</button>
+    <button data-view="timeGridDay">Dia</button>
+    <button data-view="listWeek">Lista</button>
+  `;
+  switcherWrapper.appendChild(dropdown);
+
+  // Muda de view e fecha menu ao clicar na opção
+  dropdown.addEventListener('click', e => {
+    if (e.target.matches('button[data-view]')) {
+      calendar.changeView(e.target.getAttribute('data-view'));
+      dropdown.classList.remove('show');
+    }
+  });
+
+  // Fecha o menu se clicar fora
+  document.addEventListener('click', e => {
+    if (!switcherWrapper.contains(e.target)) {
+      dropdown.classList.remove('show');
+    }
+  });
 });
 
 /**
@@ -63,7 +89,6 @@ function fetchEvents(info, successCallback, failureCallback) {
   fetch(`/api/eventos?start=${info.startStr}&end=${info.endStr}`)
     .then(response => response.json())
     .then(data => {
-      // Mapeia dados do servidor para formato do FullCalendar
       const events = data.map(evt => ({
         id: evt.id,
         title: evt.titulo,
@@ -80,9 +105,13 @@ function fetchEvents(info, successCallback, failureCallback) {
     });
 }
 
+/**
+ * Abre modal de evento (criação/edição)
+ */
 function openEventModal(eventData) {
   const modal = document.getElementById('eventModal');
-
   const bsModal = new bootstrap.Modal(modal);
   bsModal.show();
+
+  // Aqui você pode pré-preencher campos do modal com eventData
 }
