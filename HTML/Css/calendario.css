@@ -1,0 +1,117 @@
+/* calendario.css - customização aprimorada do FullCalendar para combinar com a barra lateral do StudyFlow */
+
+/* Variáveis de cor para consistência */
+:root {
+  --sidebar-bg: #0f1a35;
+  --sidebar-text: #ffffff;
+  --primary-color: #31c979;
+  --secondary-color: #45a6ff;
+  --calendar-bg: #fafafa;
+  --today-bg: #e6f9f1;
+  --hover-bg: #f0f0f0;
+}
+
+/* Container geral do calendário */
+#calendar {
+  font-family: 'Inter', sans-serif;
+  background: var(--calendar-bg);
+  border-radius: var(--default-radius, 8px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+/* Toolbar (topo) estilizada */
+.fc .fc-toolbar {
+  background-color: var(--sidebar-bg) !important;
+  color: var(--sidebar-text) !important;
+  padding: 0.5rem 1rem;
+}
+
+/* Botões da toolbar mais suaves */
+.fc .fc-button {
+  background: transparent;
+  border: 1px solid var(--sidebar-text);
+  color: var(--sidebar-text);
+  border-radius: 4px;
+  padding: 0.4rem 0.75rem;
+  transition: background 0.2s, color 0.2s;
+}
+.fc .fc-button:hover,
+.fc .fc-button:focus {
+  background: var(--primary-color);
+  color: #fff;
+}
+.fc .fc-button.fc-button-active {
+  background: var(--primary-color);
+  color: #fff;
+  border-color: var(--primary-color);
+}
+.fc .fc-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Título central mais destacado */
+.fc .fc-toolbar-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+/* Cabeçalho de dias (grid) com texto na cor do background da sidebar */
+.fc .fc-col-header-cell-cushion {
+  background: transparent;
+  color: var(--sidebar-bg);
+  padding: 0.75rem 0;
+  font-weight: 600;
+  text-transform: uppercase;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+/* Grid de dias com destaque de hover e hoje */
+.fc .fc-daygrid-day-frame {
+  padding: 0.75rem;
+  transition: background 0.2s;
+}
+.fc .fc-daygrid-day-frame:hover {
+  background: var(--hover-bg);
+}
+.fc .fc-day-today .fc-daygrid-day-frame {
+  background: var(--today-bg) !important;
+}
+
+/* Números de dia maiores e coloridos */
+.fc .fc-daygrid-day-number {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Eventos customizados */
+.fc .fc-event {
+  border: none !important;
+  border-radius: 6px !important;
+  padding: 0.25rem 0.5rem !important;
+  font-size: 0.85rem;
+  font-weight: 500;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.1s;
+  background-color: var(--primary-color) !important;
+  color: #fff !important;
+}
+.fc .fc-event.secondary {
+  background-color: var(--secondary-color) !important;
+}
+.fc .fc-event:hover {
+  transform: translateY(-2px);
+}
+
+/* Lista (view list) melhorias */
+.fc .fc-list-item {
+  border-bottom: 1px solid #e0e0e0;
+  transition: background 0.2s;
+}
+.fc .fc-list-item:hover {
+  background: var(--hover-bg);
+}
+
