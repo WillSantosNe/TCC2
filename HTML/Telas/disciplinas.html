@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Disciplinas Matriculadas | StudyFlow</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.0.7/css/dataTables.bootstrap5.css"/>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/3.0.2/css/responsive.bootstrap5.css"/>
+
+  <link rel="stylesheet" href="../Css/geral.css">
+  <link rel="stylesheet" href="../Css/tela_principal.css">
+  <link rel="stylesheet" href="../Css/disciplinas.css">
+  <link rel="stylesheet" href="../Css/provas.css">
+ </head>
+<body class="auth-body dashboard-body">
+
+  <aside id="sidebar" class="offcanvas-lg offcanvas-start" tabindex="-1">
+    <div class="brand-text"></div>
+    <nav class="nav flex-column">
+      <a href="./principal.html" class="sf-nav-link">Dashboard</a>
+      <div class="sf-sidebar-section">Acadêmico</div>
+      <a class="sf-nav-link" href="./provas.html">Plataforma de Provas</a>
+      <a class="sf-nav-link" href="./tarefas.html">Tarefas</a>
+      <a class="sf-nav-link active" href="./disciplinas.html">Disciplinas Matriculadas</a> <a class="sf-nav-link" href="#">Calendário</a>
+      <a class="sf-nav-link" href="#">Anotações</a>
+      <div class="sf-sidebar-section">Configurações</div>
+      <a class="sf-nav-link" href="#">Configurações de Usuário</a>
+      <a class="sf-nav-link" href="#">Notificações</a>
+      <div class="mt-auto pt-3"><a class="sf-nav-link" href="./login.html">Sair</a></div>
+    </nav>
+  </aside>
+
+  <div class="sf-main">
+    <header class="sf-header position-relative">
+        <button class="btn-menu me-auto d-lg-none"
+                data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-label="Abrir menu">
+          <i class="bi bi-list"></i>
+        </button>
+        <div class="sf-header-brand">
+          <img src="../imgs/logo.png" alt="Logo"><span>StudyFlow</span>
+        </div>
+        <img src="../imgs/avatar.jpg" class="rounded-circle" style="width:40px;height:40px" alt="Avatar do usuário">
+    </header>
+
+    <main class="sf-content container-fluid">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h2 class="sf-page-title">Disciplinas Matriculadas</h2> <p class="text-muted sf-page-subtitle">Gerencie suas disciplinas, horários e locais.</p> </div>
+        <button class="btn btn-primary btn-add-proof" id="abrirModalNovaDisciplina"> <i class="bi bi-plus-lg me-sm-2"></i><span class="d-none d-sm-inline">Adicionar Disciplina</span> </button>
+      </div>
+
+      <div class="table-container shadow-sm">
+        <table id="tabelaDisciplinas" class="table table-hover dt-responsive nowrap align-middle mb-0 bg-white border rounded-3 disciplinas-table" style="width:100%"> <thead class="table-light">
+            <tr>
+              <th data-priority="1">Disciplina</th>
+              <th data-priority="3">Professor</th>
+              <th data-priority="2">Dias da Semana</th>
+              <th data-priority="4">Horário</th>
+              <th data-priority="5">Local</th>
+              <th data-priority="1" class="no-sort dt-actions-column">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-disciplina-id="ITD201" data-nome="Web Design Avançado – ITD201" data-professor="Prof. João Paulo" data-dias="Seg, Qua, Sex" data-horario-inicio="08:00" data-horario-fim="10:00" data-local="Sala B12">
+              <td>Web Design Avançado – ITD201</td>
+              <td>Prof. João Paulo</td>
+              <td>Seg, Qua, Sex</td>
+              <td>08:00 - 10:00 AM</td>
+              <td>Sala B12</td>
+               <td class="dt-actions-column">
+                   <div class="dropdown">
+
+                        <button class="btn btn-sm btn-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Ações da disciplina">
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+
+                        <li><a class="dropdown-item btn-edit-disciplina" href="#"><i class="bi bi-pencil-square me-2"></i>Editar Disciplina</a></li> <li><hr class="dropdown-divider"></li>
+
+                        <li><a class="dropdown-item btn-remover-disciplina text-danger" href="#"><i class="bi bi-trash me-2"></i>Remover Disciplina</a></li> </ul>
+
+                        </div>
+                    </td>
+                </tr>
+             </tbody>
+        </table>
+      </div>
+    </main>
+  </div> <dialog id="modalDisciplina"> <form id="formDisciplina" method="dialog" novalidate> <div class="modal-header-custom modal-header-studyflow">
+            <div class="modal-title-wrapper">
+                <img src="../imgs/logo.png" class="modal-logo-icon" alt="StudyFlow Logo">
+                <h5 class="modal-title-custom" id="modalDisciplinaLabel">Adicionar Disciplina</h5> </div>
+            <button type="button" class="btn-close-custom" id="fecharModalDisciplina" aria-label="Fechar"></button> </div>
+        <div class="modal-body-custom">
+            <div class="mb-3">
+                <label for="disciplinaNome" class="form-label">Nome da Disciplina</label> <input type="text" class="form-control" id="disciplinaNome" required> <div class="invalid-feedback"></div>
+            </div>
+             <div class="mb-3">
+                <label for="disciplinaProfessor" class="form-label">Professor</label> <input type="text" class="form-control" id="disciplinaProfessor"> <div class="invalid-feedback"></div>
+            </div>
+             <div class="mb-3">
+                <label for="disciplinaDias" class="form-label">Dias da Semana (ex: Seg, Qua, Sex)</label> <input type="text" class="form-control" id="disciplinaDias" required> <div class="invalid-feedback"></div>
+            </div>
+             <div class="row mb-3">
+                 <div class="col-sm-6">
+                     <label for="disciplinaHorarioInicio" class="form-label">Horário de Início</label> <input type="time" class="form-control" id="disciplinaHorarioInicio" required> <div class="invalid-feedback"></div>
+                 </div>
+                 <div class="col-sm-6">
+                     <label for="disciplinaHorarioFim" class="form-label">Horário de Fim</label> <input type="time" class="form-control" id="disciplinaHorarioFim" required> <div class="invalid-feedback"></div>
+                 </div>
+             </div>
+             <div class="mb-3">
+                <label for="disciplinaLocal" class="form-label">Local</label> <input type="text" class="form-control" id="disciplinaLocal" required> <div class="invalid-feedback"></div>
+            </div>
+            <input type="hidden" id="disciplinaId"> </div>
+        <div class="modal-footer-custom modal-footer-studyflow">
+            <button type="button" class="btn btn-modal-cancel" id="cancelarModalDisciplina">Cancelar</button> <button type="submit" class="btn btn-modal-save">Salvar Disciplina</button> </div>
+    </form>
+  </dialog>
+
+   <dialog id="modalDetalhesDisciplina"> <div class="modal-header-custom modal-header-studyflow">
+          <div class="modal-title-wrapper">
+              <img src="../imgs/logo.png" class="modal-logo-icon" alt="StudyFlow Logo">
+              <h5 class="modal-title-custom" id="modalDetalhesDisciplinaLabel">Detalhes da Disciplina</h5> </div>
+          <button type="button" class="btn-close-custom" id="fecharModalDetalhesDisciplina" aria-label="Fechar"></button> </div>
+     <div class="modal-body-custom" id="modalDetalhesDisciplinaConteudo"> <p>Carregando detalhes...</p>
+     </div>
+     <div class="modal-footer-custom modal-footer-studyflow">
+          <button type="button" class="btn btn-modal-save" id="okModalDetalhesDisciplina">OK</button> </div>
+   </dialog>
+
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/2.0.7/js/dataTables.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/2.0.7/js/dataTables.bootstrap5.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.bootstrap5.js"></script>
+
+  <script src="../Scripts/disciplinas.js" defer></script> </body>
+</html>

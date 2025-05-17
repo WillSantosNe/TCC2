@@ -157,7 +157,7 @@ dialog#modalProva .btn-modal-save:hover { background-color: #242E47; border-colo
 
 .provas-table th.dt-actions-column,
 .provas-table td.dt-actions-column {
-    text-align: center !important; /* Centralizado para o ícone de 3 pontos */
+    text-align: left !important; /* Centralizado para o ícone de 3 pontos */
     padding-left: 0.5rem !important;
     padding-right: 0.5rem !important;
     width: auto;
@@ -225,6 +225,11 @@ div.dataTables_scrollBody,
 #tabelaProvas_wrapper .table-responsive { /* Se DataTables adicionar essa classe */
   overflow: visible !important;
 }
+
+
+.dropdown-menu { font-size: 0.9rem; box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15); z-index: 1056; } /* z-index alto */
+.dropdown-item i { width: 1.25em; margin-right: 0.5rem; } /* Adiciona margem ao ícone do dropdown */
+.dropdown-item.text-danger i { color: inherit; } /* Para o ícone do "Remover" herdar a cor */
 
 
 /* REMOVIDOS: Estilos para o modal de busca que não será mais usado */
