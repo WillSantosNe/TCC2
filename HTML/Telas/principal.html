@@ -11,13 +11,12 @@
 
   <link rel="stylesheet" href="../Css/geral.css">
   <link rel="stylesheet" href="../Css/tela_principal.css">
-
+  <script src="../Scripts/principal.js" defer></script>
 </head>
 <body class="auth-body dashboard-body">
 
   <aside id="sidebar" class="offcanvas-lg offcanvas-start" tabindex="-1">
     <div class="brand-text"></div>
-
     <nav class="nav flex-column">
       <a href="#" class="sf-nav-link active">Dashboard</a>
 
@@ -52,50 +51,84 @@
     </header>
 
     <main class="sf-content container-fluid">
+      <!-- HERO + CALENDAR -->
       <div class="row g-4 mb-4">
         <div class="col-lg-9">
           <div class="hero-card d-flex flex-column flex-md-row align-items-md-center justify-content-between h-100">
             <div class="pe-md-4">
               <p class="hero-title mb-1">👋 Bem-vindo, Jonathan!</p>
               <h2 class="hero-subtitle mb-3">Sua jornada de estudos personalizada!</h2>
-              <p class="mb-0">
-                Sua jornada de estudos personalizada começa com o StudyFlow, a plataforma feita para transformar sua
-                rotina acadêmica. Organize tarefas, receba notificações importantes e acompanhe prazos em um só lugar.
-              </p>
+              <p class="mb-0">Organize tarefas, receba notificações importantes e acompanhe prazos em um só lugar.</p>
             </div>
             <div class="mt-4 mt-md-0" style="max-width:220px">
-              <!-- <img src="../imgs/hero-dashboard.svg" class="img-fluid" alt="Ilustração hero"> -->
+              <img src="../imgs/hero-dashboard.svg" class="img-fluid" alt="Ilustração hero">
             </div>
           </div>
         </div>
-       <div class="col-12 col-md-6 col-lg-3">
-      <div class="calendar-widget bg-white shadow-sm rounded-3 p-3">
-        <!-- 4:3 ou 16:9, escolha o que funcionar melhor -->
-          <iframe
-            src="https://calendar.google.com/calendar/embed?src=SEU_CALENDAR_ID%40group.calendar.google.com&amp;ctz=America%2FSao_Paulo"
-            style="border:0"
-            frameborder="0"
-            scrolling="no">
-          </iframe>
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="calendar-widget bg-white shadow-sm rounded-3 p-3">
+            <iframe
+              src="https://calendar.google.com/calendar/embed?src=SEU_CALENDAR_ID%40group.calendar.google.com&amp;ctz=America%2FSao_Paulo"
+              style="border:0" frameborder="0" scrolling="no">
+            </iframe>
+          </div>
         </div>
       </div>
-    </div>
-      <div class="row g-4">
-        <div class="col-lg-9 d-flex flex-column gap-4">
 
-          <section>
+      <!-- CARROSSEL + TAREFAS -->
+      <div class="row g-4 mb-5">
+        <!-- CARROSSEL E PROVAS -->
+        <div class="col-lg-9">
+          <!-- Disciplinas Matriculadas -->
+          <section class="disciplines-carousel mb-4">
             <div class="d-flex justify-content-between align-items-center mb-2">
               <h6 class="fw-semibold m-0">Disciplinas Matriculadas</h6>
-              <a class="btn-link text-sm" href="./disciplinas.html">Ver tudo</a>
+              <div class="carousel-nav">
+                <button id="prevCoursesBtn" class="btn btn-outline-secondary btn-sm me-1">
+                  <i class="bi bi-arrow-left"></i>
+                </button>
+                <button id="nextCoursesBtn" class="btn btn-outline-secondary btn-sm">
+                  <i class="bi bi-arrow-right"></i>
+                </button>
+              </div>
             </div>
-            <div class="row g-3">
-              <div class="col-md-6 col-xl-3"><div class="course-card course-1"><strong>Fundamentos Gráficos – ART101</strong><span>Prof. Jango</span><span>Segunda & Sexta-Feira</span><span>19h00 – 21h50</span><span>Lab de Computação 2</span></div></div>
-              <div class="col-md-6 col-xl-3"><div class="course-card course-2"><strong>Web Design Avançado – ITD201</strong><span>Prof. João Paulo</span><span>Terça-Feira</span><span>19h00 – 21h50</span><span>Lab de Computação 4</span></div></div>
-              <div class="col-md-6 col-xl-3"><div class="course-card course-3"><strong>Pesquisa de UX – UXD301</strong><span>Prof. Jason</span><span>Quarta-Feira</span><span>19h00 – 21h50</span><span>Design Lab 2</span></div></div>
-              <div class="col-md-6 col-xl-3"><div class="course-card course-4"><strong>Técnicas de Animação 3D – ANI301</strong><span>Prof. Pryzado</span><span>Quinta-Feira</span><span>19h00 – 21h50</span><span>Studio de Animação 3</span></div></div>
+            <div id="coursesContainer" class="courses-carousel">
+              <div class="course-card course-1">
+                <strong>Fundamentos Gráficos – ART101</strong>
+                <span>Prof. Jango / Seg & Sex / 19h00–21h50</span>
+              </div>
+              <div class="course-card course-2">
+                <strong>Web Design Avançado – ITD201</strong>
+                <span>Prof. João Paulo / Terça / 19h00–21h50</span>
+              </div>
+              <div class="course-card course-3">
+                <strong>Pesquisa de UX – UXD301</strong>
+                <span>Prof. Jason / Quarta / 19h00–21h50</span>
+              </div>
+              <div class="course-card course-4">
+                <strong>Téc. de Animação 3D – ANI301</strong>
+                <span>Prof. Pryzado / Quinta / 19h00–21h50</span>
+              </div>
+              <div class="course-card course-1">
+                <strong>Design Responsivo – ITD202</strong>
+                <span>Prof. Silva / Segunda / 18h00–20h50</span>
+              </div>
+              <div class="course-card course-2">
+                <strong>Banco de Dados – BDD101</strong>
+                <span>Prof. Santos / Sexta / 14h00–16h50</span>
+              </div>
+              <div class="course-card course-3">
+                <strong>Eng. de Software – ESW301</strong>
+                <span>Prof. Almeida / Quarta / 10h00–12h50</span>
+              </div>
+              <div class="course-card course-4">
+                <strong>Inteligência Artificial – AI401</strong>
+                <span>Prof. Costa / Terça / 08h00–10h50</span>
+              </div>
             </div>
           </section>
 
+          <!-- Plataforma de Provas -->
           <section>
             <div class="d-flex justify-content-between align-items-center mb-2">
               <h6 class="fw-semibold m-0">Plataforma de Provas</h6>
@@ -105,37 +138,92 @@
               <table class="table table-hover align-middle mb-0 bg-white border rounded-3">
                 <thead class="table-light">
                   <tr>
-                    <th>Prova</th><th>Curso</th><th>Data</th><th>Horário</th><th>Local</th><th>Status</th>
+                    <th>Prova</th>
+                    <th>Data</th>
+                    <th>Horário</th>
+                    <th>Local</th>
+                    <th>Status</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr><td>Fund. de Design Gráfico</td><td>ART101</td><td>25 Jan 2025</td><td>19h30</td><td>Design Studio A</td><td><span class="badge bg-success-subtle text-success">Concluída</span></td></tr>
-                  <tr><td>Ilustração Digital</td><td>ART103</td><td>05 Fev 2025</td><td>20h00</td><td>Laboratório 2</td><td><span class="badge bg-success-subtle text-success">Concluída</span></td></tr>
-                  <tr><td>Princípios de UX/UI Design</td><td>UXD301</td><td>10 Mar 2025</td><td>19h25</td><td>Design Lab 1</td><td><span class="badge bg-info-subtle text-info">Agendada</span></td></tr>
-                  <tr><td>Redação História do Design</td><td>ART101</td><td>12 Abr 2025</td><td>09h00</td><td>Sala de Aula B</td><td><span class="badge bg-info-subtle text-info">Agendada</span></td></tr>
+                    <td>Fund. de Design Gráfico</td>
+                    <td>25 Jan 2025</td>
+                    <td>19h30</td>
+                    <td>Design Studio A</td>
+                    <td><span class="badge bg-success-subtle text-success">Concluída</span></td>
+                  </tr>
+                  <tr>
+                    <td>Ilustração Digital</td>
+                    <td>05 Fev 2025</td>
+                    <td>20h00</td>
+                    <td>Laboratório 2</td>
+                    <td><span class="badge bg-success-subtle text-success">Concluída</span></td>
+                  </tr>
+                  <tr>
+                    <td>Princípios de UX/UI Design</td>
+                    <td>10 Mar 2025</td>
+                    <td>19h25</td>
+                    <td>Design Lab 1</td>
+                    <td><span class="badge bg-info-subtle text-info">Agendada</span></td>
+                  </tr>
+                  <tr>
+                    <td>Redação História do Design</td>
+                    <td>12 Abr 2025</td>
+                    <td>09h00</td>
+                    <td>Sala de Aula B</td>
+                    <td><span class="badge bg-info-subtle text-info">Agendada</span></td>
+                  </tr>
                 </tbody>
               </table>
             </div>
           </section>
         </div>
 
+        <!-- TAREFAS -->
         <div class="col-lg-3">
           <div class="d-flex justify-content-between align-items-center mb-2">
             <h6 class="fw-semibold m-0">Tarefas</h6>
             <a class="btn-link text-sm" href="./tarefas.html">Ver tudo</a>
           </div>
           <div class="vstack gap-3">
-            <div class="task-item border-start" style="border-color:#ffa94d !important"><div class="d-flex justify-content-between"><strong class="text-sm">Fundamentos Gráficos</strong><span class="badge bg-warning-subtle text-warning task-status">Em andamento</span></div><small class="d-block">Projeto: Design 1</small><small>Entrega: 10 Fev 2025</small></div>
-            <div class="task-item border-start" style="border-color:#31c979 !important"><div class="d-flex justify-content-between"><strong class="text-sm">Web Design Avançado</strong><span class="badge bg-success-subtle text-success task-status">Completo</span></div><small class="d-block">Projeto: Website Responsivo</small><small>Entrega: 05 Mar 2025</small></div>
-            <div class="task-item border-start" style="border-color:#ae83ff !important"><div class="d-flex justify-content-between"><strong class="text-sm">Pesquisa de UX</strong><span class="badge bg-light text-dark border task-status">Em revisão</span></div><small class="d-block">Relatório de Teste com Usuário</small><small>Entrega: 15 Abr 2025</small></div>
-            <div class="task-item border-start" style="border-color:#ff7d7d !important"><div class="d-flex justify-content-between"><strong class="text-sm">Animação 3D</strong><span class="badge bg-danger-subtle text-danger task-status">Atrasada</span></div><small class="d-block">Projeto: Personagem 3D</small><small>Entrega: 20 Mai 2025</small></div>
+            <div class="task-item border-start border-warning-subtle">
+              <div class="d-flex justify-content-between">
+                <strong class="text-sm">Fundamentos Gráficos</strong>
+                <span class="badge bg-warning-subtle text-warning task-status">Em andamento</span>
+              </div>
+              <small>Projeto: Design 1</small>
+              <small>Entrega: 10 Fev 2025</small>
+            </div>
+            <div class="task-item border-start border-success-subtle">
+              <div class="d-flex justify-content-between">
+                <strong class="text-sm">Web Design Avançado</strong>
+                <span class="badge bg-success-subtle text-success task-status">Completo</span>
+              </div>
+              <small>Projeto: Website Responsivo</small>
+              <small>Entrega: 05 Mar 2025</small>
+            </div>
+            <div class="task-item border-start border-secondary-subtle">
+              <div class="d-flex justify-content-between">
+                <strong class="text-sm">Pesquisa de UX</strong>
+                <span class="badge bg-light text-dark border task-status">Em revisão</span>
+              </div>
+              <small>Relatório de Teste com Usuário</small>
+              <small>Entrega: 15 Abr 2025</small>
+            </div>
+            <div class="task-item border-start border-danger-subtle">
+              <div class="d-flex justify-content-between">
+                <strong class="text-sm">Animação 3D</strong>
+                <span class="badge bg-danger-subtle text-danger task-status">Atrasada</span>
+              </div>
+              <small>Projeto: Personagem 3D</small>
+              <small>Entrega: 20 Mai 2025</small>
+            </div>
           </div>
         </div>
       </div>
-
     </main>
-  </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
 </body>
 </html>

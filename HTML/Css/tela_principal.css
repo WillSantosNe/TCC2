@@ -252,3 +252,70 @@ body.dashboard-body {
   font-weight: 600;
   text-transform: uppercase;
 }
+
+/* ===== Carrossel Compacto de Disciplinas ===== */
+section.disciplines-carousel {
+  margin-bottom: 1rem;
+}
+
+/* Wrapper visível + setas */
+#coursesContainer {
+  position: relative;
+  overflow: hidden;
+  height: 100px;       /* altura total do bloco do carrossel */
+  margin-bottom: 0.5rem;
+}
+
+/* Linha interna que desliza */
+.courses-carousel {
+  display: flex;
+  gap: 0.75rem;
+  transition: transform 0.3s ease;
+}
+
+/* Cada card */
+.courses-carousel .course-card {
+  flex: 0 0 25%;       /* 4 cards por tela */
+  height: 100%;        /* usa a altura do container */
+  padding: 0.5rem;     /* menos espaçamento */
+  font-size: 0.8rem;   /* texto um pouco menor */
+  overflow: hidden;
+}
+
+/* Botões de navegação */
+.carousel-nav {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.carousel-nav button {
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid #ccc;
+  background: #fff;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  padding: 0;
+}
+
+/* Ajuste geral do bloco de carrossel para encaixar com tarefas */
+@media (min-width: 992px) {
+  section.disciplines-carousel {
+    /* garante que o carrossel ocupe toda a largura disponível
+       dentro do col-lg-9, deixando o col-lg-3 ao lado para as tarefas */
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding-right: 1rem; /* espaço para o bloco de tarefas à direita */
+  }
+
+  /* opcional: você pode restringir ainda mais a largura máxima
+     caso queira um gap maior entre disciplinas e tarefas */
+  .sf-content .row > .col-lg-9 {
+    max-width: calc(100% - 280px); /* 280px é a largura aproximada do col-lg-3 de tarefas */
+  }
+}
+

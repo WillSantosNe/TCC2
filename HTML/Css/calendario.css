@@ -1,29 +1,27 @@
-/* calendario.css - Customização aprimorada do FullCalendar para combinar com a barra lateral do StudyFlow */
+/* calendario.css - Visual compacto igual à sua segunda imagem */
 
-/* Variáveis de cor para consistência com tema */
+/* === VARIÁVEIS GLOBAIS === */
 :root {
-  --sidebar-bg: #0f1a35;
-  --sidebar-text: #ffffff;
+  --sidebar-bg:    #0f1a35;
+  --sidebar-text:  #ffffff;
   --primary-color: #31c979;
   --secondary-color: #45a6ff;
-  --calendar-bg: #fafafa;
-  --today-bg: #e6f9f1;
-  --hover-bg: #f0f0f0;
+  --calendar-bg:   #fafafa;
+  --today-bg:      #e6f9f1;
+  --hover-bg:      #f0f0f0;
 }
 
-/* Reset básico e container flex para layout completo */
+/* === RESET & LAYOUT === */
 html, body {
   height: 100%;
   margin: 0;
   font-family: 'Inter', sans-serif;
 }
-
 .sf-main {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
-
 .calendar-page {
   flex: 1;
   display: flex;
@@ -33,206 +31,200 @@ html, body {
   background: var(--calendar-bg);
 }
 
-/* Container do calendário */
+/* === CONTAINER DO CALENDÁRIO === */
 #calendar {
   width: 100%;
   max-width: 1200px;
   height: 100%;
   background: #fff;
-  border-radius: var(--default-radius, 8px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  overflow: visible !important; /* dropdown acima */
 }
 
-/* Toolbar personalizada */
+/* === TOOLBAR === */
 .fc .fc-toolbar {
-  background-color: var(--sidebar-bg) !important;
+  position: relative;
+  background: var(--sidebar-bg) !important;
   color: var(--sidebar-text) !important;
-  padding: 0.5rem 1rem;
+  padding: 0.3rem 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 500;
 }
 
+/* Navegação (prev/next/today) */
+.fc .fc-button-group {
+  display: flex;
+  gap: 0.25rem;
+}
+.fc .fc-today-button {
+  display: inline-flex !important;
+  opacity: 0.6;
+  font-size: 0.8rem;
+}
+.fc .fc-today-button:disabled {
+  opacity: 0.3;
+}
+
+/* Título */
+.fc .fc-toolbar-title {
+  flex: 1;
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+/* Botão “⋯” */
+.fc .fc-viewMenu-button {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--sidebar-text);
+  color: var(--sidebar-text);
+  border-radius: 4px;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+/* Botões padrão (se ainda estiverem visíveis) */
 .fc .fc-button {
   background: transparent;
   border: 1px solid var(--sidebar-text);
   color: var(--sidebar-text);
   border-radius: 4px;
-  padding: 0.4rem 0.75rem;
-  font-size: 0.9rem;
+  padding: 0.3rem 0.5rem;
+  font-size: 0.85rem;
   transition: background 0.2s, color 0.2s;
 }
-
-.fc .fc-button:hover,
-.fc .fc-button:focus {
+.fc .fc-button:hover {
   background: var(--primary-color);
   color: #fff;
 }
-
 .fc .fc-button.fc-button-active {
   background: var(--primary-color);
-  color: #fff;
   border-color: var(--primary-color);
+  color: #fff;
 }
-
 .fc .fc-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-/* Título centralizado no toolbar */
-.fc .fc-toolbar-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  text-transform: capitalize;
-  flex: 1;
-  text-align: center;
-}
-
-/* Cabeçalho de colunas de dias */
-.fc .fc-col-header-cell-cushion {
-  color: var(--sidebar-bg);
-  font-weight: 600;
-  text-transform: uppercase;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid #e0e0e0;
-  background: transparent;
-}
-
-/* Grid de dias */
-.fc .fc-daygrid-day-frame {
-  padding: 0.75rem;
-  transition: background 0.2s;
-}
-
-.fc .fc-daygrid-day-frame:hover {
-  background: var(--hover-bg);
-}
-
-.fc .fc-day-today .fc-daygrid-day-frame {
-  background: var(--today-bg) !important;
-}
-
-.fc .fc-daygrid-day-number {
-  font-size: 1rem;
-  font-weight: 500;
-  color: #333;
-}
-
-/* Eventos (dayGrid e timeGrid) customizados */
-.fc .fc-event {
-  border: none !important;
-  border-radius: 6px !important;
-  padding: 0.25rem 0.5rem !important;
-  font-size: 0.85rem;
-  font-weight: 500;
-  background-color: var(--primary-color) !important;
-  color: #fff !important;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-  transition: transform 0.1s;
-}
-
-.fc .fc-event.secondary {
-  background-color: var(--secondary-color) !important;
-}
-
-.fc .fc-event:hover {
-  transform: translateY(-2px);
-}
-
-/* List View aprimorada */
-.fc .fc-list-view {
-  background: #fff;
-}
-
-.fc .fc-list-item {
-  border-bottom: 1px solid #e0e0e0;
-  padding: 0.5rem 1rem;
-  transition: background 0.2s;
-}
-
-.fc .fc-list-item:hover {
-  background: var(--hover-bg);
-}
-
-/* Responsividade para telas médias e pequenas */
-@media (max-width: 992px) {
-  .fc-toolbar .fc-button[data-view^="dayGrid"],
-  .fc-toolbar .fc-button[data-view^="timeGrid"] {
-    display: none;
-  }
-  .fc .fc-list-view {
-    display: block;
-  }
-}
-
-@media (max-width: 768px) {
-  .fc .fc-toolbar {
-    padding: 0.5rem;
-  }
-  .fc .fc-toolbar-title {
-    font-size: 1.25rem;
-  }
-  .fc .fc-button {
-    padding: 0.3rem 0.5rem;
-    font-size: 0.8rem;
-  }
-  .fc .fc-col-header-cell-cushion {
-    font-size: 0.75rem;
-  }
-  .fc .fc-daygrid-day-frame {
-    padding: 0.5rem;
-  }
-}
-
-/* Menu suspenso de visualizações em telas pequenas */
-/* Faz o grupo de botões (onde está o “⋯”) ter posicionamento relativo */
-.fc .fc-toolbar .fc-button-group {
-  position: relative;
-}
-
-/* Menu suspenso de visualizações */
+/* === DROPDOWN DA MENU BUTTON === */
 .fc-view-dropdown {
   display: none;
   position: absolute;
-  top: 100%;       /* logo abaixo do botão */
-  right: 0;        /* alinhado à direita do grupo */
+  top: calc(100% + 0.25rem);
+  right: 0;
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 6px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  z-index: 1000;
-  overflow: hidden;
+  z-index: 2000;
+  min-width: 100px;
 }
-
-/* Mostrar quando tiver .show */
 .fc-view-dropdown.show {
   display: block;
 }
-
-/* Estilo dos botões do dropdown */
 .fc-view-dropdown button {
-  display: block;
   width: 100%;
-  padding: 0.5rem 1rem;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.85rem;
   background: none;
   border: none;
   text-align: left;
-  font-size: 0.9rem;
   color: #333;
   cursor: pointer;
+  transition: background 0.2s;
 }
 .fc-view-dropdown button:hover {
   background: var(--hover-bg);
 }
 
+/* === HEADERS DOS DIAS === */
+.fc .fc-col-header-cell-cushion {
+  background: transparent;
+  color: var(--sidebar-bg);
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid #e0e0e0;
+}
 
-/* Hide default view buttons and show only custom menu on mobile */
+/* === GRADE DE DIAS === */
+.fc .fc-daygrid-day-frame {
+  padding: 0.6rem;
+  transition: background 0.2s;
+}
+.fc .fc-daygrid-day-frame:hover {
+  background: var(--hover-bg);
+}
+.fc .fc-day-today .fc-daygrid-day-frame {
+  background: var(--today-bg) !important;
+}
+.fc .fc-daygrid-day-number {
+  font-weight: 500;
+  color: #222;
+}
+
+/* === EVENTOS === */
+.fc .fc-event {
+  border: none !important;
+  border-radius: 6px !important;
+  padding: 0.2rem 0.4rem !important;
+  font-size: 0.8rem;
+  font-weight: 500;
+  background: var(--primary-color) !important;
+  color: #fff !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  transition: transform 0.1s;
+}
+.fc .fc-event.secondary {
+  background: var(--secondary-color) !important;
+}
+.fc .fc-event:hover {
+  transform: translateY(-1px);
+}
+
+/* === LIST VIEW === */
+.fc .fc-list-view {
+  background: #fff;
+}
+.fc .fc-list-item {
+  border-bottom: 1px solid #eee;
+  padding: 0.4rem 0.8rem;
+  transition: background 0.2s;
+}
+.fc .fc-list-item:hover {
+  background: var(--hover-bg);
+}
+
+/* === RESPONSIVIDADE === */
+/* Em ≤ 992px, esconde os botões de view e mantém só o menu “⋯” */
 @media (max-width: 992px) {
   .fc .fc-button[data-view^="dayGrid"],
   .fc .fc-button[data-view^="timeGrid"],
-  .fc .fc-button[data-view^="list"] {
+  .fc .fc-button[data-view^="timeGridDay"],
+  .fc .fc-button[data-view^="listWeek"] {
     display: none !important;
   }
-  .fc .fc-viewMenu-button {
-    display: inline-flex !important;
+}
+
+
+/* Ajustes em ≤768px */
+@media (max-width: 768px) {
+  .fc .fc-toolbar {
+    flex-wrap: wrap;
+    padding: 0.25rem 0.5rem;
+  }
+  .fc .fc-toolbar-title {
+    font-size: 1.2rem;
   }
 }

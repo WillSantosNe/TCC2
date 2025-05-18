@@ -1,93 +1,88 @@
 // calendario.js - script completo para inicialização e interatividade do FullCalendar
 
 document.addEventListener('DOMContentLoaded', function () {
-  const calendarEl = document.getElementById('calendar');
+  const calendarEl   = document.getElementById('calendar');
+  const switcherBtn  = document.createElement('button');
+  let viewDropdown; // será inicializado depois de renderizar o calendário
 
+  // Inicializa o calendário
   const calendar = new FullCalendar.Calendar(calendarEl, {
-    // Visualizações disponíveis
     initialView: 'dayGridMonth',
     height: '100%',
     locale: 'pt-br',
 
-    // Toolbar personalizada com menu de três pontinhos apenas
+    // Apenas o botão de menu customizado aparece
     headerToolbar: {
       left: 'prev,next today',
       center: 'title',
       right: 'viewMenu'
     },
 
-    // Botão customizado para o menu de views
     customButtons: {
       viewMenu: {
         text: '⋯',
-        click: function() {
-          document.querySelector('.fc-view-dropdown').classList.toggle('show');
+        click: () => {
+          // alterna a exibição do dropdown que foi injetado abaixo
+          viewDropdown.classList.toggle('show');
         }
       }
     },
 
-    // Fonte dos eventos (substitua por sua API)
     events: fetchEvents,
 
-    // Clique em um dia vazio para criar um novo evento
-    dateClick: function(info) {
-      openEventModal({
-        date: info.dateStr,
-        allDay: info.allDay
-      });
-    },
+    dateClick: info => openEventModal({
+      date: info.dateStr,
+      allDay: info.allDay
+    }),
 
-    // Clique em um evento existente para editar
-    eventClick: function(info) {
-      openEventModal({
-        id: info.event.id,
-        title: info.event.title,
-        start: info.event.startStr,
-        end: info.event.endStr,
-        allDay: info.event.allDay
-      });
-    }
+    eventClick: info => openEventModal({
+      id: info.event.id,
+      title: info.event.title,
+      start: info.event.startStr,
+      end: info.event.endStr,
+      allDay: info.event.allDay
+    })
   });
 
   calendar.render();
 
-  // --- INJEÇÃO DO DROPDOWN DE VIEWS ---
-  const switcherBtn     = document.querySelector('.fc-viewMenu-button');
-  const switcherWrapper = switcherBtn.parentNode;
+  // --- INJEÇÃO DO BOTÃO ⋯ E DO DROPDOWN DE VIEWS ---
+  // encontra o botão que o FullCalendar gerou
+  const fcButton = document.querySelector('.fc-viewMenu-button');
 
-  const dropdown = document.createElement('div');
-  dropdown.className = 'fc-view-dropdown';
-  dropdown.innerHTML = `
+  // cria o dropdown e injeta dentro do botão
+  viewDropdown = document.createElement('div');
+  viewDropdown.className = 'fc-view-dropdown';
+  viewDropdown.innerHTML = `
     <button data-view="dayGridMonth">Mês</button>
     <button data-view="timeGridWeek">Semana</button>
     <button data-view="timeGridDay">Dia</button>
     <button data-view="listWeek">Lista</button>
   `;
-  switcherWrapper.appendChild(dropdown);
+  fcButton.appendChild(viewDropdown);
 
-  // Muda de view e fecha menu ao clicar na opção
-  dropdown.addEventListener('click', e => {
+  // ao clicar numa opção, muda a visualização e fecha
+  viewDropdown.addEventListener('click', e => {
     if (e.target.matches('button[data-view]')) {
       calendar.changeView(e.target.getAttribute('data-view'));
-      dropdown.classList.remove('show');
+      viewDropdown.classList.remove('show');
     }
   });
 
-  // Fecha o menu se clicar fora
+  // fecha o dropdown ao clicar em qualquer lugar fora dele
   document.addEventListener('click', e => {
-    if (!switcherWrapper.contains(e.target)) {
-      dropdown.classList.remove('show');
+    if (!fcButton.contains(e.target)) {
+      viewDropdown.classList.remove('show');
     }
   });
 });
 
 /**
- * Função que busca eventos de uma API (exemplo)
- * Retorna promise que resolve em array de eventos
+ * Busca eventos de API e chama os callbacks do FullCalendar
  */
 function fetchEvents(info, successCallback, failureCallback) {
   fetch(`/api/eventos?start=${info.startStr}&end=${info.endStr}`)
-    .then(response => response.json())
+    .then(r => r.json())
     .then(data => {
       const events = data.map(evt => ({
         id: evt.id,
@@ -95,13 +90,13 @@ function fetchEvents(info, successCallback, failureCallback) {
         start: evt.data_inicio,
         end: evt.data_fim,
         allDay: evt.allDay || false,
-        classNames: [evt.tipo] // usa classes css como 'secondary'
+        classNames: [evt.tipo]
       }));
       successCallback(events);
     })
-    .catch(error => {
-      console.error('Erro ao carregar eventos:', error);
-      failureCallback(error);
+    .catch(err => {
+      console.error('Erro ao carregar eventos:', err);
+      failureCallback(err);
     });
 }
 
@@ -109,9 +104,7 @@ function fetchEvents(info, successCallback, failureCallback) {
  * Abre modal de evento (criação/edição)
  */
 function openEventModal(eventData) {
-  const modal = document.getElementById('eventModal');
-  const bsModal = new bootstrap.Modal(modal);
-  bsModal.show();
-
-  // Aqui você pode pré-preencher campos do modal com eventData
+  const modalEl = document.getElementById('eventModal');
+  new bootstrap.Modal(modalEl).show();
+  // aqui você pode preencher campos do modal com eventData, se quiser
 }
