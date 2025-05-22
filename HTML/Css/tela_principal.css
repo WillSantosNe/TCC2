@@ -1,32 +1,15 @@
-/* Css/tela_principal.css */
 
-/* :root já deve estar em geral.css ou definido antes.
-   Se precisar de variáveis específicas para este layout, defina aqui.
-   As variáveis --sidebar-width, --header-height, --card-1, etc. podem ficar aqui
-   ou em geral.css se forem usadas em mais lugares.
-   Para este exemplo, vamos assumir que estão aqui ou já em geral.css.
-*/
-/*
-:root {
-  --sidebar-width: 256px;
-  --header-height: 64px;
-  --card-1: #e6e2ff;
-  --card-2: #ffedc5;
-  --card-3: #d9f1ff;
-  --card-4: #d3f8e4;
-}
-*/
 
 /* --------- SIDEBAR ÚNICA --------- */
 #sidebar {
-  width: var(--sidebar-width);
+  width: var(--sidebar-width, 256px); /* Adicionado fallback */
   height: 100vh;
   background: #0f1a35 !important;
   color: #fff;
   display: flex;
   flex-direction: column;
   padding: 1.75rem 1rem;
-  z-index: 1055 !important; /* Mantém acima do backdrop do offcanvas do Bootstrap */
+  z-index: 1055 !important;
 }
 
 @media (min-width: 992px) {
@@ -61,7 +44,7 @@
   font-size: .95rem;
   font-weight: 500;
   padding: .6rem .9rem;
-  border-radius: 6px; /* Usar var(--default-radius) se preferir */
+  border-radius: var(--default-radius, 6px); /* Usando var com fallback */
   text-decoration: none;
   transition: background-color .2s;
 }
@@ -81,12 +64,12 @@
 
 /* --------- LAYOUT PRINCIPAL ------- */
 .sf-main {
-  margin-left: var(--sidebar-width);
-  width: calc(100% - var(--sidebar-width));
+  margin-left: var(--sidebar-width, 256px); /* Adicionado fallback */
+  width: calc(100% - var(--sidebar-width, 256px)); /* Adicionado fallback */
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--background-light-color); /* Certifique-se que esta variável está definida em :root */
+  background: var(--background-light-color, #f8f9fa); /* Adicionado fallback */
 }
 
 @media (max-width: 991.98px) {
@@ -98,16 +81,16 @@
 
 /* --------- HEADER COM LOGO -------- */
 .sf-header {
-  height: var(--header-height);
+  height: var(--header-height, 64px); /* Adicionado fallback */
   background: #fff;
-  border-bottom: 1px solid var(--border-color); /* Certifique-se que esta variável está definida em :root */
+  border-bottom: 1px solid var(--border-color, #dee2e6); /* Adicionado fallback */
   display: flex;
   align-items: center;
   justify-content: flex-end;
   padding: 0 1.5rem;
   position: sticky;
   top: 0;
-  z-index: 1000; /* Abaixo da sidebar quando offcanvas (1055) e abaixo de modais (1060) */
+  z-index: 1000;
 }
 
 .sf-header-brand {
@@ -128,7 +111,7 @@
 .sf-header-brand span {
   font-weight: 700;
   font-size: 1.35rem;
-  color: var(--text-title-color); /* Certifique-se que esta variável está definida em :root */
+  color: var(--text-title-color, #212529); /* Adicionado fallback */
 }
 
 .btn-menu {
@@ -144,16 +127,14 @@
   flex-grow: 1;
 }
 
-/* Adiciona a classe dashboard-body ao body para evitar conflitos com auth-body se necessário */
 body.dashboard-body {
-    background-color: var(--background-light-color);
-    display: block; /* Reset para layout de página normal */
+    background-color: var(--background-light-color, #f8f9fa); /* Adicionado fallback */
+    display: block;
     align-items: initial;
     justify-content: initial;
-    padding: 0; /* Reset padding de auth-body */
+    padding: 0;
 }
 
-/* Ajustes para texto pequeno (ex: "Ver tudo") */
 .text-sm {
     font-size: 0.875em;
 }
@@ -164,7 +145,7 @@ body.dashboard-body {
 /* Estilos de Cards da Dashboard (hero, calendar, course, task) */
 .hero-card {
   background: #fff;
-  border-radius: var(--default-radius);
+  border-radius: var(--default-radius, 8px); /* Adicionado fallback */
   box-shadow: 0 1px 4px rgba(0, 0, 0, .06);
   padding: 2rem;
   height: 100%;
@@ -178,111 +159,111 @@ body.dashboard-body {
 .hero-subtitle {
   font-size: 1.4rem;
   font-weight: 700;
-  color: var(--text-title-color);
+  color: var(--text-title-color, #212529); /* Adicionado fallback */
 }
 
 .calendar-widget {
   position: relative;
-  width: 300px;       
-  height: 320px;      
+  width: 100%; /* Faz o widget ocupar a largura da coluna (col-lg-3) */
+  max-width: 300px; /* Mantém uma largura máxima razoável */
+  height: 320px;
   background: #fff;
-  border-radius: var(--default-radius);
+  border-radius: var(--default-radius, 8px); /* Adicionado fallback */
   box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-  overflow: hidden;  
-  margin: 0 auto;
+  overflow: hidden;
+  margin: 0 auto; /* Centraliza se a coluna for mais larga que max-width */
 }
 
 .calendar-widget iframe {
   position: absolute;
   top: 0;
   left: 0;
-  transform: scale(0.85);
-  transform-origin: top left;
-  width: calc(100% / 0.85) !important;
-  height: calc(100% / 0.85) !important;
+  /* Ajustes para o iframe do Google Calendar caber melhor */
+  width: 100%;
+  height: 100%;
+  /* A escala pode precisar de ajuste fino ou ser removida se o iframe for responsivo */
+  /* transform: scale(0.85); */
+  /* transform-origin: top left; */
+  /* width: calc(100% / 0.85) !important; */ /* Se usar scale */
+  /* height: calc(100% / 0.85) !important; */ /* Se usar scale */
   border: none;
 }
 
-
-.course-card {
-  border-radius: var(--default-radius);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, .05);
-  padding: 1rem 1.25rem;
-  border-left-width: 6px;
-  border-left-style: solid;
-  font-size: .9rem;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.course-card strong,
-.course-card span {
-    display: block;
-}
-
-.course-1 {
-  border-left-color: #8f7bff !important;
-  background: var(--card-1) !important;
-}
-.course-2 {
-  border-left-color: #ffca63 !important;
-  background: var(--card-2) !important;
-}
-.course-3 {
-  border-left-color: #45a6ff !important;
-  background: var(--card-3) !important;
-}
-.course-4 {
-  border-left-color: #31c979 !important;
-  background: var(--card-4) !important;
-}
-
-.task-item {
-  background: #fff;
-  border-radius: var(--default-radius);
-  padding: .9rem 1rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, .05);
-  font-size: .85rem;
-}
-
-.task-status {
-  font-size: .65rem;
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-/* ===== Carrossel Compacto de Disciplinas ===== */
-section.disciplines-carousel {
+/* ===== Carrossel Compacto de Disciplinas (AJUSTADO para manter estilo antigo do card) ===== */
+.disciplines-carousel-section {
   margin-bottom: 1rem;
 }
 
-/* Wrapper visível + setas */
-#coursesContainer {
+.courses-carousel-wrapper {
   position: relative;
   overflow: hidden;
-  height: 100px;       /* altura total do bloco do carrossel */
+  width: 100%;
+  height: 110px; /* Ajuste esta altura conforme necessário para seus cards */
   margin-bottom: 0.5rem;
 }
 
-/* Linha interna que desliza */
-.courses-carousel {
+.courses-carousel { /* Este é o #coursesContainer no seu HTML */
   display: flex;
   gap: 0.75rem;
-  transition: transform 0.3s ease;
+  transition: transform 0.4s ease-in-out;
+  height: 100%;
 }
 
-/* Cada card */
+/* Estilo do card DENTRO DO CARROSSEL, voltando ao seu estilo original onde possível */
 .courses-carousel .course-card {
-  flex: 0 0 25%;       /* 4 cards por tela */
-  height: 100%;        /* usa a altura do container */
-  padding: 0.5rem;     /* menos espaçamento */
-  font-size: 0.8rem;   /* texto um pouco menor */
-  overflow: hidden;
+  /* Propriedades importantes para o layout do carrossel */
+  flex: 0 0 calc(25% - 0.5625rem); /* Para 4 cards com gap. Ajuste se o número de cards visíveis mudar. */
+                                   /* Exemplo alternativo para largura fixa: flex: 0 0 220px; */
+  box-sizing: border-box;
+
+  /* Propriedades do seu estilo original para .course-card */
+  border-radius: var(--default-radius, 8px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .05);
+  padding: 1rem 1.25rem; /* SEU PADDING ORIGINAL */
+  border-left-width: 6px; /* SUA BORDA ORIGINAL */
+  border-left-style: solid;
+  font-size: .9rem; /* SEU TAMANHO DE FONTE ORIGINAL */
+  height: 100%;     /* Já estava, para preencher a altura do wrapper */
+  display: flex;
+  flex-direction: column;
+  /* gap: 0.25rem; */ /* O gap entre strong e span pode ser controlado por margens ou line-height se necessário */
+  justify-content: center; /* Centraliza o conteúdo se o card for mais alto que o texto */
+  /* overflow: hidden; */ /* Geralmente não necessário se o conteúdo do card couber */
 }
 
-/* Botões de navegação */
+.courses-carousel .course-card strong,
+.courses-carousel .course-card span {
+  display: block;
+  /* A cor será definida pelas classes .course-N ou herdada */
+}
+
+/* Cores dos cards, exatamente como no seu CSS original, usando as variáveis CSS para o fundo */
+/* Certifique-se que as variáveis --card-1, --card-2, etc., estão definidas em :root */
+/* E que a cor do texto tenha contraste com esses fundos */
+
+.courses-carousel .course-card.course-1 {
+  border-left-color: #8f7bff !important;
+  background: var(--card-1, #e6e2ff) !important; /* Fallback para cor literal se variável não definida */
+  color: #3c3299; /* Exemplo de cor de texto escura para contraste com fundo claro */
+}
+.courses-carousel .course-card.course-2 {
+  border-left-color: #ffca63 !important;
+  background: var(--card-2, #ffedc5) !important;
+  color: #8c6d31; /* Exemplo de cor de texto escura */
+}
+.courses-carousel .course-card.course-3 {
+  border-left-color: #45a6ff !important;
+  background: var(--card-3, #d9f1ff) !important;
+  color: #1c4a70; /* Exemplo de cor de texto escura */
+}
+.courses-carousel .course-card.course-4 {
+  border-left-color: #31c979 !important;
+  background: var(--card-4, #d3f8e4) !important;
+  color: #155e35; /* Exemplo de cor de texto escura */
+}
+
+
+/* Botões de navegação (do seu CSS original, com pequenos ajustes de hover/disabled) */
 .carousel-nav {
   display: flex;
   gap: 0.25rem;
@@ -291,31 +272,55 @@ section.disciplines-carousel {
 .carousel-nav button {
   width: 2rem;
   height: 2rem;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color, #ccc);
   background: #fff;
-  border-radius: 4px;
+  border-radius: var(--default-radius, 4px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   font-size: 1rem;
   padding: 0;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+.carousel-nav button:hover {
+    background-color: #f8f9fa;
+    border-color: #adb5bd;
+}
+.carousel-nav button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
-/* Ajuste geral do bloco de carrossel para encaixar com tarefas */
-@media (min-width: 992px) {
-  section.disciplines-carousel {
-    /* garante que o carrossel ocupe toda a largura disponível
-       dentro do col-lg-9, deixando o col-lg-3 ao lado para as tarefas */
-    display: block;
-    width: 100%;
-    box-sizing: border-box;
-    padding-right: 1rem; /* espaço para o bloco de tarefas à direita */
-  }
-
-  /* opcional: você pode restringir ainda mais a largura máxima
-     caso queira um gap maior entre disciplinas e tarefas */
-  .sf-content .row > .col-lg-9 {
-    max-width: calc(100% - 280px); /* 280px é a largura aproximada do col-lg-3 de tarefas */
+/* Ajustes de Responsividade para o Carrossel (mantendo os ajustes anteriores) */
+@media (max-width: 1199.98px) { /* Abaixo de 'xl' */
+  .courses-carousel .course-card {
+    flex: 0 0 calc(33.333% - 0.75rem * 2 / 3); /* 3 cards */
+    padding: 0.8rem 1rem; /* Ajusta padding para telas menores */
+    font-size: 0.85rem;
   }
 }
 
+@media (max-width: 991.98px) { /* Abaixo de 'lg' */
+  .courses-carousel .course-card {
+    flex: 0 0 calc(50% - 0.75rem * 1 / 2); /* 2 cards */
+    padding: 0.75rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 767.98px) { /* Abaixo de 'md' */
+  .courses-carousel .course-card {
+    flex: 0 0 calc(80% - 0.75rem); /* 1 card (ou quase 1) visível */
+    /* Ou, se preferir 1 card completo: */
+    /* flex: 0 0 100%; */
+    /* Nesse caso, o cálculo de 'gap' para flex-basis não se aplica da mesma forma. */
+    height: 90px;
+    font-size: 0.75rem;
+    padding: 0.6rem;
+  }
+  .courses-carousel-wrapper {
+    height: 100px; /* Ajusta altura do wrapper em telas menores */
+  }
+}
+
+/* ... (resto dos seus estilos de .task-item, etc.) ... */

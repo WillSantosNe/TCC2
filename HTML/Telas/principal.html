@@ -47,7 +47,7 @@
         <img src="../imgs/logo.png" alt="Logo"><span>StudyFlow</span>
       </div>
 
-      <img src="../imgs/avatar.jpg" class="rounded-circle" style="width:40px;height:40px" alt="Avatar do usuário">
+      <img src="../imgs/avatar.png" class="rounded-circle" style="width:40px;height:40px" alt="Avatar do usuário">
     </header>
 
     <main class="sf-content container-fluid">
@@ -61,7 +61,7 @@
               <p class="mb-0">Organize tarefas, receba notificações importantes e acompanhe prazos em um só lugar.</p>
             </div>
             <div class="mt-4 mt-md-0" style="max-width:220px">
-              <img src="../imgs/hero-dashboard.svg" class="img-fluid" alt="Ilustração hero">
+              <!-- <img src="" class="img-fluid" alt="Ilustração hero"> -->
             </div>
           </div>
         </div>
@@ -80,50 +80,67 @@
         <!-- CARROSSEL E PROVAS -->
         <div class="col-lg-9">
           <!-- Disciplinas Matriculadas -->
-          <section class="disciplines-carousel mb-4">
+          <section class="disciplines-carousel-section mb-4">
             <div class="d-flex justify-content-between align-items-center mb-2">
               <h6 class="fw-semibold m-0">Disciplinas Matriculadas</h6>
               <div class="carousel-nav">
-                <button id="prevCoursesBtn" class="btn btn-outline-secondary btn-sm me-1">
+                <button id="prevCoursesBtn" class="btn btn-outline-secondary btn-sm me-1" aria-label="Disciplina anterior">
                   <i class="bi bi-arrow-left"></i>
                 </button>
-                <button id="nextCoursesBtn" class="btn btn-outline-secondary btn-sm">
+                <button id="nextCoursesBtn" class="btn btn-outline-secondary btn-sm" aria-label="Próxima disciplina">
                   <i class="bi bi-arrow-right"></i>
                 </button>
               </div>
             </div>
-            <div id="coursesContainer" class="courses-carousel">
-              <div class="course-card course-1">
-                <strong>Fundamentos Gráficos – ART101</strong>
-                <span>Prof. Jango / Seg & Sex / 19h00–21h50</span>
-              </div>
-              <div class="course-card course-2">
-                <strong>Web Design Avançado – ITD201</strong>
-                <span>Prof. João Paulo / Terça / 19h00–21h50</span>
-              </div>
-              <div class="course-card course-3">
-                <strong>Pesquisa de UX – UXD301</strong>
-                <span>Prof. Jason / Quarta / 19h00–21h50</span>
-              </div>
-              <div class="course-card course-4">
-                <strong>Téc. de Animação 3D – ANI301</strong>
-                <span>Prof. Pryzado / Quinta / 19h00–21h50</span>
-              </div>
-              <div class="course-card course-1">
-                <strong>Design Responsivo – ITD202</strong>
-                <span>Prof. Silva / Segunda / 18h00–20h50</span>
-              </div>
-              <div class="course-card course-2">
-                <strong>Banco de Dados – BDD101</strong>
-                <span>Prof. Santos / Sexta / 14h00–16h50</span>
-              </div>
-              <div class="course-card course-3">
-                <strong>Eng. de Software – ESW301</strong>
-                <span>Prof. Almeida / Quarta / 10h00–12h50</span>
-              </div>
-              <div class="course-card course-4">
-                <strong>Inteligência Artificial – AI401</strong>
-                <span>Prof. Costa / Terça / 08h00–10h50</span>
+            <div class="courses-carousel-wrapper">
+              <div id="coursesContainer" class="courses-carousel"> <div class="course-card course-1">
+                  <strong>Fundamentos Gráficos – ART101</strong>
+                  <span>Prof. Jango / Seg & Sex / 19h00–21h50</span>
+                </div>
+                <div class="course-card course-2">
+                  <strong>Web Design Avançado – ITD201</strong>
+                  <span>Prof. João Paulo / Terça / 19h00–21h50</span>
+                </div>
+                <div class="course-card course-3">
+                  <strong>Pesquisa de UX – UXD301</strong>
+                  <span>Prof. Jason / Quarta / 19h00–21h50</span>
+                </div>
+                <div class="course-card course-4">
+                  <strong>Téc. de Animação 3D – ANI301</strong>
+                  <span>Prof. Pryzado / Quinta / 19h00–21h50</span>
+                </div>
+                <div class="course-card course-1">
+                  <strong>Design Responsivo – ITD202</strong>
+                  <span>Prof. Silva / Segunda / 18h00–20h50</span>
+                </div>
+                <div class="course-card course-2">
+                  <strong>Banco de Dados – BDD101</strong>
+                  <span>Prof. Santos / Sexta / 14h00–16h50</span>
+                </div>
+                <div class="course-card course-3">
+                  <strong>Eng. de Software – ESW301</strong>
+                  <span>Prof. Almeida / Quarta / 10h00–12h50</span>
+                </div>
+                <div class="course-card course-4">
+                  <strong>Inteligência Artificial – AI401</strong>
+                  <span>Prof. Costa / Terça / 08h00–10h50</span>
+                </div>
+                <div class="course-card course-1">
+                  <strong>Algoritmos Avançados – ALG500</strong>
+                  <span>Prof. Turing / Seg / 08h00–10h50</span>
+                </div>
+                <div class="course-card course-2">
+                  <strong>Compiladores – CMP250</strong>
+                  <span>Prof. Aho / Sex / 19h00–21h50</span>
+                </div>
+                <div class="course-card course-3">
+                  <strong>Redes Neurais – RNA600</strong>
+                  <span>Prof. Hinton / Qua / 14h00–16h50</span>
+                </div>
+                <div class="course-card course-4">
+                  <strong>Segurança da Informação – SEG501</strong>
+                  <span>Prof. Mitnick / Qui / 10h00–12h50</span>
+                </div>
               </div>
             </div>
           </section>
