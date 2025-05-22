@@ -1,9 +1,7 @@
 /* Css/disciplinas.css */
 
-/* Inherit general styles from geral.css and tela_principal.css */
-
 /* Estilos ESPECÍFICOS para o modal de Disciplina (adicionar/editar) */
-dialog#modalDisciplina { /* Ajustado de modalProva */
+dialog#modalDisciplina {
     width: 90%;
     max-width: 520px;
     border-radius: 12px;
@@ -11,12 +9,12 @@ dialog#modalDisciplina { /* Ajustado de modalProva */
     padding: 0;
     box-shadow: 0px 8px 24px rgba(20, 20, 22, 0.15);
 }
-dialog#modalDisciplina::backdrop { /* Ajustado de modalProva */
+dialog#modalDisciplina::backdrop {
     background-color: rgba(0, 0, 0, 0.5);
 }
 
 
-dialog#modalDisciplina .modal-header-studyflow { /* Ajustado */
+dialog#modalDisciplina .modal-header-studyflow {
     background-color: #FFFFFF;
     padding: 1.25rem 1.5rem;
     border-bottom: 1px solid #E9E9F0;
@@ -25,25 +23,25 @@ dialog#modalDisciplina .modal-header-studyflow { /* Ajustado */
     justify-content: space-between;
 }
 
-dialog#modalDisciplina .modal-title-wrapper { /* Ajustado */
+dialog#modalDisciplina .modal-title-wrapper {
     display: flex;
     align-items: center;
 }
 
-dialog#modalDisciplina .modal-logo-icon { /* Ajustado */
+dialog#modalDisciplina .modal-logo-icon {
     width: 28px;
     height: 28px;
     margin-right: 0.75rem;
 }
 
-dialog#modalDisciplina .modal-title-custom { /* Ajustado */
+dialog#modalDisciplina .modal-title-custom {
     font-weight: 600;
     font-size: 1.3rem;
     color: #2E3A59;
     margin-bottom: 0;
 }
 
-dialog#modalDisciplina .btn-close-custom { /* Ajustado */
+dialog#modalDisciplina .btn-close-custom {
     filter: grayscale(1) brightness(1.5);
     background-color: transparent;
     border: none;
@@ -51,26 +49,26 @@ dialog#modalDisciplina .btn-close-custom { /* Ajustado */
     padding: 0.5rem;
     line-height: 1;
 }
-dialog#modalDisciplina .btn-close { /* Ajustado */
+dialog#modalDisciplina .btn-close {
     filter: grayscale(1) brightness(1.5);
 }
 
 
-dialog#modalDisciplina .modal-body-custom { /* Ajustado */
+dialog#modalDisciplina .modal-body-custom {
     padding: 1.5rem 1.75rem;
     background-color: #FFFFFF;
 }
 
-dialog#modalDisciplina .form-label { /* Ajustado */
+dialog#modalDisciplina .form-label {
     font-size: 0.875rem;
     color: #4F5E7B;
     font-weight: 500;
     margin-bottom: 0.375rem;
 }
 
-dialog#modalDisciplina .form-control, /* Ajustado */
-dialog#modalDisciplina .form-select, /* Ajustado */
-dialog#modalDisciplina textarea.form-control { /* Ajustado */
+dialog#modalDisciplina .form-control,
+dialog#modalDisciplina .form-select,
+dialog#modalDisciplina textarea.form-control {
     background-color: #FFFFFF;
     border: 1px solid #D9DDE7;
     border-radius: 8px;
@@ -78,17 +76,19 @@ dialog#modalDisciplina textarea.form-control { /* Ajustado */
     font-size: 0.95rem;
     color: #2E3A59;
 }
-dialog#modalDisciplina .form-control::placeholder { color: #A0AEC0; } /* Ajustado */
-dialog#modalDisciplina .form-control:focus, /* Ajustado */
-dialog#modalDisciplina .form-select:focus { /* Ajustado */
+dialog#modalDisciplina .form-control::placeholder {
+    color: #A0AEC0;
+}
+dialog#modalDisciplina .form-control:focus,
+dialog#modalDisciplina .form-select:focus {
     border-color: var(--primary-color);
     box-shadow: 0 0 0 0.2rem rgba(85, 104, 254, 0.25);
 }
 /* Feedback de validação */
-dialog#modalDisciplina .is-invalid { /* Ajustado */
+dialog#modalDisciplina .is-invalid {
     border-color: #dc3545;
 }
-dialog#modalDisciplina .invalid-feedback { /* Ajustado */
+dialog#modalDisciplina .invalid-feedback {
     display: block;
     width: 100%;
     margin-top: .25rem;
@@ -97,7 +97,7 @@ dialog#modalDisciplina .invalid-feedback { /* Ajustado */
 }
 
 
-dialog#modalDisciplina .modal-footer-studyflow { /* Ajustado */
+dialog#modalDisciplina .modal-footer-studyflow {
     background-color: #FFFFFF;
     border-top: 1px solid #E9E9F0;
     padding: 1.25rem 1.75rem;
@@ -107,7 +107,7 @@ dialog#modalDisciplina .modal-footer-studyflow { /* Ajustado */
     border-bottom-right-radius: 12px;
 }
 
-dialog#modalDisciplina .btn-modal-cancel { /* Ajustado */
+dialog#modalDisciplina .btn-modal-cancel {
     background-color: #F1F3F6;
     border-color: #F1F3F6;
     color: #4F5E7B;
@@ -116,9 +116,12 @@ dialog#modalDisciplina .btn-modal-cancel { /* Ajustado */
     font-weight: 500;
     font-size: 0.95rem;
 }
-dialog#modalDisciplina .btn-modal-cancel:hover { background-color: #E2E6EB; border-color: #E2E6EB; } /* Ajustado */
+dialog#modalDisciplina .btn-modal-cancel:hover {
+    background-color: #E2E6EB;
+    border-color: #E2E6EB;
+}
 
-dialog#modalDisciplina .btn-modal-save { /* Ajustado */
+dialog#modalDisciplina .btn-modal-save {
     background-color: #2E3A59;
     border-color: #2E3A59;
     color: #FFFFFF;
@@ -127,127 +130,177 @@ dialog#modalDisciplina .btn-modal-save { /* Ajustado */
     font-weight: 500;
     font-size: 0.95rem;
 }
-dialog#modalDisciplina .btn-modal-save:hover { background-color: #242E47; border-color: #242E47; } /* Ajustado */
+dialog#modalDisciplina .btn-modal-save:hover {
+    background-color: #242E47;
+    border-color: #242E47;
+}
 
 
 /* Estilos específicos da página de Disciplinas */
-/* Reusing existing styles for page title and subtitle */
-.sf-page-title { font-weight: 600; color: var(--text-title-color); margin-bottom: 0.25rem; }
-.sf-page-subtitle { font-size: 0.95rem; color: var(--text-body-color); margin-bottom: 1.5rem; }
+.sf-page-title {
+    font-weight: 600;
+    color: var(--text-title-color);
+    margin-bottom: 0.25rem;
+}
+.sf-page-subtitle {
+    font-size: 0.95rem;
+    color: var(--text-body-color);
+    margin-bottom: 1.5rem;
+}
 
 
-/* Adjustments for aligning the "Add Discipline" button with the search input */
-/* Reusing styles from .btn-add-proof for vertical alignment */
-#abrirModalNovaDisciplina { /* Ajustado de #abrirModalNovaProva */
+/* Ajustes para alinhar o botão "Adicionar Disciplina" com o campo de busca */
+.btn-add-discipline,
+#abrirModalNovaDisciplinaDt {
     padding-top: 0.75rem;
     padding-bottom: 0.75rem;
-    /* Desktop horizontal padding will be set by btn-primary or btn-modal-save like styles */
+}
+/* Garante que o ícone e o texto tenham espaçamento adequado */
+.btn-add-discipline i,
+#abrirModalNovaDisciplinaDt i {
+    margin-right: 0.5rem;
+}
+
+/* Para botões que são só ícone (ex: o '+' em mobile) */
+.btn-icon-only {
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
 }
 
 
-/* Table Styling (Copying and adjusting from provas.css) */
-.disciplinas-table th { font-weight: 600; font-size: 0.85rem; text-transform: uppercase; color: var(--text-body-color); white-space: nowrap; } /* Ajustado de provas-table */
-.disciplinas-table td { font-size: 0.9rem; vertical-align: middle; white-space: nowrap; } /* Ajustado de provas-table */
+/* Tabela de Disciplinas */
+.disciplinas-table th {
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    color: var(--text-body-color);
+    white-space: nowrap;
+}
+.disciplinas-table td {
+    font-size: 0.9rem;
+    vertical-align: middle;
+    white-space: nowrap; /* Impede quebra de linha */
+    overflow: hidden; /* Esconde o conteúdo que transborda */
+    text-overflow: ellipsis; /* Adiciona reticências (...) ao final do texto truncado */
+    max-width: 150px; /* Limita a largura da célula para o truncamento funcionar */
+}
 
-/* Ensure the DataTables Responsive control column has center alignment */
-.disciplinas-table th.dtr-control, /* Ajustado */
-.disciplinas-table td.dtr-control { /* Ajustado */
-    text-align: center !important;
-    padding-left: 0.5rem !important; /* Adjusted padding for control icon */
-    padding-right: 0.5rem !important; /* Adjusted padding for control icon */
+/* Ajuste específico para a coluna de Disciplina (Nome) para ter mais espaço */
+.disciplinas-table td:nth-child(2) { /* 2ª coluna: Nome da Disciplina */
+    max-width: 250px;
+}
+/* Ajuste para a coluna de Professor */
+.disciplinas-table td:nth-child(3) { /* 3ª coluna: Professor */
+    max-width: 180px;
+}
+/* Estilo para a coluna de Status da Disciplina */
+.disciplinas-table .badge {
+    font-size: 0.75rem;
+    padding: 0.35em 0.65em;
+    font-weight: 600;
 }
 
 
-/* For the Actions column */
-.disciplinas-table th.dt-actions-column, /* Ajustado */
-.disciplinas-table td.dt-actions-column { /* Ajustado */
-    text-align: left !important; /* <-- Modificado para alinhar à esquerda */
+/* Coluna de Ações - não deve ser o dtr-control */
+.disciplinas-table th.dt-actions-column,
+.disciplinas-table td.dt-actions-column {
+    text-align: left !important;
     padding-left: 0.5rem !important;
     padding-right: 0.5rem !important;
     width: auto;
     min-width: 50px;
-    /* Ensure this cell allows content to be visible outside */
-    overflow: visible !important;
+    max-width: 70px; /* Garante que haja espaço para os 3 pontinhos */
+    overflow: visible; /* Permite que o dropdown se expanda */
 }
-/* Styles for the +/- icon of DataTables Responsive */
-/* Reusing styles from provas.css */
+/* Para o controle de expandir/colapsar do DataTables Responsive */
+table.dataTable.dtr-inline.collapsed > tbody > tr > td.dtr-control,
+table.dataTable.dtr-inline.collapsed > tbody > tr > th.dtr-control {
+    text-align: center !important;
+    cursor: pointer;
+    padding-right: 1.5rem !important;
+}
+
+/* Estilos para o ícone +/- do DataTables Responsive */
 table.dataTable.dtr-inline.collapsed > tbody > tr > td.dtr-control::before,
 table.dataTable.dtr-inline.collapsed > tbody > tr > th.dtr-control::before {
-  top: 50%;
-  left: 0.5rem;
-  height: 1.2em;
-  width: 1.2em;
-  margin-top: -0.6em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  box-shadow: 0 1px 3px rgba(0,0,0,.2);
-  box-sizing: border-box;
-  text-align: center;
-  font-family: "Inter", sans-serif;
-  font-weight: bold;
-  line-height: 1.2em;
-  content: "+";
-  background-color: var(--primary-color, #5568FE);
+    top: 50%;
+    left: 0.5rem;
+    height: 1.2em;
+    width: 1.2em;
+    margin-top: -0.6em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0,0,0,.2);
+    box-sizing: border-box;
+    text-align: center;
+    font-family: "Inter", sans-serif;
+    font-weight: bold;
+    line-height: 1.2em;
+    content: "+";
+    background-color: var(--primary-color, #5568FE);
 }
 table.dataTable.dtr-inline.collapsed > tbody > tr.parent > td.dtr-control::before,
 table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th.dtr-control::before {
-  content: "–";
-  background-color: #d33333;
+    content: "–";
+    background-color: #d33333;
 }
 
-/* Styling for the dropdown menu in the Actions column */
-.btn-icon { color: var(--text-body-color); padding: 0.25rem 0.5rem; background-color: transparent; border: none; }
-.btn-icon:hover, .btn-icon:focus { color: var(--primary-color); background-color: rgba(85, 104, 254, 0.1); }
+
+.btn-icon {
+    color: var(--text-body-color);
+    padding: 0.25rem 0.5rem;
+    background-color: transparent;
+    border: none;
+}
+.btn-icon:hover,
+.btn-icon:focus {
+    color: var(--primary-color);
+    background-color: rgba(85, 104, 254, 0.1);
+}
 .dropdown-menu {
-  position: absolute; /* Should be absolute to appear above content */
-  z-index: 1060; /* A high z-index to ensure it's on top */
-  /* Other appearance styles for the dropdown menu */
-  font-size: 0.9rem;
-  box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15);
+    font-size: 0.9rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, .15);
+    z-index: 1056;
 }
-/* The parent container of the dropdown (.dropdown) usually needs position: relative */
-.dropdown {
-    position: relative;
+.dropdown-item i {
+    width: 1.25em;
+    margin-right: 0.5rem;
+}
+.dropdown-item.text-danger i {
+    color: inherit;
 }
 
 
-.dropdown-item i { width: 1.25em; margin-right: 0.5rem; }
-.dropdown-item.text-danger i { color: inherit; }
-
-
-/* Scroll of the table and dropdown overflow */
-/* Ensure these containers allow content to overflow visible */
+/* Scroll da tabela e overflow do dropdown */
+div.dataTables_scrollBody {
+    border: 1px solid var(--border-color, #dee2e6);
+    border-top: none;
+    border-bottom-left-radius: var(--default-radius, 6px);
+    border-bottom-right-radius: var(--default-radius, 6px);
+}
 div.dataTables_scrollBody,
-#tabelaDisciplinas_wrapper, /* Adjusted from tabelaProvas_wrapper */
+#tabelaDisciplinas_wrapper,
 .table-container {
-  overflow: visible !important;
+    overflow: visible !important;
 }
-/* If DataTables adds a responsive wrapper */
-#tabelaDisciplinas_wrapper .table-responsive { /* Adjusted from tabelaProvas_wrapper */
-  overflow: visible !important; /* Force visible overflow */
+#tabelaDisciplinas_wrapper .table-responsive {
+    overflow: visible !important;
 }
 
 
-/* Adjustments for DataTables controls (Filter, Length, etc.) */
-/* Reusing styles, adjusting selectors */
-#tabelaDisciplinas_wrapper .dt-custom-header > div[class*="col-"] { /* Ajustado */
+/* Ajustes nos controles do DataTables (Filtro, Length, etc.) */
+#tabelaDisciplinas_wrapper .dt-custom-header > div[class*="col-"] {
     padding-left: 0 !important;
     padding-right: 0 !important;
 }
 
-/* Style for the flex container around search and add button */
-/* Reusing styles from provas.css */
-#tabelaDisciplinas_wrapper .header-search-add-container { /* Ajustado */
-     gap: 0.5rem;
-     width: 100%;
-}
 
-/* Filter div (generated by 'f') */
+/* Style for the filter div (generated by 'f' in DataTables dom) */
 div.dataTables_wrapper div.dataTables_filter {
     padding: 0;
     margin: 0;
@@ -256,6 +309,7 @@ div.dataTables_wrapper div.dataTables_filter {
     display: flex;
     align-items: center;
 }
+/* Label of the filter (usually hidden, but contains the input) */
 div.dataTables_wrapper div.dataTables_filter label {
     margin-bottom: 0;
     font-weight: normal;
@@ -265,6 +319,7 @@ div.dataTables_wrapper div.dataTables_filter label {
     align-items: center;
     gap: 0.5rem;
 }
+/* Input of the DataTables filter */
 div.dataTables_wrapper div.dataTables_filter input {
     width: 100%;
     margin-left: 0;
@@ -273,146 +328,246 @@ div.dataTables_wrapper div.dataTables_filter input {
     flex-grow: 1;
 }
 
-/* Buttons container (generated by custom dom) */
-.dt-buttons-container { /* Reusing this class from JS dom string */
+/* Container para os botões e custom filters */
+.dt-buttons-container {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    /* ms-auto pushes to the right via Bootstrap class */
+    flex-wrap: nowrap; /* Não permite quebra de linha em desktop */
+    justify-content: flex-end;
+}
+/* Estilos para o dropdown de filtro de Tipo de Tarefa e Disciplina */
+.dt-filter-select {
+    width: auto !important;
+    max-width: 180px; /* Aumentado para dar mais espaço ao texto */
+    flex-shrink: 0;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #D9DDE7;
+    background-color: #FFFFFF;
+    color: #2E3A59;
+    /* Ajuste para a seta padrão do select */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 0.7em auto;
+    padding-right: 2.5rem; /* Aumenta o padding para a seta customizada */
+}
+.dt-filter-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(85, 104, 254, 0.25);
 }
 
 
-/* Info and Pagination */
-.dataTables_info { /* Standard DataTables class */
-  padding-top: 0.85rem !important;
-  font-size: 0.9rem;
-  color: var(--text-body-color);
+/* Ensure the DataTables info and pagination elements are styled */
+.dataTables_info {
+    padding-top: 0.85rem !important;
+    font-size: 0.9rem;
+    color: var(--text-body-color);
 }
-.dataTables_paginate_wrapper .pagination { /* Standard DataTables class */
-  justify-content: flex-end;
-  margin-bottom: 0;
+.dataTables_paginate_wrapper .pagination {
+    justify-content: flex-end;
+    margin-bottom: 0;
 }
 .dataTables_paginate_wrapper .page-item .page-link {
-  font-size: 0.9rem;
+    font-size: 0.9rem;
 }
 
 
-/* Responsive Adjustments (Copying and adjusting from provas.css) */
-@media (max-width: 767.98px) { /* Small screens (Mobile) */
-    /* Ensure the header row behaves as a flex container in a row direction */
-    #tabelaDisciplinas_wrapper .dt-custom-header { /* Ajustado de tabelaProvas_wrapper */
-        flex-direction: row;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 0.5rem;
-         /* Add a z-index to ensure the header is above the table body if needed */
-        z-index: 2;
-        position: relative; /* Needed for z-index to work */
+/* Responsividade (Desktop vs. Mobile) */
+@media (max-width: 767.98px) {
+    /* Alinhamento da linha cinza do datatable */
+    .table-container {
+        padding-left: 0;
+        padding-right: 0;
     }
 
-    /* Override Bootstrap's col-12 behavior for the columns inside the header */
-    #tabelaDisciplinas_wrapper .dt-custom-header > div.col-12.col-md-auto { /* Ajustado */
-        flex: 0 0 auto;
-        width: auto;
+    /* Ajustes gerais para o header do DataTables em mobile */
+    #tabelaDisciplinas_wrapper .dt-custom-header {
+        flex-direction: column; /* Empilha os itens verticalmente */
+        align-items: stretch; /* Estica os itens para preencher a largura */
+        gap: 0.75rem; /* Aumenta o espaçamento entre os blocos */
+        padding-left: 1rem !important; /* Adiciona padding para alinhar com a tela */
+        padding-right: 1rem !important; /* Adiciona padding para alinhar com a tela */
+    }
+
+    /* As colunas dentro do header agora preenchem 100% da largura do header com padding */
+    #tabelaDisciplinas_wrapper .dt-custom-header > div.col-12 {
+        flex: 1 1 auto;
+        width: 100%;
         max-width: none;
         margin-bottom: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
     }
 
-    /* Make the filter column take available space */
-    #tabelaDisciplinas_wrapper .dt-custom-header > div.col-12.col-md-auto:has(div.dataTables_filter) { /* Ajustado */
+    /* Barra de busca - Primeira linha */
+    div.dataTables_wrapper div.dataTables_filter {
+        order: 1; /* Garante que fique na primeira linha */
         flex-grow: 1;
+        width: 100%;
+        box-sizing: border-box; /* Garante que padding não aumente a largura */
+        padding: 0; /* Remove padding que pode desalinhar internamente */
+    }
+    div.dataTables_wrapper div.dataTables_filter label {
+        padding: 0;
+        margin: 0;
+        width: 100%;
+    }
+    div.dataTables_wrapper div.dataTables_filter input {
+        box-sizing: border-box;
+        width: 100%;
+        flex-grow: 1;
+        padding: 0.75rem 1rem;
+    }
+
+    /* Container de botões e filtros personalizados - Segunda e Terceira Linha */
+    .dt-buttons-container {
+        order: 2; /* Garante que fique abaixo da busca */
+        flex-direction: column; /* Empilha os filtros e o botão */
+        align-items: stretch; /* Estica para preencher a largura */
+        width: 100%;
+        gap: 0.5rem; /* Espaçamento entre os itens empilhados */
+        margin-top: 0;
+        justify-content: flex-start;
+    }
+
+    /* Select de Tipo de Tarefa - SEGUNDA LINHA (Order: 1 para o select, mas dentro do container) */
+    /* Note: Este é o filtro de STATUS da Disciplina agora, não "Tipo de Tarefa" */
+    #filterStatusDisciplina { /* Usando o ID real do select que será criado no JS */
+        order: 1;
+        flex-grow: 1;
+        max-width: none;
+        margin-right: 0 !important;
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    /* Linha do Filtro de Disciplina e Botão Adicionar - TERCEIRA LINHA */
+    /* Este wrapper será criado no JS para organizar o filtro de período e botão */
+    .dt-filter-periodo-add-row { /* Novo seletor para o wrapper da linha 3 */
+        display: flex;
+        flex-direction: row; /* Itens em linha */
+        align-items: center; /* Alinha verticalmente */
+        width: 100%; /* Ocupa a largura total */
+        gap: 0.5rem; /* Espaçamento entre o select e o botão */
+        order: 2; /* Fica abaixo do filterStatusDisciplina */
+    }
+
+    /* Select de Período dentro da nova linha */
+    #filterPeriodo { /* Usando o ID real do select que será criado no JS */
+        flex-grow: 1;
+        max-width: none;
+        margin-right: 0 !important;
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    /* Botão "Adicionar Disciplina" - Última parte da Terceira Linha */
+    #abrirModalNovaDisciplinaDt {
+        padding: 0.75rem !important;
+        border-radius: 50%;
+        flex-shrink: 0;
+        width: 44px;
+        height: 44px;
         display: flex;
         align-items: center;
+        justify-content: center;
+        margin-left: auto; /* Empurra para a direita para alinhar com o canto do filtro */
     }
-
-     /* Ensure the buttons container column does not grow */
-    #tabelaDisciplinas_wrapper .dt-custom-header > div.col-12.col-md-auto.dt-buttons-container { /* Ajustado */
-         flex-grow: 0;
-         flex-shrink: 0;
-         display: flex;
-         align-items: center;
-         gap: 0.5rem;
-         /* Add a z-index to ensure the buttons are above the filter input if needed */
-         z-index: 1;
-         position: relative; /* Needed for z-index to work */
-    }
-
-     /* Remove margin-right-auto from filter column on mobile */
-    #tabelaDisciplinas_wrapper .dt-custom-header > div.col-12.col-md-auto.me-md-auto { /* Ajustado */
-        margin-right: 0 !important;
-    }
-
-    /* Specific style for the cloned add button on mobile (icon-only) */
-    /* Adjusting selector */
-     #abrirModalNovaDisciplinaDt { /* Ajustado de #abrirModalNovaProvaDt */
-         padding: 0.75rem !important;
-     }
-     /* Ensure the text span is hidden on mobile */
-     #abrirModalNovaDisciplinaDt span.d-none { /* Ajustado */
+    #abrirModalNovaDisciplinaDt span {
         display: none !important;
-     }
-     /* Ensure the icon margin is correct on mobile */
-     #abrirModalNovaDisciplinaDt i.me-0 { /* Ajustado */
+    }
+    #abrirModalNovaDisciplinaDt i {
         margin-right: 0 !important;
-     }
-
-    /* Ensure the original button is always hidden */
-    #abrirModalNovaDisciplina { /* Ajustado */
+        font-size: 1.25rem;
+    }
+    #abrirModalNovaDisciplina {
         display: none !important;
     }
 }
 
-/* Ensure desktop styles are correct when coming from mobile size */
-@media (min-width: 768px) { /* Medium and larger screens (Desktop) */
-    /* Restore margin-right-auto for filter column on desktop */
-    #tabelaDisciplinas_wrapper .dt-custom-header > div.col-md-auto.me-md-auto { /* Ajustado */
-        margin-right: auto !important;
-         flex-grow: 0;
-         display: block;
-         z-index: auto; /* Reset z-index */
-         position: static; /* Reset position */
+
+/* Resetar estilos para desktop */
+@media (min-width: 768px) {
+    #tabelaDisciplinas_wrapper .dt-custom-header {
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: nowrap;
+        gap: 0;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
     }
-     /* Reset flex properties for the buttons column on desktop */
-     #tabelaDisciplinas_wrapper .dt-custom-header > div.col-md-auto.dt-buttons-container { /* Ajustado */
+
+    #tabelaDisciplinas_wrapper .dt-custom-header > div.col-md-auto.me-md-auto {
+        margin-right: auto !important;
         flex-grow: 0;
-        flex-shrink: 0;
+        width: auto;
+        display: block;
+    }
+
+    div.dataTables_wrapper div.dataTables_filter {
+        flex-grow: 1;
+        width: auto;
+    }
+    div.dataTables_wrapper div.dataTables_filter label {
+        width: auto;
         display: flex;
         gap: 0.5rem;
-        z-index: auto; /* Reset z-index */
-        position: static; /* Reset position */
-     }
-      /* Reset margin and display on the filter div */
-      div.dataTables_wrapper div.dataTables_filter {
-        margin-right: 0;
-        display: block;
-     }
-      /* Reset flex properties on the filter label for desktop */
-      div.dataTables_wrapper div.dataTables_filter label {
-         width: auto;
-         display: inline-flex;
-         gap: 0.5rem;
-      }
-      /* Reset flex-grow on input for desktop */
-       div.dataTables_wrapper div.dataTables_filter input {
-           flex-grow: 0;
-           width: auto;
-       }
+    }
+    div.dataTables_wrapper div.dataTables_filter input {
+        width: auto;
+        flex-grow: 1;
+    }
 
-     /* Restore desktop padding and text visibility for the add button */
-     #abrirModalNovaDisciplinaDt { /* Ajustado */
-         padding-left: 1.3rem;
-         padding-right: 1.3rem;
-     }
-      /* Ensure the text span is visible on desktop */
-     #abrirModalNovaDisciplinaDt span.d-sm-inline { /* Ajustado */
+    .dt-buttons-container {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: flex-end;
+        width: auto;
+        margin-top: 0 !important;
+    }
+    .dt-filter-select {
+        flex-grow: 0;
+        max-width: 180px;
+        margin-right: 0;
+    }
+
+    /* Reset do botão Adicionar para desktop */
+    #abrirModalNovaDisciplinaDt {
+        padding: 0.75rem 1.3rem !important;
+        border-radius: 8px !important;
+        width: auto !important;
+        height: auto !important;
+        margin-left: 0;
+    }
+    #abrirModalNovaDisciplinaDt span {
         display: inline !important;
-     }
-     /* Ensure the icon margin is correct on desktop */
-     #abrirModalNovaDisciplinaDt i.me-sm-2 { /* Ajustado */
+    }
+    #abrirModalNovaDisciplinaDt i {
         margin-right: 0.5rem !important;
-     }
+        font-size: inherit !important;
+    }
+
+    /* Ocultar o wrapper mobile de Período + Botão em desktop */
+    .dt-filter-periodo-add-row {
+        display: none !important;
+    }
 }
 
-/* Adjust z-index for details modal */
-#modalDetalhesDisciplina { z-index: 1055; }
-#modalDetalhesDisciplina::backdrop { z-index: 1054; }
+/* Estilos para o modal de Detalhes (ajuste para a fonte nas pre tags) */
+#modalDetalhesDisciplina dl.row dd pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: inherit;
+    margin-bottom: 0;
+    font-family: var(--default-font-family, "Inter", sans-serif);
+    color: inherit;
+    background-color: transparent;
+    border: none;
+    padding: 0;
+}
