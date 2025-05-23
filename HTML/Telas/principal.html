@@ -12,19 +12,31 @@
   <link rel="stylesheet" href="../Css/geral.css">
   <link rel="stylesheet" href="../Css/tela_principal.css">
   <script src="../Scripts/principal.js" defer></script>
+  <script src="../Scripts/disciplinas.js" defer></script>
 </head>
 <body class="auth-body dashboard-body">
 
   <aside id="sidebar" class="offcanvas-lg offcanvas-start" tabindex="-1">
     <div class="brand-text"></div>
     <nav class="nav flex-column">
-      <a href="./principal.html" class="sf-nav-link">Dashboard</a>
+      <div class="sf-sidebar-section">Botões Rápidos</div>
+      <a href="#" class="sf-nav-link sf-quick-add-link" id="abrirModalNovaDisciplina">
+          <span class="quick-add-icon"><i class="bi bi-plus-lg"></i></span>
+          Adicionar Disciplina
+      </a>
+      
+      <a href="#" class="sf-nav-link sf-quick-add-link" id="quickAddTarefaBtn">
+          <span class="quick-add-icon"><i class="bi bi-plus-lg"></i></span>
+          Adicionar Tarefa/Prova
+      </a>
+      <a href="#" class="sf-nav-link sf-quick-add-link" id="quickAddAnotacaoBtn"> <span class="quick-add-icon"><i class="bi bi-plus-lg"></i></span>
+          Adicionar Anotação
+      </a>
+
       <div class="sf-sidebar-section">Acadêmico</div>
-      <a class="sf-nav-link" href="./tarefas.html">Tarefas e Provas</a>
-      <a class="sf-nav-link active" href="./disciplinas.html">Disciplinas Matriculadas</a>
-      <a class="sf-nav-link" href="./calendario.html">Calendário</a>
+      <a href="./principal.html" class="sf-nav-link active">Dashboard</a> <a class="sf-nav-link" href="./tarefas.html">Tarefas e Provas</a>
+      <a class="sf-nav-link" href="./disciplinas.html">Disciplinas Matriculadas</a> <a class="sf-nav-link" href="./calendario.html">Calendário</a>
       <a class="sf-nav-link" href="#">Anotações</a>
-      <!-- removi toda seção "Configurações" daqui -->
     </nav>
   </aside>
 
@@ -39,7 +51,6 @@
         <img src="../imgs/logo.png" alt="Logo"><span>StudyFlow</span>
       </div>
 
-      <!-- dropdown de usuário -->
       <div class="dropdown">
         <button
           class="btn btn-sm btn-icon-only"
@@ -74,7 +85,6 @@
     </header>
 
     <main class="sf-content container-fluid">
-      <!-- HERO + CALENDAR -->
       <div class="row g-4 mb-4">
         <div class="col-lg-9">
           <div class="hero-card d-flex flex-column flex-md-row align-items-md-center justify-content-between h-100">
@@ -84,8 +94,7 @@
               <p class="mb-0">Organize tarefas, receba notificações importantes e acompanhe prazos em um só lugar.</p>
             </div>
             <div class="mt-4 mt-md-0" style="max-width:220px">
-              <!-- <img src="" class="img-fluid" alt="Ilustração hero"> -->
-            </div>
+              </div>
           </div>
         </div>
         <div class="col-12 col-md-6 col-lg-3">
@@ -98,11 +107,8 @@
         </div>
       </div>
 
-      <!-- CARROSSEL + TAREFAS -->
       <div class="row g-4 mb-5">
-        <!-- CARROSSEL E PROVAS -->
         <div class="col-lg-9">
-          <!-- Disciplinas Matriculadas -->
           <section class="disciplines-carousel-section mb-4">
             <div class="d-flex justify-content-between align-items-center mb-2">
               <h6 class="fw-semibold m-0">Disciplinas Matriculadas</h6>
@@ -168,7 +174,6 @@
             </div>
           </section>
 
-          <!-- Plataforma de Provas -->
           <section>
             <div class="d-flex justify-content-between align-items-center mb-2">
               <h6 class="fw-semibold m-0">Plataforma de Provas</h6>
@@ -186,7 +191,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                    <td>Fund. de Design Gráfico</td>
+                  <tr> <td>Fund. de Design Gráfico</td>
                     <td>25 Jan 2025</td>
                     <td>19h30</td>
                     <td>Design Studio A</td>
@@ -219,7 +224,6 @@
           </section>
         </div>
 
-        <!-- TAREFAS -->
         <div class="col-lg-3">
           <div class="d-flex justify-content-between align-items-center mb-2">
             <h6 class="fw-semibold m-0">Tarefas</h6>
@@ -262,8 +266,83 @@
         </div>
       </div>
     </main>
-
   </div>
+
+  <dialog id="modalDisciplina">
+      <form id="formDisciplina" method="dialog" novalidate>
+          <div class="modal-header-custom modal-header-studyflow">
+              <div class="modal-title-wrapper">
+                  <img src="../imgs/logo.png" class="modal-logo-icon" alt="StudyFlow Logo">
+                  <h5 class="modal-title-custom" id="modalDisciplinaLabel">Adicionar Disciplina</h5>
+              </div>
+              <button type="button" class="btn-close-custom" id="fecharModalDisciplina" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body-custom">
+              <div class="mb-3">
+                  <label for="disciplinaNome" class="form-label">Nome da Disciplina</label>
+                  <input type="text" class="form-control" id="disciplinaNome" required>
+                  <div class="invalid-feedback"></div>
+              </div>
+              <div class="mb-3">
+                  <label for="disciplinaProfessor" class="form-label">Professor</label>
+                  <input type="text" class="form-control" id="disciplinaProfessor">
+                  <div class="invalid-feedback"></div>
+              </div>
+              <div class="mb-3">
+                  <label for="disciplinaDescricao" class="form-label">Descrição (Opcional)</label>
+                  <textarea class="form-control" id="disciplinaDescricao" rows="3" placeholder="Ex: Ementa da disciplina, objetivos..."></textarea>
+                  <div class="invalid-feedback"></div>
+              </div>
+              <div class="mb-3">
+                  <label for="disciplinaPeriodo" class="form-label">Período</label>
+                  <select class="form-select" id="disciplinaPeriodo" required>
+                      <option value="" disabled selected>Selecione o período...</option>
+                      <option value="2024.1">2024.1</option>
+                      <option value="2024.2">2024.2</option>
+                      <option value="2025.1">2025.1</option>
+                      <option value="2025.2">2025.2</option>
+                  </select>
+                  <div class="invalid-feedback"></div>
+              </div>
+              <div class="mb-3">
+                  <label for="disciplinaStatus" class="form-label">Status</label>
+                  <select class="form-select" id="disciplinaStatus" required>
+                      <option value="Ativa" selected>Ativa</option>
+                      <option value="Concluída">Concluída</option>
+                      <option value="Em Andamento">Em Andamento</option>
+                      <option value="Agendada">Agendada</option> </select>
+                  <div class="invalid-feedback"></div>
+              </div>
+              <div class="mb-3">
+                  <label for="disciplinaDias" class="form-label">Dias da Semana (ex: Seg, Qua, Sex)</label>
+                  <input type="text" class="form-control" id="disciplinaDias" required>
+                  <div class="invalid-feedback"></div>
+              </div>
+              <div class="row mb-3">
+                  <div class="col-sm-6">
+                      <label for="disciplinaHorarioInicio" class="form-label">Horário de Início</label>
+                      <input type="time" class="form-control" id="disciplinaHorarioInicio" required>
+                      <div class="invalid-feedback"></div>
+                  </div>
+                  <div class="col-sm-6">
+                      <label for="disciplinaHorarioFim" class="form-label">Horário de Fim</label>
+                      <input type="time" class="form-control" id="disciplinaHorarioFim" required>
+                      <div class="invalid-feedback"></div>
+                  </div>
+              </div>
+              <div class="mb-3">
+                  <label for="disciplinaLocal" class="form-label">Local</label>
+                  <input type="text" class="form-control" id="disciplinaLocal" required>
+                  <div class="invalid-feedback"></div>
+              </div>
+              <input type="hidden" id="disciplinaId">
+              <input type="hidden" id="disciplinaDataCriacao"> </div>
+          <div class="modal-footer-custom modal-footer-studyflow">
+              <button type="button" class="btn btn-modal-cancel" id="cancelarModalDisciplina">Cancelar</button>
+              <button type="submit" class="btn btn-modal-save">Salvar Disciplina</button>
+          </div>
+      </form>
+  </dialog>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
-</body>
+  </body>
 </html>

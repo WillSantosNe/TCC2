@@ -1,98 +1,107 @@
-// principal.js
 document.addEventListener('DOMContentLoaded', () => {
-  const btnNext = document.getElementById('nextCoursesBtn');
-  const btnPrev = document.getElementById('prevCoursesBtn');
-  const carouselWrapper = document.querySelector('.courses-carousel-wrapper'); // Wrapper com overflow:hidden
-  const carouselInner = document.getElementById('coursesContainer');     // Contêiner interno que se move
+    // --- Lógica existente do Carrossel de Disciplinas ---
+    const btnNext = document.getElementById('nextCoursesBtn');
+    const btnPrev = document.getElementById('prevCoursesBtn');
+    const carouselWrapper = document.querySelector('.courses-carousel-wrapper');
+    const carouselInner = document.getElementById('coursesContainer');
 
-  if (!btnNext || !btnPrev || !carouselWrapper || !carouselInner) {
-    // console.warn('Elementos do carrossel de disciplinas não encontrados.');
-    return;
-  }
+    if (btnNext && btnPrev && carouselWrapper && carouselInner) {
+        const cards = carouselInner.children;
+        if (cards.length === 0) {
+            if(btnPrev) btnPrev.disabled = true;
+            if(btnNext) btnNext.disabled = true;
+        }
 
-  const cards = carouselInner.children;
-  if (cards.length === 0) {
-    if(btnPrev) btnPrev.disabled = true;
-    if(btnNext) btnNext.disabled = true;
-    return;
-  }
+        let scrollAmount = 0;
+        let currentScrollPosition = 0;
 
-  let cardWidthPlusGap = 0; // Largura de um card + seu gap (se o gap for por margem)
-  let scrollAmount = 0;     // Quanto rolar por clique
-  let currentScrollPosition = 0; // Posição atual de scroll em pixels
+        function calculateDimensionsAndScrollAmount() {
+            if (cards.length > 0) {
+                const firstCard = cards[0];
+                // Ensure firstCard and its style are accessible
+                if (firstCard && window.getComputedStyle && carouselInner) {
+                    const cardStyle = window.getComputedStyle(firstCard);
+                    const cardMarginRight = parseFloat(cardStyle.marginRight) || 0;
+                    const carouselGap = parseFloat(window.getComputedStyle(carouselInner).gap) || 0;
+                    
+                    scrollAmount = firstCard.offsetWidth + (carouselGap > 0 ? carouselGap : cardMarginRight);
+                } else {
+                    scrollAmount = 200; // Fallback scroll amount
+                }
+            } else {
+                scrollAmount = 0;
+            }
+        }
 
-  function calculateDimensions() {
-    if (cards.length > 0) {
-        const firstCard = cards[0];
-        const cardStyle = window.getComputedStyle(firstCard);
-        // Se você usa 'gap' no flex container, a largura do card é só offsetWidth.
-        // Se você usa margin-right no card, precisa incluir.
-        // Para 'gap', o scrollAmount será mais simples.
-        cardWidthPlusGap = firstCard.offsetWidth + parseFloat(cardStyle.marginRight || 0); // Adiciona marginRight se existir
+        function updateCarouselState() {
+            if (!carouselInner || !carouselWrapper) return; // Basic guard
 
-        // Quanto rolar: a largura de UM card (incluindo sua margem se houver, ou apenas offsetWidth se usar flex-gap)
-        scrollAmount = firstCard.offsetWidth + (parseFloat(window.getComputedStyle(carouselInner).gap) || 0);
-        // Se você quiser rolar por N cards:
-        // const cardsToScroll = 1; // Mude para 2, 3, 4 etc. se quiser rolar mais de um card por vez
-        // scrollAmount = 0;
-        // for(let i=0; i<cardsToScroll; i++) {
-        //    if(cards[i]) {
-        //        scrollAmount += cards[i].offsetWidth + (parseFloat(window.getComputedStyle(carouselInner).gap) || 0)
-        //    }
-        // }
-        // scrollAmount -= (parseFloat(window.getComputedStyle(carouselInner).gap) || 0); // Remove o último gap
+            const maxScrollPossible = carouselInner.scrollWidth - carouselWrapper.offsetWidth;
+            currentScrollPosition = Math.max(0, Math.min(currentScrollPosition, maxScrollPossible));
+            carouselInner.style.transform = `translateX(-${currentScrollPosition}px)`;
 
-        // console.log("Card effective width for scroll (card + gap):", scrollAmount);
+            if(btnPrev) btnPrev.disabled = currentScrollPosition <= 0;
+            if(btnNext) btnNext.disabled = currentScrollPosition >= maxScrollPossible -1; // -1 for float precision
+        }
+
+        if (btnNext) {
+            btnNext.addEventListener('click', () => {
+                calculateDimensionsAndScrollAmount(); 
+                const maxScrollPossible = carouselInner.scrollWidth - carouselWrapper.offsetWidth;
+                if (currentScrollPosition < maxScrollPossible) {
+                    currentScrollPosition += scrollAmount;
+                    if (currentScrollPosition > maxScrollPossible) {
+                        currentScrollPosition = maxScrollPossible;
+                    }
+                    updateCarouselState();
+                }
+            });
+        }
+
+        if (btnPrev) {
+            btnPrev.addEventListener('click', () => {
+                calculateDimensionsAndScrollAmount();
+                if (currentScrollPosition > 0) {
+                    currentScrollPosition -= scrollAmount;
+                    if (currentScrollPosition < 0) {
+                        currentScrollPosition = 0;
+                    }
+                    updateCarouselState();
+                }
+            });
+        }
+
+        function initializeCarousel() {
+            calculateDimensionsAndScrollAmount();
+            currentScrollPosition = 0; 
+            updateCarouselState();
+        }
+
+        initializeCarousel(); 
+
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                initializeCarousel(); 
+            }, 250);
+        });
+    } // Fim da lógica do carrossel
+
+    // --- LÓGICA DE MANIPULAÇÃO DO DROPDOWN DE USUÁRIO ---
+    var userMenuBtn = document.getElementById('userMenuBtn');
+    if (userMenuBtn && typeof bootstrap !== 'undefined' && bootstrap.Dropdown) {
+        new bootstrap.Dropdown(userMenuBtn);
     }
-  }
 
-  function updateCarouselState() {
-    if (!carouselInner || !btnPrev || !btnNext || !carouselWrapper) return;
-
-    const maxScrollPossible = carouselInner.scrollWidth - carouselWrapper.offsetWidth;
-
-    // Garante que currentScrollPosition não exceda os limites
-    currentScrollPosition = Math.max(0, Math.min(currentScrollPosition, maxScrollPossible));
-
-    carouselInner.style.transform = `translateX(-${currentScrollPosition}px)`;
-
-    btnPrev.disabled = currentScrollPosition <= 0;
-    // Para o botão 'next', desabilitar se o scroll restante for menor que um pequeno threshold
-    // ou se currentScrollPosition estiver muito próximo do máximo.
-    btnNext.disabled = currentScrollPosition >= maxScrollPossible -1; // -1 para margem de erro de float
-
-    // console.log("Scroll:", currentScrollPosition, "MaxScroll:", maxScrollPossible, "PrevD:", btnPrev.disabled, "NextD:", btnNext.disabled);
-  }
-
-  btnNext.addEventListener('click', () => {
-    const maxScrollPossible = carouselInner.scrollWidth - carouselWrapper.offsetWidth;
-    if (currentScrollPosition < maxScrollPossible) {
-      currentScrollPosition += scrollAmount;
-      updateCarouselState();
-    }
-  });
-
-  btnPrev.addEventListener('click', () => {
-    if (currentScrollPosition > 0) {
-      currentScrollPosition -= scrollAmount;
-      updateCarouselState();
-    }
-  });
-
-  function initializeCarousel() {
-    calculateDimensions();
-    currentScrollPosition = 0; // Garante que comece do início
-    updateCarouselState();
-  }
-
-  initializeCarousel();
-
-  let resizeTimeout;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(() => {
-        // console.log("Window resized, re-initializing carousel.");
-        initializeCarousel(); // Re-calcula e reseta
-    }, 250);
-  });
+    // Nota: O botão #abrirModalNovaDisciplina na sidebar da principal.html
+    // terá seu evento de clique gerenciado por disciplinas.js,
+    // pois disciplinas.js é carregado e anexa um listener a esse ID globalmente.
+    // As funções de modal (abrirModalFormDisciplina, etc.) e os seletores de elementos
+    // do modal (modalDisciplina, formDisciplina, etc.) também virão de disciplinas.js.
+    // Certifique-se que disciplinas.js não tenha código que dependa estritamente
+    // de elementos que SÓ existem em disciplinas.html (como a tabela DataTable),
+    // ou que ele falhe graciosamente se esses elementos não forem encontrados.
+    // A submissão do formulário no disciplinas.js irá adicionar à `listaDisciplinas`
+    // (que é mockada em disciplinas.js) e mostrar um alerta.
 });
