@@ -1,6 +1,6 @@
 /* Css/tarefas.css */
 
-/* Estilos ESPECÍFICOS para o modal de Tarefa (adicionar/editar) */
+/* ===== Modal de Tarefa ===== */
 dialog#modalTarefa {
     width: 90%;
     max-width: 520px;
@@ -12,8 +12,6 @@ dialog#modalTarefa {
 dialog#modalTarefa::backdrop {
     background-color: rgba(0, 0, 0, 0.5);
 }
-
-
 dialog#modalTarefa .modal-header-studyflow {
     background-color: #FFFFFF;
     padding: 1.25rem 1.5rem;
@@ -22,72 +20,50 @@ dialog#modalTarefa .modal-header-studyflow {
     align-items: center;
     justify-content: space-between;
 }
-
-dialog#modalTarefa .modal-title-wrapper {
-    display: flex;
-    align-items: center;
-}
-
-dialog#modalTarefa .modal-logo-icon {
-    width: 28px;
-    height: 28px;
-    margin-right: 0.75rem;
-}
-
+dialog#modalTarefa .modal-title-wrapper { display: flex; align-items: center; }
+dialog#modalTarefa .modal-logo-icon { width: 28px; height: 28px; margin-right: .75rem; }
 dialog#modalTarefa .modal-title-custom {
     font-weight: 600;
     font-size: 1.3rem;
     color: #2E3A59;
     margin-bottom: 0;
 }
-
-dialog#modalTarefa .btn-close-custom {
-    filter: grayscale(1) brightness(1.5);
-    background-color: transparent;
-    border: none;
-    font-size: 1.5rem;
-    padding: 0.5rem;
-    line-height: 1;
-}
+dialog#modalTarefa .btn-close-custom,
 dialog#modalTarefa .btn-close {
     filter: grayscale(1) brightness(1.5);
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    padding: .5rem;
+    line-height: 1;
 }
-
-
 dialog#modalTarefa .modal-body-custom {
     padding: 1.5rem 1.75rem;
-    background-color: #FFFFFF;
+    background: #FFF;
 }
-
 dialog#modalTarefa .form-label {
-    font-size: 0.875rem;
+    font-size: .875rem;
     color: #4F5E7B;
     font-weight: 500;
-    margin-bottom: 0.375rem;
+    margin-bottom: .375rem;
 }
-
 dialog#modalTarefa .form-control,
 dialog#modalTarefa .form-select,
 dialog#modalTarefa textarea.form-control {
-    background-color: #FFFFFF;
+    background: #FFF;
     border: 1px solid #D9DDE7;
     border-radius: 8px;
-    padding: 0.75rem 1rem;
-    font-size: 0.95rem;
+    padding: .75rem 1rem;
+    font-size: .95rem;
     color: #2E3A59;
 }
-dialog#modalTarefa .form-control::placeholder {
-    color: #A0AEC0;
-}
+dialog#modalTarefa .form-control::placeholder { color: #A0AEC0; }
 dialog#modalTarefa .form-control:focus,
 dialog#modalTarefa .form-select:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(85, 104, 254, 0.25);
+    box-shadow: 0 0 0 .2rem rgba(85,104,254,.25);
 }
-/* Feedback de validação */
-dialog#modalTarefa .is-invalid {
-    border-color: #dc3545;
-}
+dialog#modalTarefa .is-invalid { border-color: #dc3545; }
 dialog#modalTarefa .invalid-feedback {
     display: block;
     width: 100%;
@@ -95,10 +71,8 @@ dialog#modalTarefa .invalid-feedback {
     font-size: .875em;
     color: #dc3545;
 }
-
-
 dialog#modalTarefa .modal-footer-studyflow {
-    background-color: #FFFFFF;
+    background: #FFF;
     border-top: 1px solid #E9E9F0;
     padding: 1.25rem 1.75rem;
     display: flex;
@@ -106,436 +80,266 @@ dialog#modalTarefa .modal-footer-studyflow {
     border-bottom-left-radius: 12px;
     border-bottom-right-radius: 12px;
 }
-
 dialog#modalTarefa .btn-modal-cancel {
-    background-color: #F1F3F6;
-    border-color: #F1F3F6;
+    background: #F1F3F6;
+    border: 1px solid #F1F3F6;
     color: #4F5E7B;
-    padding: 0.6rem 1.3rem;
+    padding: .6rem 1.3rem;
     border-radius: 8px;
     font-weight: 500;
-    font-size: 0.95rem;
+    font-size: .95rem;
 }
 dialog#modalTarefa .btn-modal-cancel:hover {
-    background-color: #E2E6EB;
+    background: #E2E6EB;
     border-color: #E2E6EB;
 }
-
 dialog#modalTarefa .btn-modal-save {
-    background-color: #2E3A59;
-    border-color: #2E3A59;
-    color: #FFFFFF;
-    padding: 0.6rem 1.3rem;
+    background: #2E3A59;
+    border: 1px solid #2E3A59;
+    color: #FFF;
+    padding: .6rem 1.3rem;
     border-radius: 8px;
     font-weight: 500;
-    font-size: 0.95rem;
+    font-size: .95rem;
 }
 dialog#modalTarefa .btn-modal-save:hover {
-    background-color: #242E47;
+    background: #242E47;
     border-color: #242E47;
 }
 
-/* Estilos específicos da página de Tarefas */
+/* ===== Página de Tarefas ===== */
 .sf-page-title {
     font-weight: 600;
     color: var(--text-title-color);
-    margin-bottom: 0.25rem;
+    margin-bottom: .25rem;
 }
 .sf-page-subtitle {
-    font-size: 0.95rem;
+    font-size: .95rem;
     color: var(--text-body-color);
     margin-bottom: 1.5rem;
 }
 
-
-/*
- * Ajustes para alinhar verticalmente o botão "Adicionar Tarefa"
- * com o campo de busca, corrigindo a diferença de padding vertical.
- */
-.btn-add-task,
-#abrirModalNovaTarefaDt {
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
-}
-
-/* Garante que o ícone e o texto tenham espaçamento adequado */
-.btn-add-task i,
-#abrirModalNovaTarefaDt i {
-    margin-right: 0.5rem; /* Espaçamento entre ícone e texto */
-}
-
-/* Para botões que são só ícone (ex: o '+' em mobile) */
-.btn-icon-only {
-    padding: 0.375rem 0.75rem;
-    font-size: 1rem;
-}
-
-
-/* Tabela de Tarefas */
+/* ===== Tabela e Ações ===== */
 .tarefas-table th {
     font-weight: 600;
-    font-size: 0.85rem;
+    font-size: .85rem;
     text-transform: uppercase;
     color: var(--text-body-color);
     white-space: nowrap;
 }
 .tarefas-table td {
-    font-size: 0.9rem;
+    font-size: .9rem;
     vertical-align: middle;
-    white-space: nowrap; /* Impede quebra de linha */
-    overflow: hidden; /* Esconde o conteúdo que transborda */
-    text-overflow: ellipsis; /* Adiciona reticências (...) ao final do texto truncado */
-    max-width: 150px; /* Limita a largura da célula para o truncamento funcionar */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
 }
+.tarefas-table td:nth-child(2) { max-width: 250px; }
+.tarefas-table td:nth-child(3) { max-width: 200px; }
 
-/* Ajuste específico para a coluna de Disciplina para não truncar muito cedo em desktop */
-.tarefas-table td:nth-child(3) { /* 3ª coluna: Disciplina */
-    max-width: 200px;
-}
-/* Ajuste para a coluna de Título para ter um pouco mais de espaço */
-.tarefas-table td:nth-child(2) { /* 2ª coluna: Título da Tarefa */
-    max-width: 250px;
-}
-
-
-/* Coluna de Ações - não deve ser o dtr-control */
 .tarefas-table th.dt-actions-column,
 .tarefas-table td.dt-actions-column {
-    text-align: left !important;
-    padding-left: 0.5rem !important;
-    padding-right: 0.5rem !important;
-    width: auto;
+    text-align: left!important;
+    padding: 0 .5rem!important;
     min-width: 50px;
-    max-width: 70px; /* Garante que haja espaço para os 3 pontinhos */
-    overflow: visible; /* Permite que o dropdown se expanda */
-}
-/* Para o controle de expandir/colapsar do DataTables Responsive */
-table.dataTable.dtr-inline.collapsed > tbody > tr > td.dtr-control,
-table.dataTable.dtr-inline.collapsed > tbody > tr > th.dtr-control {
-    text-align: center !important;
-    cursor: pointer;
-    padding-right: 1.5rem !important;
+    max-width: 70px;
+    overflow: visible;
 }
 
-/* Estilos para o ícone +/- do DataTables Responsive */
-table.dataTable.dtr-inline.collapsed > tbody > tr > td.dtr-control::before,
-table.dataTable.dtr-inline.collapsed > tbody > tr > th.dtr-control::before {
-    top: 50%;
-    left: 0.5rem;
-    height: 1.2em;
-    width: 1.2em;
-    margin-top: -0.6em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* DataTables responsive toggle */
+table.dataTable.dtr-inline.collapsed td.dtr-control::before,
+table.dataTable.dtr-inline.collapsed th.dtr-control::before {
+    content: "+";
     position: absolute;
-    color: white;
-    border: none;
+    top: 50%;
+    left: .5rem;
+    transform: translateY(-50%);
+    width: 1.2em;
+    height: 1.2em;
+    line-height: 1.2em;
+    text-align: center;
+    color: #FFF;
+    background: var(--primary-color,#5568FE);
     border-radius: 50%;
     box-shadow: 0 1px 3px rgba(0,0,0,.2);
-    box-sizing: border-box;
-    text-align: center;
-    font-family: "Inter", sans-serif;
-    font-weight: bold;
-    line-height: 1.2em;
-    content: "+";
-    background-color: var(--primary-color, #5568FE);
 }
-table.dataTable.dtr-inline.collapsed > tbody > tr.parent > td.dtr-control::before,
-table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th.dtr-control::before {
+table.dataTable.dtr-inline.collapsed tr.parent td.dtr-control::before,
+table.dataTable.dtr-inline.collapsed tr.parent th.dtr-control::before {
     content: "–";
-    background-color: #d33333;
+    background: #d33333;
 }
 
-
+/* Badges e ícones */
 .tarefas-table .badge {
-    font-size: 0.75rem;
-    padding: 0.35em 0.65em;
+    font-size: .75rem;
+    padding: .35em .65em;
     font-weight: 600;
 }
 .btn-icon {
     color: var(--text-body-color);
-    padding: 0.25rem 0.5rem;
-    background-color: transparent;
+    padding: .25rem .5rem;
+    background: transparent;
     border: none;
 }
 .btn-icon:hover,
 .btn-icon:focus {
     color: var(--primary-color);
-    background-color: rgba(85, 104, 254, 0.1);
+    background: rgba(85,104,254,.1);
 }
 .dropdown-menu {
-    font-size: 0.9rem;
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, .15);
+    font-size: .9rem;
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
     z-index: 1056;
 }
-.dropdown-item i {
-    width: 1.25em;
-    margin-right: 0.5rem;
-}
-.dropdown-item.text-danger i {
-    color: inherit;
-}
 
-/* Scroll da tabela e overflow do dropdown */
+/* Scroll da tabela */
 div.dataTables_scrollBody {
-    border: 1px solid var(--border-color, #dee2e6);
+    border: 1px solid var(--border-color,#dee2e6);
     border-top: none;
-    border-bottom-left-radius: var(--default-radius, 6px);
-    border-bottom-right-radius: var(--default-radius, 6px);
+    border-radius: 0 0 6px 6px;
 }
 div.dataTables_scrollBody,
 #tabelaTarefas_wrapper,
 .table-container {
-    overflow: visible !important;
-}
-#tabelaTarefas_wrapper .table-responsive {
-    overflow: visible !important;
+    overflow: visible!important;
 }
 
-
-/* Ajustes nos controles do DataTables (Filtro, Length, etc.) */
-#tabelaTarefas_wrapper .dt-custom-header > div[class*="col-"] {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+/* ===== Controles: busca, filtros, botão (ESTILOS BASE) ===== */
+#tabelaTarefas_wrapper .dt-custom-header {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap; /* wrap é o padrão para mobile, nowrap será aplicado no desktop */
+    padding: 1rem 0;
+    align-items: center;
 }
 
-
-/* Style for the filter div (generated by 'f' in DataTables dom) */
-div.dataTables_wrapper div.dataTables_filter {
-    padding: 0;
+div.dataTables_filter {
+    flex: 1 1 auto;
     margin: 0;
-    text-align: left;
-    flex-grow: 1;
-    display: flex;
-    align-items: center;
+    min-width: 150px; /* Mínimo geral, pode ser ajustado por media query */
 }
-/* Label of the filter (usually hidden, but contains the input) */
-div.dataTables_wrapper div.dataTables_filter label {
-    margin-bottom: 0;
-    font-weight: normal;
-    font-size: 0.9rem;
+div.dataTables_filter input {
+    height: 40px;
+    padding: 0 1rem;
+    box-sizing: border-box;
     width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-/* Input of the DataTables filter */
-div.dataTables_wrapper div.dataTables_filter input {
-    width: 100%;
-    margin-left: 0;
-    border-radius: var(--default-radius, 6px);
-    min-width: auto;
-    flex-grow: 1;
 }
 
-/* Container para os botões e custom filters */
+/* Container que agrupa os filtros (selects) e o botão #abrirModalNovaTarefaDt */
 .dt-buttons-container {
-    display: flex;
+    display: flex; /* Será 'grid' no desktop. No mobile, será 'flex' com wrap interno. */
     align-items: center;
-    gap: 0.5rem;
-    flex-wrap: nowrap; /* Não permite quebra de linha em desktop */
-    justify-content: flex-end;
+    gap: .5rem;
+    flex-shrink: 0; /* Para que não seja esmagado pela busca */
 }
-/* Estilos para o dropdown de filtro de Tipo de Tarefa e Disciplina */
+
 .dt-filter-select {
-    width: auto !important;
-    max-width: 180px; /* Aumentado para dar mais espaço ao texto */
-    flex-shrink: 0;
-    font-size: 0.9rem;
-    padding: 0.6rem 1rem;
-    border-radius: 8px;
-    border: 1px solid #D9DDE7;
-    background-color: #FFFFFF;
-    color: #2E3A59;
-    /* Ajuste para a seta padrão do select */
-    appearance: none; /* Remove a seta padrão */
-    -webkit-appearance: none; /* Remove a seta padrão no Webkit */
-    -moz-appearance: none; /* Remove a seta padrão no Firefox */
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3E%3C/svg%3E"); /* Adiciona seta customizada */
-    background-repeat: no-repeat;
-    background-position: right 1rem center;
-    background-size: 0.7em auto;
-    padding-right: 2.5rem; /* Aumenta o padding para a seta customizada */
-}
-.dt-filter-select:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(85, 104, 254, 0.25);
+    height: 40px;
+    padding: 0 1rem;
+    box-sizing: border-box;
+    width: 100%; /* Ocupará a largura do seu container (especialmente no mobile quando empilhado) */
 }
 
-
-/* Ensure the DataTables info and pagination elements are styled */
-.dataTables_info {
-    padding-top: 0.85rem !important;
-    font-size: 0.9rem;
-    color: var(--text-body-color);
+#abrirModalNovaTarefaDt {
+    height: 40px!important;
+    padding: 0 1rem!important;
+    display: inline-flex!important;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 100%; /* Por padrão, para ocupar espaço em coluna ou se for o único item. Será 'auto' em layouts específicos. */
 }
-.dataTables_paginate_wrapper .pagination {
-    justify-content: flex-end;
-    margin-bottom: 0;
+#abrirModalNovaTarefaDt i {
+    font-size: 1.2rem;
 }
-.dataTables_paginate_wrapper .page-item .page-link {
-    font-size: 0.9rem;
-}
-
-
-/* Responsividade (Desktop vs. Mobile) */
-@media (max-width: 767.98px) {
-    /* Alinhamento da linha cinza do datatable */
-    .table-container {
-        padding-left: 0; /* Remove padding que pode causar desalinhamento */
-        padding-right: 0;
-    }
-
-    /* Ajustes gerais para o header do DataTables em mobile */
-    #tabelaTarefas_wrapper .dt-custom-header {
-        flex-direction: column; /* Empilha os itens verticalmente */
-        align-items: stretch; /* Estica os itens para preencher a largura */
-        gap: 0.75rem; /* Aumenta o espaçamento entre os blocos */
-        padding-left: 1rem !important; /* Adiciona padding para alinhar com a tela */
-        padding-right: 1rem !important; /* Adiciona padding para alinhar com a tela */
-    }
-
-    /* As colunas dentro do header agora preenchem 100% da largura do header com padding */
-    #tabelaTarefas_wrapper .dt-custom-header > div.col-12 {
-        flex: 1 1 auto;
-        width: 100%;
-        max-width: none;
-        margin-bottom: 0 !important;
-        padding-left: 0 !important; /* Remove padding de col-12 para que o padding do pai funcione */
-        padding-right: 0 !important;
-    }
-
-    /* Barra de busca - Primeira linha */
-    div.dataTables_wrapper div.dataTables_filter {
-        order: 1; /* Garante que fique na primeira linha */
-        flex-grow: 1;
-        width: 100%;
-    }
-
-    /* Container de botões e filtros personalizados - Segunda e Terceira Linha */
-    .dt-buttons-container {
-        order: 2; /* Garante que fique abaixo da busca */
-        flex-direction: column; /* Empilha os filtros e o botão */
-        align-items: stretch; /* Estica para preencher a largura */
-        width: 100%;
-        gap: 0.5rem; /* Espaçamento entre os itens empilhados */
-        margin-top: 0;
-        justify-content: flex-start; /* Alinha ao início para empilhar */
-    }
-
-    /* Selects de filtro - Segunda e Terceira linha (empilhados) */
-    .dt-filter-select {
-        flex-grow: 1;
-        max-width: none; /* Remove limite de largura em mobile */
-        margin-right: 0 !important; /* Remove margem que pode desalinhar */
-        width: 100%; /* Ocupa a largura total na sua linha */
-        order: 1; /* Garante que os selects fiquem antes do botão */
-    }
-    /* Estilo para o select de Disciplina ficar abaixo do Tipo e antes do botão */
-    #filterDisciplina {
-        order: 2; /* Fica abaixo do Tipo */
-    }
-
-
-    /* Botão "Adicionar Tarefa" - Última parte da Terceira Linha */
-    #abrirModalNovaTarefaDt {
-        order: 3; /* Garante que fique por último */
-        padding: 0.75rem !important;
-        border-radius: 50%;
-        flex-shrink: 0;
-        width: 44px;
-        height: 44px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        /* Alinhamento ao canto direito da linha, como o filtro de disciplina */
-        margin-left: auto; /* Empurra para a direita */
-    }
-    #abrirModalNovaTarefaDt span {
-        display: none !important;
-    }
-    #abrirModalNovaTarefaDt i {
-        margin-right: 0 !important;
-        font-size: 1.25rem;
-    }
-    #abrirModalNovaTarefa {
-        display: none !important;
-    }
+#abrirModalNovaTarefaDt span {
+    white-space: nowrap;
+    margin-left: .5rem;
 }
 
-
-/* Resetar estilos para desktop */
+/* ===== Responsividade Desktop (>=768px) ===== */
 @media (min-width: 768px) {
     #tabelaTarefas_wrapper .dt-custom-header {
-        flex-direction: row;
+        flex-wrap: nowrap; /* Busca e dt-buttons-container na mesma linha */
         align-items: center;
-        flex-wrap: nowrap;
-        gap: 0;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
     }
 
-    #tabelaTarefas_wrapper .dt-custom-header > div.col-md-auto.me-md-auto {
-        margin-right: auto !important;
-        flex-grow: 0;
-        width: auto;
-        display: block;
-    }
-
-    div.dataTables_wrapper div.dataTables_filter {
+    #tabelaTarefas_wrapper .dt-custom-header > div.dataTables_filter {
         flex-grow: 1;
-        width: auto;
-    }
-    div.dataTables_wrapper div.dataTables_filter label {
-        width: auto;
-        display: flex;
-        gap: 0.5rem;
-    }
-    div.dataTables_wrapper div.dataTables_filter input {
-        width: auto;
-        flex-grow: 1;
+        flex-shrink: 1;
+        flex-basis: 0;
+        min-width: 200px; /* Mínimo específico para desktop */
     }
 
-    .dt-buttons-container {
-        flex-direction: row;
-        flex-wrap: nowrap;
-        justify-content: flex-end;
-        width: auto;
-        margin-top: 0 !important;
-    }
-    .dt-filter-select {
-        flex-grow: 0;
-        max-width: 180px;
-        margin-right: 0;
+    /* Layout Desktop: [Busca] [FiltroA] [FiltroB] [Botao] */
+    #tabelaTarefas_wrapper .dt-custom-header > .dt-buttons-container {
+        display: grid;
+        grid-template-areas: "filtroA filtroB botao";
+        grid-template-columns: 1fr 1fr auto; /* Filtros dividem espaço, botão com largura automática */
+        grid-template-rows: auto;
+        gap: .5rem;
+        align-items: center;
     }
 
-    /* Reset do botão Adicionar para desktop */
-    #abrirModalNovaTarefaDt {
-        padding: 0.75rem 1.3rem !important;
-        border-radius: 8px !important;
-        width: auto !important;
-        height: auto !important;
-        margin-left: 0; /* Remove margin-left: auto de mobile */
+    #tabelaTarefas_wrapper .dt-custom-header .dt-buttons-container > .dt-filter-select:nth-of-type(1) {
+        grid-area: filtroA;
+        width: 100%;
     }
-    #abrirModalNovaTarefaDt span {
-        display: inline !important;
+
+    #tabelaTarefas_wrapper .dt-custom-header .dt-buttons-container > .dt-filter-select:nth-of-type(2) {
+        grid-area: filtroB;
+        width: 100%;
     }
-    #abrirModalNovaTarefaDt i {
-        margin-right: 0.5rem !important;
-        font-size: inherit !important;
+    
+    #tabelaTarefas_wrapper .dt-custom-header .dt-buttons-container > #abrirModalNovaTarefaDt {
+        grid-area: botao;
+        width: auto; /* Largura natural do botão */
     }
 }
 
-/* Estilos para o modal de Detalhes (ajuste para a fonte nas pre tags) */
-#modalDetalhesTarefa dl.row dd pre {
-    white-space: pre-wrap;
-    word-break: break-word;
-    font-size: inherit;
-    margin-bottom: 0;
-    font-family: var(--default-font-family, "Inter", sans-serif);
-    color: inherit;
-    background-color: transparent;
-    border: none;
-    padding: 0;
+/* ===== Responsividade Mobile (≤767.98px) ===== */
+@media (max-width: 767.98px) {
+    #tabelaTarefas_wrapper .dt-custom-header {
+        display: flex;
+        flex-wrap: wrap; /* Permite que os filtros (dentro do .dt-buttons-container) quebrem */
+        align-items: center; /* Alinha verticalmente a busca e o .dt-buttons-container (que terá o botão) */
+        gap: .75rem; /* Espaçamento entre a busca e o .dt-buttons-container, e entre linhas */
+        padding: 1rem!important;
+    }
+
+    #tabelaTarefas_wrapper .dt-custom-header > div.dataTables_filter { /* Container da busca */
+        order: 1;
+        flex: 1 1 0; /* Base zero, permite crescer e encolher bastante */
+        min-width: 70px; /* Mínimo bem pequeno para a busca. Ajuste conforme o placeholder. */
+    }
+    #tabelaTarefas_wrapper .dt-custom-header > div.dataTables_filter input {
+        width: 100%;
+    }
+
+    /* .dt-buttons-container (que contém botão E filtros) virá depois da busca. */
+    #tabelaTarefas_wrapper .dt-custom-header > .dt-buttons-container {
+        order: 2;
+        display: flex; /* Para organizar seus filhos: botão e filtros */
+        flex-wrap: wrap; /* Permite que os filtros quebrem para baixo do botão */
+        align-items: center; /* Alinha o botão e os filtros (se na mesma linha) */
+        gap: .75rem; /* Espaço entre o botão e o primeiro filtro se quebrar */
+        /* width: auto; /* Deixa o container ter a largura do seu conteúdo (o botão na primeira linha) */
+                       /* Não precisa de width:auto explícito se for um item flex com conteúdo */
+        flex-grow: 0; /* Não deve crescer */
+        flex-shrink: 0; /* Não deve encolher */
+    }
+
+    /* Dentro do .dt-buttons-container: */
+    #tabelaTarefas_wrapper .dt-custom-header .dt-buttons-container > #abrirModalNovaTarefaDt {
+        order: 1; /* Botão é o primeiro visualmente DENTRO do .dt-buttons-container */
+        width: auto; /* Largura natural do botão */
+        /* Se o botão for o último no DOM, esta ordem o trará para frente */
+    }
+
+    #tabelaTarefas_wrapper .dt-custom-header .dt-buttons-container > .dt-filter-select {
+        order: 2; /* Filtros vêm depois do botão DENTRO do .dt-buttons-container */
+        flex-basis: 100%; /* Força cada filtro para uma nova linha (abaixo do botão) */
+        width: 100%; /* Faz cada filtro ocupar a largura total dessa nova linha (empilhando-os) */
+    }
 }

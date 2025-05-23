@@ -1,107 +1,176 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- Lógica existente do Carrossel de Disciplinas ---
-    const btnNext = document.getElementById('nextCoursesBtn');
-    const btnPrev = document.getElementById('prevCoursesBtn');
-    const carouselWrapper = document.querySelector('.courses-carousel-wrapper');
-    const carouselInner = document.getElementById('coursesContainer');
+    console.log('DOM completamente carregado. principal.js está executando.');
 
-    if (btnNext && btnPrev && carouselWrapper && carouselInner) {
-        const cards = carouselInner.children;
-        if (cards.length === 0) {
-            if(btnPrev) btnPrev.disabled = true;
-            if(btnNext) btnNext.disabled = true;
-        }
+    // --- Modal Adicionar Disciplina ---
+    const modalDisciplina = document.getElementById('modalDisciplina');
+    const quickAddDisciplinaBtn = document.getElementById('quickAddDisciplinaBtn');
+    const fecharModalDisciplinaBtn = document.getElementById('fecharModalDisciplina');
+    const cancelarModalDisciplinaBtn = document.getElementById('cancelarModalDisciplina');
+    const formDisciplina = document.getElementById('formDisciplina'); // Se precisar resetar/manipular
 
-        let scrollAmount = 0;
-        let currentScrollPosition = 0;
+    console.log('Modal Disciplina:', modalDisciplina);
+    console.log('Botão Adicionar Disciplina:', quickAddDisciplinaBtn);
 
-        function calculateDimensionsAndScrollAmount() {
-            if (cards.length > 0) {
-                const firstCard = cards[0];
-                // Ensure firstCard and its style are accessible
-                if (firstCard && window.getComputedStyle && carouselInner) {
-                    const cardStyle = window.getComputedStyle(firstCard);
-                    const cardMarginRight = parseFloat(cardStyle.marginRight) || 0;
-                    const carouselGap = parseFloat(window.getComputedStyle(carouselInner).gap) || 0;
-                    
-                    scrollAmount = firstCard.offsetWidth + (carouselGap > 0 ? carouselGap : cardMarginRight);
-                } else {
-                    scrollAmount = 200; // Fallback scroll amount
-                }
-            } else {
-                scrollAmount = 0;
-            }
-        }
+    if (quickAddDisciplinaBtn && modalDisciplina) {
+        quickAddDisciplinaBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('Botão Adicionar Disciplina clicado.');
+            if (formDisciplina) formDisciplina.reset(); // Opcional: limpa o formulário
+            const modalLabel = modalDisciplina.querySelector('#modalDisciplinaLabel');
+            if (modalLabel) modalLabel.textContent = 'Adicionar Disciplina';
+            
+            const disciplinaIdField = modalDisciplina.querySelector('#disciplinaId');
+            if (disciplinaIdField) disciplinaIdField.value = ''; // Limpa ID para garantir que é um novo cadastro
 
-        function updateCarouselState() {
-            if (!carouselInner || !carouselWrapper) return; // Basic guard
-
-            const maxScrollPossible = carouselInner.scrollWidth - carouselWrapper.offsetWidth;
-            currentScrollPosition = Math.max(0, Math.min(currentScrollPosition, maxScrollPossible));
-            carouselInner.style.transform = `translateX(-${currentScrollPosition}px)`;
-
-            if(btnPrev) btnPrev.disabled = currentScrollPosition <= 0;
-            if(btnNext) btnNext.disabled = currentScrollPosition >= maxScrollPossible -1; // -1 for float precision
-        }
-
-        if (btnNext) {
-            btnNext.addEventListener('click', () => {
-                calculateDimensionsAndScrollAmount(); 
-                const maxScrollPossible = carouselInner.scrollWidth - carouselWrapper.offsetWidth;
-                if (currentScrollPosition < maxScrollPossible) {
-                    currentScrollPosition += scrollAmount;
-                    if (currentScrollPosition > maxScrollPossible) {
-                        currentScrollPosition = maxScrollPossible;
-                    }
-                    updateCarouselState();
-                }
-            });
-        }
-
-        if (btnPrev) {
-            btnPrev.addEventListener('click', () => {
-                calculateDimensionsAndScrollAmount();
-                if (currentScrollPosition > 0) {
-                    currentScrollPosition -= scrollAmount;
-                    if (currentScrollPosition < 0) {
-                        currentScrollPosition = 0;
-                    }
-                    updateCarouselState();
-                }
-            });
-        }
-
-        function initializeCarousel() {
-            calculateDimensionsAndScrollAmount();
-            currentScrollPosition = 0; 
-            updateCarouselState();
-        }
-
-        initializeCarousel(); 
-
-        let resizeTimeout;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-                initializeCarousel(); 
-            }, 250);
+            modalDisciplina.showModal();
+            console.log('Modal Disciplina deveria estar visível.');
         });
-    } // Fim da lógica do carrossel
-
-    // --- LÓGICA DE MANIPULAÇÃO DO DROPDOWN DE USUÁRIO ---
-    var userMenuBtn = document.getElementById('userMenuBtn');
-    if (userMenuBtn && typeof bootstrap !== 'undefined' && bootstrap.Dropdown) {
-        new bootstrap.Dropdown(userMenuBtn);
+    } else {
+        console.error('Não foi possível encontrar o botão quickAddDisciplinaBtn ou o modalDisciplina.');
     }
 
-    // Nota: O botão #abrirModalNovaDisciplina na sidebar da principal.html
-    // terá seu evento de clique gerenciado por disciplinas.js,
-    // pois disciplinas.js é carregado e anexa um listener a esse ID globalmente.
-    // As funções de modal (abrirModalFormDisciplina, etc.) e os seletores de elementos
-    // do modal (modalDisciplina, formDisciplina, etc.) também virão de disciplinas.js.
-    // Certifique-se que disciplinas.js não tenha código que dependa estritamente
-    // de elementos que SÓ existem em disciplinas.html (como a tabela DataTable),
-    // ou que ele falhe graciosamente se esses elementos não forem encontrados.
-    // A submissão do formulário no disciplinas.js irá adicionar à `listaDisciplinas`
-    // (que é mockada em disciplinas.js) e mostrar um alerta.
+    if (fecharModalDisciplinaBtn && modalDisciplina) {
+        fecharModalDisciplinaBtn.addEventListener('click', () => {
+            modalDisciplina.close();
+            console.log('Modal Disciplina fechado pelo botão X.');
+        });
+    }
+
+    if (cancelarModalDisciplinaBtn && modalDisciplina) {
+        cancelarModalDisciplinaBtn.addEventListener('click', () => {
+            modalDisciplina.close();
+            console.log('Modal Disciplina fechado pelo botão Cancelar.');
+        });
+    }
+
+    if (modalDisciplina) {
+        modalDisciplina.addEventListener('click', (event) => {
+            if (event.target === modalDisciplina) { // Clique no backdrop
+                modalDisciplina.close();
+                console.log('Modal Disciplina fechado pelo clique no backdrop.');
+            }
+        });
+    }
+
+    // --- Modal Adicionar Tarefa/Prova ---
+    const modalTarefa = document.getElementById('modalTarefa');
+    const quickAddTarefaBtn = document.getElementById('quickAddTarefaBtn');
+    const fecharModalTarefaBtn = document.getElementById('fecharModalTarefa');
+    const cancelarModalTarefaBtn = document.getElementById('cancelarModalTarefa');
+    const formTarefa = document.getElementById('formTarefa'); // Se precisar resetar/manipular
+
+    console.log('Modal Tarefa:', modalTarefa);
+    console.log('Botão Adicionar Tarefa:', quickAddTarefaBtn);
+
+    if (quickAddTarefaBtn && modalTarefa) {
+        quickAddTarefaBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('Botão Adicionar Tarefa clicado.');
+            if (formTarefa) formTarefa.reset(); // Opcional: limpa o formulário
+            const modalLabel = modalTarefa.querySelector('#modalTarefaLabel');
+            if (modalLabel) modalLabel.textContent = 'Adicionar Tarefa';
+            
+            // Adicione aqui a lógica para popular o select de disciplinas se necessário
+            // popularSelectDisciplinas(document.getElementById('tarefaDisciplina'));
+
+            modalTarefa.showModal();
+            console.log('Modal Tarefa deveria estar visível.');
+        });
+    } else {
+        console.error('Não foi possível encontrar o botão quickAddTarefaBtn ou o modalTarefa.');
+    }
+
+    if (fecharModalTarefaBtn && modalTarefa) {
+        fecharModalTarefaBtn.addEventListener('click', () => {
+            modalTarefa.close();
+            console.log('Modal Tarefa fechado pelo botão X.');
+        });
+    }
+
+    if (cancelarModalTarefaBtn && modalTarefa) {
+        cancelarModalTarefaBtn.addEventListener('click', () => {
+            modalTarefa.close();
+            console.log('Modal Tarefa fechado pelo botão Cancelar.');
+        });
+    }
+
+    if (modalTarefa) {
+        modalTarefa.addEventListener('click', (event) => {
+            if (event.target === modalTarefa) { // Clique no backdrop
+                modalTarefa.close();
+                console.log('Modal Tarefa fechado pelo clique no backdrop.');
+            }
+        });
+    }
+
+    // --- Modal Adicionar Anotação (placeholder) ---
+    const quickAddAnotacaoBtn = document.getElementById('quickAddAnotacaoBtn');
+    console.log('Botão Adicionar Anotação:', quickAddAnotacaoBtn);
+    if (quickAddAnotacaoBtn) {
+        quickAddAnotacaoBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('Botão Adicionar Anotação clicado.');
+            alert('Funcionalidade "Adicionar Anotação" ainda não implementada ou modal não definido.');
+        });
+    } else {
+        console.error('Não foi possível encontrar o botão quickAddAnotacaoBtn.');
+    }
+
+    // --- Lógica do Carrossel de Disciplinas (mantida do seu HTML) ---
+    const coursesContainer = document.getElementById('coursesContainer');
+    const prevCoursesBtn = document.getElementById('prevCoursesBtn');
+    const nextCoursesBtn = document.getElementById('nextCoursesBtn');
+
+    if (coursesContainer && prevCoursesBtn && nextCoursesBtn) {
+        // Seu código de carrossel aqui...
+        // Exemplo básico:
+        const scrollAmount = 300;
+        prevCoursesBtn.addEventListener('click', () => {
+            coursesContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+        });
+        nextCoursesBtn.addEventListener('click', () => {
+            coursesContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        });
+        console.log('Lógica do carrossel configurada.');
+    } else {
+        console.warn('Elementos do carrossel não encontrados.');
+    }
+
+    // Lembre-se: a lógica de SUBMISSÃO dos formulários (salvar dados)
+    // ainda precisa ser tratada. Se `disciplinas.js` já faz isso para `formDisciplina`,
+    // ele pode funcionar aqui também se não houver conflitos.
+    // O mesmo para `formTarefa` e um potencial `tarefas.js`.
 });
+
+/*
+// Função exemplo para popular select (você precisará adaptar à sua fonte de dados)
+function popularSelectDisciplinas(selectElement) {
+    if (!selectElement) {
+        console.error('Elemento select para disciplinas não encontrado');
+        return;
+    }
+    selectElement.innerHTML = '<option value="">Selecione a disciplina...</option>'; // Limpa opções antigas
+    
+    // Exemplo: buscar de um array local ou localStorage (simulado)
+    // const disciplinas = [
+    //     { id: '1', nome: 'Matemática Discreta' },
+    //     { id: '2', nome: 'Cálculo I' },
+    //     { id: '3', nome: 'Introdução à Programação' }
+    // ]; // Substitua pela sua fonte de dados real
+
+    // Supondo que você tenha uma forma de buscar as disciplinas (ex: de localStorage ou API)
+    const disciplinasCadastradas = JSON.parse(localStorage.getItem('disciplinasDB')) || []; // Exemplo
+    console.log('Disciplinas para popular select:', disciplinasCadastradas);
+
+    disciplinasCadastradas.forEach(disciplina => {
+        // Verifique a estrutura do seu objeto 'disciplina'
+        // e se 'disciplina.status' existe e é relevante aqui.
+        // if (disciplina.status === 'Ativa') { 
+            const option = document.createElement('option');
+            option.value = disciplina.id; // ou disciplina.nome
+            option.textContent = disciplina.nome;
+            selectElement.appendChild(option);
+        // }
+    });
+}
+*/
