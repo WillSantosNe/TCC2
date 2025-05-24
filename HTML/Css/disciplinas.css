@@ -149,6 +149,7 @@ dialog#modalDisciplina .btn-modal-save:hover {
 }
 
 
+
 /* Ajustes para alinhar o botão "Adicionar Disciplina" com o campo de busca */
 .btn-add-discipline,
 #abrirModalNovaDisciplinaDt {
@@ -330,10 +331,10 @@ div.dataTables_wrapper div.dataTables_filter input {
 
 /* Container para os botões e custom filters */
 .dt-buttons-container {
-    display: flex;
+    display: flex; /* Default for mobile, will be overridden by media query */
     align-items: center;
     gap: 0.5rem;
-    flex-wrap: nowrap; /* Não permite quebra de linha em desktop */
+    flex-wrap: wrap; /* Allows wrapping on smaller screens */
     justify-content: flex-end;
 }
 /* Estilos para o dropdown de filtro de Tipo de Tarefa e Disciplina */
@@ -396,7 +397,7 @@ div.dataTables_wrapper div.dataTables_filter input {
     }
 
     /* As colunas dentro do header agora preenchem 100% da largura do header com padding */
-    #tabelaDisciplinas_wrapper .dt-custom-header > div.col-12 {
+    #tabelaDisciplinas_wrapper .dt-custom-header > div[class*="col-"] {
         flex: 1 1 auto;
         width: 100%;
         max-width: none;
@@ -435,9 +436,8 @@ div.dataTables_wrapper div.dataTables_filter input {
         margin-top: 0;
         justify-content: flex-start;
     }
-
-    /* Select de Tipo de Tarefa - SEGUNDA LINHA (Order: 1 para o select, mas dentro do container) */
-    /* Note: Este é o filtro de STATUS da Disciplina agora, não "Tipo de Tarefa" */
+ 
+    /* Select de Status (filtro A) */
     #filterStatusDisciplina { /* Usando o ID real do select que será criado no JS */
         order: 1;
         flex-grow: 1;
@@ -447,18 +447,17 @@ div.dataTables_wrapper div.dataTables_filter input {
         width: 100%;
     }
 
-    /* Linha do Filtro de Disciplina e Botão Adicionar - TERCEIRA LINHA */
-    /* Este wrapper será criado no JS para organizar o filtro de período e botão */
-    .dt-filter-periodo-add-row { /* Novo seletor para o wrapper da linha 3 */
-        display: flex;
-        flex-direction: row; /* Itens em linha */
-        align-items: center; /* Alinha verticalmente */
-        width: 100%; /* Ocupa a largura total */
-        gap: 0.5rem; /* Espaçamento entre o select e o botão */
-        order: 2; /* Fica abaixo do filterStatusDisciplina */
+    /* New wrapper for Periodo filter and Add button on mobile */
+    .dt-filter-periodo-add-row {
+        display: flex !important; /* Ensure it's displayed on mobile */
+        flex-direction: row; /* Items side-by-side within this row */
+        align-items: center; /* Vertically align */
+        width: 100%; /* Take full width */
+        gap: 0.5rem; /* Space between select and button */
+        order: 2; /* Position it below the status filter */
     }
 
-    /* Select de Período dentro da nova linha */
+    /* Select de Período dentro da nova linha (filtro B) */
     #filterPeriodo { /* Usando o ID real do select que será criado no JS */
         flex-grow: 1;
         max-width: none;
@@ -467,7 +466,7 @@ div.dataTables_wrapper div.dataTables_filter input {
         width: 100%;
     }
 
-    /* Botão "Adicionar Disciplina" - Última parte da Terceira Linha */
+    /* Botão "Adicionar Disciplina" - Última parte da Terceira Linha (icon-only on mobile) */
     #abrirModalNovaDisciplinaDt {
         padding: 0.75rem !important;
         border-radius: 50%;
@@ -477,16 +476,16 @@ div.dataTables_wrapper div.dataTables_filter input {
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-left: auto; /* Empurra para a direita para alinhar com o canto do filtro */
+        margin-left: auto; /* Push to the right to align with the filter's corner */
     }
     #abrirModalNovaDisciplinaDt span {
-        display: none !important;
+        display: none !important; /* Hide text on mobile button */
     }
     #abrirModalNovaDisciplinaDt i {
-        margin-right: 0 !important;
+        margin-right: 0 !important; /* Remove icon margin on mobile */
         font-size: 1.25rem;
     }
-    #abrirModalNovaDisciplina {
+    #abrirModalNovaDisciplina { /* Ensure the original button is always hidden if JS clones it */
         display: none !important;
     }
 }
@@ -496,9 +495,8 @@ div.dataTables_wrapper div.dataTables_filter input {
 @media (min-width: 768px) {
     #tabelaDisciplinas_wrapper .dt-custom-header {
         flex-direction: row;
-        align-items: center;
         flex-wrap: nowrap;
-        gap: 0;
+        gap: 0; /* Reset gap */
         padding-left: 0 !important;
         padding-right: 0 !important;
     }
@@ -524,33 +522,47 @@ div.dataTables_wrapper div.dataTables_filter input {
         flex-grow: 1;
     }
 
+    /* Container para os botões e custom filters (desktop) */
     .dt-buttons-container {
-        flex-direction: row;
-        flex-wrap: nowrap;
-        justify-content: flex-end;
-        width: auto;
+        display: grid; /* Use grid layout for desktop */
+        grid-template-areas: "filtroA filtroB botao"; /* Define grid areas */
+        grid-template-columns: minmax(100px, 180px) minmax(100px, 180px) auto; /* Filters max 180px, button auto */
+        grid-template-rows: auto;
+        gap: .5rem;
+        align-items: center;
+        flex-wrap: nowrap; /* Prevent wrapping in desktop */
+        justify-content: flex-end; /* Align to the right in the grid parent container */
+        width: auto; /* Allow grid to size itself */
         margin-top: 0 !important;
     }
-    .dt-filter-select {
-        flex-grow: 0;
-        max-width: 180px;
-        margin-right: 0;
+
+    /* Grid area assignments for desktop */
+    #filterStatusDisciplina { /* Use explicit ID */
+        grid-area: filtroA;
+        width: 100%;
+        max-width: none; /* Remove max-width from the generic rule for grid item */
     }
 
-    /* Reset do botão Adicionar para desktop */
+    #filterPeriodo { /* Use explicit ID */
+        grid-area: filtroB;
+        width: 100%;
+        max-width: none; /* Remove max-width from the generic rule for grid item */
+    }
+    
     #abrirModalNovaDisciplinaDt {
-        padding: 0.75rem 1.3rem !important;
-        border-radius: 8px !important;
-        width: auto !important;
-        height: auto !important;
-        margin-left: 0;
+        grid-area: botao;
+        width: auto !important; /* Natural width for the button */
+        padding: 0.75rem 1.3rem !important; /* Reset padding for desktop */
+        border-radius: 8px !important; /* Reset border-radius for desktop */
+        height: auto !important; /* Reset height for desktop */
+        margin-left: 0; /* Remove margin-left auto */
     }
     #abrirModalNovaDisciplinaDt span {
-        display: inline !important;
+        display: inline !important; /* Show text on desktop button */
     }
     #abrirModalNovaDisciplinaDt i {
-        margin-right: 0.5rem !important;
-        font-size: inherit !important;
+        margin-right: 0.5rem !important; /* Add margin for icon on desktop */
+        font-size: inherit !important; /* Reset font-size for desktop */
     }
 
     /* Ocultar o wrapper mobile de Período + Botão em desktop */

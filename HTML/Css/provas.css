@@ -145,7 +145,7 @@ dialog#modalProva .btn-modal-save:hover { background-color: #242E47; border-colo
     padding-bottom: 0.75rem; /* Define o padding inferior igual ao do input */
     /* Mantenha o padding horizontal original se desejar */
     /* padding-left: 1rem; */
-    /* padding-right: 1rem; */
+    /* padding-right: 1rem; */ 
 }
 
 .btn-icon-only { padding: 0.375rem 0.75rem; font-size: 1rem; } /* Para botões que são só ícone */

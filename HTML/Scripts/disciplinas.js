@@ -1,124 +1,124 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // --- ELEMENT SELECTORS ---
-    const modalDisciplina = document.querySelector("#modalDisciplina");
-    const abrirModalNovaDisciplinaBtnOriginal = document.querySelector("#abrirModalNovaDisciplina");
-    const fecharModalDisciplinaBtn = document.querySelector("#fecharModalDisciplina");
-    const cancelarModalDisciplinaBtn = document.querySelector("#cancelarModalDisciplina");
-    const formDisciplina = document.querySelector("#formDisciplina");
-    const modalDisciplinaLabel = document.querySelector("#modalDisciplinaLabel");
+    // --- ELEMENT SELECTORS ---
+    const modalDisciplina = document.querySelector("#modalDisciplina");
+    const abrirModalNovaDisciplinaBtnOriginal = document.querySelector("#abrirModalNovaDisciplina");
+    const fecharModalDisciplinaBtn = document.querySelector("#fecharModalDisciplina");
+    const cancelarModalDisciplinaBtn = document.querySelector("#cancelarModalDisciplina");
+    const formDisciplina = document.querySelector("#formDisciplina");
+    const modalDisciplinaLabel = document.querySelector("#modalDisciplinaLabel");
 
-    const disciplinaIdInput = document.getElementById('disciplinaId');
-    const disciplinaNomeInput = document.getElementById('disciplinaNome');
-    const disciplinaProfessorInput = document.getElementById('disciplinaProfessor');
-    const disciplinaDescricaoInput = document.getElementById('disciplinaDescricao');
-    const disciplinaPeriodoSelect = document.getElementById('disciplinaPeriodo');
-    const disciplinaStatusSelect = document.getElementById('disciplinaStatus');
-    const disciplinaDiasInput = document.getElementById('disciplinaDias');
-    const disciplinaHorarioInicioInput = document.getElementById('disciplinaHorarioInicio');
-    const disciplinaHorarioFimInput = document.getElementById('disciplinaHorarioFim');
-    const disciplinaLocalInput = document.getElementById('disciplinaLocal');
-    const disciplinaDataCriacaoInput = document.getElementById('disciplinaDataCriacao');
+    const disciplinaIdInput = document.getElementById('disciplinaId');
+    const disciplinaNomeInput = document.getElementById('disciplinaNome');
+    const disciplinaProfessorInput = document.getElementById('disciplinaProfessor');
+    const disciplinaDescricaoInput = document.getElementById('disciplinaDescricao');
+    const disciplinaPeriodoSelect = document.getElementById('disciplinaPeriodo');
+    const disciplinaStatusSelect = document.getElementById('disciplinaStatus');
+    const disciplinaDiasInput = document.getElementById('disciplinaDias');
+    const disciplinaHorarioInicioInput = document.getElementById('disciplinaHorarioInicio');
+    const disciplinaHorarioFimInput = document.getElementById('disciplinaHorarioFim');
+    const disciplinaLocalInput = document.getElementById('disciplinaLocal');
+    const disciplinaDataCriacaoInput = document.getElementById('disciplinaDataCriacao');
 
-    // Details Modal Selectors
-    const modalDetalhesDisciplina = document.querySelector("#modalDetalhesDisciplina");
-    const fecharModalDetalhesDisciplinaBtn = document.querySelector("#fecharModalDetalhesDisciplina");
-    const okModalDetalhesDisciplinaBtn = document.querySelector("#okModalDetalhesDisciplina");
-    const modalDetalhesDisciplinaConteudo = document.querySelector("#modalDetalhesDisciplinaConteudo");
-    const modalDetalhesDisciplinaLabel = document.querySelector("#modalDetalhesDisciplinaLabel");
-    const addTarefaFromDisciplinaBtn = document.getElementById('addTarefaFromDisciplina');
-    const addAnotacaoFromDisciplinaBtn = document.getElementById('addAnotacaoFromDisciplina');
+    // Details Modal Selectors
+    const modalDetalhesDisciplina = document.querySelector("#modalDetalhesDisciplina");
+    const fecharModalDetalhesDisciplinaBtn = document.querySelector("#fecharModalDetalhesDisciplina");
+    const okModalDetalhesDisciplinaBtn = document.querySelector("#okModalDetalhesDisciplina");
+    const modalDetalhesDisciplinaConteudo = document.querySelector("#modalDetalhesDisciplinaConteudo");
+    const modalDetalhesDisciplinaLabel = document.querySelector("#modalDetalhesDisciplinaLabel");
+    const addTarefaFromDisciplinaBtn = document.getElementById('addTarefaFromDisciplina');
+    const addAnotacaoFromDisciplinaBtn = document.getElementById('addAnotacaoFromDisciplina');
 
 
-    let tabelaDisciplinasDt;
-    let resizeDebounceTimer;
+    let tabelaDisciplinasDt;
+    let resizeDebounceTimer;
 
-    // --- DADOS MOCADOS (Substitua por dados reais da API) ---
-    const listaDisciplinas = [
-        {
-            id: "ITD201", nome: "Web Design Avançado – ITD201", professor: "Prof. João Paulo",
-            descricao: "Estudo aprofundado em design responsivo e frameworks.", periodo: "2024.1", status: "Ativa", dataCriacao: "2024-02-01",
-            dias: "Seg, Qua, Sex", horarioInicio: "08:00", horarioFim: "10:00", local: "Sala B12"
-        },
-        {
-            id: "ART101", nome: "Fundamentos de Design Gráfico – ART101", professor: "Prof. Jango",
-            descricao: "Introdução aos princípios fundamentais do design.", periodo: "2024.1", status: "Ativa", dataCriacao: "2024-02-05",
-            dias: "Ter, Qui", horarioInicio: "10:30", horarioFim: "12:00", local: "Estúdio C"
-        },
-        {
-            id: "UXD301", nome: "Princípios de UX/UI Design – UXD301", professor: "Prof. Jason",
-            descricao: "Conceitos e práticas para criação de interfaces amigáveis.", periodo: "2024.2", status: "Ativa", dataCriacao: "2024-07-10",
-            dias: "Seg, Qua", horarioInicio: "14:00", horarioFim: "15:30", local: "Laboratório UX"
-        },
-        {
-            id: "ANI301", nome: "Técnicas de Animação 3D – ANI301", professor: "Prof. Pryzado",
-            descricao: "Desenvolvimento de animações tridimensionais avançadas.", periodo: "2024.2", status: "Em Andamento", dataCriacao: "2024-08-01",
-            dias: "Sex", horarioInicio: "09:00", horarioFim: "12:00", local: "Estúdio de Animação"
-        },
-        {
-            id: "HAR202", nome: "História da Arte – HAR202", professor: "Prof. Olivia",
-            descricao: "Períodos e movimentos artísticos desde a antiguidade.", periodo: "2024.1", status: "Concluída", dataCriacao: "2024-01-15",
-            dias: "Qua", horarioInicio: "16:00", horarioFim: "17:30", local: "Auditório B"
-        },
-        {
-            id: "PHO110", nome: "Fotografia Digital – PHO110", professor: "Prof. Lucas",
-            descricao: "Fundamentos e técnicas de fotografia digital moderna.", periodo: "2024.2", status: "Ativa", dataCriacao: "2024-07-20",
-            dias: "Ter", horarioInicio: "13:30", horarioFim: "15:00", local: "Estúdio Foto 1"
-        },
-        {
-            id: "CCO200", nome: "Programação Orientada a Objetos – CCO200", professor: "Prof. Ana",
-            descricao: "Conceitos e aplicação de POO em Java.", periodo: "2024.1", status: "Concluída", dataCriacao: "2024-02-10",
-            dias: "Seg, Qua", horarioInicio: "10:30", horarioFim: "12:00", local: "Lab C05"
-        },
-        {
-            id: "CCO210", nome: "Banco de Dados – CCO210", professor: "Prof. Carlos",
-            descricao: "Modelagem e gerenciamento de sistemas de banco de dados.", periodo: "2024.2", status: "Ativa", dataCriacao: "2024-07-01",
-            dias: "Ter, Qui", horarioInicio: "08:00", horarioFim: "09:30", local: "Lab C06"
-        },
-        {
-            id: "CCO300", nome: "Redes de Computadores – CCO300", professor: "Prof. Beatriz",
-            descricao: "Fundamentos de redes de computadores e protocolos.", periodo: "2024.1", status: "Ativa", dataCriacao: "2024-03-01",
-            dias: "Seg, Sex", horarioInicio: "13:00", horarioFim: "14:30", local: "Lab Redes A"
-        },
-        {
-            id: "CCO401", nome: "Inteligência Artificial – CCO401", professor: "Prof. Eduardo",
-            descricao: "Introdução aos conceitos e aplicações de IA.", periodo: "2025.1", status: "Agendada", dataCriacao: "2025-01-01",
-            dias: "Qua", horarioInicio: "14:00", horarioFim: "17:00", local: "Lab IA"
-        },
-        {
-            id: "CCO310", nome: "Engenharia de Software – CCO310", professor: "Prof. Fernanda",
-            descricao: "Metodologias e práticas para desenvolvimento de software.", periodo: "2025.1", status: "Agendada", dataCriacao: "2025-01-05",
-            dias: "Ter, Qui", horarioInicio: "10:00", horarioFim: "11:30", local: "Sala C10"
-        },
-        {
-            id: "UXD205", nome: "Design de Interação – UXD205", professor: "Prof. Gustavo",
-            descricao: "Design de interação e usabilidade em sistemas digitais.", periodo: "2025.1", status: "Agendada", dataCriacao: "2025-01-10",
-            dias: "Seg, Sex", horarioInicio: "16:00", horarioFim: "17:30", local: "Estúdio UX 2"
-        },
-        {
-            id: "MKT300", nome: "Marketing Digital – MKT300", professor: "Prof. Helena",
-            descricao: "Estratégias de marketing no ambiente digital.", periodo: "2024.2", status: "Concluída", dataCriacao: "2024-07-15",
-            dias: "Ter", horarioInicio: "18:30", horarioFim: "21:30", local: "Sala Online MKT"
-        },
-        {
-            id: "MOB400", nome: "Desenvolvimento Mobile – MOB400", professor: "Prof. Igor",
-            descricao: "Desenvolvimento de aplicações para plataformas móveis.", periodo: "2025.1", status: "Agendada", dataCriacao: "2025-01-20",
-            dias: "Qui", horarioInicio: "19:00", horarioFim: "22:00", local: "Lab Mobile Dev"
-        },
-        {
-            id: "SEG500", nome: "Segurança da Informação – SEG500", professor: "Prof. Juliana",
-            descricao: "Princípios e tecnologias de segurança da informação.", periodo: "2025.1", status: "Agendada", dataCriacao: "2025-01-25",
-            dias: "Seg, Qua", horarioInicio: "08:30", horarioFim: "10:00", local: "Sala B08"
-        }
-    ];
+    // --- DADOS MOCADOS (Substitua por dados reais da API) ---
+    const listaDisciplinas = [
+        {
+            id: "ITD201", nome: "Web Design Avançado – ITD201", professor: "Prof. João Paulo",
+            descricao: "Estudo aprofundado em design responsivo e frameworks.", periodo: "2024.1", status: "Ativa", dataCriacao: "2024-02-01",
+            dias: "Seg, Qua, Sex", horarioInicio: "08:00", horarioFim: "10:00", local: "Sala B12"
+        },
+        {
+            id: "ART101", nome: "Fundamentos de Design Gráfico – ART101", professor: "Prof. Jango",
+            descricao: "Introdução aos princípios fundamentais do design.", periodo: "2024.1", status: "Ativa", dataCriacao: "2024-02-05",
+            dias: "Ter, Qui", horarioInicio: "10:30", horarioFim: "12:00", local: "Estúdio C"
+        },
+        {
+            id: "UXD301", nome: "Princípios de UX/UI Design – UXD301", professor: "Prof. Jason",
+            descricao: "Conceitos e práticas para criação de interfaces amigáveis.", periodo: "2024.2", status: "Ativa", dataCriacao: "2024-07-10",
+            dias: "Seg, Qua", horarioInicio: "14:00", horarioFim: "15:30", local: "Laboratório UX"
+        },
+        {
+            id: "ANI301", nome: "Técnicas de Animação 3D – ANI301", professor: "Prof. Pryzado",
+            descricao: "Desenvolvimento de animações tridimensionais avançadas.", periodo: "2024.2", status: "Em Andamento", dataCriacao: "2024-08-01",
+            dias: "Sex", horarioInicio: "09:00", horarioFim: "12:00", local: "Estúdio de Animação"
+        },
+        {
+            id: "HAR202", nome: "História da Arte – HAR202", professor: "Prof. Olivia",
+            descricao: "Períodos e movimentos artísticos desde a antiguidade.", periodo: "2024.1", status: "Concluída", dataCriacao: "2024-01-15",
+            dias: "Qua", horarioInicio: "16:00", horarioFim: "17:30", local: "Auditório B"
+        },
+        {
+            id: "PHO110", nome: "Fotografia Digital – PHO110", professor: "Prof. Lucas",
+            descricao: "Fundamentos e técnicas de fotografia digital moderna.", periodo: "2024.2", status: "Ativa", dataCriacao: "2024-07-20",
+            dias: "Ter", horarioInicio: "13:30", horarioFim: "15:00", local: "Estúdio Foto 1"
+        },
+        {
+            id: "CCO200", nome: "Programação Orientada a Objetos – CCO200", professor: "Prof. Ana",
+            descricao: "Conceitos e aplicação de POO em Java.", periodo: "2024.1", status: "Concluída", dataCriacao: "2024-02-10",
+            dias: "Seg, Qua", horarioInicio: "10:30", horarioFim: "12:00", local: "Lab C05"
+        },
+        {
+            id: "CCO210", nome: "Banco de Dados – CCO210", professor: "Prof. Carlos",
+            descricao: "Modelagem e gerenciamento de sistemas de banco de dados.", periodo: "2024.2", status: "Ativa", dataCriacao: "2024-07-01",
+            dias: "Ter, Qui", horarioInicio: "08:00", horarioFim: "09:30", local: "Lab C06"
+        },
+        {
+            id: "CCO300", nome: "Redes de Computadores – CCO300", professor: "Prof. Beatriz",
+            descricao: "Fundamentos de redes de computadores e protocolos.", periodo: "2024.1", status: "Ativa", dataCriacao: "2024-03-01",
+            dias: "Seg, Sex", horarioInicio: "13:00", horarioFim: "14:30", local: "Lab Redes A"
+        },
+        {
+            id: "CCO401", nome: "Inteligência Artificial – CCO401", professor: "Prof. Eduardo",
+            descricao: "Introdução aos conceitos e aplicações de IA.", periodo: "2025.1", status: "Agendada", dataCriacao: "2025-01-01",
+            dias: "Qua", horarioInicio: "14:00", horarioFim: "17:00", local: "Lab IA"
+        },
+        {
+            id: "CCO310", nome: "Engenharia de Software – CCO310", professor: "Prof. Fernanda",
+            descricao: "Metodologias e práticas para desenvolvimento de software.", periodo: "2025.1", status: "Agendada", dataCriacao: "2025-01-05",
+            dias: "Ter, Qui", horarioInicio: "10:00", horarioFim: "11:30", local: "Sala C10"
+        },
+        {
+            id: "UXD205", nome: "Design de Interação – UXD205", professor: "Prof. Gustavo",
+            descricao: "Design de interação e usabilidade em sistemas digitais.", periodo: "2025.1", status: "Agendada", dataCriacao: "2025-01-10",
+            dias: "Seg, Sex", horarioInicio: "16:00", horarioFim: "17:30", local: "Estúdio UX 2"
+        },
+        {
+            id: "MKT300", nome: "Marketing Digital – MKT300", professor: "Prof. Helena",
+            descricao: "Estratégias de marketing no ambiente digital.", periodo: "2024.2", status: "Concluída", dataCriacao: "2024-07-15",
+            dias: "Ter", horarioInicio: "18:30", horarioFim: "21:30", local: "Sala Online MKT"
+        },
+        {
+            id: "MOB400", nome: "Desenvolvimento Mobile – MOB400", professor: "Prof. Igor",
+            descricao: "Desenvolvimento de aplicações para plataformas móveis.", periodo: "2025.1", status: "Agendada", dataCriacao: "2025-01-20",
+            dias: "Qui", horarioInicio: "19:00", horarioFim: "22:00", local: "Lab Mobile Dev"
+        },
+        {
+            id: "SEG500", nome: "Segurança da Informação – SEG500", professor: "Prof. Juliana",
+            descricao: "Princípios e tecnologias de segurança da informação.", periodo: "2025.1", status: "Agendada", dataCriacao: "2025-01-25",
+            dias: "Seg, Qua", horarioInicio: "08:30", horarioFim: "10:00", local: "Sala B08"
+        }
+    ];
 
     // --- Dados mockados de Tarefas e Anotações (simplificados para o contexto da Disciplina) ---
     // Estes dados seriam filtrados para a disciplina específica no modal
     const listaTarefasMock = [
-        { id: "T001", titulo: "Estudar para Prova de Design Gráfico", disciplinaId: "ART101", tipo: "Prova", dataEntrega: "2025-01-25", status: "Concluída" },
-        { id: "T002", titulo: "Projeto de UX/UI", disciplinaId: "UXD301", tipo: "Trabalho", dataEntrega: "2025-03-10", status: "Agendada" },
-        { id: "T003", titulo: "Leitura Cap. 3 POO", disciplinaId: "CCO200", tipo: "Leitura", dataEntrega: "2025-03-05", status: "A Fazer" },
-        { id: "T005", titulo: "Exercícios de Redes", disciplinaId: "CCO300", tipo: "Tarefa", dataEntrega: "2025-04-01", status: "Em Andamento" },
-        { id: "T006", titulo: "Preparar Seminário IA", disciplinaId: "CCO401", tipo: "Trabalho", dataEntrega: "2025-06-01", status: "Agendada" },
+        { id: "T001", titulo: "Estudar para Prova de Design Gráfico", disciplinaId: "ART101", tipo: "Prova", dataEntrega: "2025-01-25", status: "Concluída", horarioEntrega: "19:30" },
+        { id: "T002", titulo: "Projeto de UX/UI", disciplinaId: "UXD301", tipo: "Trabalho", dataEntrega: "2025-03-10", status: "Agendada", horarioEntrega: "23:59" },
+        { id: "T003", titulo: "Leitura Cap. 3 POO", disciplinaId: "CCO200", tipo: "Leitura", dataEntrega: "2025-03-05", status: "A Fazer", horarioEntrega: "09:00" },
+        { id: "T005", titulo: "Exercícios de Redes", disciplinaId: "CCO300", tipo: "Tarefa", dataEntrega: "2025-04-01", status: "Em Andamento", horarioEntrega: "15:00" },
+        { id: "T006", titulo: "Preparar Seminário IA", disciplinaId: "CCO401", tipo: "Trabalho", dataEntrega: "2025-06-01", status: "Agendada", horarioEntrega: "10:00" },
     ];
 
     const listaAnotacoesMock = [
@@ -214,6 +214,29 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    // Função auxiliar de formatação de data/hora (copiada de tarefas.js)
+    function formatarDataHoraParaTabela(dataStr, horaStr) {
+        let formatted = '';
+        if (dataStr) {
+            const [year, month, day] = dataStr.split('-');
+            const dataObj = new Date(Date.UTC(parseInt(year), parseInt(month) - 1, parseInt(day)));
+            const meses = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
+            formatted = `${dataObj.getUTCDate()} ${meses[dataObj.getUTCMonth()]} ${dataObj.getUTCFullYear()}`;
+        }
+
+        if (horaStr) {
+            const [hour, minute] = horaStr.split(':');
+            let h = parseInt(hour);
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12;
+            h = h ? h : 12;
+            const formattedTime = `${h}:${String(minute).padStart(2, '0')} ${ampm}`;
+            formatted = formatted ? `${formatted}, ${formattedTime}` : formattedTime;
+        }
+        return formatted || '-';
+    }
+
+
     // --- DATATABLE INITIALIZATION ---
     function inicializarDataTable() {
         if (!window.jQuery || !$.fn.DataTable) {
@@ -223,6 +246,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if ($.fn.DataTable.isDataTable('#tabelaDisciplinas')) {
             $('#tabelaDisciplinas').DataTable().destroy();
+            $('#tabelaDisciplinas tbody').empty(); // Clear existing rows
         }
 
         tabelaDisciplinasDt = $('#tabelaDisciplinas').DataTable({
@@ -301,17 +325,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 const buttonsContainer = $(this.api().table().container()).find('.dt-custom-header .dt-buttons-container');
 
+                let abrirModalNovaDisciplinaDtBtn = $('#abrirModalNovaDisciplinaDt'); // Check if it already exists
+
                 if (abrirModalNovaDisciplinaBtnOriginal && buttonsContainer.length) {
-                    if ($('#abrirModalNovaDisciplinaDt').length === 0) {
+                    if (abrirModalNovaDisciplinaDtBtn.length === 0) { // If not, clone it
                         const abrirModalBtnClone = abrirModalNovaDisciplinaBtnOriginal.cloneNode(true);
                         abrirModalBtnClone.id = 'abrirModalNovaDisciplinaDt';
-                        $(abrirModalBtnClone).off('click').on('click', (e) => {
+                        abrirModalNovaDisciplinaDtBtn = $(abrirModalBtnClone); // Update the jQuery object reference
+                        abrirModalNovaDisciplinaDtBtn.off('click').on('click', (e) => {
                             e.preventDefault();
                             abrirModalFormDisciplina();
                         });
-                        buttonsContainer.append(abrirModalBtnClone);
                     }
-                    abrirModalNovaDisciplinaBtnOriginal.style.display = 'none';
+                    abrirModalNovaDisciplinaBtnOriginal.style.display = 'none'; // Hide the original button
                 }
 
                 // --- Adicionar filtros customizados (Status e Período) ---
@@ -332,17 +358,12 @@ document.addEventListener("DOMContentLoaded", function () {
                         <option value="2025.1">2025.1</option>
                         <option value="2025.2">2025.2</option>
                     </select>`;
-
-                // Cria o wrapper para a linha de Periodo + Botão de Adicionar (apenas em mobile)
-                const filterPeriodoAddRowWrapper = $(`<div class="dt-filter-periodo-add-row"></div>`);
-
-                buttonsContainer.prepend(filterPeriodoAddRowWrapper);
-                buttonsContainer.prepend(filterStatusHtml);
-
-                const filterPeriodoSelectElement = $('#filterPeriodo');
-                filterPeriodoAddRowWrapper.append(filterPeriodoSelectElement); // Move para dentro do wrapper
+                
+                // Append the filters and the button in the correct order for the new CSS grid layout
+                buttonsContainer.append(filterStatusHtml);
+                buttonsContainer.append(filterPeriodoHtml);
                 if (abrirModalNovaDisciplinaDtBtn.length) {
-                    filterPeriodoAddRowWrapper.append(abrirModalNovaDisciplinaDtBtn); // Move o botão para dentro do wrapper
+                    buttonsContainer.append(abrirModalNovaDisciplinaDtBtn);
                 }
 
                 $('#filterStatusDisciplina').on('change', function() {
