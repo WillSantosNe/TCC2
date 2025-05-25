@@ -1,0 +1,398 @@
+/* Css/anotacoes.css (Adaptado de tarefas.css e ajustado para nova modal) */
+
+/* ===== Modal de Anotação (Bootstrap Modal com classes customizadas) ===== */
+#modalAnotacao .modal-dialog {
+    max-width: 650px; /* Ajustado para corresponder melhor à imagem da modal */
+}
+#modalAnotacao .modal-content {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0px 8px 24px rgba(20, 20, 22, 0.15);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Estilos de Cabeçalho da Modal (mantidos e aplicados) */
+#modalAnotacao .modal-header-studyflow {
+    background-color: #FFFFFF;
+    padding: 1.25rem 1.75rem; /* Padding ajustado como na imagem */
+    border-bottom: 1px solid #E9E9F0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+#modalAnotacao .modal-title-wrapper { display: flex; align-items: center; }
+#modalAnotacao .modal-logo-icon { width: 24px; height: 24px; margin-right: .75rem; } /* Ícone do logo um pouco menor */
+#modalAnotacao .modal-title-custom {
+    font-weight: 600;
+    font-size: 1.2rem; /* Tamanho do título da modal */
+    color: #2E3A59;
+    margin-bottom: 0;
+}
+#modalAnotacao .btn-close { /* Botão de fechar padrão do Bootstrap */
+    filter: none; /* Remover filtro para usar o padrão Bootstrap ou seu estilo global */
+    /* Se quiser o X mais escuro: color: #000; opacity: 0.7; */
+}
+
+/* Corpo da Modal de Anotação */
+#modalAnotacao .modal-body-custom.modal-anotacao-body { /* Adicionando a classe específica */
+    padding: 1.5rem 1.75rem; /* Padding interno do corpo da modal */
+    background: #FFF;
+}
+
+/* Estrutura interna simplificada da modal de anotação */
+#modalAnotacao .note-editor-modal-content-simplified {
+    width: 100%;
+}
+
+/* Texto "Criando nova anotação" ou "Editando..." */
+#modalAnotacao #modalAnotacaoEditInfo {
+    color: #6c757d; 
+    font-size: 0.875rem; /* Um pouco menor */
+    margin-bottom: 1.25rem; 
+    display: block; /* Para garantir a margem */
+}
+
+/* Input de Título da Anotação na Modal */
+#modalAnotacao .modal-anotacao-title-input {
+    font-size: 1.15rem; /* Tamanho do título da anotação */
+    padding: 0.65rem 1rem; 
+    border: 1px solid #D9DDE7; /* Borda como outros form-controls */
+    border-radius: 8px; /* Cantos arredondados padrão do seu tema */
+    color: #2E3A59;
+    margin-bottom: 1.25rem; /* Espaço abaixo do título */
+}
+#modalAnotacao .modal-anotacao-title-input::placeholder { color: #A0AEC0; }
+#modalAnotacao .modal-anotacao-title-input:focus {
+    border-color: var(--primary-color, #5568FE);
+    box-shadow: 0 0 0 .2rem rgba(var(--primary-rgb, 85,104,254),.25);
+}
+#modalAnotacao .modal-anotacao-title-input.is-invalid { border-color: #dc3545; }
+#modalAnotacao .modal-anotacao-title-input + .invalid-feedback { /* Estilo para feedback do título */
+    display: block;
+    width: 100%;
+    margin-top: .25rem;
+    font-size: .875em;
+    color: #dc3545;
+}
+
+
+/* Seção de Propriedades na Modal de Anotação (Novo Layout) */
+#modalAnotacao .modal-anotacao-properties-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; /* Espaçamento entre os itens de propriedade */
+}
+
+#modalAnotacao .modal-property-item {
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+#modalAnotacao .modal-property-icon {
+    width: 22px; 
+    margin-right: 0.6rem; /* Espaço reduzido */
+    color: #6c757d; 
+    text-align: center;
+    font-size: 1rem; /* Tamanho do ícone de propriedade */
+}
+#modalAnotacao .modal-property-icon .bi { 
+    vertical-align: text-bottom; /* Melhor alinhamento vertical para icones bootstrap */
+}
+
+#modalAnotacao .modal-property-label {
+    min-width: 70px; /* Largura ajustada */
+    color: #4F5E7B; /* Cor do label de tarefas.css */
+    margin-right: 0.75rem;
+    font-weight: 500; 
+}
+
+#modalAnotacao .modal-property-value-tag { /* Para "Status Inbox" */
+    background-color: #e9ecef; 
+    padding: 0.25rem 0.6rem;
+    border-radius: 0.25rem;
+    color: #2E3A59; /* Cor de texto consistente */
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+#modalAnotacao .modal-property-input { /* Para Caderno, Tópicos */
+    flex-grow: 1; 
+    font-size: 0.9rem;
+    padding: 0.5rem 0.8rem; /* Padding ajustado */
+    border: 1px solid #D9DDE7;
+    border-radius: 8px; /* Consistente com .form-control */
+    color: #2E3A59;
+}
+#modalAnotacao .modal-property-input::placeholder { color: #A0AEC0; }
+#modalAnotacao .modal-property-input:focus {
+    border-color: var(--primary-color, #5568FE);
+    box-shadow: 0 0 0 .2rem rgba(var(--primary-rgb, 85,104,254),.25);
+}
+
+#modalAnotacao .modal-property-checkbox { /* Para Favorito */
+    width: 1.1em;
+    height: 1.1em;
+    margin-top: 0.1rem; 
+    border: 1px solid #adb5bd; /* Borda mais clara */
+    vertical-align: middle;
+}
+#modalAnotacao .modal-property-checkbox:checked {
+   background-color: var(--primary-color, #5568FE);
+   border-color: var(--primary-color, #5568FE);
+}
+#modalAnotacao .modal-property-checkbox:focus {
+    box-shadow: 0 0 0 .2rem rgba(var(--primary-rgb, 85,104,254),.25);
+}
+
+
+/* Rodapé da Modal de Anotação */
+#modalAnotacao .modal-footer-studyflow {
+    background: #FFFFFF; 
+    border-top: 1px solid #E9E9F0;
+    padding: 1rem 1.75rem; /* Padding ajustado */
+    display: flex;
+    justify-content: flex-end;
+    border-bottom-left-radius: 12px; 
+    border-bottom-right-radius: 12px;
+}
+#modalAnotacao .btn-modal-cancel { /* Estilo do tarefas.css */
+    background: #F1F3F6; 
+    border: 1px solid #F1F3F6;
+    color: #4F5E7B; 
+    padding: 0.5rem 1.2rem; /* Padding ajustado */
+    border-radius: 8px; 
+    font-weight: 500;
+    font-size: 0.9rem; /* Tamanho de fonte ajustado */
+}
+#modalAnotacao .btn-modal-cancel:hover {
+    background: #E2E6EB;
+    border-color: #E2E6EB;
+}
+#modalAnotacao .btn-modal-save { /* Estilo do tarefas.css, cor primária do StudyFlow */
+    background: #2E3A59; 
+    border: 1px solid #2E3A59;
+    color: #FFF;
+    padding: 0.5rem 1.2rem; /* Padding ajustado */
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.9rem; /* Tamanho de fonte ajustado */
+}
+#modalAnotacao .btn-modal-save:hover {
+    background: #242E47;
+    border-color: #242E47;
+}
+
+
+/* Estilos para dialog#modalTarefa e dialog#modalDisciplina (mantidos do tarefas.css) */
+/* Estes não afetam a modal Bootstrap #modalAnotacao, a menos que usem as mesmas classes customizadas sem especificidade */
+dialog#modalTarefa, dialog#modalDisciplina, dialog#modalDetalhesTarefa {
+    width: 90%;
+    max-width: 520px;
+    border-radius: 12px;
+    border: none;
+    padding: 0;
+    box-shadow: 0px 8px 24px rgba(20, 20, 22, 0.15);
+}
+dialog#modalTarefa::backdrop, dialog#modalDisciplina::backdrop, dialog#modalDetalhesTarefa::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+dialog#modalTarefa .modal-header-studyflow,
+dialog#modalDisciplina .modal-header-studyflow,
+dialog#modalDetalhesTarefa .modal-header-studyflow {
+    background-color: #FFFFFF;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #E9E9F0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+dialog#modalTarefa .modal-title-wrapper, dialog#modalDisciplina .modal-title-wrapper, dialog#modalDetalhesTarefa .modal-title-wrapper { display: flex; align-items: center; }
+dialog#modalTarefa .modal-logo-icon, dialog#modalDisciplina .modal-logo-icon, dialog#modalDetalhesTarefa .modal-logo-icon { width: 28px; height: 28px; margin-right: .75rem; }
+dialog#modalTarefa .modal-title-custom, dialog#modalDisciplina .modal-title-custom, dialog#modalDetalhesTarefa .modal-title-custom {
+    font-weight: 600; font-size: 1.3rem; color: #2E3A59; margin-bottom: 0;
+}
+dialog#modalTarefa .btn-close-custom, dialog#modalDisciplina .btn-close-custom, dialog#modalDetalhesTarefa .btn-close-custom {
+    filter: grayscale(1) brightness(1.5); background: transparent; border: none; font-size: 1.5rem; padding: .5rem; line-height: 1;
+}
+dialog#modalTarefa .modal-body-custom, dialog#modalDisciplina .modal-body-custom, dialog#modalDetalhesTarefa .modal-body-custom {
+    padding: 1.5rem 1.75rem; background: #FFF;
+}
+dialog#modalTarefa .modal-footer-studyflow, dialog#modalDisciplina .modal-footer-studyflow, dialog#modalDetalhesTarefa .modal-footer-studyflow {
+    background: #FFF; border-top: 1px solid #E9E9F0; padding: 1.25rem 1.75rem; display: flex; justify-content: flex-end;
+    border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;
+}
+dialog#modalTarefa .btn-modal-cancel, dialog#modalDisciplina .btn-modal-cancel, dialog#modalDetalhesTarefa .btn-modal-ok {
+    background: #F1F3F6; border: 1px solid #F1F3F6; color: #4F5E7B; padding: .6rem 1.3rem; border-radius: 8px; font-weight: 500; font-size: .95rem;
+}
+dialog#modalTarefa .btn-modal-save, dialog#modalDisciplina .btn-modal-save {
+    background: #2E3A59; border: 1px solid #2E3A59; color: #FFF; padding: .6rem 1.3rem; border-radius: 8px; font-weight: 500; font-size: .95rem;
+}
+
+
+/* ===== Página de Anotações (mantido do seu CSS) ===== */
+.sf-page-title {
+    font-weight: 600;
+    color: var(--text-title-color); 
+    margin-bottom: .25rem;
+}
+.sf-page-subtitle {
+    font-size: .95rem;
+    color: var(--text-body-color); 
+    margin-bottom: 1.5rem;
+}
+
+/* ===== Tabela de Anotações e Ações (mantido do seu CSS) ===== */
+.anotacoes-table th { 
+    font-weight: 600;
+    font-size: .85rem;
+    text-transform: uppercase;
+    color: var(--text-body-color);
+    white-space: nowrap;
+}
+.anotacoes-table td { 
+    font-size: .9rem;
+    vertical-align: middle;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px; 
+}
+.anotacoes-table td:nth-child(2) { max-width: 300px; } 
+.anotacoes-table td:nth-child(3) { max-width: 200px; } 
+
+.anotacoes-table th.dt-actions-column,
+.anotacoes-table td.dt-actions-column { 
+    text-align: center!important; 
+    padding: 0 .5rem!important;
+    min-width: 50px;
+    max-width: 70px;
+    overflow: visible;
+}
+
+/* DataTables responsive toggle (mantido) */
+table.dataTable.dtr-inline.collapsed td.dtr-control::before,
+table.dataTable.dtr-inline.collapsed th.dtr-control::before {
+    content: "+";
+    position: absolute; top: 50%; left: .5rem; transform: translateY(-50%);
+    width: 1.2em; height: 1.2em; line-height: 1.2em; text-align: center;
+    color: #FFF; background: var(--primary-color,#5568FE);
+    border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,.2);
+}
+table.dataTable.dtr-inline.collapsed tr.parent td.dtr-control::before,
+table.dataTable.dtr-inline.collapsed tr.parent th.dtr-control::before {
+    content: "–"; background: #d33333;
+}
+
+/* Badges e ícones (mantido) */
+.anotacoes-table .badge { 
+    font-size: .75rem; padding: .35em .65em; font-weight: 600;
+}
+.btn-icon {
+    color: var(--text-body-color); padding: .25rem .5rem; background: transparent; border: none;
+}
+.btn-icon:hover, .btn-icon:focus {
+    color: var(--primary-color); background: rgba(85,104,254,.1);
+}
+.dropdown-menu {
+    font-size: .9rem; box-shadow: 0 .5rem 1rem rgba(0,0,0,.15); z-index: 1056; 
+}
+
+/* Scroll da tabela (mantido) */
+div.dataTables_scrollBody {
+    border: 1px solid var(--border-color,#dee2e6); border-top: none; border-radius: 0 0 6px 6px;
+}
+div.dataTables_scrollBody, #tabelaAnotacoes_wrapper, .table-container { 
+    overflow: visible!important;
+}
+
+/* ===== Controles DataTable: busca, filtros, botão (mantido do seu CSS) ===== */
+#tabelaAnotacoes_wrapper .dt-custom-header { 
+    display: flex; gap: 1rem; flex-wrap: wrap; padding: 1rem 0; align-items: center;
+}
+#tabelaAnotacoes_wrapper div.dataTables_filter { 
+    flex: 1 1 auto; margin: 0; min-width: 150px; 
+} 
+#tabelaAnotacoes_wrapper div.dataTables_filter input { 
+    height: 40px; padding: 0 1rem; box-sizing: border-box; width: 100%;
+}
+#tabelaAnotacoes_wrapper .dt-buttons-anotacoes-container, 
+#tabelaAnotacoes_wrapper .dt-buttons-container { 
+    display: flex; align-items: center; gap: .5rem; flex-shrink: 0; 
+}
+.dt-filter-select { /* Mantido caso você adicione filtros */
+    width: auto !important; max-width: 180px; flex-shrink: 0; font-size: 0.9rem;
+    padding: 0.6rem 1rem; border-radius: 8px; border: 1px solid #D9DDE7;
+    background-color: #FFFFFF; color: #2E3A59; appearance: none; -webkit-appearance: none; -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 1rem center; background-size: 0.7em auto;
+    padding-right: 2.5rem; 
+}
+.dt-filter-select:focus {
+    border-color: var(--primary-color); box-shadow: 0 0 0 .2rem rgba(85,104,254,.25);
+}
+#abrirModalNovaAnotacaoDt { 
+    padding-top: 0.75rem; padding-bottom: 0.75rem;
+}
+#abrirModalNovaAnotacaoDt i { 
+    margin-right: 0.5rem;
+}
+.btn-icon-only {
+    padding: 0.375rem 0.75rem; font-size: 1rem;
+}
+
+/* ===== Responsividade (mantido do seu CSS) ===== */
+@media (min-width: 768px) {
+    #tabelaAnotacoes_wrapper .dt-custom-header { flex-wrap: nowrap; align-items: center; }
+    #tabelaAnotacoes_wrapper .dt-custom-header > div.dataTables_filter {
+        flex-grow: 1; flex-shrink: 1; flex-basis: 0; min-width: 200px; 
+    }
+    #tabelaAnotacoes_wrapper .dt-custom-header > .dt-buttons-anotacoes-container {
+        display: grid; grid-template-areas: "botao"; grid-template-columns: auto; 
+        grid-template-rows: auto; gap: .5rem; align-items: center;
+    }
+    #tabelaAnotacoes_wrapper .dt-custom-header .dt-buttons-anotacoes-container > #abrirModalNovaAnotacaoDt {
+        grid-area: botao; width: auto; 
+    }
+}
+@media (max-width: 767.98px) {
+    #tabelaAnotacoes_wrapper .dt-custom-header {
+        display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; padding: 1rem!important;
+    }
+    #tabelaAnotacoes_wrapper .dt-custom-header > div.dataTables_filter { 
+        order: 1; flex: 1 1 0; min-width: 70px; 
+    }
+    #tabelaAnotacoes_wrapper .dt-custom-header > div.dataTables_filter input { width: 100%; }
+    #tabelaAnotacoes_wrapper .dt-custom-header > .dt-buttons-anotacoes-container {
+        order: 2; display: flex; flex-direction: column; align-items: stretch; 
+        width: 100%; gap: .75rem; flex-grow: 0; flex-shrink: 0; 
+    }
+    #tabelaAnotacoes_wrapper .dt-custom-header .dt-buttons-anotacoes-container > #abrirModalNovaAnotacaoDt {
+        order: 1; width: 44px; height: 44px; padding: 0.75rem !important; border-radius: 50%; 
+        flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-left: auto; 
+    }
+    #abrirModalNovaAnotacaoDt span { display: none !important; }
+    #abrirModalNovaAnotacaoDt i { margin-right: 0 !important; font-size: 1.25rem; }
+
+    #tabelaAnotacoes_wrapper .dt-custom-header .dt-buttons-anotacoes-container > .dt-filter-select {
+        order: 2; flex-basis: 100%; width: 100%; max-width: none; 
+    }
+}
+
+/* Estilos para o conteúdo INTERNO da modal de anotação (note-editor-modal-content-simplified) */
+/* Se você tinha estilos específicos para note-editor-toolbar, note-page-setup-controls, etc.
+   que foram removidos do HTML da modal, os estilos correspondentes podem ser removidos daqui também
+   ou adaptados se as classes ainda existirem no HTML da modal simplificada.
+   Os estilos para .note-content-editor e .editable-area foram removidos pois o editor
+   não está mais visível nesta modal. */
+
+/* Exemplo: Se você tinha o note-editor-toolbar dentro da modal simplificada */
+/*
+#modalAnotacao .note-editor-modal-content-simplified .note-editor-toolbar {
+    padding: 8px 16px;
+    border-bottom: 1px solid #dee2e6;
+}
+*/
+
+/* Os estilos para os elementos de propriedade (.modal-property-item, etc.) já foram adicionados acima. */

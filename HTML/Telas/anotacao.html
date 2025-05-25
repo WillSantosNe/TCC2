@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Minhas Anotações | StudyFlow</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.7/css/dataTables.bootstrap5.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.2/css/responsive.bootstrap5.css">
+
+    <link rel="stylesheet" href="../Css/geral.css">
+    <link rel="stylesheet" href="../Css/tela_principal.css">
+    <link rel="stylesheet" href="../Css/anotacao.css"> 
+</head>
+<body class="auth-body dashboard-body">
+
+    <aside id="sidebar" class="offcanvas-lg offcanvas-start" tabindex="-1">
+    <div class="brand-text"></div>
+    <nav class="nav flex-column">
+        <div class="sf-sidebar-section">Botões Rápidos</div>
+        <a href="#" class="sf-nav-link sf-quick-add-link" id="quickAddDisciplinaBtn"> <span class="quick-add-icon"><i class="bi bi-plus-lg"></i></span>
+            Adicionar Disciplina 
+        </a>
+        <a href="#" class="sf-nav-link sf-quick-add-link" id="quickAddTarefaBtn">
+            <span class="quick-add-icon"><i class="bi bi-plus-lg"></i></span>
+            Adicionar Tarefa/Prova
+        </a>
+        <a href="#" class="sf-nav-link sf-quick-add-link" id="quickAddAnotacaoSidebarBtn" data-bs-toggle="modal" data-bs-target="#modalAnotacao"> <span class="quick-add-icon"><i class="bi bi-plus-lg"></i></span>
+            Adicionar Anotação
+        </a>
+
+        <div class="sf-sidebar-section">Acadêmico</div>
+        <a class="sf-nav-link" href="./principal.html">Dashboard</a> 
+        <a class="sf-nav-link" href="./tarefas.html">Tarefas e Provas</a>
+        <a class="sf-nav-link" href="./disciplinas.html">Disciplinas Matriculadas</a> 
+        <a class="sf-nav-link" href="./calendario.html">Calendário</a>
+        <a class="sf-nav-link active" href="./anotacao.html">Anotações</a> 
+    </nav>
+    </aside>
+
+    <div class="sf-main">
+        <header class="sf-header position-relative">
+            <button class="btn-menu me-auto d-lg-none"
+                    data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-label="Abrir menu">
+                <i class="bi bi-list"></i>
+            </button>
+            <div class="sf-header-brand">
+                <img src="../imgs/logo.png" alt="Logo"><span>StudyFlow</span>
+            </div>
+            <div class="dropdown">
+                <button class="btn btn-sm btn-icon-only" id="userMenuBtn" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Menu do usuário">
+                    <img src="../imgs/avatar.png" class="rounded-circle" style="width:40px;height:40px" alt="Avatar do usuário">
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuBtn">
+                    <li><a class="dropdown-item" href="./configuracoes.html"><i class="bi bi-gear me-2"></i>Configurações de Usuário</a></li>
+                    <li><a class="dropdown-item" href="./notificacoes.html"><i class="bi bi-bell me-2"></i>Notificações</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item text-danger" href="./login.html"><i class="bi bi-box-arrow-right me-2"></i>Sair</a></li>
+                </ul>
+            </div>
+        </header>
+
+        <main class="sf-content container-fluid">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h2 class="sf-page-title">Minhas Anotações</h2>
+                    <p class="text-muted sf-page-subtitle">Crie, visualize e gerencie todas as suas anotações.</p>
+                </div>
+                <button class="btn btn-primary" id="abrirModalNovaAnotacaoPrincipal" data-bs-toggle="modal" data-bs-target="#modalAnotacao">
+                    <i class="bi bi-plus-lg me-sm-2"></i><span class="d-none d-sm-inline">Adicionar Anotação</span>
+                </button>
+            </div>
+
+            <div class="table-container shadow-sm">
+                <table id="tabelaAnotacoes" class="table table-hover dt-responsive nowrap align-middle mb-0 bg-white border rounded-3 anotacoes-table" style="width:100%">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="dtr-control" data-priority="1"></th> 
+                            <th>Título da Anotação</th>
+                            <th data-priority="2">Caderno/Tópicos</th>
+                            <th>Data de Criação</th>
+                            <th data-priority="3">Última Modificação</th>
+                            <th data-priority="4" class="no-sort dt-actions-column text-center">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td> <td>Ideias para Projeto TCC</td>
+                            <td>TCC</td>
+                            <td>20 de mai de 2025, 10:00</td>
+                            <td>22 de mai de 2025, 15:30</td>
+                            <td class="text-center">
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-icon-only" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-three-dots-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li><a class="dropdown-item editar-anotacao-btn" href="#" data-bs-toggle="modal" data-bs-target="#modalAnotacao" data-id="ANOT001"><i class="bi bi-pencil-square me-2"></i>Editar Anotação</a></li>
+                                        <li><a class="dropdown-item text-danger excluir-anotacao-btn" href="#" data-id="ANOT001"><i class="bi bi-trash me-2"></i>Excluir Anotação</a></li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td> <td>Resumo Capítulo Livro Web Design</td>
+                            <td>Estudos Web</td>
+                            <td>15 de abr de 2025, 09:20</td>
+                            <td>15 de abr de 2025, 11:05</td>
+                            <td class="text-center">
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-icon-only" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-three-dots-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                         <li><a class="dropdown-item editar-anotacao-btn" href="#" data-bs-toggle="modal" data-bs-target="#modalAnotacao" data-id="ANOT002"><i class="bi bi-pencil-square me-2"></i>Editar Anotação</a></li>
+                                        <li><a class="dropdown-item text-danger excluir-anotacao-btn" href="#" data-id="ANOT002"><i class="bi bi-trash me-2"></i>Excluir Anotação</a></li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="totalAnotacoesInfo" class="table-footer-summary text-muted mt-2">
+                <small>Total de X anotações</small> 
+            </div>
+        </main>
+    </div>
+
+    <div class="modal fade" id="modalAnotacao" tabindex="-1" aria-labelledby="modalAnotacaoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg"> 
+            <div class="modal-content">
+                <div class="modal-header-custom modal-header-studyflow">
+                    <div class="modal-title-wrapper">
+                        <img src="../imgs/logo.png" class="modal-logo-icon" alt="StudyFlow Logo">
+                        <h5 class="modal-title-custom" id="modalAnotacaoLabelTitulo">Nova Anotação</h5>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body modal-body-custom modal-anotacao-body"> <div class="note-editor-modal-content-simplified w-100"> <p class="text-muted mb-3" id="modalAnotacaoEditInfo" style="font-size: 0.9rem;">Nova anotação</p>
+                        
+                        <div class="mb-3"> 
+                            <input type="text" class="form-control form-control-lg modal-anotacao-title-input" id="anotacaoTituloInput" placeholder="Título da Anotação">
+                            <div class="invalid-feedback"></div> 
+                        </div>
+
+                        <div class="modal-anotacao-properties-section">
+                            <div class="modal-property-item">
+                                <span class="modal-property-icon">✳️</span> 
+                                <span class="modal-property-label">Status</span>
+                                <span class="modal-property-value-tag" id="anotacaoStatusTag">Inbox</span>
+                            </div>
+                            <div class="modal-property-item">
+                                <span class="modal-property-icon"><i class="bi bi-book"></i></span>
+                                <span class="modal-property-label">Caderno</span>
+                                <input type="text" class="form-control form-control-sm modal-property-input" id="anotacaoCadernoInput" placeholder="Nenhum">
+                            </div>
+                            <div class="modal-property-item">
+                                <span class="modal-property-icon"><i class="bi bi-hash"></i></span>
+                                <span class="modal-property-label">Tópicos</span>
+                                <input type="text" class="form-control form-control-sm modal-property-input" id="anotacaoTopicosInput" placeholder="Ex: ideais, tcc, estudo">
+                            </div>
+                            <div class="modal-property-item">
+                                <span class="modal-property-icon"><i class="bi bi-star"></i></span>
+                                <span class="modal-property-label">Favorito</span>
+                                <input type="checkbox" class="form-check-input modal-property-checkbox ms-2" id="anotacaoFavoritoCheck">
+                            </div>
+                            <div class="property-item" style="display:none;"> 
+                                <span class="property-icon"><i class="bi bi-clock"></i></span>
+                                <span class="property-label">Criado em</span>
+                                <span class="property-value-static" id="anotacaoCriadoEm"></span>
+                            </div>
+                            <div class="property-item" style="display:none;"> 
+                                <span class="property-icon"><i class="bi bi-clock-history"></i></span>
+                                <span class="property-label">Última edição</span>
+                                <span class="property-value-static" id="anotacaoUltimaEdicao"></span>
+                            </div>
+                        </div>
+                        </div>
+                </div>
+                <div class="modal-footer-custom modal-footer-studyflow">
+                    <input type="hidden" id="anotacaoIdInput"> 
+                    <button type="button" class="btn btn-modal-cancel" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-modal-save" id="salvarAnotacaoBtn">Salvar Anotação</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <dialog id="modalDisciplina">
+        <form id="formDisciplina" method="dialog" novalidate>
+            <div class="modal-header-custom modal-header-studyflow">
+                <div class="modal-title-wrapper">
+                    <img src="../imgs/logo.png" class="modal-logo-icon" alt="StudyFlow Logo">
+                    <h5 class="modal-title-custom" id="modalDisciplinaLabel">Adicionar Disciplina</h5>
+                </div>
+                <button type="button" class="btn-close-custom" id="fecharModalDisciplinaDialog" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body-custom">
+                <div class="mb-3">
+                    <label for="disciplinaNomeDialog" class="form-label">Nome da Disciplina</label> <input type="text" class="form-control" id="disciplinaNomeDialog" required> 
+                    <div class="invalid-feedback"></div>
+                </div>
+                <p>Restante do formulário de Disciplina...</p>
+            </div>
+            <div class="modal-footer-custom modal-footer-studyflow">
+                <button type="button" class="btn btn-modal-cancel" id="cancelarModalDisciplinaDialog">Cancelar</button>
+                <button type="submit" class="btn btn-modal-save">Salvar Disciplina</button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="modalTarefa">
+        <form id="formTarefa" novalidate>
+            <div class="modal-header-custom modal-header-studyflow">
+                <div class="modal-title-wrapper">
+                    <img src="../imgs/logo.png" class="modal-logo-icon" alt="StudyFlow Logo">
+                    <h5 class="modal-title-custom" id="modalTarefaLabel">Adicionar Tarefa</h5>
+                </div>
+                <button type="button" class="btn-close-custom" id="fecharModalTarefaDialog" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body-custom">
+                <div class="mb-3">
+                    <label for="tarefaTituloDialog" class="form-label">Título da Tarefa</label> <input type="text" class="form-control" id="tarefaTituloDialog" placeholder="Ex: Prova de Matemática, Trabalho de POO" required> 
+                </div>
+                <p>Restante do formulário de Tarefa...</p>
+            </div>
+            <div class="modal-footer-custom modal-footer-studyflow">
+                <button type="button" class="btn btn-modal-cancel" id="cancelarModalTarefaDialog">Cancelar</button>
+                <button type="submit" class="btn btn-modal-save">Salvar</button>
+            </div>
+        </form>
+    </dialog>
+    
+    <dialog id="modalDetalhesTarefa">
+        <div class="modal-header-custom modal-header-studyflow">
+            <div class="modal-title-wrapper">
+                <img src="../imgs/logo.png" class="modal-logo-icon" alt="StudyFlow Logo">
+                <h5 class="modal-title-custom" id="modalDetalhesTarefaLabel">Detalhes da Tarefa</h5>
+            </div>
+            <button type="button" class="btn-close-custom" id="fecharModalDetalhesTarefaDialog" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body-custom" id="modalDetalhesTarefaConteudo">
+            <p>Carregando detalhes...</p>
+        </div>
+        <div class="modal-footer-custom modal-footer-studyflow">
+            <button type="button" class="btn btn-modal-ok" id="okModalDetalhesTarefaDialog">OK</button>
+        </div>
+    </dialog>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.7/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.0.7/js/dataTables.bootstrap5.js"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.bootstrap5.js"></script>
+
+    <script src="../Scripts/anotacao.js"></script> 
+    </body>
+</html>
