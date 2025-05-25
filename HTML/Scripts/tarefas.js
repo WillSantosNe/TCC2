@@ -15,14 +15,14 @@ document.addEventListener("DOMContentLoaded", function () {
     const tarefaStatusSelect = document.getElementById('tarefaStatus');
     const tarefaDescricaoInput = document.getElementById('tarefaDescricao');
 
-    const modalDetalhes = document.querySelector("#modalDetalhesTarefa");
-    const fecharModalDetalhesBtn = document.querySelector("#fecharModalDetalhesTarefa");
-    const okModalDetalhesBtn = document.querySelector("#okModalDetalhesTarefa");
-    const modalDetalhesConteudo = document.querySelector("#modalDetalhesTarefaConteudo");
-    const modalDetalhesTarefaLabel = document.querySelector("#modalDetalhesTarefaLabel");
-    const listaAnotacoesTarefaUl = document.getElementById('listaAnotacoesTarefa');
-    const addAnotacaoTarefaBtn = document.getElementById('addAnotacaoTarefa');
-    const gerenciarCompartilhamentoTarefaBtn = document.getElementById('gerenciarCompartilhamentoTarefa');
+    const modalDetalhes = document.querySelector("#modalDetalhesTarefa"); // Será selecionado após adicionar ao HTML
+    const fecharModalDetalhesBtn = document.querySelector("#fecharModalDetalhesTarefa"); // Será selecionado
+    const okModalDetalhesBtn = document.querySelector("#okModalDetalhesTarefa"); // Será selecionado
+    const modalDetalhesConteudo = document.querySelector("#modalDetalhesTarefaConteudo"); // Será selecionado
+    const modalDetalhesTarefaLabel = document.querySelector("#modalDetalhesTarefaLabel"); // Será selecionado
+    // const listaAnotacoesTarefaUl = document.getElementById('listaAnotacoesTarefa'); // Elemento dinâmico
+    // const addAnotacaoTarefaBtn = document.getElementById('addAnotacaoTarefa'); // Elemento dinâmico
+    // const gerenciarCompartilhamentoTarefaBtn = document.getElementById('gerenciarCompartilhamentoTarefa'); // Elemento dinâmico
 
 
     let tabelaTarefasDt;
@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", function () {
         clearFieldError(inputElement);
         inputElement.classList.add('is-invalid');
         const feedbackDiv = document.createElement('div');
-        feedbackDiv.className = 'invalid-feedback d-block';
+        feedbackDiv.className = 'invalid-feedback d-block'; // Ensure feedback is displayed
         inputElement.parentElement.insertBefore(feedbackDiv, inputElement.nextElementSibling);
         feedbackDiv.textContent = message;
     }
@@ -138,6 +138,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // --- FUNÇÕES DE MANIPULAÇÃO DE DADOS E UI ---
     function popularDisciplinasSelect() {
         if (!tarefaDisciplinaSelect) return;
+        // Remove all options except the first one ("Selecione a disciplina...")
         while (tarefaDisciplinaSelect.options.length > 1) {
             tarefaDisciplinaSelect.remove(1);
         }
@@ -156,7 +157,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if ($.fn.DataTable.isDataTable('#tabelaTarefas')) {
             $('#tabelaTarefas').DataTable().destroy();
-            $('#tabelaTarefas tbody').empty();
+            $('#tabelaTarefas tbody').empty(); // Limpa o corpo da tabela antes de recriar
         }
 
         tabelaTarefasDt = $('#tabelaTarefas').DataTable({
@@ -176,15 +177,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     '<"col-sm-12 col-md-5"i>' + // Info de paginação
                     '<"col-sm-12 col-md-7 dataTables_paginate_wrapper"p>' + // Paginação
                 '>',
-            paging: false,
+            paging: false, // Desabilitado para usar scrollY
             scrollY: '450px',
             scrollCollapse: true,
-            lengthChange: false,
+            lengthChange: false, // Remove o "Show X entries"
             language: {
                 url: 'https://cdn.datatables.net/plug-ins/2.0.7/i18n/pt-BR.json',
-                search: "",
+                search: "", // Remove o label "Buscar:"
                 searchPlaceholder: "Buscar tarefas...",
-                info: "Total de _TOTAL_ tarefas",
+                info: "Total de _TOTAL_ tarefas", // Exibe o total de tarefas
                 infoEmpty: "Nenhuma tarefa encontrada",
                 infoFiltered: "(filtrado de _MAX_ tarefas)",
                 paginate: {
@@ -239,24 +240,28 @@ document.addEventListener("DOMContentLoaded", function () {
             }),
             initComplete: function (settings, json) {
                 const api = this.api();
+                // Estilizar o campo de busca do DataTables
                 const searchInput = $('#tabelaTarefas_filter input');
                 searchInput.addClass('form-control form-control-sm').attr('aria-label', 'Buscar tarefas na tabela');
+                // Remover o label padrão "Buscar:" se existir
                 $('#tabelaTarefas_filter label').contents().filter(function() {
-                    return this.nodeType === 3;
+                    return this.nodeType === 3; // Node.TEXT_NODE
                 }).remove();
 
+                // Mover o botão "Adicionar Tarefa" para o cabeçalho do DataTables
                 const buttonsContainer = $('.dt-buttons-container');
                 if (abrirModalNovaTarefaBtnOriginal && buttonsContainer.length) {
-                    if($('#abrirModalNovaTarefaDt').length === 0) {
+                    // Clonar para evitar problemas com event listeners duplicados se o original for modificado
+                    if($('#abrirModalNovaTarefaDt').length === 0) { // Adicionar apenas se não existir
                         const abrirModalNovaTarefaBtnClone = abrirModalNovaTarefaBtnOriginal.cloneNode(true);
-                        abrirModalNovaTarefaBtnClone.id = 'abrirModalNovaTarefaDt';
+                        abrirModalNovaTarefaBtnClone.id = 'abrirModalNovaTarefaDt'; // Novo ID para o clone
                         $(abrirModalNovaTarefaBtnClone).off('click').on('click', (e) => {
                             e.preventDefault();
                             abrirModalFormTarefa();
                         });
                         buttonsContainer.append(abrirModalNovaTarefaBtnClone);
                     }
-                    abrirModalNovaTarefaBtnOriginal.style.display = 'none';
+                    abrirModalNovaTarefaBtnOriginal.style.display = 'none'; // Esconder o botão original
                 }
 
                 // --- Adicionar filtros customizados (Tipo e Disciplina) ---
@@ -265,20 +270,23 @@ document.addEventListener("DOMContentLoaded", function () {
                         <option value="">Todos os Tipos</option>
                         <option value="Tarefa">Tarefa</option>
                         <option value="Prova">Prova</option>
-                    </select>
+                        </select>
                     <select id="filterDisciplina" class="form-select dt-filter-select">
                         <option value="">Todas as Disciplinas</option>
                         </select>`;
 
-                buttonsContainer.prepend(filterHtml);
+                buttonsContainer.prepend(filterHtml); // Adiciona os filtros antes do botão
 
+                // Popular filtro de disciplinas
                 const filterDisciplinaSelect = $('#filterDisciplina');
                 listaDisciplinas.forEach(disciplina => {
-                    filterDisciplinaSelect.append(new Option(disciplina.nome, disciplina.nome));
+                    filterDisciplinaSelect.append(new Option(disciplina.nome, disciplina.nome)); // Usar nome para busca
                 });
 
+                // Aplicar filtros
                 $('#filterTipoTarefa').on('change', function() {
                     const tipo = $(this).val();
+                    // Busca exata pela string do tipo dentro das tags HTML
                     api.column(3).search(tipo ? '^' + tipo + '$' : '', true, false).draw();
                 });
 
@@ -290,11 +298,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 // Armazenar dados completos no TR (para detalhes e edições)
                 $('#tabelaTarefas tbody tr').each(function(index) {
-                    const rowData = listaTarefas[index];
+                    // A DataTables API pode reordenar, então precisamos buscar pelo ID da tarefa
+                    // ou garantir que 'listaTarefas' esteja na mesma ordem que a tabela no momento da criação.
+                    // Para este exemplo, assumimos que a ordem inicial é mantida.
+                    const rowData = listaTarefas[index]; // CUIDADO: Isso pode quebrar se a tabela for reordenada antes.
+                                                        // Uma abordagem mais robusta seria usar o ID da tarefa.
                     $(this).data('completo', rowData);
                 });
 
                 // --- Lógica para mover o dropdown ao abrir/fechar ---
+                // Remove listeners antigos para evitar duplicação
                 $('#tabelaTarefas tbody').off('show.bs.dropdown hide.bs.dropdown');
                 $('body').off('show.bs.dropdown hide.bs.dropdown', '.dropdown-menu');
 
@@ -302,11 +315,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     const $dropdown = $(this);
                     const $dropdownMenu = $dropdown.find('.dropdown-menu');
 
+                    // Armazena o pai original e o botão que disparou o dropdown
                     $dropdownMenu.data('bs-dropdown-original-parent', $dropdown);
-                    $dropdownMenu.data('bs-dropdown-toggle-button', $(e.target));
+                    $dropdownMenu.data('bs-dropdown-toggle-button', $(e.target)); // e.target é o botão do dropdown
+
+                    // Move o menu para o body para evitar problemas de overflow e z-index
                     $dropdownMenu.appendTo('body');
 
-                    const bsDropdown = bootstrap.Dropdown.getInstance(e.target);
+                    // Atualiza a posição do Popper.js
+                    const bsDropdown = bootstrap.Dropdown.getInstance(e.target); // O botão que disparou
                     if (bsDropdown && bsDropdown._popper) {
                         bsDropdown._popper.update();
                     }
@@ -316,8 +333,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     const $dropdownMenu = $(this);
                     const $originalParent = $dropdownMenu.data('bs-dropdown-original-parent');
 
+                    // Se o menu foi movido, retorna-o ao seu pai original
                     if ($originalParent && !$dropdownMenu.parent().is($originalParent)) {
                         $dropdownMenu.prependTo($originalParent);
+                        // Limpa os dados armazenados
                         $dropdownMenu.removeData('bs-dropdown-original-parent');
                         $dropdownMenu.removeData('bs-dropdown-toggle-button');
                     }
@@ -351,7 +370,7 @@ document.addEventListener("DOMContentLoaded", function () {
         delete formTarefa.dataset.tarefaId;
         delete formTarefa.dataset.rowIndex;
 
-        popularDisciplinasSelect();
+        popularDisciplinasSelect(); // Popula as disciplinas no select
 
         modalTarefaLabel.textContent = isEditMode ? "Editar Tarefa" : "Adicionar Tarefa";
 
@@ -369,14 +388,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 formTarefa.dataset.rowIndex = tabelaTarefasDt.row(targetTr).index();
             }
         } else {
-            tarefaDisciplinaSelect.value = "";
-            tarefaTipoSelect.value = "";
-            tarefaStatusSelect.value = "A Fazer";
+            // Valores padrão para novo formulário
+            tarefaDisciplinaSelect.value = ""; // Nenhum selecionado
+            tarefaTipoSelect.value = ""; // Nenhum selecionado
+            tarefaStatusSelect.value = "A Fazer"; // Padrão
         }
 
-        if (modalTarefa && typeof modalTarefa.showModal === 'function') {
+        // Abrir o modal (compatível com <dialog> e Bootstrap Modal)
+        if (modalTarefa && typeof modalTarefa.showModal === 'function') { // HTML <dialog>
             modalTarefa.showModal();
-        } else if (window.bootstrap && modalTarefa) {
+        } else if (window.bootstrap && modalTarefa) { // Bootstrap Modal
              const bsModal = bootstrap.Modal.getInstance(modalTarefa) || new bootstrap.Modal(modalTarefa);
              bsModal.show();
         } else {
@@ -385,9 +406,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function fecharModalFormTarefa() {
-        if (modalTarefa && typeof modalTarefa.close === 'function') {
+        if (modalTarefa && typeof modalTarefa.close === 'function') { // HTML <dialog>
              modalTarefa.close();
-        } else if (window.bootstrap && modalTarefa) {
+        } else if (window.bootstrap && modalTarefa) { // Bootstrap Modal
             const bsModal = bootstrap.Modal.getInstance(modalTarefa);
             if (bsModal) bsModal.hide();
         }
@@ -402,22 +423,37 @@ document.addEventListener("DOMContentLoaded", function () {
         delete formTarefa.dataset.rowIndex;
     }
 
+    // Eventos para o modal de Adicionar/Editar Tarefa
     if (fecharModalTarefaBtn) fecharModalTarefaBtn.addEventListener("click", (e) => { e.preventDefault(); fecharModalFormTarefa(); });
     if (cancelarModalTarefaBtn) cancelarModalTarefaBtn.addEventListener("click", (e) => { e.preventDefault(); fecharModalFormTarefa(); });
-    if (modalTarefa) modalTarefa.addEventListener("click", e => {
+    if (modalTarefa) modalTarefa.addEventListener("click", e => { // Fechar clicando fora (para <dialog>)
         if (e.target === modalTarefa && typeof modalTarefa.close === 'function') {
             fecharModalFormTarefa();
         }
     });
 
     // --- GERENCIAMENTO DO MODAL DE DETALHES DA TAREFA ---
+    // Re-seleciona os elementos do modal de detalhes aqui, pois podem ter sido adicionados ao DOM depois
+    function getDetalhesModalElements() {
+        return {
+            modalDetalhesElem: document.querySelector("#modalDetalhesTarefa"),
+            fecharModalDetalhesBtnElem: document.querySelector("#fecharModalDetalhesTarefa"),
+            okModalDetalhesBtnElem: document.querySelector("#okModalDetalhesTarefa"),
+            modalDetalhesConteudoElem: document.querySelector("#modalDetalhesTarefaConteudo"),
+            modalDetalhesTarefaLabelElem: document.querySelector("#modalDetalhesTarefaLabel")
+        };
+    }
+
+
     function abrirModalDeDetalhesTarefa(dadosCompletosTarefa) {
-        if (!modalDetalhes || !modalDetalhesConteudo || !modalDetalhesTarefaLabel) {
-            console.error("Elementos do modal de detalhes da tarefa não encontrados.");
+        const { modalDetalhesElem, modalDetalhesConteudoElem, modalDetalhesTarefaLabelElem } = getDetalhesModalElements();
+
+        if (!modalDetalhesElem || !modalDetalhesConteudoElem || !modalDetalhesTarefaLabelElem) {
+            console.error("Elementos do modal de detalhes da tarefa não encontrados. Verifique o HTML.");
             return;
         }
 
-        modalDetalhesTarefaLabel.textContent = "Detalhes da Tarefa";
+        modalDetalhesTarefaLabelElem.textContent = "Detalhes da Tarefa"; // Pode ser mais dinâmico se quiser
 
         const disciplinaNome = listaDisciplinas.find(d => d.id === dadosCompletosTarefa.disciplinaId)?.nome || 'N/A';
         const dataHoraFormatada = formatarDataHoraParaTabela(dadosCompletosTarefa.dataEntrega, dadosCompletosTarefa.horarioEntrega);
@@ -434,7 +470,7 @@ document.addEventListener("DOMContentLoaded", function () {
             `).join('');
         }
 
-        modalDetalhesConteudo.innerHTML = `
+        modalDetalhesConteudoElem.innerHTML = `
             <dl class="row mb-3">
                 <dt class="col-sm-4">Título:</dt>
                 <dd class="col-sm-8">${dadosCompletosTarefa.titulo || '-'}</dd>
@@ -453,7 +489,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 ${dadosCompletosTarefa.descricao ? `
                 <dt class="col-sm-12 mt-3">Descrição:</dt>
-                <dd class="col-sm-12"><pre>${dadosCompletosTarefa.descricao.replace(/\n/g, '<br>')}</pre></dd>
+                <dd class="col-sm-12"><pre style="white-space: pre-wrap; word-wrap: break-word;">${dadosCompletosTarefa.descricao.replace(/\n/g, '<br>')}</pre></dd>
                 ` : ''}
             </dl>
             <hr>
@@ -468,43 +504,61 @@ document.addEventListener("DOMContentLoaded", function () {
             <button class="btn btn-sm btn-info mt-2" id="gerenciarCompartilhamentoTarefaFromDetails">Gerenciar Compartilhamento</button>
         `;
 
+        // Adicionar event listeners para os botões dentro do modal de detalhes
         $('#addAnotacaoTarefaFromDetails').off('click').on('click', function() {
             alert(`Funcionalidade: Abrir modal de nova anotação pré-preenchido com vínculo à Tarefa: ${dadosCompletosTarefa.titulo}`);
+            // Implementar lógica para abrir modal de anotação
         });
         $('#gerenciarCompartilhamentoTarefaFromDetails').off('click').on('click', function() {
             alert(`Funcionalidade: Abrir tela/modal de gerenciamento de compartilhamento para a Tarefa: ${dadosCompletosTarefa.titulo}`);
+            // Implementar lógica para gerenciamento de compartilhamento
         });
 
-        if (modalDetalhes && typeof modalDetalhes.showModal === 'function') modalDetalhes.showModal();
-        else if (window.bootstrap && modalDetalhes) {
-            const bsModal = bootstrap.Modal.getInstance(modalDetalhes) || new bootstrap.Modal(modalDetalhes);
+        if (modalDetalhesElem && typeof modalDetalhesElem.showModal === 'function') modalDetalhesElem.showModal();
+        else if (window.bootstrap && modalDetalhesElem) {
+            const bsModal = bootstrap.Modal.getInstance(modalDetalhesElem) || new bootstrap.Modal(modalDetalhesElem);
             bsModal.show();
         }
     }
 
     function fecharModalDeDetalhesTarefa() {
-        if (modalDetalhes && typeof modalDetalhes.close === 'function') modalDetalhes.close();
-        else if (window.bootstrap && modalDetalhes) {
-            const bsModal = bootstrap.Modal.getInstance(modalDetalhes);
+        const { modalDetalhesElem } = getDetalhesModalElements();
+        if (modalDetalhesElem && typeof modalDetalhesElem.close === 'function') modalDetalhesElem.close();
+        else if (window.bootstrap && modalDetalhesElem) {
+            const bsModal = bootstrap.Modal.getInstance(modalDetalhesElem);
             if (bsModal) bsModal.hide();
         }
     }
 
-    if (fecharModalDetalhesBtn) { fecharModalDetalhesBtn.addEventListener("click", (e) => { e.preventDefault(); fecharModalDeDetalhesTarefa(); }); }
-    if (okModalDetalhesBtn) { okModalDetalhesBtn.addEventListener("click", (e) => { e.preventDefault(); fecharModalDeDetalhesTarefa(); }); }
-    if (modalDetalhes) modalDetalhes.addEventListener("click", e => {
-        if (e.target === modalDetalhes && typeof modalDetalhes.close === 'function') {
-            fecharModalDeDetalhesTarefa();
+    // Adicionar event listeners para o modal de detalhes APÓS o DOM estar pronto e o modal existir
+    // Fazemos isso de forma delegada ou reatribuímos após a inicialização
+    function setupDetalhesModalEventListeners() {
+        const { fecharModalDetalhesBtnElem, okModalDetalhesBtnElem, modalDetalhesElem } = getDetalhesModalElements();
+
+        if (fecharModalDetalhesBtnElem) {
+            $(fecharModalDetalhesBtnElem).off('click').on('click', (e) => { e.preventDefault(); fecharModalDeDetalhesTarefa(); });
         }
-    });
+        if (okModalDetalhesBtnElem) {
+            $(okModalDetalhesBtnElem).off('click').on('click', (e) => { e.preventDefault(); fecharModalDeDetalhesTarefa(); });
+        }
+        if (modalDetalhesElem) {
+            $(modalDetalhesElem).off('click').on('click', e => {
+                if (e.target === modalDetalhesElem && typeof modalDetalhesElem.close === 'function') {
+                    fecharModalDeDetalhesTarefa();
+                }
+            });
+        }
+    }
+
 
     // --- AÇÕES NA TABELA (Botões de Ação no Dropdown) ---
     $('body').on('click', '.btn-detalhar-tarefa, .btn-marcar-concluida, .btn-marcar-pendente, .btn-edit-tarefa, .btn-remover-tarefa', function (e) {
         e.preventDefault();
 
         const $clickedItem = $(this);
+        // Acessar o botão que abriu o dropdown, que está armazenado no .dropdown-menu
         const $dropdownMenu = $clickedItem.closest('.dropdown-menu');
-        const $originalButton = $dropdownMenu.data('bs-dropdown-toggle-button');
+        const $originalButton = $dropdownMenu.data('bs-dropdown-toggle-button'); // Botão de três pontos
 
         const hideDropdown = () => {
             if ($originalButton && $originalButton.length > 0 && window.bootstrap) {
@@ -517,11 +571,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
         let trElement = $originalButton ? $originalButton.closest('tr')[0] : null;
 
+        // Se o TR não foi encontrado (ex: dropdown movido para o body), tenta achar pela linha da DataTable
         if (!tabelaTarefasDt || !trElement) {
-            console.error("Ação na Tabela: DataTables não inicializado ou trElement não encontrado.");
+            console.error("Ação na Tabela: DataTables não inicializado ou trElement não encontrado diretamente.");
+            // Tentar uma abordagem alternativa se o dropdown foi movido para o body.
+            // Esta parte pode ser complexa e depender de como os dados são armazenados.
+            // Por simplicidade, se $originalButton não tem um 'tr' pai, pode ser um problema.
+            // Uma solução seria adicionar data-tarefa-id diretamente ao botão de três pontos
+            // e buscar a linha da tabela por esse ID.
+
+            // Para o código atual, vamos assumir que o dropdown ainda está aninhado ou a lógica de mover o dropdown
+            // não interfere na obtenção do trElement através do $originalButton.
             hideDropdown();
             return;
         }
+
 
         const row = tabelaTarefasDt.row(trElement);
         if (!row || !row.length || !row.node()) {
@@ -530,31 +594,34 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        const rowDataArray = row.data();
-        const dadosCompletosArmazenados = $(trElement).data('completo');
+        // IMPORTANTE: Os dados da linha (row.data()) são um array.
+        // Os dados completos do objeto estão armazenados no $(trElement).data('completo')
+        const rowDataArray = row.data(); // Array de células visíveis
+        const dadosCompletosArmazenados = $(trElement).data('completo'); // Objeto completo
+
+        if (!dadosCompletosArmazenados) {
+            console.error("Ação na Tabela: dadosCompletosArmazenados não encontrados na linha TR. ID da Tarefa:", $clickedItem.data('tarefa-id'));
+            alert("Erro: Não foi possível obter os dados completos da tarefa. Verifique o console.");
+            hideDropdown();
+            return;
+        }
+
 
         if ($clickedItem.hasClass('btn-detalhar-tarefa')) {
-            if (!dadosCompletosArmazenados) {
-                alert("Erro: Dados insuficientes para detalhar a tarefa.");
-            } else {
-                abrirModalDeDetalhesTarefa(dadosCompletosArmazenados);
-            }
+            abrirModalDeDetalhesTarefa(dadosCompletosArmazenados);
         } else if ($clickedItem.hasClass('btn-marcar-concluida')) {
-            if (!dadosCompletosArmazenados) {
-                alert("Erro: Não foi possível obter os dados completos da tarefa.");
-            } else if (dadosCompletosArmazenados.status === 'Concluída') {
+            if (dadosCompletosArmazenados.status === 'Concluída') {
                 alert("Esta tarefa já está marcada como concluída.");
             } else {
                 dadosCompletosArmazenados.status = 'Concluída';
-                $(trElement).data('completo', dadosCompletosArmazenados);
+                $(trElement).data('completo', dadosCompletosArmazenados); // Atualiza os dados completos
+                // Atualiza a célula de status na tabela
                 rowDataArray[5] = `<span class="badge ${getStatusBadgeClass('Concluída')}">Concluída</span>`;
-                row.data(rowDataArray).draw(false);
+                row.data(rowDataArray).draw(false); // Redesenha a linha sem resetar a paginação
                 alert("Tarefa marcada como concluída!");
             }
         } else if ($clickedItem.hasClass('btn-marcar-pendente')) {
-            if (!dadosCompletosArmazenados) {
-                alert("Erro: Não foi possível obter os dados completos da tarefa.");
-            } else if (dadosCompletosArmazenados.status === 'A Fazer') {
+            if (dadosCompletosArmazenados.status === 'A Fazer') {
                 alert("Esta tarefa já está 'A Fazer'.");
             } else {
                 dadosCompletosArmazenados.status = 'A Fazer';
@@ -564,15 +631,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 alert("Tarefa marcada como 'A Fazer'!");
             }
         } else if ($clickedItem.hasClass('btn-edit-tarefa')) {
-            if (!dadosCompletosArmazenados) {
-                alert("Erro: Não foi possível obter os dados completos da tarefa para edição.");
-            } else {
-                abrirModalFormTarefa(true, dadosCompletosArmazenados, trElement);
-            }
+            abrirModalFormTarefa(true, dadosCompletosArmazenados, trElement);
         } else if ($clickedItem.hasClass('btn-remover-tarefa')) {
-            const tituloTarefa = dadosCompletosArmazenados ? dadosCompletosArmazenados.titulo : "esta tarefa";
+            const tituloTarefa = dadosCompletosArmazenados.titulo || "esta tarefa";
             if (confirm(`Tem certeza que deseja remover a tarefa "${tituloTarefa}"?`)) {
-                row.remove().draw(false);
+                // Remover da lista de dados mocados (ou da API)
+                const indexToRemove = listaTarefas.findIndex(t => t.id === dadosCompletosArmazenados.id);
+                if (indexToRemove > -1) {
+                    listaTarefas.splice(indexToRemove, 1);
+                }
+                row.remove().draw(false); // Remove da DataTable
                 alert("Tarefa removida com sucesso!");
             }
         }
@@ -593,10 +661,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (!tabelaTarefasDt) {
                 console.error("DataTables não inicializado.");
+                alert("Erro: A tabela de tarefas não está pronta. Tente novamente.");
                 return;
             }
 
-            const tarefaId = formTarefa.dataset.tarefaId || 'newID-' + new Date().getTime();
+            const tarefaIdAttr = formTarefa.dataset.tarefaId;
+            const isEditMode = !!tarefaIdAttr && tarefaIdAttr !== 'undefined';
+            const tarefaId = isEditMode ? tarefaIdAttr : 'newID-' + new Date().getTime();
             const rowIndex = formTarefa.dataset.rowIndex !== undefined ? parseInt(formTarefa.dataset.rowIndex) : undefined;
 
             const disciplinaSelecionadaObj = listaDisciplinas.find(d => d.id === tarefaDisciplinaSelect.value);
@@ -605,14 +676,21 @@ document.addEventListener("DOMContentLoaded", function () {
                 id: tarefaId,
                 titulo: tarefaTituloInput.value.trim(),
                 disciplinaId: tarefaDisciplinaSelect.value || '',
-                disciplinaNome: disciplinaSelecionadaObj ? disciplinaSelecionadaObj.nome : '',
+                // disciplinaNome: disciplinaSelecionadaObj ? disciplinaSelecionadaObj.nome : (tarefaDisciplinaSelect.value ? 'Disciplina não encontrada' : ''),
                 tipo: tarefaTipoSelect.value,
                 dataEntrega: tarefaDataEntregaInput.value,
                 horarioEntrega: tarefaHorarioEntregaInput.value || '',
                 status: tarefaStatusSelect.value,
                 descricao: tarefaDescricaoInput.value.trim(),
-                anotacoesVinculadas: []
+                anotacoesVinculadas: isEditMode ? (listaTarefas.find(t => t.id === tarefaId)?.anotacoesVinculadas || []) : [] // Mantém anotações existentes ao editar
             };
+            // Adiciona disciplinaNome apenas se disciplinaId estiver presente
+             if (dadosCompletosTarefa.disciplinaId) {
+                dadosCompletosTarefa.disciplinaNome = disciplinaSelecionadaObj ? disciplinaSelecionadaObj.nome : 'Disciplina não encontrada';
+            } else {
+                dadosCompletosTarefa.disciplinaNome = '-'; // Ou string vazia, conforme preferir para "sem disciplina"
+            }
+
 
             const dataHoraFormatadaParaTabela = formatarDataHoraParaTabela(dadosCompletosTarefa.dataEntrega, dadosCompletosTarefa.horarioEntrega);
             const statusBadgeHtml = `<span class="badge ${getStatusBadgeClass(dadosCompletosTarefa.status)}">${dadosCompletosTarefa.status}</span>`;
@@ -645,27 +723,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
             let targetRowNode;
 
-            if (tarefaId && rowIndex !== undefined && tabelaTarefasDt.row(rowIndex).node()) {
+            if (isEditMode && rowIndex !== undefined && tabelaTarefasDt.row(rowIndex).node()) {
+                // Editando uma tarefa existente
                 targetRowNode = tabelaTarefasDt.row(rowIndex).data(dadosLinhaTabela).draw(false).node();
+                // Atualizar na lista de dados mocados
                 const indexLista = listaTarefas.findIndex(t => t.id === tarefaId);
                 if(indexLista !== -1) {
                     listaTarefas[indexLista] = dadosCompletosTarefa;
                 }
                 alert("Tarefa atualizada com sucesso!");
             } else {
+                // Adicionando uma nova tarefa
                 targetRowNode = tabelaTarefasDt.row.add(dadosLinhaTabela).draw(false).node();
-                listaTarefas.push(dadosCompletosTarefa);
+                listaTarefas.push(dadosCompletosTarefa); // Adiciona à lista de dados mocados
                 alert("Tarefa adicionada com sucesso!");
             }
 
             if (targetRowNode) {
-                $(targetRowNode).data('completo', dadosCompletosTarefa);
+                $(targetRowNode).data('completo', dadosCompletosTarefa); // Armazena os dados completos no nó da linha
             } else {
                 console.error("FORM SUBMIT: targetRowNode não foi definido. Dados 'completo' não foram armazenados.");
             }
 
             fecharModalFormTarefa();
-            if (tabelaTarefasDt) tabelaTarefasDt.columns.adjust().responsive.recalc();
+            if (tabelaTarefasDt) tabelaTarefasDt.columns.adjust().responsive.recalc(); // Ajusta colunas após modificação
         });
     }
 
@@ -673,22 +754,24 @@ document.addEventListener("DOMContentLoaded", function () {
     function formatarDataHoraParaTabela(dataStr, horaStr) {
         let formatted = '';
         if (dataStr) {
+            // Supondo que dataStr é 'YYYY-MM-DD'
             const [year, month, day] = dataStr.split('-');
+            // Criar data em UTC para evitar problemas de fuso horário na formatação
             const dataObj = new Date(Date.UTC(parseInt(year), parseInt(month) - 1, parseInt(day)));
             const meses = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
             formatted = `${dataObj.getUTCDate()} ${meses[dataObj.getUTCMonth()]} ${dataObj.getUTCFullYear()}`;
         }
 
-        if (horaStr) {
+        if (horaStr) { // Supondo que horaStr é 'HH:MM'
             const [hour, minute] = horaStr.split(':');
             let h = parseInt(hour);
             const ampm = h >= 12 ? 'PM' : 'AM';
             h = h % 12;
-            h = h ? h : 12;
+            h = h ? h : 12; // Converte 0 para 12 (meia-noite/meio-dia)
             const formattedTime = `${h}:${String(minute).padStart(2, '0')} ${ampm}`;
             formatted = formatted ? `${formatted}, ${formattedTime}` : formattedTime;
         }
-        return formatted || '-';
+        return formatted || '-'; // Retorna '-' se data e hora não estiverem definidos
     }
 
     function getStatusBadgeClass(status) {
@@ -705,14 +788,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function getTipoBadgeClass(tipo) {
         switch (tipo) {
-            case 'Prova': return 'bg-warning-subtle text-warning';
+            case 'Prova': return 'bg-warning-subtle text-warning'; // Exemplo, pode ser outra cor
             case 'Tarefa': return 'bg-primary-subtle text-primary';
-            default: return 'bg-light-subtle text-dark';
+            default: return 'bg-light-subtle text-dark'; // Cor padrão para tipos não especificados
         }
     }
 
 
     // --- INICIALIZAÇÕES FINAIS ---
     popularDisciplinasSelect();
-    inicializarDataTable();
+    inicializarDataTable(); // Inicializa a tabela de tarefas
+    setupDetalhesModalEventListeners(); // Configura listeners para o modal de detalhes que agora deve existir no HTML
 });

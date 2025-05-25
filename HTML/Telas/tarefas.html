@@ -16,8 +16,6 @@
     <link rel="stylesheet" href="../Css/geral.css">
     <link rel="stylesheet" href="../Css/tela_principal.css">
     <link rel="stylesheet" href="../Css/tarefas.css">
-    <script src="../Scripts/tarefas.js" defer></script>
-    <script src="../Scripts/geral.js" defer></script>
     
 </head>
 <body class="auth-body dashboard-body">
@@ -56,7 +54,6 @@
         <img src="../imgs/logo.png" alt="Logo"><span>StudyFlow</span>
       </div>
 
-      <!-- dropdown de usuário -->
       <div class="dropdown">
         <button
           class="btn btn-sm btn-icon-only"
@@ -105,8 +102,7 @@
                 <table id="tabelaTarefas" class="table table-hover dt-responsive nowrap align-middle mb-0 bg-white border rounded-3 tarefas-table" style="width:100%">
                     <thead class="table-light">
                         <tr>
-                            <th class="dtr-control" data-priority="1"></th>
-                            <th>Título da Tarefa</th>
+                            <th class="dtr-control" data-priority="1"></th> <th>Título da Tarefa</th>
                             <th data-priority="2">Disciplina</th>
                             <th>Tipo</th>
                             <th data-priority="3">Data de Entrega</th>
@@ -211,7 +207,7 @@
               <div class="mb-3">
                   <label for="tarefaTitulo" class="form-label">Título da Tarefa</label>
                   <input type="text" class="form-control" id="tarefaTitulo" placeholder="Ex: Prova de Matemática, Trabalho de POO" required>
-              </div>
+                  </div>
               <div class="mb-3">
                   <label for="tarefaDisciplina" class="form-label">Disciplina (Opcional)</label>
                   <select class="form-select" id="tarefaDisciplina">
@@ -257,11 +253,29 @@
       </form>
   </dialog>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <dialog id="modalDetalhesTarefa">
+      <div class="modal-header-custom modal-header-studyflow">
+          <div class="modal-title-wrapper">
+              <img src="../imgs/logo.png" class="modal-logo-icon" alt="StudyFlow Logo">
+              <h5 class="modal-title-custom" id="modalDetalhesTarefaLabel">Detalhes da Tarefa</h5>
+          </div>
+          <button type="button" class="btn-close-custom" id="fecharModalDetalhesTarefa" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body-custom" id="modalDetalhesTarefaConteudo">
+          <p>Carregando detalhes...</p>
+      </div>
+      <div class="modal-footer-custom modal-footer-studyflow">
+          <button type="button" class="btn btn-modal-ok" id="okModalDetalhesTarefa">OK</button>
+      </div>
+  </dialog>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/2.0.7/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.0.7/js/dataTables.bootstrap5.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.bootstrap5.js"></script>
+
+    <script src="../Scripts/geral.js" defer></script>
+    <script src="../Scripts/tarefas.js" defer></script>
 </body>
 </html>
