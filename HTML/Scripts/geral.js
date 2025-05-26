@@ -102,17 +102,77 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+    const modalAnotacaoElement = document.getElementById('modalAnotacao');
+    const quickAddAnotacaoBtn = document.getElementById('quickAddAnotacaoBtn'); // Botão na sidebar
 
-    // --- Modal Adicionar Anotação (placeholder) ---
-    const quickAddAnotacaoBtn = document.getElementById('quickAddAnotacaoBtn');
+    console.log('Verificando Modal Anotação Element:', modalAnotacaoElement);
     console.log('Verificando Botão Rápido Adicionar Anotação:', quickAddAnotacaoBtn);
+
     if (quickAddAnotacaoBtn) {
         quickAddAnotacaoBtn.addEventListener('click', (e) => {
+            // Previne o comportamento padrão do link <a>
             e.preventDefault();
             console.log('Botão Rápido Adicionar Anotação clicado.');
-            alert('Funcionalidade "Adicionar Anotação" ainda não implementada ou modal não definido.');
+            // Bootstrap já cuida de abrir o modal devido aos atributos data-bs-toggle e data-bs-target.
+            // A lógica de reset de campos está no evento 'show.bs.modal'.
+            
+            // Se você precisar instanciar e chamar o show manualmente (não é necessário com os data-attributes):
+            // const modalAnotacao = bootstrap.Modal.getInstance(modalAnotacaoElement) || new bootstrap.Modal(modalAnotacaoElement);
+            // modalAnotacao.show();
         });
     } else {
-        console.error('Botão "quickAddAnotacaoBtn" não encontrado para o modal.');
+        console.error('Botão "quickAddAnotacaoBtn" não encontrado para o modal de anotação.');
+    }
+
+    if (modalAnotacaoElement) {
+        // Evento disparado quando o modal está prestes a ser exibido
+        modalAnotacaoElement.addEventListener('show.bs.modal', () => {
+            console.log('Modal Anotação está sendo aberto (evento show.bs.modal).');
+            
+            // Seleciona os campos dentro do modal de anotação
+            const tituloInput = modalAnotacaoElement.querySelector('#anotacaoTituloInput');
+            const disciplinaInput = modalAnotacaoElement.querySelector('#anotacaoDisciplinaInput');
+            const atividadeInput = modalAnotacaoElement.querySelector('#anotacaoAtividadeInput');
+            const conteudoInput = modalAnotacaoElement.querySelector('#anotacaoConteudoInput');
+            const idInput = modalAnotacaoElement.querySelector('#anotacaoIdInput'); // Campo hidden para ID
+            
+            const modalLabel = modalAnotacaoElement.querySelector('#modalAnotacaoLabelTitulo'); // Título principal do modal
+            const editInfo = modalAnotacaoElement.querySelector('#modalAnotacaoEditInfo'); // Texto informativo (ex: "Criando nova anotação")
+
+            // Reseta os valores dos campos para um novo formulário
+            if (tituloInput) tituloInput.value = '';
+            if (disciplinaInput) disciplinaInput.value = ''; // O placeholder "Nenhuma" será exibido
+            if (atividadeInput) atividadeInput.value = '';   // O placeholder "Nenhuma" será exibido
+            if (conteudoInput) conteudoInput.value = '';
+            if (idInput) idInput.value = ''; // Garante que não há ID de uma anotação anterior
+
+            // Define os textos do cabeçalho para o modo de "nova anotação"
+            if (modalLabel) modalLabel.textContent = 'Nova Anotação';
+            if (editInfo) editInfo.textContent = 'Criando nova anotação';
+
+            // Adicione aqui qualquer outra lógica de inicialização para uma nova anotação
+        });
+
+        // Evento disparado quando o modal já foi completamente exibido
+        modalAnotacaoElement.addEventListener('shown.bs.modal', () => {
+            console.log('Modal Anotação foi completamente aberto (evento shown.bs.modal).');
+            const tituloInput = modalAnotacaoElement.querySelector('#anotacaoTituloInput');
+            if (tituloInput) {
+                tituloInput.focus(); // Foca no campo de título ao abrir
+            }
+        });
+
+        // Evento disparado quando o modal está prestes a ser escondido
+        modalAnotacaoElement.addEventListener('hide.bs.modal', () => {
+            console.log('Modal Anotação está sendo fechado (evento hide.bs.modal).');
+        });
+
+        // Evento disparado quando o modal já foi completamente escondido
+        modalAnotacaoElement.addEventListener('hidden.bs.modal', () => {
+            console.log('Modal Anotação foi completamente fechado (evento hidden.bs.modal).');
+        });
+
+    } else {
+        console.error('Elemento do Modal "modalAnotacao" não encontrado.');
     }
 });

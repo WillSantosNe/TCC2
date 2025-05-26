@@ -23,17 +23,18 @@
   <aside id="sidebar" class="offcanvas-lg offcanvas-start" tabindex="-1">
     <div class="brand-text"></div>
     <nav class="nav flex-column">
-      <div class="sf-sidebar-section">Botões Rápidos</div>
+         <div class="sf-sidebar-section">Botões Rápidos</div>
       <a href="#" class="sf-nav-link sf-quick-add-link" id="quickAddDisciplinaBtn"> <span class="quick-add-icon"><i class="bi bi-plus-lg"></i></span>
-          Adicionar Disciplina 
+        Adicionar Disciplina
       </a>
       
       <a href="#" class="sf-nav-link sf-quick-add-link" id="quickAddTarefaBtn">
-          <span class="quick-add-icon"><i class="bi bi-plus-lg"></i></span>
-          Adicionar Tarefa/Prova
+        <span class="quick-add-icon"><i class="bi bi-plus-lg"></i></span>
+        Adicionar Tarefa/Prova
       </a>
-      <a href="#" class="sf-nav-link sf-quick-add-link" id="quickAddAnotacaoBtn"> <span class="quick-add-icon"><i class="bi bi-plus-lg"></i></span>
-          Adicionar Anotação
+      <a href="#" class="sf-nav-link sf-quick-add-link" id="quickAddAnotacaoBtn" data-bs-toggle="modal" data-bs-target="#modalAnotacao">
+        <span class="quick-add-icon"><i class="bi bi-plus-lg"></i></span>
+        Adicionar Anotação
       </a>
 
       <div class="sf-sidebar-section">Acadêmico</div>
@@ -94,6 +95,159 @@
     <main class="calendar-page">
       <div id="calendar"></div>
     </main>
+
+        <dialog id="modalDisciplina">
+      <form id="formDisciplina" method="dialog" novalidate>
+          <div class="modal-header-custom modal-header-studyflow">
+              <div class="modal-title-wrapper">
+                  <img src="../imgs/logo.png" class="modal-logo-icon" alt="StudyFlow Logo">
+                  <h5 class="modal-title-custom" id="modalDisciplinaLabel">Adicionar Disciplina</h5>
+              </div>
+              <button type="button" class="btn-close-custom" id="fecharModalDisciplina" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body-custom">
+              <div class="mb-3">
+                  <label for="disciplinaNome" class="form-label">Nome da Disciplina</label>
+                  <input type="text" class="form-control" id="disciplinaNome" required>
+                  <div class="invalid-feedback"></div>
+              </div>
+              <div class="mb-3">
+                  <label for="disciplinaProfessor" class="form-label">Professor</label>
+                  <input type="text" class="form-control" id="disciplinaProfessor">
+                  <div class="invalid-feedback"></div>
+              </div>
+              <div class="mb-3">
+                  <label for="disciplinaDescricao" class="form-label">Descrição (Opcional)</label>
+                  <textarea class="form-control" id="disciplinaDescricao" rows="3" placeholder="Ex: Ementa da disciplina, objetivos..."></textarea>
+                  <div class="invalid-feedback"></div>
+              </div>
+              <div class="mb-3">
+                  <label for="disciplinaPeriodo" class="form-label">Período</label>
+                  <select class="form-select" id="disciplinaPeriodo" required>
+                      <option value="" disabled selected>Selecione o período...</option>
+                      <option value="2024.1">2024.1</option>
+                      <option value="2024.2">2024.2</option>
+                      <option value="2025.1">2025.1</option>
+                      <option value="2025.2">2025.2</option>
+                  </select>
+                  <div class="invalid-feedback"></div>
+              </div>
+              <div class="mb-3">
+                  <label for="disciplinaStatus" class="form-label">Status</label>
+                  <select class="form-select" id="disciplinaStatus" required>
+                      <option value="Ativa" selected>Ativa</option>
+                      <option value="Concluída">Concluída</option>
+                      <option value="Em Andamento">Em Andamento</option>
+                      <option value="Agendada">Agendada</option> </select>
+                  <div class="invalid-feedback"></div>
+              </div>
+              <div class="mb-3">
+                  <label for="disciplinaDias" class="form-label">Dias da Semana (ex: Seg, Qua, Sex)</label>
+                  <input type="text" class="form-control" id="disciplinaDias" required>
+                  <div class="invalid-feedback"></div>
+              </div>
+              <div class="row mb-3">
+                  <div class="col-sm-6">
+                      <label for="disciplinaHorarioInicio" class="form-label">Horário de Início</label>
+                      <input type="time" class="form-control" id="disciplinaHorarioInicio" required>
+                      <div class="invalid-feedback"></div>
+                  </div>
+                  <div class="col-sm-6">
+                      <label for="disciplinaHorarioFim" class="form-label">Horário de Fim</label>
+                      <input type="time" class="form-control" id="disciplinaHorarioFim" required>
+                      <div class="invalid-feedback"></div>
+                  </div>
+              </div>
+              <div class="mb-3">
+                  <label for="disciplinaLocal" class="form-label">Local</label>
+                  <input type="text" class="form-control" id="disciplinaLocal" required>
+                  <div class="invalid-feedback"></div>
+              </div>
+              <input type="hidden" id="disciplinaId">
+              <input type="hidden" id="disciplinaDataCriacao"> 
+          </div>
+          <div class="modal-footer-custom modal-footer-studyflow">
+              <button type="button" class="btn btn-modal-cancel" id="cancelarModalDisciplina">Cancelar</button>
+              <button type="submit" class="btn btn-modal-save">Salvar Disciplina</button>
+          </div>
+      </form>
+  </dialog>
+
+  <dialog id="modalTarefa">
+      <form id="formTarefa" novalidate>
+          <div class="modal-header-custom modal-header-studyflow">
+              <div class="modal-title-wrapper">
+                  <img src="../imgs/logo.png" class="modal-logo-icon" alt="StudyFlow Logo">
+                  <h5 class="modal-title-custom" id="modalTarefaLabel">Adicionar Tarefa</h5>
+              </div>
+              <button type="button" class="btn-close-custom" id="fecharModalTarefa" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body-custom">
+              <div class="mb-3">
+                  <label for="tarefaTitulo" class="form-label">Título da Tarefa</label>
+                  <input type="text" class="form-control" id="tarefaTitulo" placeholder="Ex: Prova de Matemática, Trabalho de POO" required>
+                  </div>
+              <div class="mb-3">
+                  <label for="tarefaDisciplina" class="form-label">Disciplina (Opcional)</label>
+                  <select class="form-select" id="tarefaDisciplina">
+                      <option value="">Selecione a disciplina...</option>
+                      </select>
+              </div>
+              <div class="mb-3">
+                  <label for="tarefaTipo" class="form-label">Tipo de Tarefa</label>
+                  <select class="form-select" id="tarefaTipo" required>
+                      <option value="" selected disabled>Selecione o tipo...</option>
+                      <option value="Tarefa">Tarefa</option>
+                      <option value="Prova">Prova</option>
+                  </select>
+              </div>
+              <div class="row">
+                  <div class="col-md-6 mb-3">
+                      <label for="tarefaDataEntrega" class="form-label">Data de Entrega</label>
+                      <input type="date" class="form-control" id="tarefaDataEntrega" required>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                      <label for="tarefaHorarioEntrega" class="form-label">Horário de Entrega (Opcional)</label>
+                      <input type="time" class="form-control" id="tarefaHorarioEntrega">
+                  </div>
+              </div>
+              <div class="mb-3">
+                  <label for="tarefaStatus" class="form-label">Status</label>
+                  <select class="form-select" id="tarefaStatus" required>
+                      <option value="A Fazer" selected>A Fazer</option>
+                      <option value="Em Andamento">Em Andamento</option>
+                      <option value="Concluída">Concluída</option>
+                      <option value="Atrasada">Atrasada</option>
+                  </select>
+              </div>
+              <div class="mb-3">
+                  <label for="tarefaDescricao" class="form-label">Descrição (Opcional)</label>
+                  <textarea class="form-control" id="tarefaDescricao" rows="3" placeholder="Detalhes da tarefa, requisitos, etc."></textarea>
+              </div>
+              </div>
+          <div class="modal-footer-custom modal-footer-studyflow">
+              <button type="button" class="btn btn-modal-cancel" id="cancelarModalTarefa">Cancelar</button>
+              <button type="submit" class="btn btn-modal-save">Salvar</button>
+          </div>
+      </form>
+  </dialog>
+
+  <dialog id="modalDetalhesTarefa">
+      <div class="modal-header-custom modal-header-studyflow">
+          <div class="modal-title-wrapper">
+              <img src="../imgs/logo.png" class="modal-logo-icon" alt="StudyFlow Logo">
+              <h5 class="modal-title-custom" id="modalDetalhesTarefaLabel">Detalhes da Tarefa</h5>
+          </div>
+          <button type="button" class="btn-close-custom" id="fecharModalDetalhesTarefa" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body-custom" id="modalDetalhesTarefaConteudo">
+          <p>Carregando detalhes...</p>
+      </div>
+      <div class="modal-footer-custom modal-footer-studyflow">
+          <button type="button" class="btn btn-modal-ok" id="okModalDetalhesTarefa">OK</button>
+      </div>
+      
+      
 
   </div>
 

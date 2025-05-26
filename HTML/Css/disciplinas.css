@@ -583,3 +583,184 @@ div.dataTables_wrapper div.dataTables_filter input {
     border: none;
     padding: 0;
 }
+
+/* Estilos para os Modais de Diálogo (Disciplina e Tarefa) */
+
+/* Estilo base para os dialogs modalDisciplina e modalTarefa */
+dialog#modalDisciplina,
+dialog#modalTarefa {
+    width: 90%;
+    max-width: 520px; /* Tamanho desejado conforme as primeiras imagens */
+    border-radius: 12px;
+    border: none;
+    padding: 0;
+    box-shadow: 0px 8px 24px rgba(20, 20, 22, 0.15);
+    /* Outros estilos base que eram aplicados apenas a modalDisciplina */
+}
+
+/* Backdrop para ambos os dialogs */
+dialog#modalDisciplina::backdrop,
+dialog#modalTarefa::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Header para ambos os modais */
+dialog#modalDisciplina .modal-header-studyflow,
+dialog#modalTarefa .modal-header-studyflow {
+    background-color: #FFFFFF; /* Cor do seu header */
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #E9E9F0; /* Cor da sua borda */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+dialog#modalDisciplina .modal-title-wrapper,
+dialog#modalTarefa .modal-title-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+dialog#modalDisciplina .modal-logo-icon,
+dialog#modalTarefa .modal-logo-icon {
+    width: 28px; /* Ajuste conforme necessário */
+    height: 28px; /* Ajuste conforme necessário */
+    margin-right: 0.75rem;
+}
+
+dialog#modalDisciplina .modal-title-custom,
+dialog#modalTarefa .modal-title-custom {
+    font-weight: 600;
+    font-size: 1.3rem; /* Ajuste conforme necessário */
+    color: #2E3A59; /* Cor do seu título */
+    margin-bottom: 0;
+}
+
+/* Botão de fechar (btn-close-custom) - se já não estiver em geral.css com a estilização correta */
+/* Se o .btn-close-custom de geral.css já estiver correto e aplicado, não precisa repetir.
+   Caso contrário, adicione/ajuste aqui:
+dialog#modalDisciplina .btn-close-custom,
+dialog#modalTarefa .btn-close-custom {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%232E3A59'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 1em;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    padding: 0;
+}
+dialog#modalDisciplina .btn-close-custom:hover,
+dialog#modalTarefa .btn-close-custom:hover {
+    opacity: 1;
+}
+*/
+
+
+/* Corpo para ambos os modais */
+dialog#modalDisciplina .modal-body-custom,
+dialog#modalTarefa .modal-body-custom {
+    padding: 1.5rem 1.75rem;
+    background-color: #FFFFFF; /* Cor do corpo do modal */
+}
+
+/* Labels dentro de ambos os modais */
+dialog#modalDisciplina .form-label,
+dialog#modalTarefa .form-label {
+    font-size: 0.875rem;
+    color: #4F5E7B; /* Cor do label */
+    font-weight: 500;
+    margin-bottom: 0.375rem;
+}
+
+/* Inputs, selects, textareas dentro de ambos os modais */
+dialog#modalDisciplina .form-control,
+dialog#modalDisciplina .form-select,
+dialog#modalDisciplina textarea.form-control,
+dialog#modalTarefa .form-control,
+dialog#modalTarefa .form-select,
+dialog#modalTarefa textarea.form-control {
+    background-color: #FFFFFF; /* Cor do fundo do input */
+    border: 1px solid #D9DDE7; /* Cor da borda do input */
+    border-radius: 8px; /* Arredondamento da borda */
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    color: #2E3A59; /* Cor do texto do input */
+}
+
+dialog#modalDisciplina .form-control::placeholder,
+dialog#modalTarefa .form-control::placeholder {
+    color: #A0AEC0; /* Cor do placeholder */
+}
+
+dialog#modalDisciplina .form-control:focus,
+dialog#modalDisciplina .form-select:focus,
+dialog#modalTarefa .form-control:focus,
+dialog#modalTarefa .form-select:focus {
+    border-color: var(--primary-color, #5568FE); /* Cor da borda no foco, use sua variável */
+    box-shadow: 0 0 0 0.2rem rgba(85, 104, 254, 0.25); /* Sombra no foco, use sua variável com alfa */
+}
+
+/* Estilos de validação para ambos */
+dialog#modalDisciplina .is-invalid,
+dialog#modalTarefa .is-invalid {
+    border-color: #dc3545 !important; /* Vermelho para erro */
+}
+
+dialog#modalDisciplina .invalid-feedback,
+dialog#modalTarefa .invalid-feedback {
+    display: block;
+    width: 100%;
+    margin-top: .25rem;
+    font-size: .875em;
+    color: #dc3545; /* Vermelho para texto de erro */
+}
+
+/* Footer para ambos os modais */
+dialog#modalDisciplina .modal-footer-studyflow,
+dialog#modalTarefa .modal-footer-studyflow {
+    background-color: #FFFFFF; /* Cor do footer */
+    border-top: 1px solid #E9E9F0; /* Cor da borda superior do footer */
+    padding: 1.25rem 1.75rem;
+    display: flex;
+    justify-content: flex-end;
+    border-bottom-left-radius: 12px; /* Arredondamento inferior */
+    border-bottom-right-radius: 12px; /* Arredondamento inferior */
+}
+
+/* Botão Cancelar para ambos */
+dialog#modalDisciplina .btn-modal-cancel,
+dialog#modalTarefa .btn-modal-cancel {
+    background-color: #F1F3F6; /* Cor de fundo do botão cancelar */
+    border-color: #F1F3F6;
+    color: #4F5E7B; /* Cor do texto do botão cancelar */
+    padding: 0.6rem 1.3rem;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+dialog#modalDisciplina .btn-modal-cancel:hover,
+dialog#modalTarefa .btn-modal-cancel:hover {
+    background-color: #E2E6EB; /* Cor de fundo no hover */
+    border-color: #E2E6EB;
+}
+
+/* Botão Salvar para ambos */
+dialog#modalDisciplina .btn-modal-save,
+dialog#modalTarefa .btn-modal-save {
+    background-color: #2E3A59; /* Cor de fundo do botão salvar */
+    border-color: #2E3A59;
+    color: #FFFFFF; /* Cor do texto do botão salvar */
+    padding: 0.6rem 1.3rem;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+dialog#modalDisciplina .btn-modal-save:hover,
+dialog#modalTarefa .btn-modal-save:hover {
+    background-color: #242E47; /* Cor de fundo no hover */
+    border-color: #242E47;
+}

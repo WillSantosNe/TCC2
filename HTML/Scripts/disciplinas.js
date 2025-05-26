@@ -420,6 +420,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
         return tabelaDisciplinasDt;
     }
+    
 
     // --- MANAGE ADD/EDIT DISCIPLINA MODAL ---
     function abrirModalFormDisciplina(isEditMode = false, dadosDisciplina = null, targetTr = null) {
