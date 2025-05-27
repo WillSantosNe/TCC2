@@ -1,471 +1,144 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Dashboard | StudyFlow</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dashboard | StudyFlow</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
-  <link rel="stylesheet" href="../Css/geral.css">
-  <link rel="stylesheet" href="../Css/tela_principal.css">
-  <link rel="stylesheet" href="../Css/anotacao.css"> <script src="../Scripts/principal.js" defer></script>
-  <script src="../Scripts/disciplinas.js" defer></script>
-  <script src="../Scripts/geral.js" defer></script>
-
-  </head>
+    <link rel="stylesheet" href="../Css/geral.css">
+    <link rel="stylesheet" href="../Css/tela_principal.css">
+    </head>
 <body class="auth-body dashboard-body">
 
-  <aside id="sidebar" class="offcanvas-lg offcanvas-start" tabindex="-1">
-    <div class="brand-text"></div>
-    <nav class="nav flex-column">
-      <div class="sf-sidebar-section">Botões Rápidos</div>
-      <a href="#" class="sf-nav-link sf-quick-add-link" id="quickAddDisciplinaBtn"> <span class="quick-add-icon"><i class="bi bi-plus-lg"></i></span>
-        Adicionar Disciplina
-      </a>
-      
-      <a href="#" class="sf-nav-link sf-quick-add-link" id="quickAddTarefaBtn">
-        <span class="quick-add-icon"><i class="bi bi-plus-lg"></i></span>
-        Adicionar Tarefa/Prova
-      </a>
-      <a href="#" class="sf-nav-link sf-quick-add-link" id="quickAddAnotacaoBtn" data-bs-toggle="modal" data-bs-target="#modalAnotacao">
-        <span class="quick-add-icon"><i class="bi bi-plus-lg"></i></span>
-        Adicionar Anotação
-      </a>
+    <aside id="sidebar" class="offcanvas-lg offcanvas-start" tabindex="-1">
+        <div class="brand-text"></div>
+        <nav class="nav flex-column">
+            <div class="sf-sidebar-section">Botões Rápidos</div>
+            <a href="#" class="sf-nav-link sf-quick-add-link" id="quickAddDisciplinaBtn"> <span class="quick-add-icon"><i class="bi bi-plus-lg"></i></span> Adicionar Disciplina </a>
+            <a href="#" class="sf-nav-link sf-quick-add-link" id="quickAddTarefaBtn"> <span class="quick-add-icon"><i class="bi bi-plus-lg"></i></span> Adicionar Tarefa/Prova </a>
+            <a href="#" class="sf-nav-link sf-quick-add-link" id="quickAddAnotacaoBtn"> <span class="quick-add-icon"><i class="bi bi-plus-lg"></i></span> Adicionar Anotação </a>
+            <div class="sf-sidebar-section">Acadêmico</div>
+            <a href="./principal.html" class="sf-nav-link active">Dashboard</a>
+            <a class="sf-nav-link" href="./tarefas.html">Tarefas e Provas</a>
+            <a class="sf-nav-link" href="./disciplinas.html">Disciplinas Matriculadas</a>
+            <a class="sf-nav-link" href="./calendario.html">Calendário</a>
+            <a class="sf-nav-link" href="./anotacao.html">Anotações</a>
+        </nav>
+    </aside>
 
-      <div class="sf-sidebar-section">Acadêmico</div>
-      <a href="./principal.html" class="sf-nav-link active">Dashboard</a> <a class="sf-nav-link" href="./tarefas.html">Tarefas e Provas</a>
-      <a class="sf-nav-link" href="./disciplinas.html">Disciplinas Matriculadas</a> <a class="sf-nav-link" href="./calendario.html">Calendário</a>
-      <a class="sf-nav-link" href="./anotacao.html">Anotações</a>
-    </nav>
-  </aside>
+    <div class="sf-main">
+        <header class="sf-header position-relative">
+            <button class="btn-menu me-auto d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-label="Abrir menu"> <i class="bi bi-list"></i> </button>
+            <div class="sf-header-brand"> <img src="../imgs/logo.png" alt="Logo"><span>StudyFlow</span> </div>
+            <div class="dropdown">
+                <button class="btn btn-sm btn-icon-only" id="userMenuBtn" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Menu do usuário"> <img src="../imgs/avatar.png" class="rounded-circle" style="width:40px;height:40px" alt="Avatar do usuário"> </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuBtn">
+                    <li><a class="dropdown-item" href="./configuracoes.html"><i class="bi bi-gear me-2"></i>Configurações</a></li>
+                    <li><a class="dropdown-item" href="./notificacoes.html"><i class="bi bi-bell me-2"></i>Notificações</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item text-danger" href="./login.html"><i class="bi bi-box-arrow-right me-2"></i>Sair</a></li>
+                </ul>
+            </div>
+        </header>
 
-  <div class="sf-main">
-    <header class="sf-header position-relative">
-      <button class="btn-menu me-auto d-lg-none"
-              data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-label="Abrir menu">
-        <i class="bi bi-list"></i>
-      </button>
-
-      <div class="sf-header-brand">
-        <img src="../imgs/logo.png" alt="Logo"><span>StudyFlow</span>
-      </div>
-
-      <div class="dropdown">
-        <button
-          class="btn btn-sm btn-icon-only"
-          id="userMenuBtn"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-          aria-label="Menu do usuário">
-          <img src="../imgs/avatar.png"
-               class="rounded-circle"
-               style="width:40px;height:40px"
-               alt="Avatar do usuário">
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuBtn">
-          <li>
-            <a class="dropdown-item" href="./configuracoes.html">
-              <i class="bi bi-gear me-2"></i>Configurações de Usuário
-            </a>
-          </li>
-          <li>
-            <a class="dropdown-item" href="./notificacoes.html">
-              <i class="bi bi-bell me-2"></i>Notificações
-            </a>
-          </li>
-          <li><hr class="dropdown-divider"></li>
-          <li>
-            <a class="dropdown-item text-danger" href="./login.html">
-              <i class="bi bi-box-arrow-right me-2"></i>Sair
-            </a>
-          </li>
-        </ul>
-      </div>
-    </header>
-
-    <main class="sf-content container-fluid">
-      <div class="row g-4 mb-4">
-        <div class="col-lg-9">
-          <div class="hero-card d-flex flex-column flex-md-row align-items-md-center justify-content-between h-100">
-            <div class="pe-md-4">
-              <p class="hero-title mb-1">👋 Bem-vindo, Jonathan!</p>
-              <h2 class="hero-subtitle mb-3">Sua jornada de estudos personalizada!</h2>
-              <p class="mb-0">Organize tarefas, receba notificações importantes e acompanhe prazos em um só lugar.</p>
-            </div>
-            <div class="mt-4 mt-md-0" style="max-width:220px">
-              </div>
-          </div>
-        </div>
-        <div class="col-12 col-md-6 col-lg-3">
-          <div class="calendar-widget bg-white shadow-sm rounded-3 p-3">
-            <iframe
-              src="https://calendar.google.com/calendar/embed?src=SEU_CALENDAR_ID%40group.calendar.google.com&amp;ctz=America%2FSao_Paulo"
-              style="border:0" frameborder="0" scrolling="no">
-            </iframe>
-          </div>
-        </div>
-      </div>
-
-      <div class="row g-4 mb-5">
-        <div class="col-lg-9">
-          <section class="disciplines-carousel-section mb-4">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <h6 class="fw-semibold m-0">Disciplinas Matriculadas</h6>
-              <div class="carousel-nav">
-                <button id="prevCoursesBtn" class="btn btn-outline-secondary btn-sm me-1" aria-label="Disciplina anterior">
-                  <i class="bi bi-arrow-left"></i>
-                </button>
-                <button id="nextCoursesBtn" class="btn btn-outline-secondary btn-sm" aria-label="Próxima disciplina">
-                  <i class="bi bi-arrow-right"></i>
-                </button>
-              </div>
-            </div>
-            <div class="courses-carousel-wrapper">
-              <div id="coursesContainer" class="courses-carousel"> <div class="course-card course-1">
-                  <strong>Fundamentos Gráficos – ART101</strong>
-                  <span>Prof. Jango / Seg & Sex / 19h00–21h50</span>
-                </div>
-                <div class="course-card course-2">
-                  <strong>Web Design Avançado – ITD201</strong>
-                  <span>Prof. João Paulo / Terça / 19h00–21h50</span>
-                </div>
-                <div class="course-card course-3">
-                  <strong>Pesquisa de UX – UXD301</strong>
-                  <span>Prof. Jason / Quarta / 19h00–21h50</span>
-                </div>
-                <div class="course-card course-4">
-                  <strong>Téc. de Animação 3D – ANI301</strong>
-                  <span>Prof. Pryzado / Quinta / 19h00–21h50</span>
-                </div>
-                <div class="course-card course-1">
-                  <strong>Design Responsivo – ITD202</strong>
-                  <span>Prof. Silva / Segunda / 18h00–20h50</span>
-                </div>
-                <div class="course-card course-2">
-                  <strong>Banco de Dados – BDD101</strong>
-                  <span>Prof. Santos / Sexta / 14h00–16h50</span>
-                </div>
-                <div class="course-card course-3">
-                  <strong>Eng. de Software – ESW301</strong>
-                  <span>Prof. Almeida / Quarta / 10h00–12h50</span>
-                </div>
-                <div class="course-card course-4">
-                  <strong>Inteligência Artificial – AI401</strong>
-                  <span>Prof. Costa / Terça / 08h00–10h50</span>
-                </div>
-                <div class="course-card course-1">
-                  <strong>Algoritmos Avançados – ALG500</strong>
-                  <span>Prof. Turing / Seg / 08h00–10h50</span>
-                </div>
-                <div class="course-card course-2">
-                  <strong>Compiladores – CMP250</strong>
-                  <span>Prof. Aho / Sex / 19h00–21h50</span>
-                </div>
-                <div class="course-card course-3">
-                  <strong>Redes Neurais – RNA600</strong>
-                  <span>Prof. Hinton / Qua / 14h00–16h50</span>
-                </div>
-                <div class="course-card course-4">
-                  <strong>Segurança da Informação – SEG501</strong>
-                  <span>Prof. Mitnick / Qui / 10h00–12h50</span>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section>
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <h6 class="fw-semibold m-0">Plataforma de Provas</h6>
-              <a class="btn-link text-sm" href="./tarefas.html">Ver tudo</a>
-            </div>
-            <div class="table-responsive shadow-sm exam-table">
-              <table class="table table-hover align-middle mb-0 bg-white border rounded-3">
-                <thead class="table-light">
-                  <tr>
-                    <th>Prova</th>
-                    <th>Data</th>
-                    <th>Horário</th>
-                    <th>Local</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr> <td>Fund. de Design Gráfico</td>
-                    <td>25 Jan 2025</td>
-                    <td>19h30</td>
-                    <td>Design Studio A</td>
-                    <td><span class="badge bg-success-subtle text-success">Concluída</span></td>
-                  </tr>
-                  <tr>
-                    <td>Ilustração Digital</td>
-                    <td>05 Fev 2025</td>
-                    <td>20h00</td>
-                    <td>Laboratório 2</td>
-                    <td><span class="badge bg-success-subtle text-success">Concluída</span></td>
-                  </tr>
-                  <tr>
-                    <td>Princípios de UX/UI Design</td>
-                    <td>10 Mar 2025</td>
-                    <td>19h25</td>
-                    <td>Design Lab 1</td>
-                    <td><span class="badge bg-info-subtle text-info">Agendada</span></td>
-                  </tr>
-                  <tr>
-                    <td>Redação História do Design</td>
-                    <td>12 Abr 2025</td>
-                    <td>09h00</td>
-                    <td>Sala de Aula B</td>
-                    <td><span class="badge bg-info-subtle text-info">Agendada</span></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </section>
-        </div>
-
-        <div class="col-lg-3">
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <h6 class="fw-semibold m-0">Tarefas</h6>
-            <a class="btn-link text-sm" href="./tarefas.html">Ver tudo</a>
-          </div>
-          <div class="vstack gap-3">
-            <div class="task-item border-start border-warning-subtle">
-              <div class="d-flex justify-content-between">
-                <strong class="text-sm">Fundamentos Gráficos</strong>
-                <span class="badge bg-warning-subtle text-warning task-status">Em andamento</span>
-              </div>
-              <small>Projeto: Design 1</small>
-              <small>Entrega: 10 Fev 2025</small>
-            </div>
-            <div class="task-item border-start border-success-subtle">
-              <div class="d-flex justify-content-between">
-                <strong class="text-sm">Web Design Avançado</strong>
-                <span class="badge bg-success-subtle text-success task-status">Completo</span>
-              </div>
-              <small>Projeto: Website Responsivo</small>
-              <small>Entrega: 05 Mar 2025</small>
-            </div>
-            <div class="task-item border-start border-secondary-subtle">
-              <div class="d-flex justify-content-between">
-                <strong class="text-sm">Pesquisa de UX</strong>
-                <span class="badge bg-light text-dark border task-status">Em revisão</span>
-              </div>
-              <small>Relatório de Teste com Usuário</small>
-              <small>Entrega: 15 Abr 2025</small>
-            </div>
-            <div class="task-item border-start border-danger-subtle">
-              <div class="d-flex justify-content-between">
-                <strong class="text-sm">Animação 3D</strong>
-                <span class="badge bg-danger-subtle text-danger task-status">Atrasada</span>
-              </div>
-              <small>Projeto: Personagem 3D</small>
-              <small>Entrega: 20 Mai 2025</small>
-            </div>
-          </div>
-        </div>
-      </div>
-    </main>
-  </div>
-
-  <dialog id="modalDisciplina">
-      <form id="formDisciplina" method="dialog" novalidate>
-        <div class="modal-header-custom modal-header-studyflow">
-            <div class="modal-title-wrapper">
-                <img src="../imgs/logo.png" class="modal-logo-icon" alt="StudyFlow Logo">
-                <h5 class="modal-title-custom" id="modalDisciplinaLabel">Adicionar Disciplina</h5>
-            </div>
-            <button type="button" class="btn-close-custom" id="fecharModalDisciplina" aria-label="Fechar"></button>
-        </div>
-        <div class="modal-body-custom">
-            <div class="mb-3">
-                <label for="disciplinaNome" class="form-label">Nome da Disciplina</label>
-                <input type="text" class="form-control" id="disciplinaNome" required>
-                <div class="invalid-feedback"></div>
-            </div>
-            <div class="mb-3">
-                <label for="disciplinaProfessor" class="form-label">Professor</label>
-                <input type="text" class="form-control" id="disciplinaProfessor">
-                <div class="invalid-feedback"></div>
-            </div>
-            <div class="mb-3">
-                <label for="disciplinaDescricao" class="form-label">Descrição (Opcional)</label>
-                <textarea class="form-control" id="disciplinaDescricao" rows="3" placeholder="Ex: Ementa da disciplina, objetivos..."></textarea>
-                <div class="invalid-feedback"></div>
-            </div>
-            <div class="mb-3">
-                <label for="disciplinaPeriodo" class="form-label">Período</label>
-                <select class="form-select" id="disciplinaPeriodo" required>
-                    <option value="" disabled selected>Selecione o período...</option>
-                    <option value="2024.1">2024.1</option>
-                    <option value="2024.2">2024.2</option>
-                    <option value="2025.1">2025.1</option>
-                    <option value="2025.2">2025.2</option>
-                </select>
-                <div class="invalid-feedback"></div>
-            </div>
-            <div class="mb-3">
-                <label for="disciplinaStatus" class="form-label">Status</label>
-                <select class="form-select" id="disciplinaStatus" required>
-                    <option value="Ativa" selected>Ativa</option>
-                    <option value="Concluída">Concluída</option>
-                    <option value="Em Andamento">Em Andamento</option>
-                    <option value="Agendada">Agendada</option> </select>
-                <div class="invalid-feedback"></div>
-            </div>
-            <div class="mb-3">
-                <label for="disciplinaDias" class="form-label">Dias da Semana (ex: Seg, Qua, Sex)</label>
-                <input type="text" class="form-control" id="disciplinaDias" required>
-                <div class="invalid-feedback"></div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-sm-6">
-                    <label for="disciplinaHorarioInicio" class="form-label">Horário de Início</label>
-                    <input type="time" class="form-control" id="disciplinaHorarioInicio" required>
-                    <div class="invalid-feedback"></div>
-                </div>
-                <div class="col-sm-6">
-                    <label for="disciplinaHorarioFim" class="form-label">Horário de Fim</label>
-                    <input type="time" class="form-control" id="disciplinaHorarioFim" required>
-                    <div class="invalid-feedback"></div>
-                </div>
-            </div>
-            <div class="mb-3">
-                <label for="disciplinaLocal" class="form-label">Local</label>
-                <input type="text" class="form-control" id="disciplinaLocal" required>
-                <div class="invalid-feedback"></div>
-            </div>
-            <input type="hidden" id="disciplinaId">
-            <input type="hidden" id="disciplinaDataCriacao"> 
-        </div>
-        <div class="modal-footer-custom modal-footer-studyflow">
-            <button type="button" class="btn btn-modal-cancel" id="cancelarModalDisciplina">Cancelar</button>
-            <button type="submit" class="btn btn-modal-save">Salvar Disciplina</button>
-        </div>
-      </form>
-  </dialog>
-
-  <dialog id="modalTarefa">
-      <form id="formTarefa" novalidate>
-        <div class="modal-header-custom modal-header-studyflow">
-            <div class="modal-title-wrapper">
-                <img src="../imgs/logo.png" class="modal-logo-icon" alt="StudyFlow Logo">
-                <h5 class="modal-title-custom" id="modalTarefaLabel">Adicionar Tarefa</h5>
-            </div>
-            <button type="button" class="btn-close-custom" id="fecharModalTarefa" aria-label="Fechar"></button>
-        </div>
-        <div class="modal-body-custom">
-            <div class="mb-3">
-                <label for="tarefaTitulo" class="form-label">Título da Tarefa</label>
-                <input type="text" class="form-control" id="tarefaTitulo" placeholder="Ex: Prova de Matemática, Trabalho de POO" required>
-            </div>
-            <div class="mb-3">
-                <label for="tarefaDisciplina" class="form-label">Disciplina (Opcional)</label>
-                <select class="form-select" id="tarefaDisciplina">
-                    <option value="">Selecione a disciplina...</option>
-                    </select>
-            </div>
-            <div class="mb-3">
-                <label for="tarefaTipo" class="form-label">Tipo de Tarefa</label>
-                <select class="form-select" id="tarefaTipo" required>
-                    <option value="" selected disabled>Selecione o tipo...</option>
-                    <option value="Tarefa">Tarefa</option>
-                    <option value="Prova">Prova</option>
-                </select>
-            </div>
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="tarefaDataEntrega" class="form-label">Data de Entrega</label>
-                    <input type="date" class="form-control" id="tarefaDataEntrega" required>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label for="tarefaHorarioEntrega" class="form-label">Horário de Entrega (Opcional)</label>
-                    <input type="time" class="form-control" id="tarefaHorarioEntrega">
-                </div>
-            </div>
-            <div class="mb-3">
-                <label for="tarefaStatus" class="form-label">Status</label>
-                <select class="form-select" id="tarefaStatus" required>
-                    <option value="A Fazer" selected>A Fazer</option>
-                    <option value="Em Andamento">Em Andamento</option>
-                    <option value="Concluída">Concluída</option>
-                    <option value="Atrasada">Atrasada</option>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label for="tarefaDescricao" class="form-label">Descrição (Opcional)</label>
-                <textarea class="form-control" id="tarefaDescricao" rows="3" placeholder="Detalhes da tarefa, requisitos, etc."></textarea>
-            </div>
-            </div>
-        <div class="modal-footer-custom modal-footer-studyflow">
-            <button type="button" class="btn btn-modal-cancel" id="cancelarModalTarefa">Cancelar</button>
-            <button type="submit" class="btn btn-modal-save">Salvar</button>
-        </div>
-      </form>
-  </dialog>
-
-  <div class="modal fade" id="modalAnotacao" tabindex="-1" aria-labelledby="modalAnotacaoLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header-custom modal-header-studyflow">
-                <div class="modal-title-wrapper">
-                    <img src="../imgs/logo.png" class="modal-logo-icon" alt="StudyFlow Logo">
-                    <h5 class="modal-title-custom" id="modalAnotacaoLabelTitulo">Nova Anotação</h5>
-                </div>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
-            </div>
-            <div class="modal-body modal-body-custom modal-anotacao-body">
-                <div class="note-editor-modal-content-simplified w-100">
-                    <p class="text-muted mb-3" id="modalAnotacaoEditInfo" style="font-size: 0.9rem;">Nova anotação</p>
-                    
-                    <div class="mb-3">
-                        <label for="anotacaoTituloInput" class="form-label visually-hidden">Título da Anotação</label>
-                        <input type="text" class="form-control form-control-lg modal-anotacao-title-input" id="anotacaoTituloInput" placeholder="Título da Anotação">
-                        <div class="invalid-feedback"></div>
+        <main class="sf-content container-fluid">
+            <div class="row g-4 mb-4">
+                <div class="col-lg-9">
+                    <div class="hero-card d-flex flex-column flex-md-row align-items-md-center justify-content-between h-100">
+                        <div class="pe-md-4">
+                            <p class="hero-title mb-1">👋 Bem-vindo, Jonathan!</p>
+                            <h2 class="hero-subtitle mb-3">Sua jornada de estudos personalizada!</h2>
+                            <p class="mb-0">Organize tarefas, receba notificações importantes e acompanhe prazos em um só lugar.</p>
+                        </div>
+                        <div class="mt-4 mt-md-0" style="max-width:220px">
+                            </div>
                     </div>
-
-                    <div class="modal-anotacao-properties-section">
-                        <div class="modal-property-item">
-                            <span class="modal-property-icon"><i class="bi bi-journal-bookmark-fill"></i></span>
-                            <label for="anotacaoDisciplinaInput" class="modal-property-label">Disciplina</label>
-                            <input type="text" class="form-control form-control-sm modal-property-input" id="anotacaoDisciplinaInput" placeholder="Nenhuma">
-                        </div>
-                        <div class="modal-property-item">
-                            <span class="modal-property-icon"><i class="bi bi-card-checklist"></i></span>
-                            <label for="anotacaoAtividadeInput" class="modal-property-label">Atividade</label>
-                            <input type="text" class="form-control form-control-sm modal-property-input" id="anotacaoAtividadeInput" placeholder="Nenhuma">
-                        </div>
-                        <div class="property-item" style="display:none;">
-                            <span class="property-icon"><i class="bi bi-clock"></i></span>
-                            <span class="property-label">Criado em</span>
-                            <span class="property-value-static" id="anotacaoCriadoEm"></span>
-                        </div>
-                        <div class="property-item" style="display:none;">
-                            <span class="property-icon"><i class="bi bi-clock-history"></i></span>
-                            <span class="property-label">Última edição</span>
-                            <span class="property-value-static" id="anotacaoUltimaEdicao"></span>
-                        </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="calendar-widget bg-white shadow-sm rounded-3 p-3">
+                        <iframe
+                            src="https://calendar.google.com/calendar/embed?src=SEU_CALENDAR_ID%40group.calendar.google.com&amp;ctz=America%2FSao_Paulo"
+                            style="border:0; width: 100%; height: 100%;"
+                            frameborder="0"
+                            scrolling="no">
+                        </iframe>
                     </div>
-                    
-                    <hr class="my-3">
-
-                    <div class="mb-3">
-                        <label for="anotacaoConteudoInput" class="form-label">Conteúdo da Anotação</label>
-                        <textarea class="form-control" id="anotacaoConteudoInput" rows="10" placeholder="Digite sua anotação aqui..."></textarea>
-                    </div>
-
                 </div>
             </div>
-            <div class="modal-footer-custom modal-footer-studyflow">
-                <input type="hidden" id="anotacaoIdInput">
-                <button type="button" class="btn btn-modal-cancel" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-modal-save" id="salvarAnotacaoBtn">Salvar Anotação</button>
+
+            <div class="row g-4 mb-5">
+                <div class="col-lg-9">
+                    <section class="disciplines-carousel-section mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="fw-semibold m-0">Disciplinas Matriculadas</h6>
+                            <div class="carousel-nav">
+                                <button id="prevCoursesBtn" class="btn btn-outline-secondary btn-sm me-1" aria-label="Disciplina anterior"> <i class="bi bi-arrow-left"></i> </button>
+                                <button id="nextCoursesBtn" class="btn btn-outline-secondary btn-sm" aria-label="Próxima disciplina"> <i class="bi bi-arrow-right"></i> </button>
+                            </div>
+                        </div>
+                        <div class="courses-carousel-wrapper">
+                            <div id="coursesContainer" class="courses-carousel">
+                                <div class="course-card course-1"><strong>Fundamentos Gráficos – ART101</strong><span>Prof. Jango / Seg & Sex / 19h00–21h50</span></div>
+                                <div class="course-card course-2"><strong>Web Design Avançado – ITD201</strong><span>Prof. João Paulo / Terça / 19h00–21h50</span></div>
+                                <div class="course-card course-3"><strong>Pesquisa de UX – UXD301</strong><span>Prof. Jason / Quarta / 19h00–21h50</span></div>
+                                <div class="course-card course-4"><strong>Téc. de Animação 3D – ANI301</strong><span>Prof. Pryzado / Quinta / 19h00–21h50</span></div>
+                                <div class="course-card course-1"><strong>Design Responsivo – ITD202</strong><span>Prof. Silva / Segunda / 18h00–20h50</span></div>
+                                <div class="course-card course-2"><strong>Banco de Dados – BDD101</strong><span>Prof. Santos / Sexta / 14h00–16h50</span></div>
+                                <div class="course-card course-3"><strong>Eng. de Software – ESW301</strong><span>Prof. Almeida / Quarta / 10h00–12h50</span></div>
+                                <div class="course-card course-4"><strong>Inteligência Artificial – AI401</strong><span>Prof. Costa / Terça / 08h00–10h50</span></div>
+                                <div class="course-card course-1"><strong>Algoritmos Avançados – ALG500</strong><span>Prof. Turing / Seg / 08h00–10h50</span></div>
+                                <div class="course-card course-2"><strong>Compiladores – CMP250</strong><span>Prof. Aho / Sex / 19h00–21h50</span></div>
+                                <div class="course-card course-3"><strong>Redes Neurais – RNA600</strong><span>Prof. Hinton / Qua / 14h00–16h50</span></div>
+                                <div class="course-card course-4"><strong>Segurança da Informação – SEG501</strong><span>Prof. Mitnick / Qui / 10h00–12h50</span></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="fw-semibold m-0">Plataforma de Provas</h6>
+                            <a class="btn-link text-sm" href="./tarefas.html">Ver tudo</a>
+                        </div>
+                        <div class="table-responsive shadow-sm exam-table">
+                            <table class="table table-hover align-middle mb-0 bg-white border rounded-3">
+                                <thead class="table-light">
+                                    <tr><th>Prova</th><th>Data</th><th>Horário</th><th>Local</th><th>Status</th></tr>
+                                </thead>
+                                <tbody id="tabelaProvasDashboard">
+                                    <tr data-prova-id="P001" class="clicavel-prova" style="cursor:pointer;"> <td>Fund. de Design Gráfico</td><td>25 Jan 2025</td><td>19h30</td><td>Design Studio A</td><td><span class="badge bg-success-subtle text-success">Concluída</span></td></tr>
+                                    <tr data-prova-id="P002" class="clicavel-prova" style="cursor:pointer;"><td>Ilustração Digital</td><td>05 Fev 2025</td><td>20h00</td><td>Laboratório 2</td><td><span class="badge bg-success-subtle text-success">Concluída</span></td></tr>
+                                    <tr data-prova-id="P003" class="clicavel-prova" style="cursor:pointer;"><td>Princípios de UX/UI Design</td><td>10 Mar 2025</td><td>19h25</td><td>Design Lab 1</td><td><span class="badge bg-info-subtle text-info">Agendada</span></td></tr>
+                                    <tr data-prova-id="P004" class="clicavel-prova" style="cursor:pointer;"><td>Redação História do Design</td><td>12 Abr 2025</td><td>09h00</td><td>Sala de Aula B</td><td><span class="badge bg-info-subtle text-info">Agendada</span></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="fw-semibold m-0">Tarefas</h6>
+                        <a class="btn-link text-sm" href="./tarefas.html">Ver tudo</a>
+                    </div>
+                    <div class="vstack gap-3" id="listaTarefasDashboard">
+                        </div>
+                </div>
             </div>
-        </div>
+        </main>
     </div>
-  </div>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script> 
-  <script src="../Scripts/anotacao.js" defer></script> </body>
+
+    <dialog id="modalDisciplinaPlaceholder"></dialog> 
+    <div class="modal fade" id="modalAnotacaoPlaceholder" tabindex="-1"></div>
+
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script src="../Scripts/geral.js" defer></script>
+    <script src="../Scripts/principal.js" defer></script>
+</body>
 </html>
