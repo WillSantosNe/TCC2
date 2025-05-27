@@ -69,7 +69,7 @@
                             <th class="dtr-control" data-priority="1"></th>
                             <th>Título da Anotação</th>
                             <th data-priority="2">Disciplina</th>
-                            <th data-priority="3">Atividade Vinculada</th>
+                            <th data-priority="3">Atividade</th>
                             <th>Data de Criação</th>
                             <th data-priority="4">Última Modificação</th>
                             <th data-priority="5" class="no-sort dt-actions-column text-center">Ações</th>
@@ -97,8 +97,18 @@
                             <div class="invalid-feedback"></div>
                         </div>
                         <div class="modal-anotacao-properties-section">
-                            <div class="modal-property-item"> <span class="modal-property-icon"><i class="bi bi-journal-bookmark-fill"></i></span> <label for="anotacaoDisciplinaInput" class="modal-property-label">Disciplina</label> <input type="text" class="form-control form-control-sm modal-property-input" id="anotacaoDisciplinaInput" placeholder="Nenhuma"> </div>
-                            <div class="modal-property-item"> <span class="modal-property-icon"><i class="bi bi-card-checklist"></i></span> <label for="anotacaoAtividadeInput" class="modal-property-label">Atividade</label> <input type="text" class="form-control form-control-sm modal-property-input" id="anotacaoAtividadeInput" placeholder="Nenhuma"> </div>
+                            <div class="modal-property-item">
+                                <span class="modal-property-icon"><i class="bi bi-journal-bookmark-fill"></i></span>
+                                <label for="anotacaoDisciplinaSelect" class="modal-property-label">Disciplina</label>
+                                <select class="form-select form-select-sm modal-property-input" id="anotacaoDisciplinaSelect">
+                                    </select>
+                            </div>
+                            <div class="modal-property-item">
+                                <span class="modal-property-icon"><i class="bi bi-card-checklist"></i></span>
+                                <label for="anotacaoAtividadeSelect" class="modal-property-label">Atividade</label>
+                                <select class="form-select form-select-sm modal-property-input" id="anotacaoAtividadeSelect">
+                                    </select>
+                            </div>
                         </div>
                         <hr class="my-3">
                         <div class="mb-3">
@@ -130,7 +140,7 @@
                         <div class="row gx-5">
                             <div class="col-md-12">
                                 <p><strong><i class="bi bi-journal-bookmark-fill me-2"></i>Disciplina:</strong> <span id="visualizarAnotacaoDisciplina"></span></p>
-                                <p><strong><i class="bi bi-card-checklist me-2"></i>Atividade Vinculada:</strong> <span id="visualizarAnotacaoAtividade"></span></p>
+                                <p><strong><i class="bi bi-card-checklist me-2"></i>Atividade:</strong> <span id="visualizarAnotacaoAtividade"></span></p>
                             </div>
                         </div>
                     </div>
@@ -142,9 +152,9 @@
         </div>
     </div>
 
-    <dialog id="modalDisciplina"> </dialog>
-    <dialog id="modalTarefa"> </dialog>
-    <dialog id="modalDetalhesTarefa"> </dialog>
+    <dialog id="modalDisciplina"></dialog>
+    <dialog id="modalTarefa"></dialog>
+    <dialog id="modalDetalhesTarefa"></dialog>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
