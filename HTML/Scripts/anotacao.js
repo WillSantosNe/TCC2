@@ -124,7 +124,7 @@ document.addEventListener("DOMContentLoaded", function () {
             initialEditorContent = dadosAnotacao.conteudo || '';
         } else {
             if (modalAnotacaoLabelTituloElem) modalAnotacaoLabelTituloElem.textContent = "Nova Anotação";
-            if (modalAnotacaoEditInfoElem) modalAnotacaoEditInfoElem.textContent = 'Criando nova anotação';
+            if (modalAnotacaoEditInfoElem) modalAnotacaoEditInfoElem.textContent = 'Nova anotação';
             if (anotacaoTituloInputElem) anotacaoTituloInputElem.value = '';
             if (anotacaoDisciplinaSelectElem) anotacaoDisciplinaSelectElem.value = "Nenhuma";
             initialEditorContent = '';

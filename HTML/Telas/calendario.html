@@ -11,11 +11,10 @@
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet">
 
     <link rel="stylesheet" href="../Css/geral.css">
-    <link rel="stylesheet" href="../Css/tela_principal.css">
+    <link rel="stylesheet" href="../Css/tela_principal.css"> 
     <link rel="stylesheet" href="../Css/modais-adicao.css"> 
     <link rel="stylesheet" href="../Css/calendario.css">
-
-    <script src="../Scripts/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
+    <link rel="stylesheet" href="../Css/modal-configuracoes.css"> <script src="../Scripts/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
 <body class="auth-body dashboard-body">
 
@@ -42,8 +41,8 @@
             <div class="dropdown">
                 <button class="btn btn-sm btn-icon-only" id="userMenuBtn" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Menu do usuário"> <img src="../imgs/avatar.png" class="rounded-circle" style="width:40px;height:40px" alt="Avatar do usuário"> </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuBtn">
-                    <li><a class="dropdown-item" href="./configuracoes.html"><i class="bi bi-gear me-2"></i>Configurações</a></li>
-                    <li><a class="dropdown-item" href="./notificacoes.html"><i class="bi bi-bell me-2"></i>Notificações</a></li>
+                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#cModalConfig" data-modal-section="configuracoes"><i class="bi bi-gear me-2"></i>Configurações</a></li>
+                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#cModalConfig" data-modal-section="notificacoes"><i class="bi bi-bell me-2"></i>Notificações</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item text-danger" href="./login.html"><i class="bi bi-box-arrow-right me-2"></i>Sair</a></li>
                 </ul>
@@ -55,10 +54,10 @@
         </main>
     </div>
 
-    <div class="modal fade" id="modalAnotacaoCalendario" tabindex="-1" aria-labelledby="modalAnotacaoCalendarioLabel" aria-hidden="true">
+    <div class="modal fade" id="modalAnotacaoCalendario" tabindex="-1" aria-labelledby="modalAnotacaoCalendarioLabelTitulo" aria-hidden="true">
         <div class="modal-dialog modal-lg"> 
             <div class="modal-content"> 
-                <form id="formAnotacaoCalendario">
+                <form id="formAnotacaoCalendario" novalidate>
                     <div class="modal-header-custom modal-header-studyflow">
                         <div class="modal-title-wrapper">
                             <img src="../imgs/logo.png" class="modal-logo-icon" alt="StudyFlow Logo">
@@ -71,7 +70,7 @@
                             <p class="text-muted mb-3 modal-edit-info" id="modalAnotacaoCalEditInfo">Nova anotação</p>
                             <div class="mb-3"> 
                                 <input type="text" class="form-control form-control-lg modal-anotacao-title-input" id="anotacaoCalTituloInput" placeholder="Título da Anotação" required>
-                                <div class="invalid-feedback"></div>
+                                <div class="invalid-feedback">Título da anotação é obrigatório.</div>
                             </div>
                             <div class="modal-anotacao-properties-section">
                                 <div class="modal-property-item">
@@ -79,7 +78,7 @@
                                     <label for="anotacaoCalDisciplinaSelect" class="modal-property-label">Disciplina</label>
                                     <div class="input-wrapper">
                                         <select class="form-select form-select-sm modal-property-input" id="anotacaoCalDisciplinaSelect">
-                                            </select>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="modal-property-item">
@@ -87,7 +86,7 @@
                                     <label for="anotacaoCalAtividadeSelect" class="modal-property-label">Atividade</label>
                                     <div class="input-wrapper">
                                         <select class="form-select form-select-sm modal-property-input" id="anotacaoCalAtividadeSelect">
-                                            </select>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -99,7 +98,8 @@
                         </div>
                     </div>
                     <div class="modal-footer-custom modal-footer-studyflow"> 
-                        <input type="hidden" id="anotacaoCalIdInput"> <button type="button" class="btn btn-modal-cancel" data-bs-dismiss="modal">Cancelar</button>
+                        <input type="hidden" id="anotacaoCalIdInput">
+                        <button type="button" class="btn btn-modal-cancel" data-bs-dismiss="modal">Cancelar</button>
                         <button type="submit" class="btn btn-modal-save" id="salvarAnotacaoCalBtn">Salvar Anotação</button>
                     </div>
                 </form>
@@ -110,7 +110,7 @@
     <div class="modal fade" id="modalDisciplinaAdicaoCalendario" tabindex="-1" aria-labelledby="modalDisciplinaAdicaoCalendarioLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <form id="formDisciplinaAdicaoCalendario">
+                <form id="formDisciplinaAdicaoCalendario" novalidate>
                     <div class="modal-header-custom modal-header-studyflow">
                         <div class="modal-title-wrapper">
                             <img src="../imgs/logo.png" class="modal-logo-icon" alt="StudyFlow Logo">
@@ -124,24 +124,50 @@
                             <label for="calDisciplinaNome" class="modal-property-label">Nome</label>
                             <div class="input-wrapper">
                                 <input type="text" class="form-control modal-property-input" id="calDisciplinaNome" required placeholder="Ex: Cálculo I">
-                                <div class="invalid-feedback">Nome obrigatório.</div>
-                            </div>
-                        </div>
-                        <div class="modal-property-item mb-3">
-                            <span class="modal-property-icon"><i class="bi bi-person-fill"></i></span>
-                            <label for="calDisciplinaProfessor" class="modal-property-label">Professor</label>
-                            <div class="input-wrapper">
-                                <input type="text" class="form-control modal-property-input" id="calDisciplinaProfessor" placeholder="Ex: Prof. Silva">
+                                <div class="invalid-feedback">Nome da disciplina é obrigatório.</div>
                             </div>
                         </div>
                         <div class="modal-property-item mb-3 align-items-start">
                             <span class="modal-property-icon"><i class="bi bi-file-earmark-text"></i></span>
                             <label for="calDisciplinaDescricao" class="modal-property-label">Descrição</label>
                             <div class="input-wrapper">
-                                <textarea class="form-control modal-property-input" id="calDisciplinaDescricao" rows="3" placeholder="Opcional"></textarea>
+                                <textarea class="form-control modal-property-input" id="calDisciplinaDescricao" rows="3" placeholder="Opcional: Ementa, objetivos..."></textarea>
                             </div>
                         </div>
-                         </div>
+                        <div class="modal-property-item mb-3">
+                            <span class="modal-property-icon"><i class="bi bi-person-fill"></i></span>
+                            <label for="calDisciplinaProfessor" class="modal-property-label">Professor</label>
+                            <div class="input-wrapper">
+                                <input type="text" class="form-control modal-property-input" id="calDisciplinaProfessor" placeholder="Ex: Prof. Silva (Opcional)">
+                            </div>
+                        </div>
+                        <div class="modal-property-item mb-3">
+                            <span class="modal-property-icon"><i class="bi bi-calendar-event"></i></span>
+                            <label for="calDisciplinaPeriodo" class="modal-property-label">Período</label>
+                            <div class="input-wrapper">
+                                <select class="form-select modal-property-input" id="calDisciplinaPeriodo" required>
+                                    <option value="" disabled selected>Selecione...</option>
+                                    <option value="2024.1">2024.1</option>
+                                    <option value="2024.2">2024.2</option>
+                                    <option value="2025.1">2025.1</option>
+                                    <option value="2025.2">2025.2</option>
+                                </select>
+                                <div class="invalid-feedback">Período é obrigatório.</div>
+                            </div>
+                        </div>
+                        <div class="modal-property-item mb-3">
+                            <span class="modal-property-icon"><i class="bi bi-check2-circle"></i></span>
+                            <label for="calDisciplinaStatus" class="modal-property-label">Status</label>
+                            <div class="input-wrapper">
+                                <select class="form-select modal-property-input" id="calDisciplinaStatus" required>
+                                    <option value="Ativa" selected>Ativa</option>
+                                    <option value="Em Andamento">Em Andamento</option>
+                                    <option value="Concluída">Concluída</option>
+                                </select>
+                                <div class="invalid-feedback">Status é obrigatório.</div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="modal-footer-custom modal-footer-studyflow">
                         <button type="button" class="btn btn-modal-cancel" data-bs-dismiss="modal">Cancelar</button>
                         <button type="submit" class="btn btn-modal-save">Salvar Disciplina</button>
@@ -154,7 +180,7 @@
     <div class="modal fade" id="modalTarefaAdicaoCalendario" tabindex="-1" aria-labelledby="modalTarefaAdicaoCalendarioLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <form id="formTarefaAdicaoCalendario">
+                <form id="formTarefaAdicaoCalendario" novalidate>
                     <div class="modal-header-custom modal-header-studyflow">
                         <div class="modal-title-wrapper">
                             <img src="../imgs/logo.png" class="modal-logo-icon" alt="StudyFlow Logo">
@@ -168,7 +194,14 @@
                             <label for="calTarefaTitulo" class="modal-property-label">Título</label>
                             <div class="input-wrapper">
                                 <input type="text" class="form-control modal-property-input" id="calTarefaTitulo" required placeholder="Ex: Prova Final">
-                                <div class="invalid-feedback">Título obrigatório.</div>
+                                <div class="invalid-feedback">Título é obrigatório.</div>
+                            </div>
+                        </div>
+                        <div class="modal-property-item mb-3 align-items-start"> 
+                            <span class="modal-property-icon"><i class="bi bi-file-text-fill"></i></span>
+                            <label for="calTarefaDescricao" class="modal-property-label">Descrição</label>
+                            <div class="input-wrapper">
+                                <textarea class="form-control modal-property-input" id="calTarefaDescricao" rows="3" placeholder="Detalhes da tarefa/prova... (Opcional)"></textarea>
                             </div>
                         </div>
                         <div class="modal-property-item mb-3">
@@ -176,7 +209,7 @@
                             <label for="calTarefaDataEntrega" class="modal-property-label">Data</label>
                             <div class="input-wrapper">
                                 <input type="date" class="form-control modal-property-input" id="calTarefaDataEntrega" required>
-                                <div class="invalid-feedback">Data é obrigatória.</div>
+                                <div class="invalid-feedback">Data de entrega é obrigatória.</div>
                             </div>
                         </div>
                         <div class="modal-property-item mb-3">
@@ -188,17 +221,10 @@
                                     <option value="Tarefa">Tarefa</option>
                                     <option value="Prova">Prova</option>
                                 </select>
-                                 <div class="invalid-feedback">Tipo é obrigatório.</div>
+                                <div class="invalid-feedback">Tipo é obrigatório.</div>
                             </div>
                         </div>
-                        <div class="modal-property-item mb-3 align-items-start">
-                            <span class="modal-property-icon"><i class="bi bi-file-text-fill"></i></span>
-                            <label for="calTarefaDescricao" class="modal-property-label">Descrição</label>
-                            <div class="input-wrapper">
-                                <textarea class="form-control modal-property-input" id="calTarefaDescricao" rows="3" placeholder="Opcional"></textarea>
-                            </div>
-                        </div>
-                        </div>
+                    </div>
                     <div class="modal-footer-custom modal-footer-studyflow">
                         <button type="button" class="btn btn-modal-cancel" data-bs-dismiss="modal">Cancelar</button>
                         <button type="submit" class="btn btn-modal-save">Salvar Tarefa</button>
@@ -216,11 +242,94 @@
             </div>
             <button type="button" class="btn-close-custom" id="fecharModalDetalhesEvento" aria-label="Fechar"></button>
         </div>
-        <div class="modal-body-custom" id="modalDetalhesEventoConteudo"></div>
+        <div class="modal-body-custom" id="modalDetalhesEventoConteudo">
+        </div>
         <div class="modal-footer-custom modal-footer-studyflow">
             <button type="button" class="btn btn-modal-ok" id="okModalDetalhesEvento">OK</button>
         </div>
     </dialog>
+
+    <div class="modal fade" id="cModalConfig" tabindex="-1" aria-labelledby="cModalConfigLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-custom-content">
+                    <div class="modal-sidebar">
+                        <img src="../imgs/logo.png" alt="Logo" class="img-fluid mb-3">
+                        <ul class="list-group list-group-flush w-100">
+                            <li class="list-group-item">
+                                <a href="#" class="list-group-item-action" data-section="trocar-senha">Trocar senha</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="#" class="list-group-item-action" data-section="trocar-foto">Trocar foto de perfil</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="#" class="list-group-item-action" data-section="notificacoes">Notificações</a>
+                            </li>
+                            <li class="list-group-item back-link">
+                                <a href="#" class="list-group-item-action" id="backLink" data-bs-dismiss="modal">Voltar</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="modal-main-content">
+                        <div id="modal-welcome-content" class="modal-section active">
+                            <h2>Bem-vindo às Configurações!</h2>
+                            <p>Aqui você pode gerenciar as opções da sua conta.</p>
+                            <p>Use o menu lateral para navegar ou clique em "Voltar" para fechar.</p>
+                        </div>
+                        <div id="modal-trocar-senha" class="modal-section">
+                            <h3>Trocar Senha</h3>
+                            <form>
+                                <div class="mb-3">
+                                    <label for="currentPassword" class="form-label">Senha Atual</label>
+                                    <input type="password" class="form-control" id="currentPassword" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="newPassword" class="form-label">Nova Senha</label>
+                                    <input type="password" class="form-control" id="newPassword" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="confirmNewPassword" class="form-label">Confirmar Nova Senha</label>
+                                    <input type="password" class="form-control" id="confirmNewPassword" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Salvar Nova Senha</button>
+                            </form>
+                        </div>
+                        <div id="modal-trocar-foto" class="modal-section">
+                            <h3>Trocar Foto de Perfil</h3>
+                            <div class="text-center mb-3">
+                                <img src="../imgs/avatar.png" class="rounded-circle mb-3" style="width:120px;height:120px;" alt="Foto de Perfil Atual">
+                                <input type="file" class="form-control" id="profilePictureInput" accept="image/*">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Salvar Foto</button>
+                        </div>
+                        <div id="modal-notificacoes" class="modal-section">
+                            <h3>Configurações de Notificações</h3>
+                            <form>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="emailNotificacoes" checked>
+                                    <label class="form-check-label" for="emailNotificacoes">Notificações por Email</label>
+                                </div>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="appNotificacoes" checked>
+                                    <label class="form-check-label" for="appNotificacoes">Notificações no Aplicativo</label>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="notificationFrequency" class="form-label">Frequência de Notificações</label>
+                                    <select class="form-select" id="notificationFrequency">
+                                        <option value="instant">Instantâneas</option>
+                                        <option value="daily">Diárias</option>
+                                        <option value="weekly">Semanais</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Salvar Configurações</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -228,5 +337,5 @@
     
     <script src="../Scripts/geral.js" defer></script>
     <script src="../Scripts/calendario.js" defer></script>
-</body>
+    <script src="../Scripts/modal-configuracoes.js" defer></script> </body>
 </html>

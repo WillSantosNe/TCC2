@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let viewDropdown;
     let calendarInstance;
 
-    // --- Dados Mockados para os Selects dos Modais (replicando de anotacao.js para este contexto) ---
+    // --- Dados Mockados para os Selects dos Modais ---
     const disciplinasFixasParaModais = ["Nenhuma", "Cálculo I", "Programação Orientada a Objetos", "Engenharia de Software", "TCC 1", "Outra"];
     const atividadesPorDisciplinaParaModais = {
         "Nenhuma": ["Nenhuma"],
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 },
                 events: fetchEvents,
                 dateClick: function (info) {
-                    const dataFormatada = new Date(info.dateStr + 'T00:00:00'); // Força UTC para evitar problemas de fuso na formatação
+                    const dataFormatada = new Date(info.dateStr + 'T00:00:00'); 
                     openEventModal({ 
                         date: dataFormatada.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric', timeZone: 'UTC' }), 
                         allDay: info.allDay, 
@@ -105,7 +105,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const modalLabel = modalAnotacaoCalendarioEl.querySelector('#modalAnotacaoCalendarioLabelTitulo');
         const salvarBtn = modalAnotacaoCalendarioEl.querySelector('#salvarAnotacaoCalBtn');
 
-
         function atualizarOpcoesAtividadeAnotacaoCalendario(disciplinaSelecionada, selectAtividadeEl, atividadePreSelecionada = "Nenhuma") {
             if (!selectAtividadeEl) return;
             const atividadesParaDisc = atividadesPorDisciplinaParaModais[disciplinaSelecionada] || atividadesPorDisciplinaParaModais["Nenhuma"] || atividadesPadraoParaModais;
@@ -113,16 +112,25 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         modalAnotacaoCalendarioEl.addEventListener('show.bs.modal', () => {
-            console.log("Modal Anotação (Calendário) show.bs.modal");
-            if (formAnotacao) formAnotacao.reset();
-            if (idInput) idInput.value = ''; // Limpa ID para nova anotação
-            if (tituloInput) tituloInput.classList.remove('is-invalid'); // Limpa validação anterior
-            if (modalLabel) modalLabel.textContent = 'Nova Anotação';
-            if (editInfo) editInfo.textContent = 'Criando nova anotação';
+            console.log("Modal Anotação (Calendário) show.bs.modal - INÍCIO");
+            if (formAnotacao) {
+                formAnotacao.reset(); // Reseta valores do formulário
+                formAnotacao.classList.remove('was-validated'); // Remove classe de validação do Bootstrap do formulário
+                // Limpa classes e mensagens de erro de todos os campos dentro do formulário
+                formAnotacao.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+                formAnotacao.querySelectorAll('.invalid-feedback').forEach(el => el.textContent = '');
+            }
             
-            popularSelect(disciplinaSelect, disciplinasFixasParaModais, "Nenhuma");
-            atualizarOpcoesAtividadeAnotacaoCalendario(disciplinaSelect.value, atividadeSelect); // Popula atividades para "Nenhuma"
+            if (idInput) idInput.value = ''; 
+            if (modalLabel) modalLabel.textContent = 'Nova Anotação';
+            if (editInfo) editInfo.textContent = 'Nova anotação';
+            if (tituloInput) tituloInput.value = ""; // Garante que o valor do título seja explicitamente limpo
 
+            popularSelect(disciplinaSelect, disciplinasFixasParaModais, "Nenhuma");
+            if (disciplinaSelect && atividadeSelect) { // Garante que ambos existem
+                atualizarOpcoesAtividadeAnotacaoCalendario(disciplinaSelect.value, atividadeSelect);
+            }
+            
             if (conteudoInput && typeof tinymce !== 'undefined') {
                 const editorId = conteudoInput.id;
                 const existingEditor = tinymce.get(editorId);
@@ -144,7 +152,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     statusbar: false, 
                     setup: function(editor) {
                         editor.on('init', function() { editor.setContent(''); });
-                        editor.on('OpenWindow', function(e) { if (typeof $ !=='undefined' && $('.tox-dialog-wrap').length && $('.modal.show').length){$('.tox-dialog-wrap').css('z-index',parseInt($('.modal.show').css('z-index')) + 100);}});
+                        editor.on('OpenWindow', function(e) { 
+                            const modalShow = document.querySelector('.modal.show');
+                            const toxDialog = document.querySelector('.tox-dialog-wrap');
+                            if (toxDialog && modalShow) {
+                                const modalZIndex = window.getComputedStyle(modalShow).zIndex;
+                                toxDialog.style.zIndex = parseInt(modalZIndex) + 100;
+                            }
+                        });
                     }
                 }).catch(err => console.error("Erro ao inicializar TinyMCE para anotações no calendário:", err));
             } else if (!conteudoInput) {
@@ -152,9 +167,10 @@ document.addEventListener('DOMContentLoaded', function () {
             } else if (typeof tinymce === 'undefined') {
                 console.error("Objeto TinyMCE não está definido. Verifique o carregamento do script.");
             }
+            console.log("Modal Anotação (Calendário) show.bs.modal - FIM");
         });
 
-        if (disciplinaSelect) {
+        if (disciplinaSelect && atividadeSelect) { // Garante que ambos existem para adicionar o listener
             disciplinaSelect.addEventListener('change', function() {
                 atualizarOpcoesAtividadeAnotacaoCalendario(this.value, atividadeSelect);
             });
@@ -168,20 +184,31 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
         
-        if(salvarBtn) {
-            salvarBtn.addEventListener('click', function(e) { // Mudado de 'submit' no form para 'click' no botão
-                e.preventDefault(); 
-                // Validação simples do título
+        if(formAnotacao && salvarBtn) { // Adicionado verificação do formAnotacao
+            // Usar o evento submit do formulário em vez do clique do botão,
+            // já que o botão é type="submit"
+            formAnotacao.addEventListener('submit', function(e) { 
+                e.preventDefault(); // Previne a submissão padrão do formulário
+                
                 let isValid = true;
                 if (!tituloInput || !tituloInput.value.trim()) {
-                    if(tituloInput) tituloInput.classList.add('is-invalid');
-                    const feedback = tituloInput ? tituloInput.nextElementSibling : null;
-                    if(feedback && feedback.classList.contains('invalid-feedback')) feedback.textContent = "Título é obrigatório.";
+                    if(tituloInput) {
+                        tituloInput.classList.add('is-invalid');
+                        const feedback = tituloInput.nextElementSibling;
+                        if(feedback && feedback.classList.contains('invalid-feedback')) {
+                            feedback.textContent = "Título da anotação é obrigatório."; // Mensagem do HTML
+                        }
+                    }
                     isValid = false;
                 } else {
                     if(tituloInput) tituloInput.classList.remove('is-invalid');
                 }
-                if (!isValid) return;
+
+                if (!isValid) {
+                    // Opcional: focar no campo inválido se houver apenas um ou o primeiro
+                    if(tituloInput && !tituloInput.value.trim()) tituloInput.focus();
+                    return; // Interrompe se a validação falhar
+                }
 
                 const dadosAnotacao = {
                     id: idInput ? (idInput.value || 'ANOT_CAL_' + new Date().getTime()) : 'ANOT_CAL_' + new Date().getTime(),
@@ -194,8 +221,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 };
                 console.log("Salvando anotação (do calendário):", dadosAnotacao);
                 alert("Anotação salva (simulado)! Verifique o console para os dados.");
-                // Aqui você adicionaria a lógica para realmente salvar os dados (ex: localStorage, API)
-                // E possivelmente adicionar o evento ao FullCalendar se a anotação tiver data/hora
+                
                 bootstrap.Modal.getInstance(modalAnotacaoCalendarioEl).hide();
             });
         }
@@ -205,15 +231,28 @@ document.addEventListener('DOMContentLoaded', function () {
     const modalDisciplinaAdicaoEl = document.getElementById('modalDisciplinaAdicaoCalendario');
     if (modalDisciplinaAdicaoEl) {
         const form = modalDisciplinaAdicaoEl.querySelector('#formDisciplinaAdicaoCalendario');
-        modalDisciplinaAdicaoEl.addEventListener('show.bs.modal', () => { if (form) form.reset(); });
-        if (form) form.addEventListener('submit', (e) => { 
-            e.preventDefault(); 
-            // Adicionar validação aqui se necessário
-            const nomeDisc = modalDisciplinaAdicaoEl.querySelector('#calDisciplinaNome').value;
-            console.log("Salvando disciplina (do calendário):", { nome: nomeDisc });
-            alert(`Salvar Disciplina: ${nomeDisc} (Lógica Pendente)`); 
-            bootstrap.Modal.getInstance(modalDisciplinaAdicaoEl).hide(); 
+        modalDisciplinaAdicaoEl.addEventListener('show.bs.modal', () => { 
+            if (form) {
+                form.reset();
+                form.classList.remove('was-validated');
+                form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+                form.querySelectorAll('.invalid-feedback').forEach(el => el.textContent = '');
+            }
         });
+        if (form) {
+            form.addEventListener('submit', (e) => { 
+                e.preventDefault(); 
+                if (!form.checkValidity()) {
+                    e.stopPropagation();
+                    form.classList.add('was-validated');
+                    return;
+                }
+                const nomeDisc = modalDisciplinaAdicaoEl.querySelector('#calDisciplinaNome').value;
+                console.log("Salvando disciplina (do calendário):", { nome: nomeDisc });
+                alert(`Salvar Disciplina: ${nomeDisc} (Lógica Pendente)`); 
+                bootstrap.Modal.getInstance(modalDisciplinaAdicaoEl).hide(); 
+            });
+        }
     }
 
     // Modal Adicionar Tarefa/Prova
@@ -221,18 +260,27 @@ document.addEventListener('DOMContentLoaded', function () {
     if (modalTarefaAdicaoEl) {
         const form = modalTarefaAdicaoEl.querySelector('#formTarefaAdicaoCalendario');
         modalTarefaAdicaoEl.addEventListener('show.bs.modal', () => { 
-            if (form) form.reset(); 
-            // Lógica para popular select de disciplinas neste modal, se houver
-            // const calTarefaDisciplinaSelect = modalTarefaAdicaoEl.querySelector('#idDoSeuSelectDeDisciplinaParaTarefas');
-            // if(calTarefaDisciplinaSelect) popularSelect(calTarefaDisciplinaSelect, disciplinasFixasParaModais.filter(d => d !== "Nenhuma"), "");
+            if (form) {
+                form.reset(); 
+                form.classList.remove('was-validated');
+                form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+                form.querySelectorAll('.invalid-feedback').forEach(el => el.textContent = '');
+            }
         });
-        if (form) form.addEventListener('submit', (e) => { 
-            e.preventDefault(); 
-            const tituloTarefa = modalTarefaAdicaoEl.querySelector('#calTarefaTitulo').value;
-            console.log("Salvando tarefa/prova (do calendário):", { titulo: tituloTarefa });
-            alert(`Salvar Tarefa/Prova: ${tituloTarefa} (Lógica Pendente)`); 
-            bootstrap.Modal.getInstance(modalTarefaAdicaoEl).hide(); 
-        });
+        if (form) {
+            form.addEventListener('submit', (e) => { 
+                e.preventDefault(); 
+                if (!form.checkValidity()) {
+                    e.stopPropagation();
+                    form.classList.add('was-validated');
+                    return;
+                }
+                const tituloTarefa = modalTarefaAdicaoEl.querySelector('#calTarefaTitulo').value;
+                console.log("Salvando tarefa/prova (do calendário):", { titulo: tituloTarefa });
+                alert(`Salvar Tarefa/Prova: ${tituloTarefa} (Lógica Pendente)`); 
+                bootstrap.Modal.getInstance(modalTarefaAdicaoEl).hide(); 
+            });
+        }
     }
     
     // Modal Detalhes Evento Calendário (<dialog>)
@@ -279,7 +327,7 @@ function openEventModal(eventData) {
         if (!eventData.id) { 
              content += `<p><strong>Dia Inteiro:</strong> ${eventData.allDay ? 'Sim' : 'Não (horário específico a definir)'}</p>`;
         } else { 
-            content += `<p><strong>Dia Inteiro:</strong> ${eventData.allDay ? 'Sim' : 'Não'}</p>`;
+             content += `<p><strong>Dia Inteiro:</strong> ${eventData.allDay ? 'Sim' : 'Não'}</p>`;
         }
         if (eventData.description) content += `<p><strong>Descrição:</strong></p><pre style="white-space: pre-wrap; word-wrap: break-word; font-family: inherit; background-color: #f8f9fa; padding: 0.5rem; border-radius: 4px;">${eventData.description.replace(/\n/g, '<br>')}</pre>`;
         if (eventData.tipo) content += `<p><strong>Tipo:</strong> <span class="badge ${getTipoBadgeClass(eventData.tipo)}">${eventData.tipo.charAt(0).toUpperCase() + eventData.tipo.slice(1)}</span></p>`;

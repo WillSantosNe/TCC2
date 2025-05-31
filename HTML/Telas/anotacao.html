@@ -12,11 +12,10 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.7/css/dataTables.bootstrap5.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.2/css/responsive.bootstrap5.css">
 
-    <link rel="stylesheet" href="../Css/geral.css"> 
-    <link rel="stylesheet" href="../Css/tela_principal.css">
-    <link rel="stylesheet" href="../Css/modais-adicao.css"> 
-    <link rel="stylesheet" href="../Css/anotacao.css"> 
-    <link rel="stylesheet" href="../Css/modal-configuracoes.css"> 
+    <link rel="stylesheet" href="../Css/geral.css">
+    <link rel="stylesheet" href="../Css/tela_principal.css"> <link rel="stylesheet" href="../Css/modais-adicao.css">
+    <link rel="stylesheet" href="../Css/anotacao.css">
+    <link rel="stylesheet" href="../Css/modal-configuracoes.css">
     
     <script src="../Scripts/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
@@ -40,7 +39,7 @@
 
     <div class="sf-main">
         <header class="sf-header position-relative">
-             <button class="btn-menu me-auto d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-label="Abrir menu"> <i class="bi bi-list"></i> </button>
+            <button class="btn-menu me-auto d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-label="Abrir menu"> <i class="bi bi-list"></i> </button>
             <div class="sf-header-brand"> <img src="../imgs/logo.png" alt="Logo"><span>StudyFlow</span> </div>
             <div class="dropdown">
                 <button class="btn btn-sm btn-icon-only" id="userMenuBtn" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Menu do usuário"> <img src="../imgs/avatar.png" class="rounded-circle" style="width:40px;height:40px" alt="Avatar do usuário"> </button>
@@ -83,10 +82,10 @@
         </main>
     </div>
 
-    <div class="modal fade" id="modalAnotacao" tabindex="-1" aria-labelledby="modalAnotacaoLabel" aria-hidden="true">
+    <div class="modal fade" id="modalAnotacao" tabindex="-1" aria-labelledby="modalAnotacaoLabelTitulo" aria-hidden="true">
         <div class="modal-dialog modal-lg"> 
             <div class="modal-content"> 
-                <form id="formAnotacao">
+                <form id="formAnotacao" novalidate>
                     <div class="modal-header-custom modal-header-studyflow">
                         <div class="modal-title-wrapper">
                             <img src="../imgs/logo.png" class="modal-logo-icon" alt="StudyFlow Logo">
@@ -99,7 +98,7 @@
                             <p class="text-muted mb-3 modal-edit-info" id="modalAnotacaoEditInfo">Nova anotação</p>
                             <div class="mb-3"> 
                                 <input type="text" class="form-control form-control-lg modal-anotacao-title-input" id="anotacaoTituloInput" placeholder="Título da Anotação" required>
-                                <div class="invalid-feedback"></div>
+                                <div class="invalid-feedback">Título da anotação é obrigatório.</div>
                             </div>
                             <div class="modal-anotacao-properties-section">
                                 <div class="modal-property-item">
@@ -107,7 +106,7 @@
                                     <label for="anotacaoDisciplinaSelect" class="modal-property-label">Disciplina</label>
                                     <div class="input-wrapper">
                                         <select class="form-select form-select-sm modal-property-input" id="anotacaoDisciplinaSelect">
-                                        </select>
+                                            </select>
                                     </div>
                                 </div>
                                 <div class="modal-property-item">
@@ -115,7 +114,7 @@
                                     <label for="anotacaoAtividadeSelect" class="modal-property-label">Atividade</label>
                                     <div class="input-wrapper">
                                         <select class="form-select form-select-sm modal-property-input" id="anotacaoAtividadeSelect">
-                                        </select>
+                                            </select>
                                     </div>
                                 </div>
                             </div>
@@ -170,7 +169,7 @@
     <div class="modal fade" id="modalDisciplinaAdicao" tabindex="-1" aria-labelledby="modalDisciplinaAdicaoLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <form id="formDisciplinaAdicao">
+                <form id="formDisciplinaAdicao" novalidate>
                     <div class="modal-header-custom modal-header-studyflow">
                         <div class="modal-title-wrapper">
                             <img src="../imgs/logo.png" class="modal-logo-icon" alt="StudyFlow Logo">
@@ -187,18 +186,44 @@
                                 <div class="invalid-feedback">Nome da disciplina é obrigatório.</div>
                             </div>
                         </div>
-                        <div class="modal-property-item mb-3">
-                            <span class="modal-property-icon"><i class="bi bi-person-fill"></i></span>
-                            <label for="novaDisciplinaProfessor" class="modal-property-label">Professor</label>
-                            <div class="input-wrapper">
-                                <input type="text" class="form-control modal-property-input" id="novaDisciplinaProfessor" placeholder="Ex: Prof. Silva">
-                            </div>
-                        </div>
-                       <div class="modal-property-item mb-3 align-items-start">
+                        <div class="modal-property-item mb-3 align-items-start">
                             <span class="modal-property-icon"><i class="bi bi-file-earmark-text"></i></span>
                             <label for="novaDisciplinaDescricao" class="modal-property-label">Descrição</label>
                             <div class="input-wrapper">
                                 <textarea class="form-control modal-property-input" id="novaDisciplinaDescricao" rows="3" placeholder="Opcional: Ementa, objetivos..."></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-property-item mb-3">
+                            <span class="modal-property-icon"><i class="bi bi-person-fill"></i></span>
+                            <label for="novaDisciplinaProfessor" class="modal-property-label">Professor</label>
+                            <div class="input-wrapper">
+                                <input type="text" class="form-control modal-property-input" id="novaDisciplinaProfessor" placeholder="Ex: Prof. Silva (Opcional)">
+                            </div>
+                        </div>
+                        <div class="modal-property-item mb-3">
+                            <span class="modal-property-icon"><i class="bi bi-calendar-event"></i></span>
+                            <label for="novaDisciplinaPeriodo" class="modal-property-label">Período</label>
+                            <div class="input-wrapper">
+                                <select class="form-select modal-property-input" id="novaDisciplinaPeriodo" required>
+                                    <option value="" disabled selected>Selecione...</option>
+                                    <option value="2024.1">2024.1</option>
+                                    <option value="2024.2">2024.2</option>
+                                    <option value="2025.1">2025.1</option>
+                                    <option value="2025.2">2025.2</option>
+                                    </select>
+                                <div class="invalid-feedback">Período é obrigatório.</div>
+                            </div>
+                        </div>
+                        <div class="modal-property-item mb-3">
+                            <span class="modal-property-icon"><i class="bi bi-check2-circle"></i></span>
+                            <label for="novaDisciplinaStatus" class="modal-property-label">Status</label>
+                            <div class="input-wrapper">
+                                <select class="form-select modal-property-input" id="novaDisciplinaStatus" required>
+                                    <option value="Ativa" selected>Ativa</option>
+                                    <option value="Em Andamento">Em Andamento</option>
+                                    <option value="Concluída">Concluída</option>
+                                </select>
+                                <div class="invalid-feedback">Status é obrigatório.</div>
                             </div>
                         </div>
                     </div>
@@ -214,7 +239,7 @@
     <div class="modal fade" id="modalTarefaAdicao" tabindex="-1" aria-labelledby="modalTarefaAdicaoLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <form id="formTarefaAdicao">
+                <form id="formTarefaAdicao" novalidate>
                     <div class="modal-header-custom modal-header-studyflow">
                         <div class="modal-title-wrapper">
                             <img src="../imgs/logo.png" class="modal-logo-icon" alt="StudyFlow Logo">
@@ -235,7 +260,7 @@
                             <span class="modal-property-icon"><i class="bi bi-file-text-fill"></i></span>
                             <label for="novaTarefaDescricao" class="modal-property-label">Descrição</label>
                             <div class="input-wrapper">
-                                <textarea class="form-control modal-property-input" id="novaTarefaDescricao" rows="4" placeholder="Detalhes da tarefa/prova..."></textarea>
+                                <textarea class="form-control modal-property-input" id="novaTarefaDescricao" rows="3" placeholder="Detalhes da tarefa/prova... (Opcional)"></textarea>
                             </div>
                         </div>
                         <div class="modal-property-item mb-3">
@@ -296,7 +321,6 @@
                             <p>Aqui você pode gerenciar as opções da sua conta.</p>
                             <p>Use o menu lateral para navegar ou clique em "Voltar" para fechar.</p>
                         </div>
-
                         <div id="modal-trocar-senha" class="modal-section">
                             <h3>Trocar Senha</h3>
                             <form>
@@ -315,7 +339,6 @@
                                 <button type="submit" class="btn btn-primary">Salvar Nova Senha</button>
                             </form>
                         </div>
-
                         <div id="modal-trocar-foto" class="modal-section">
                             <h3>Trocar Foto de Perfil</h3>
                             <div class="text-center mb-3">
@@ -324,7 +347,6 @@
                             </div>
                             <button type="submit" class="btn btn-primary">Salvar Foto</button>
                         </div>
-
                         <div id="modal-notificacoes" class="modal-section">
                             <h3>Configurações de Notificações</h3>
                             <form>
@@ -347,7 +369,6 @@
                                 <button type="submit" class="btn btn-primary">Salvar Configurações</button>
                             </form>
                         </div>
-
                     </div>
                 </div>
             </div>
