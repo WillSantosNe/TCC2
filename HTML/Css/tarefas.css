@@ -1,121 +1,241 @@
 /* Css/tarefas.css */
 
-/* ===== Modal de Tarefa ===== */
-dialog#modalTarefa {
+/* ==========================================================================
+   Estilos Base para os Modais (<dialog>) na página de Tarefas
+   ========================================================================== */
+dialog {
     width: 90%;
-    max-width: 520px;
-    border-radius: 12px;
-    border: none;
-    padding: 0;
-    box-shadow: 0px 8px 24px rgba(20, 20, 22, 0.15);
+    border-radius: 12px; 
+    border: none; 
+    padding: 0; 
+    box-shadow: 0px 8px 24px rgba(20, 20, 22, 0.15); 
 }
-dialog#modalTarefa::backdrop {
-    background-color: rgba(0, 0, 0, 0.5);
+
+dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.5); 
 }
-dialog#modalTarefa .modal-header-studyflow {
+
+/* Tamanhos específicos para os diálogos da página de tarefas */
+dialog#modalTarefa,
+dialog#modalDisciplina {
+    max-width: 800px; /* Alinhado com modal-lg de modais-adicao.css para consistência */
+                     /* Seus exemplos de calendário usam modal-lg */
+}
+
+dialog#modalDetalhesTarefa {
+   max-width: 520px; 
+}
+
+/* ==========================================================================
+   Estilos para Componentes INTERNOS dos <dialog> #modalTarefa e #modalDisciplina
+   Estes estilos são ajustados para espelhar modais-adicao.css e as imagens de referência.
+   Certifique-se que o HTML interno desses <dialog>s foi reestruturado
+   para usar as classes: .modal-header-studyflow, .modal-body-custom, 
+   .modal-property-item, .modal-property-label, .modal-property-input, etc.
+   ========================================================================== */
+
+/* --- Cabeçalho do Modal --- */
+dialog#modalTarefa .modal-header-studyflow,
+dialog#modalDisciplina .modal-header-studyflow {
     background-color: #FFFFFF;
-    padding: 1.25rem 1.5rem;
+    padding: 1.25rem 1.75rem; /* Alinhado com modais-adicao.css */
     border-bottom: 1px solid #E9E9F0;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    border-top-left-radius: 12px; /* Para coincidir com o dialog */
+    border-top-right-radius: 12px;/* Para coincidir com o dialog */
 }
-dialog#modalTarefa .modal-title-wrapper { display: flex; align-items: center; }
-dialog#modalTarefa .modal-logo-icon { width: 28px; height: 28px; margin-right: .75rem; }
-dialog#modalTarefa .modal-title-custom {
+dialog#modalTarefa .modal-title-wrapper,
+dialog#modalDisciplina .modal-title-wrapper {
+    display: flex;
+    align-items: center;
+}
+dialog#modalTarefa .modal-logo-icon,
+dialog#modalDisciplina .modal-logo-icon {
+    width: 24px; /* Alinhado com modais-adicao.css */
+    height: 24px;/* Alinhado com modais-adicao.css */
+    margin-right: .75rem;
+}
+dialog#modalTarefa .modal-title-custom,
+dialog#modalDisciplina .modal-title-custom {
     font-weight: 600;
-    font-size: 1.3rem;
+    font-size: 1.2rem; /* Alinhado com modais-adicao.css */
     color: #2E3A59;
     margin-bottom: 0;
 }
-dialog#modalTarefa .btn-close-custom,
-dialog#modalTarefa .btn-close {
-    filter: grayscale(1) brightness(1.5);
+dialog#modalTarefa .btn-close-custom, /* Usado nos seus dialogs */
+dialog#modalDisciplina .btn-close-custom,
+dialog#modalTarefa .btn-close.btn-close-white, /* Usado nos modais Bootstrap */
+dialog#modalDisciplina .btn-close.btn-close-white {
+    filter: none; /* Removido o filter, pois btn-close-white já é estilizado ou o custom fará o trabalho */
     background: transparent;
     border: none;
-    font-size: 1.5rem;
+    font-size: 1.5rem; /* Tamanho do X */
     padding: .5rem;
     line-height: 1;
+    opacity: 0.7; /* Opacidade padrão para X escuro */
 }
-dialog#modalTarefa .modal-body-custom {
-    padding: 1.5rem 1.75rem;
+dialog#modalTarefa .btn-close-custom:hover,
+dialog#modalDisciplina .btn-close-custom:hover,
+dialog#modalTarefa .btn-close.btn-close-white:hover,
+dialog#modalDisciplina .btn-close.btn-close-white:hover {
+    opacity: 1;
+}
+/* Para o btn-close-white de Bootstrap, o Bootstrap já o torna branco. Se for o btn-close-custom, ele precisa de cor se o fundo for escuro. */
+/* No caso de modal-header-studyflow, o fundo é branco, então o X padrão do Bootstrap (escuro) ou btn-close-custom (escuro) funciona. */
+
+
+/* --- Corpo do Modal --- */
+dialog#modalTarefa .modal-body-custom,
+dialog#modalDisciplina .modal-body-custom {
+    padding: 1.5rem 1.75rem; /* Alinhado com modais-adicao.css */
     background: #FFF;
 }
-dialog#modalTarefa .form-label {
-    font-size: .875rem;
-    color: #4F5E7B;
+
+/* --- Estilos para Layout de Propriedades (Ícone - Label - Input) --- */
+/* Estas classes (.modal-property-item, etc.) devem ser adicionadas ao HTML interno dos seus <dialog> */
+dialog#modalTarefa .modal-property-item,
+dialog#modalDisciplina .modal-property-item {
+    display: flex;
+    align-items: center; 
+    gap: 0.75rem;
+    /* margin-bottom: 1rem; /* Já tratado pelo mb-3 no HTML sugerido */
+}
+dialog#modalTarefa .modal-property-item.align-items-start,
+dialog#modalDisciplina .modal-property-item.align-items-start { 
+    align-items: flex-start;
+}
+dialog#modalTarefa .modal-property-item.align-items-start .modal-property-icon,
+dialog#modalDisciplina .modal-property-item.align-items-start .modal-property-icon {
+    margin-top: 0.375rem; 
+}
+
+dialog#modalTarefa .modal-property-icon,
+dialog#modalDisciplina .modal-property-icon {
+    font-size: 1.1rem;
+    color: #6c757d; 
+    flex-shrink: 0;
+    width: 24px; 
+    text-align: center;
+    line-height: 1.5; 
+}
+dialog#modalTarefa .modal-property-icon .bi,
+dialog#modalDisciplina .modal-property-icon .bi { 
+    vertical-align: middle;
+}
+
+dialog#modalTarefa .modal-property-label, /* Para os labels ao lado dos ícones */
+dialog#modalDisciplina .modal-property-label {
+    font-size: 0.875rem;
+    color: #4F5E7B; 
     font-weight: 500;
-    margin-bottom: .375rem;
+    margin-bottom: 0 !important; 
+    margin-right: 0.5rem;
+    flex-shrink: 0;
+    width: 90px; 
 }
-dialog#modalTarefa .form-control,
-dialog#modalTarefa .form-select,
-dialog#modalTarefa textarea.form-control {
-    background: #FFF;
-    border: 1px solid #D9DDE7;
-    border-radius: 8px;
-    padding: .75rem 1rem;
-    font-size: .95rem;
-    color: #2E3A59;
+
+/* Wrapper para o input e feedback de erro, se necessário */
+dialog#modalTarefa .input-wrapper,
+dialog#modalDisciplina .input-wrapper { 
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
 }
-dialog#modalTarefa .form-control::placeholder { color: #A0AEC0; }
-dialog#modalTarefa .form-control:focus,
-dialog#modalTarefa .form-select:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 .2rem rgba(85,104,254,.25);
+
+/* Inputs, Selects, Textareas dentro do layout de propriedade */
+dialog#modalTarefa .modal-property-input, /* Use esta classe nos seus inputs/selects/textareas */
+dialog#modalDisciplina .modal-property-input {
+    width: 100%; 
+    font-size: 0.9rem; /* Alinhado com modais-adicao.css */
+    padding: 0.5rem 0.8rem; /* Alinhado com modais-adicao.css */
+    border: 1px solid #D9DDE7; 
+    border-radius: 8px;             
+    color: #2E3A59;             
+    background-color: #FFFFFF;  
 }
-dialog#modalTarefa .is-invalid { border-color: #dc3545; }
-dialog#modalTarefa .invalid-feedback {
-    display: block;
-    width: 100%;
-    margin-top: .25rem;
-    font-size: .875em;
-    color: #dc3545;
+dialog#modalTarefa textarea.modal-property-input, /* Especificidade para textarea se necessário */
+dialog#modalDisciplina textarea.modal-property-input {
+    min-height: 80px; 
 }
-dialog#modalTarefa .modal-footer-studyflow {
-    background: #FFF;
-    border-top: 1px solid #E9E9F0;
-    padding: 1.25rem 1.75rem;
+
+dialog#modalTarefa .modal-property-input::placeholder,
+dialog#modalDisciplina .modal-property-input::placeholder {
+    color: #A0AEC0; 
+}
+dialog#modalTarefa .modal-property-input:focus,
+dialog#modalDisciplina .modal-property-input:focus {
+    border-color: var(--primary-color, #5568FE); /* Usar fallback consistente */
+    box-shadow: 0 0 0 .2rem rgba(var(--primary-rgb, 85,104,254),.25); /* Usar fallback consistente */
+}
+
+/* Tratamento de erro (Bootstrap padrão funciona bem se as classes .is-invalid e .invalid-feedback estiverem no HTML) */
+dialog#modalTarefa .modal-property-input.is-invalid,
+dialog#modalDisciplina .modal-property-input.is-invalid {
+    border-color: #dc3545 !important; 
+}
+dialog#modalTarefa .input-wrapper > .invalid-feedback, /* Se o feedback estiver dentro do input-wrapper */
+dialog#modalDisciplina .input-wrapper > .invalid-feedback { 
+    width: 100%; margin-top: .25rem; font-size: .875em; color: #dc3545;
+}
+
+
+/* --- Rodapé do Modal --- */
+dialog#modalTarefa .modal-footer-studyflow,
+dialog#modalDisciplina .modal-footer-studyflow {
+    background: #FFFFFF; 
+    border-top: 1px solid #E9E9F0; 
+    padding: 1rem 1.75rem; /* Alinhado com modais-adicao.css */
     display: flex;
     justify-content: flex-end;
-    border-bottom-left-radius: 12px;
-    border-bottom-right-radius: 12px;
+    border-bottom-left-radius: 12px; /* Para coincidir com o dialog */
+    border-bottom-right-radius: 12px;/* Para coincidir com o dialog */
 }
-dialog#modalTarefa .btn-modal-cancel {
-    background: #F1F3F6;
+dialog#modalTarefa .btn-modal-cancel,
+dialog#modalDisciplina .btn-modal-cancel {
+    background: #F1F3F6; 
     border: 1px solid #F1F3F6;
-    color: #4F5E7B;
-    padding: .6rem 1.3rem;
-    border-radius: 8px;
+    color: #4F5E7B; 
+    padding: 0.5rem 1.2rem; /* Alinhado com modais-adicao.css */
+    border-radius: 8px; 
     font-weight: 500;
-    font-size: .95rem;
+    font-size: 0.9rem; /* Alinhado com modais-adicao.css */
 }
-dialog#modalTarefa .btn-modal-cancel:hover {
+dialog#modalTarefa .btn-modal-cancel:hover,
+dialog#modalDisciplina .btn-modal-cancel:hover {
     background: #E2E6EB;
     border-color: #E2E6EB;
 }
-dialog#modalTarefa .btn-modal-save {
-    background: #2E3A59;
+dialog#modalTarefa .btn-modal-save,
+dialog#modalDisciplina .btn-modal-save {
+    background: #2E3A59; 
     border: 1px solid #2E3A59;
     color: #FFF;
-    padding: .6rem 1.3rem;
+    padding: 0.5rem 1.2rem; /* Alinhado com modais-adicao.css */
     border-radius: 8px;
     font-weight: 500;
-    font-size: .95rem;
+    font-size: 0.9rem; /* Alinhado com modais-adicao.css */
 }
-dialog#modalTarefa .btn-modal-save:hover {
+dialog#modalTarefa .btn-modal-save:hover,
+dialog#modalDisciplina .btn-modal-save:hover {
     background: #242E47;
     border-color: #242E47;
 }
 
-/* ===== Página de Tarefas ===== */
+/* ==========================================================================
+   Estilos Específicos da Página de Tarefas (Títulos, Tabela, etc.)
+   (Estes estilos foram mantidos da sua versão anterior)
+   ========================================================================== */
 .sf-page-title {
     font-weight: 600;
-    color: var(--text-title-color);
+    color: var(--text-title-color, #2E3A59); 
     margin-bottom: .25rem;
 }
+
 .sf-page-subtitle {
     font-size: .95rem;
-    color: var(--text-body-color);
+    color: var(--text-body-color, #4F5E7B); 
     margin-bottom: 1.5rem;
 }
 
@@ -124,51 +244,49 @@ dialog#modalTarefa .btn-modal-save:hover {
     font-weight: 600;
     font-size: .85rem;
     text-transform: uppercase;
-    color: var(--text-body-color);
+    color: var(--text-body-color, #4F5E7B); 
     white-space: nowrap;
 }
+
 .tarefas-table td {
     font-size: .9rem;
     vertical-align: middle;
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 150px;
 }
-.tarefas-table td:nth-child(2) { max-width: 250px; }
-.tarefas-table td:nth-child(3) { max-width: 200px; }
+.tarefas-table td.dt-column-title { max-width: 250px; } 
+.tarefas-table td.dt-column-disciplina { max-width: 200px; } 
+
 
 .tarefas-table th.dt-actions-column,
 .tarefas-table td.dt-actions-column {
-    text-align: left!important;
-    padding: 0 .5rem!important;
+    text-align: center !important; 
+    padding: 0 .5rem !important;
     min-width: 50px;
     max-width: 70px;
-    overflow: visible;
+    width: 70px; 
+    overflow: visible; 
 }
 
 /* DataTables responsive toggle */
-table.dataTable.dtr-inline.collapsed td.dtr-control::before,
-table.dataTable.dtr-inline.collapsed th.dtr-control::before {
+table.dataTable.dtr-inline.collapsed > tbody > tr > td.dtr-control::before,
+table.dataTable.dtr-inline.collapsed > tbody > tr > th.dtr-control::before {
     content: "+";
-    position: absolute;
-    top: 50%;
-    left: .5rem;
-    transform: translateY(-50%);
     width: 1.2em;
     height: 1.2em;
-    line-height: 1.2em;
+    line-height: 1.2em; 
     text-align: center;
     color: #FFF;
-    background: var(--primary-color,#5568FE);
+    background-color: var(--primary-color, #5568FE); 
     border-radius: 50%;
     box-shadow: 0 1px 3px rgba(0,0,0,.2);
 }
-table.dataTable.dtr-inline.collapsed tr.parent td.dtr-control::before,
-table.dataTable.dtr-inline.collapsed tr.parent th.dtr-control::before {
-    content: "–";
-    background: #d33333;
+table.dataTable.dtr-inline.collapsed > tbody > tr.parent > td.dtr-control::before,
+table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th.dtr-control::before {
+    content: "–"; 
+    background-color: #d33333; 
 }
+
 
 /* Badges e ícones */
 .tarefas-table .badge {
@@ -177,220 +295,152 @@ table.dataTable.dtr-inline.collapsed tr.parent th.dtr-control::before {
     font-weight: 600;
 }
 .btn-icon {
-    color: var(--text-body-color);
+    color: var(--text-body-color, #4F5E7B);
     padding: .25rem .5rem;
     background: transparent;
     border: none;
 }
 .btn-icon:hover,
 .btn-icon:focus {
-    color: var(--primary-color);
-    background: rgba(85,104,254,.1);
+    color: var(--primary-color, #5568FE);
+    background: rgba(var(--primary-rgb, 85,104,254),.1);
 }
 .dropdown-menu {
     font-size: .9rem;
     box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
-    z-index: 1056;
+    z-index: 1056; 
 }
 
-/* Scroll da tabela */
+/* Scroll da tabela DataTables */
 div.dataTables_scrollBody {
-    border: 1px solid var(--border-color,#dee2e6);
+    border: 1px solid var(--border-color, #dee2e6);
     border-top: none;
-    border-radius: 0 0 6px 6px;
-}
-div.dataTables_scrollBody,
-#tabelaTarefas_wrapper,
-.table-container {
-    overflow: visible!important;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
 }
 
-/* ===== Controles: busca, filtros, botão (ESTILOS BASE) ===== */
+/* ===== Controles do DataTables: busca, filtros, botão ===== */
 #tabelaTarefas_wrapper .dt-custom-header {
     display: flex;
     gap: 1rem;
-    flex-wrap: wrap; /* wrap é o padrão para mobile, nowrap será aplicado no desktop */
-    padding: 1rem 0;
+    flex-wrap: wrap;
+    padding: 1rem 0; 
     align-items: center;
 }
 
 div.dataTables_filter {
     flex: 1 1 auto;
     margin: 0;
-    min-width: 150px; /* Mínimo geral, pode ser ajustado por media query */
+    min-width: 150px;
 } 
 div.dataTables_filter input {
     height: 40px;
-    padding: 0 1rem;
+    padding: 0.375rem 0.75rem; 
     box-sizing: border-box;
     width: 100%;
+    border-radius: var(--bs-border-radius, .375rem); 
+    border: 1px solid var(--bs-border-color, #dee2e6); 
+}
+div.dataTables_filter input:focus {
+    border-color: var(--primary-color, #5568FE); 
+    box-shadow: 0 0 0 .25rem rgba(var(--primary-rgb, 85,104,254),.25); 
 }
 
-/* Container que agrupa os filtros (selects) e o botão #abrirModalNovaTarefaDt */
+
 .dt-buttons-container {
-    display: flex; /* Será 'grid' no desktop. No mobile, será 'flex' com wrap interno. */
+    display: flex;
     align-items: center;
     gap: .5rem;
-    flex-shrink: 0; /* Para que não seja esmagado pela busca */
+    flex-shrink: 0;
 }
 
-/* Estilos para o dropdown de filtro de Tipo de Tarefa e Disciplina */
 .dt-filter-select {
     width: auto !important;
-    max-width: 180px; /* Aumentado para dar mais espaço ao texto */
+    max-width: 180px;
     flex-shrink: 0;
-    font-size: 0.9rem;
-    padding: 0.6rem 1rem;
-    border-radius: 8px;
-    border: 1px solid #D9DDE7;
-    background-color: #FFFFFF;
-    color: #2E3A59;
-    /* Ajuste para a seta padrão do select */
-    appearance: none;
+    font-size: 0.9rem; 
+    padding: 0.375rem 2.25rem 0.375rem 0.75rem; 
+    height: 40px; 
+    border-radius: var(--bs-border-radius, .375rem);
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    background-color: var(--bs-body-bg, #fff);
+    color: var(--bs-body-color, #212529);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e"); 
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+    appearance: none; 
     -webkit-appearance: none;
     -moz-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 1rem center;
-    background-size: 0.7em auto;
-    padding-right: 2.5rem; /* Aumenta o padding para a seta customizada */
 }
 .dt-filter-select:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 .2rem rgba(85,104,254,.25);
+    border-color: var(--primary-color, #5568FE);
+    box-shadow: 0 0 0 .25rem rgba(var(--primary-rgb, 85,104,254),.25);
 }
 
-/* #abrirModalNovaTarefaDt {
-    height: 40px!important;
-    padding: 0 1rem!important;
-    display: inline-flex!important;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    width: 100%;
-}
-#abrirModalNovaTarefaDt i {
-    font-size: 1.2rem;
-}
-#abrirModalNovaTarefaDt span {
-    white-space: nowrap;
-    margin-left: .5rem;
-} */
-
-
-
-/* Ajustes para alinhar o botão "Adicionar Disciplina" com o campo de busca */
 .btn-add-task,
-#abrirModalNovaTarefaDt {
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
+#abrirModalNovaTarefaDt { 
+    height: 40px; 
 }
-/* Garante que o ícone e o texto tenham espaçamento adequado */
 .btn-add-task i,
 #abrirModalNovaTarefaDt i {
     margin-right: 0.5rem;
 }
 
-/* Para botões que são só ícone (ex: o '+' em mobile) */
-.btn-icon-only {
-    padding: 0.375rem 0.75rem;
-    font-size: 1rem;
-}
-
 /* ===== Responsividade Desktop (>=768px) ===== */
 @media (min-width: 768px) {
     #tabelaTarefas_wrapper .dt-custom-header {
-        flex-wrap: nowrap; /* Busca e dt-buttons-container na mesma linha */
-        align-items: center;
+        flex-wrap: nowrap;
+        padding: 1rem 0; 
     }
 
     #tabelaTarefas_wrapper .dt-custom-header > div.dataTables_filter {
-        flex-grow: 1;
-        flex-shrink: 1;
-        flex-basis: 0;
-        min-width: 200px; /* Mínimo específico para desktop */
+        min-width: 200px;
     }
 
-    /* Layout Desktop: [Busca] [FiltroA] [FiltroB] [Botao] */
     #tabelaTarefas_wrapper .dt-custom-header > .dt-buttons-container {
         display: grid;
-        grid-template-areas: "filtroA filtroB botao";
-        /* Ajuste para minmax para garantir que não cresçam além de 180px */
-        grid-template-columns: minmax(100px, 180px) minmax(100px, 180px) auto;
-        grid-template-rows: auto;
-        gap: .5rem;
-        align-items: center;
-    }
-
-    .dt-filter-select {
-        flex-grow: 0;
-        max-width: 180px;
-        margin-right: 0;
-    }
-    
-    #tabelaTarefas_wrapper .dt-custom-header .dt-buttons-container > #abrirModalNovaTarefaDt {
-        grid-area: botao;
-        width: auto; /* Largura natural do botão */
+        grid-template-columns: repeat(2, minmax(120px, 180px)) auto;
+        gap: .75rem;
     }
 }
 
-/* ===== Responsividade Mobile (≤767.98px) ===== */
-@media (max-width: 767.98px) {
+@media (min-width: 768px) {
     #tabelaTarefas_wrapper .dt-custom-header {
-        display: flex;
-        flex-wrap: wrap; /* Permite que os filtros (dentro do .dt-buttons-container) quebrem */
-        align-items: center; /* Alinha verticalmente a busca e o .dt-buttons-container (que terá o botão) */
-        gap: .75rem; /* Espaçamento entre a busca e o .dt-buttons-container, e entre linhas */
-        padding: 1rem!important;
+        flex-wrap: nowrap;
+        padding: 1rem 0; 
+        align-items: center; /* Fundamental para alinhar os filhos diretos verticalmente */
     }
 
-    #tabelaTarefas_wrapper .dt-custom-header > div.dataTables_filter { /* Container da busca */
-        order: 1;
-        flex: 1 1 0; /* Base zero, permite crescer e encolher bastante */
-        min-width: 70px; /* Mínimo bem pequeno para a busca. Ajuste conforme o placeholder. */
-    }
-    #tabelaTarefas_wrapper .dt-custom-header > div.dataTables_filter input {
-        width: 100%;
+    #tabelaTarefas_wrapper .dt-custom-header > div.dataTables_filter {
+        min-width: 200px;
+        margin-right: auto; /* Empurra os botões e filtros para a direita */
     }
 
-    /* .dt-buttons-container (que contém botão E filtros) virá depois da busca. */
     #tabelaTarefas_wrapper .dt-custom-header > .dt-buttons-container {
-        order: 2;
-        display: flex; /* Para organizar seus filhos: botão e filtros */
-        flex-direction: column; /* Stack filters and button on mobile */
-        align-items: stretch; /* Stretch items to fill width */
-        width: 100%; /* Take full width */
-        gap: .75rem; /* Space between stacked items */
-        flex-grow: 0; /* Don't grow */
-        flex-shrink: 0; /* Don't shrink */
+        display: flex; /* Alterado de grid para flex para simplificar o alinhamento vertical */
+        align-items: center; /* Alinha verticalmente os filtros e o botão */
+        gap: .75rem;
     }
 
-    /* Inside the .dt-buttons-container: */
+    /* Garante que os selects e o botão tenham a mesma altura e alinhamento de texto */
+    #tabelaTarefas_wrapper .dt-custom-header .dt-buttons-container > .dt-filter-select,
     #tabelaTarefas_wrapper .dt-custom-header .dt-buttons-container > #abrirModalNovaTarefaDt {
-        order: 1; /* Button first visually within the container */
-        width: auto; /* Natural width */
-        padding: 0.75rem !important; /* Adjust padding for mobile button */
-        border-radius: 50%; /* Make it round */
-        flex-shrink: 0; /* Prevent shrinking */
-        width: 44px; /* Fixed size for round button */
-        height: 44px; /* Fixed size for round button */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-left: auto; /* Push to right if space allows */
-    }
-    #abrirModalNovaTarefaDt span {
-        display: none !important; /* Hide text for icon-only button */
-    }
-    #abrirModalNovaTarefaDt i {
-        margin-right: 0 !important; /* Remove margin for icon-only button */
-        font-size: 1.25rem; /* Adjust icon size */
+        height: 40px;
+        display: inline-flex; /* Para que align-items funcione no botão */
+        align-items: center;  /* Para centralizar o conteúdo do botão verticalmente */
+        padding-top: 0;       /* Resetar padding se estiver afetando */
+        padding-bottom: 0;    /* Resetar padding se estiver afetando */
+        /* A classe .btn-add-task já define a altura de 40px para #abrirModalNovaTarefaDt, o que é bom */
     }
 
+    /* Se os selects ainda estiverem desalinhados, pode ser necessário ajustar o padding deles especificamente */
     #tabelaTarefas_wrapper .dt-custom-header .dt-buttons-container > .dt-filter-select {
-        order: 2; /* Filters come after the button */
-        flex-basis: 100%; /* Force each filter to a new line */
-        width: 100%; /* Make each filter take full width */
-        max-width: none; /* Remove max-width constraint on mobile */
+        padding-top: 0.375rem; /* Padding padrão do Bootstrap para form-select */
+        padding-bottom: 0.375rem;
+         /* A altura de 40px e o padding padrão do Bootstrap podem não ser perfeitamente compatíveis
+            sem box-sizing: border-box (que o Bootstrap já aplica aos form-controls).
+            Se ainda houver desalinhamento, experimente ajustar o padding-top/bottom dos selects
+            ou do botão para igualá-los visualmente. */
     }
 }
