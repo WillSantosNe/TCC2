@@ -91,17 +91,19 @@
                     <h2 class="sf-page-title">Minhas Tarefas e Provas</h2>
                     <p class="text-muted sf-page-subtitle">Gerencie todas as suas tarefas e avaliações acadêmicas.</p>
                 </div>
-
-                <button class="btn btn-primary btn-add-task" id="abrirModalNovaTarefa">
-                    <i class="bi bi-plus-lg me-sm-2"></i><span class="d-none d-sm-inline">Adicionar Tarefa</span>
-                </button>
             </div>
 
+            <button class="btn btn-primary btn-add-task" id="abrirModalNovaTarefa" style="display: none;">
+                <i class="bi bi-plus-lg me-sm-2"></i>
+                <span class="d-none d-sm-inline">Adicionar Tarefa</span>
+            </button>
+            
             <div class="table-container shadow-sm">
                 <table id="tabelaTarefas" class="table table-hover dt-responsive nowrap align-middle mb-0 bg-white border rounded-3 tarefas-table" style="width:100%">
                     <thead class="table-light">
                         <tr>
-                            <th class="dtr-control" data-priority="1"></th> <th>Título da Tarefa</th>
+                            <th class="dtr-control" data-priority="1"></th>
+                            <th>Título da Tarefa</th>
                             <th data-priority="2">Disciplina</th>
                             <th>Tipo</th>
                             <th data-priority="3">Data de Entrega</th>
@@ -110,7 +112,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
         </main>
@@ -325,64 +327,7 @@
             <button type="button" class="btn btn-modal-ok" id="okModalDetalhesTarefa">OK</button>
         </div>
     </dialog>
-    <div class="modal fade" id="modalDisciplinaAdicaoRapida" tabindex="-1" aria-labelledby="modalDisciplinaAdicaoRapidaLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg"> 
-            <div class="modal-content">
-                <form id="formDisciplinaAdicaoRapida">
-                    <div class="modal-header-custom modal-header-studyflow">
-                        <div class="modal-title-wrapper">
-                            <img src="../imgs/logo.png" class="modal-logo-icon" alt="StudyFlow Logo">
-                            <h5 class="modal-title-custom" id="modalDisciplinaAdicaoRapidaLabel">Adicionar Disciplina (Simples)</h5>
-                        </div>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                    </div>
-                    <div class="modal-body modal-body-custom">
-                        <div class="modal-property-item mb-3">
-                            <span class="modal-property-icon"><i class="bi bi-journal-text"></i></span>
-                            <label for="rapidaDisciplinaNome" class="modal-property-label">Nome</label>
-                            <div class="input-wrapper">
-                                <input type="text" class="form-control modal-property-input" id="rapidaDisciplinaNome" required placeholder="Ex: Cálculo I">
-                                <div class="invalid-feedback">Nome da disciplina é obrigatório.</div>
-                            </div>
-                        </div>
-                        <div class="modal-property-item mb-3">
-                            <span class="modal-property-icon"><i class="bi bi-person-fill"></i></span>
-                            <label for="rapidaDisciplinaProfessor" class="modal-property-label">Professor</label>
-                            <div class="input-wrapper">
-                                <input type="text" class="form-control modal-property-input" id="rapidaDisciplinaProfessor" placeholder="Ex: Prof. Silva (Opcional)">
-                            </div>
-                        </div>
-                        <div class="modal-property-item mb-3 align-items-start">
-                            <span class="modal-property-icon"><i class="bi bi-file-earmark-text"></i></span>
-                            <label for="rapidaDisciplinaDescricao" class="modal-property-label">Descrição</label>
-                            <div class="input-wrapper">
-                                <textarea class="form-control modal-property-input" id="rapidaDisciplinaDescricao" rows="3" placeholder="Ementa, objetivos... (Opcional)"></textarea>
-                            </div>
-                        </div>
-                        <div class="modal-property-item mb-3">
-                            <span class="modal-property-icon"><i class="bi bi-calendar-event"></i></span>
-                            <label for="rapidaDisciplinaPeriodo" class="modal-property-label">Período</label>
-                            <div class="input-wrapper">
-                                <select class="form-select modal-property-input" id="rapidaDisciplinaPeriodo" required>
-                                    <option value="" disabled selected>Selecione...</option>
-                                    <option value="2024.1">2024.1</option>
-                                    <option value="2024.2">2024.2</option>
-                                    <option value="2025.1">2025.1</option>
-                                    <option value="2025.2">2025.2</option>
-                                </select>
-                                <div class="invalid-feedback">Período obrigatório.</div>
-                            </div>
-                        </div>
-                        {/* <input type="hidden" id="rapidaDisciplinaId"> */}
-                    </div>
-                    <div class="modal-footer-custom modal-footer-studyflow">
-                        <button type="button" class="btn btn-modal-cancel" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-modal-save">Salvar Disciplina</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+    
     <div class="modal fade" id="modalDisciplinaAdicaoRapidaCompleto" tabindex="-1" aria-labelledby="modalDisciplinaAdicaoRapidaCompletoLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
@@ -577,7 +522,7 @@
                 <div class="modal-body modal-body-custom">
                     <p>Conteúdo completo do modal de configurações (com sidebar e seções) deve vir aqui...</p>
                 </div>
-                    <div class="modal-footer-custom modal-footer-studyflow">
+                <div class="modal-footer-custom modal-footer-studyflow">
                     <button type="button" class="btn btn-modal-ok" data-bs-dismiss="modal">OK</button>
                 </div>
             </div>
