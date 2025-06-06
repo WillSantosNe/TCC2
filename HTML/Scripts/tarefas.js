@@ -24,29 +24,31 @@ document.addEventListener("DOMContentLoaded", function () {
     let tabelaTarefasDt;
     let resizeDebounceTimer;
 
+    // Array com as disciplinas únicas
     const listaDisciplinas = [
-        { id: "ART101", nome: "Fundamentos de Design Gráfico – ART101" },
-        { id: "ITD201", nome: "Web Design Avançado – ITD201" },
-        { id: "UXD301", nome: "Princípios de UX/UI Design – UXD301" },
-        { id: "ANI301", nome: "Técnicas de Animação 3D – ANI301" },
-        { id: "HAR202", nome: "História da Arte – HAR202" },
-        { id: "PHO110", nome: "Fotografia Digital – PHO110" },
-        { id: "CCO200", nome: "Programação Orientada a Objetos – CCO200" },
-        { id: "CCO210", nome: "Banco de Dados – CCO210" },
-        { id: "CCO300", nome: "Redes de Computadores – CCO300" },
-        { id: "CCO401", nome: "Inteligência Artificial – CCO401" },
-        { id: "CCO310", nome: "Engenharia de Software – CCO310" },
-        { id: "UXD205", nome: "Design de Interação – UXD205" },
-        { id: "MKT300", nome: "Marketing Digital – MKT300" },
-        { id: "MOB400", nome: "Desenvolvimento Mobile – MOB400" },
-        { id: "SEG500", nome: "Segurança da Informação – SEG500" },
+        { id: "CS101", nome: "Algoritmos e Estrutura de Dados" },
+        { id: "CS102", nome: "Redes de Computadores" },
+        { id: "CS103", nome: "Banco de Dados" },
+        { id: "CS104", nome: "Inteligência Artificial" },
+        { id: "CS105", nome: "Compiladores" }
     ];
 
+    // Array com todas as 20 atividades, exatamente como no Excel
     let listaTarefas = [
-        { id: "T001", titulo: "Estudar para Prova de Fundamentos de Design Gráfico", disciplinaId: "ART101", tipo: "Prova", dataEntrega: "2025-01-25", horarioEntrega: "19:30", status: "Concluída", descricao: "Revisar capítulos 1 a 5 e slides da aula 3. Local: Design Studio A.", anotacoesVinculadas: [ { id: "A001", titulo: "Resumo Cap. 1-2", conteudo: "Principios basicos de design." },{ id: "A002", titulo: "Dúvidas Prova", conteudo: "Questões sobre cor e tipografia." }]},
-        { id: "T002", titulo: "Entregar Projeto de UX/UI Design", disciplinaId: "UXD301", tipo: "Tarefa", dataEntrega: "2025-03-10", horarioEntrega: "23:59", status: "Agendada", descricao: "Finalizar protótipo de alta fidelidade e preparar apresentação. Equipe: João, Maria.", anotacoesVinculadas: []},
-        { id: "T003", titulo: "Fazer Leitura do Capítulo 3", disciplinaId: "CCO200", tipo: "Tarefa", dataEntrega: "2025-03-05", horarioEntrega: "09:00", status: "A Fazer", descricao: "Ler sobre classes e objetos em POO.", anotacoesVinculadas: []},
-        { id: "T004", titulo: "Preparar apresentação para a banca", disciplinaId: "", tipo: "Tarefa", dataEntrega: "2025-06-15", horarioEntrega: "10:00", status: "Em Andamento", descricao: "Reunir todos os materiais do TCC e criar slides. Não pertence a uma disciplina específica.", anotacoesVinculadas: []}
+        // Algoritmos e Estrutura de Dados
+        { id: "T001", titulo: "Complexidade e Estruturas Lineares", disciplinaId: "CS101", tipo: "Prova", dataEntrega: "2025-06-23", horarioEntrega: "19:00", status: "Agendada", descricao: "", anotacoesVinculadas: [] },
+       
+        // Redes de Computadores
+        { id: "T006", titulo: "Camadas de Transporte e Aplicação", disciplinaId: "CS102", tipo: "Prova", dataEntrega: "2025-06-24", horarioEntrega: "21:00", status: "Agendada", descricao: "", anotacoesVinculadas: [] },
+
+        // Banco de Dados
+        { id: "T010", titulo: "SQL e Normalização", disciplinaId: "CS103", tipo: "Prova", dataEntrega: "2025-06-25", horarioEntrega: "19:00", status: "Agendada", descricao: "", anotacoesVinculadas: [] },
+
+        // Inteligência Artificial
+        { id: "T013", titulo: "Machine Learning e Redes Neurais", disciplinaId: "CS104", tipo: "Prova", dataEntrega: "2025-06-26", horarioEntrega: "21:00", status: "Agendada", descricao: "", anotacoesVinculadas: [] },
+
+        // Compiladores
+        { id: "T017", titulo: "Análise Léxica e Sintática", disciplinaId: "CS105", tipo: "Prova", dataEntrega: "2025-06-29", horarioEntrega: "19:00", status: "Agendada", descricao: "", anotacoesVinculadas: [] }, 
     ];
     
     let listaAnotacoes = [];
