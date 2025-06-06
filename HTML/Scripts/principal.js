@@ -43,11 +43,131 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- DADOS MOCKADOS PARA O DASHBOARD ---
-    const disciplinasDashboard = [ { id: "ART101", nome: "Fundamentos de Design Gráfico – ART101" }, { id: "ITD201", nome: "Web Design Avançado – ITD201" }, { id: "UXD301", nome: "Princípios de UX/UI Design – UXD301" }, { id: "HD101", nome: "História do Design – HD101" }, { id: "AD202", nome: "Artes Digitais – AD202" }];
-    const tarefasExemploDashboard = [ { id: "T001dash", titulo: "Revisar slides aula 5", disciplinaId: "ART101", tipo: "Tarefa", dataEntrega: "2025-05-30", status: "A Fazer", horarioEntrega: "18:00", descricao: "Focar nos slides sobre Gestalt." }, { id: "T002dash", titulo: "Protótipo de Baixa Fidelidade", disciplinaId: "UXD301", tipo: "Tarefa", dataEntrega: "2025-06-05", status: "Em Andamento", horarioEntrega: "23:59", descricao: "Criar wireframes para as 3 telas principais." }, { id: "T003dash", titulo: "Exercícios Cap 2 Web", disciplinaId: "ITD201", tipo: "Tarefa", dataEntrega: "2025-05-28", status: "A Fazer", horarioEntrega: "", descricao: "Resolver problemas 1 a 10." }, { id: "T004dash", titulo: "Pesquisar referências de logos", disciplinaId: "ART101", tipo: "Tarefa", dataEntrega: "2025-06-10", status: "Agendada", horarioEntrega: "", descricao: "Buscar 10 exemplos de logos minimalistas." }];
-    const provasDashboardDados = [ { id: "P001", tituloProva: "Fund. de Design Gráfico", dataOriginal: "2025-01-25", dataFormatada: "25 Jan 2025", horario: "19h30", local: "Design Studio A", status: "Concluída", disciplinaId: "ART101", tipo: "Prova", descricao: "Prova final sobre os conceitos de Gestalt, Teoria das Cores e Tipografia.", anotacoesVinculadas: [] }, { id: "P002", tituloProva: "Avaliação Prática - Ilustração Digital", dataOriginal: "2025-02-05", dataFormatada: "05 Fev 2025", horario: "20h00", local: "Laboratório 2", status: "Concluída", disciplinaId: "AD202", tipo: "Prova", descricao: "Avaliação prática de técnicas de ilustração vetorial e pintura digital.", anotacoesVinculadas: [] }, { id: "P003", tituloProva: "Prova Teórica - Princípios de UX/UI", dataOriginal: "2025-03-10", dataFormatada: "10 Mar 2025", horario: "19h25", local: "Design Lab 1", status: "Agendada", disciplinaId: "UXD301", tipo: "Prova", descricao: "Prova teórica cobrindo heurísticas de Nielsen, wireframing e prototipação.", anotacoesVinculadas: [{id: "A005", titulo: "Resumo Heurísticas"}] }, { id: "P004", tituloProva: "Redação - História do Design", dataOriginal: "2025-04-12", dataFormatada: "12 Abr 2025", horario: "09h00", local: "Sala de Aula B", status: "Agendada", disciplinaId: "HD101", tipo: "Prova", descricao: "Prova discursiva sobre os principais movimentos do design do século XX.", anotacoesVinculadas: [] }];
-    const disciplinasFixasParaSelects = ["Nenhuma", ...disciplinasDashboard.map(d => d.nome.split('–')[0].trim()) , "TCC 1", "Outra"];
-    const atividadesPorDisciplinaParaSelects = { "Nenhuma": ["Nenhuma"], "Fundamentos de Design Gráfico": ["Nenhuma", "Estudo de Caso", "Apresentação"], "Web Design Avançado": ["Nenhuma", "Projeto Final", "Teste de Usabilidade"], "Princípios de UX/UI Design": ["Nenhuma", "Wireframes", "Protótipo Interativo"], "História do Design": ["Nenhuma", "Resenha Crítica"], "Artes Digitais": ["Nenhuma", "Portfólio Parcial"], "TCC 1": ["Nenhuma", "Definição Tema", "Revisão Bibliográfica"], "Outra": ["Nenhuma", "Atividade Genérica"] };
+
+    const disciplinasDashboard = [
+        { id: "CS101", nome: "Algoritmos e Estrutura de Dados" },
+        { id: "CS102", nome: "Redes de Computadores" },
+        { id: "CS103", nome: "Banco de Dados" },
+        { id: "CS104", nome: "Inteligência Artificial" },
+        { id: "CS105", nome: "Compiladores" }
+    ];
+
+    const tarefasExemploDashboard = [
+        {
+            id: "T001dash",
+            titulo: "Implementação de Fila e Pilha",
+            disciplinaId: "CS101",
+            tipo: "Tarefa",
+            dataEntrega: "2025-06-18",
+            status: "Em Andamento",
+            horarioEntrega: "23:59",
+            descricao: "Implementar as estruturas de dados Fila e Pilha em Java, incluindo testes de unidade."
+        },
+        {
+            id: "T002dash",
+            titulo: "Análise de Pacotes com Wireshark",
+            disciplinaId: "CS102",
+            tipo: "Tarefa",
+            dataEntrega: "2025-06-22",
+            status: "A Fazer",
+            horarioEntrega: "19:00",
+            descricao: "Capturar e analisar o handshake TCP de uma conexão HTTPS."
+        },
+        {
+            id: "T003dash",
+            titulo: "Projeto de Modelagem MER",
+            disciplinaId: "CS103",
+            tipo: "Tarefa",
+            dataEntrega: "2025-06-25",
+            status: "A Fazer",
+            horarioEntrega: "",
+            descricao: "Criar o Modelo Entidade-Relacionamento para um sistema acadêmico."
+        },
+        {
+            id: "T004dash",
+            titulo: "Trabalho sobre Classificação com CNN",
+            disciplinaId: "CS104",
+            tipo: "Tarefa",
+            dataEntrega: "2025-07-05",
+            status: "Agendada",
+            horarioEntrega: "",
+            descricao: "Desenvolver e treinar uma Rede Neural Convolucional para classificar imagens."
+        }
+    ];
+
+    const provasDashboardDados = [
+        {
+            id: "P001",
+            tituloProva: "Complexidade e Estruturas Lineares",
+            dataOriginal: "2025-05-28",
+            dataFormatada: "28 Mai 2025",
+            horario: "19h00",
+            local: "Lab. Info 5",
+            status: "Concluída",
+            disciplinaId: "CS101",
+            tipo: "Prova",
+            descricao: "Prova sobre análise de complexidade (Big O), Filas, Pilhas e Listas.",
+            anotacoesVinculadas: []
+        },
+        {
+            id: "P002",
+            tituloProva: "SQL e Normalização",
+            dataOriginal: "2025-06-15",
+            dataFormatada: "15 Jun 2025",
+            horario: "21h00",
+            local: "Sala 201-B",
+            status: "Agendada",
+            disciplinaId: "CS103",
+            tipo: "Prova",
+            descricao: "Avaliação sobre consultas SQL avançadas e formas normais (1FN, 2FN, 3FN).",
+            anotacoesVinculadas: [{ id: "A005", titulo: "Resumo Formas Normais" }]
+        },
+        {
+            id: "P003",
+            tituloProva: "Camadas de Transporte e Aplicação",
+            dataOriginal: "2025-06-28",
+            dataFormatada: "28 Jun 2025",
+            horario: "19h00",
+            local: "Auditório",
+            status: "Agendada",
+            disciplinaId: "CS102",
+            tipo: "Prova",
+            descricao: "Prova teórica sobre os protocolos TCP, UDP, HTTP, DNS e FTP.",
+            anotacoesVinculadas: []
+        },
+        {
+            id: "P004",
+            tituloProva: "Análise Léxica e Sintática",
+            dataOriginal: "2025-07-10",
+            dataFormatada: "10 Jul 2025",
+            horario: "19h00",
+            local: "Lab. Info 2",
+            status: "Agendada",
+            disciplinaId: "CS105",
+            tipo: "Prova",
+            descricao: "Prova prática sobre criação de analisadores com Flex e Bison.",
+            anotacoesVinculadas: []
+        }
+    ];
+
+    const disciplinasFixasParaSelects = [
+        "Nenhuma",
+        ...disciplinasDashboard.map(d => d.nome),
+        "TCC 1",
+        "Outra"
+    ];
+
+    const atividadesPorDisciplinaParaSelects = {
+        "Nenhuma": ["Nenhuma"],
+        "Algoritmos e Estrutura de Dados": ["Nenhuma", "Implementação de Estrutura", "Análise de Algoritmo", "Trabalho Prático"],
+        "Redes de Computadores": ["Nenhuma", "Programação de Sockets", "Configuração em Simulador", "Análise de Protocolo"],
+        "Banco de Dados": ["Nenhuma", "Modelagem de Dados", "Lista de SQL", "Projeto de Normalização"],
+        "Inteligência Artificial": ["Nenhuma", "Implementação de Algoritmo", "Treinamento de Modelo", "Seminário"],
+        "Compiladores": ["Nenhuma", "Analisador Léxico", "Analisador Sintático", "Gerador de Código"],
+        "TCC 1": ["Nenhuma", "Definição do Tema", "Revisão Bibliográfica", "Entrega Parcial"],
+        "Outra": ["Nenhuma", "Atividade Genérica"]
+    };
+
     const atividadesPadraoParaSelects = ["Nenhuma", "Outra"];
 
 
