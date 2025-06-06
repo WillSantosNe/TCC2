@@ -107,9 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <dl class="row mb-3">
                             <dt class="col-sm-4">Título:</dt><dd class="col-sm-8">${dadosItem.tituloProva || dadosItem.titulo || '-'}</dd>
                             <dt class="col-sm-4">Disciplina:</dt><dd class="col-sm-8">${discNomeCompleto}</dd>
-                            <dt class="col-sm-4">Tipo:</dt><dd class="col-sm-8"><span class="badge ${getTipoBadgeClass(dadosItem.tipo)}">${dadosItem.tipo}</span></dd>
-                            <dt class="col-sm-4">Data & Horário:</dt><dd class="col-sm-8">${formatarDataHoraModal(dadosItem.dataOriginal || dadosItem.dataEntrega, dadosItem.horario)}</dd>
-                            ${dadosItem.local ? `<dt class="col-sm-4">Local:</dt><dd class="col-sm-8">${dadosItem.local}</dd>` : ''}
+                            <dt class="col-sm-4">Tipo:</dt><dd class="col-sm-8"><span class="badge ${getTipoBadgeClass(dadosItem.tipo)}">${dadosItem.tipo}</span></dd>                            ${dadosItem.local ? `<dt class="col-sm-4">Local:</dt><dd class="col-sm-8">${dadosItem.local}</dd>` : ''}
                             <dt class="col-sm-4">Status:</dt><dd class="col-sm-8"><span class="badge ${getStatusBadgeClass(dadosItem.status)}">${dadosItem.status}</span></dd>
                             ${dadosItem.descricao ? `<dt class="col-sm-12 mt-3">Descrição:</dt><dd class="col-sm-12"><pre style="white-space: pre-wrap; word-wrap: break-word; font-family: inherit;">${dadosItem.descricao.replace(/\n/g, '<br>')}</pre></dd>` : ''}
                         </dl>
