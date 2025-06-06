@@ -1,5 +1,16 @@
 /* Css/disciplinas.css */
 
+
+/* Força o alinhamento da coluna Período para a direita */
+#tabelaDisciplinas td.dt-periodo-column {
+    text-align: right;
+}
+
+/* Força o alinhamento da coluna Ações para a esquerda */
+#tabelaDisciplinas td.dt-actions-column-left {
+    text-align: left;
+}
+
 /* Estilos ESPECÍFICOS para o modal de Disciplina (adicionar/editar) */
 dialog#modalDisciplina {
     width: 90%;

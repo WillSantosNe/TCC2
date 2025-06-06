@@ -1,46 +1,37 @@
 document.addEventListener("DOMContentLoaded", function () {
     // --- ELEMENT SELECTORS ---
-    // Seletores do modal principal
-    const modalDisciplina = document.querySelector("#modalDisciplinaAdicaoPrincipal"); // Apontando para o modal correto
+    const modalDisciplinaAdicao = document.querySelector("#modalDisciplinaAdicaoPrincipal");
     const abrirModalNovaDisciplinaBtnOriginal = document.querySelector("#abrirModalNovaDisciplina");
-    const fecharModalDisciplinaBtn = modalDisciplina ? modalDisciplina.querySelector('.btn-close') : null;
-    const cancelarModalDisciplinaBtn = modalDisciplina ? modalDisciplina.querySelector('.btn-modal-cancel') : null;
     const formDisciplina = document.querySelector("#formDisciplinaPrincipal");
     const modalDisciplinaLabel = document.querySelector("#modalDisciplinaAdicaoPrincipalLabel");
-
-    // Seletores dos campos do formulário (apenas os necessários)
-    const disciplinaIdInput = document.getElementById('disciplinaId'); // Supondo um campo hidden para ID
     const disciplinaNomeInput = document.getElementById('principalDisciplinaNome');
+    const disciplinaDescricaoInput = document.getElementById('principalDisciplinaDescricao');
     const disciplinaProfessorInput = document.getElementById('principalDisciplinaProfessor');
     const disciplinaPeriodoSelect = document.getElementById('principalDisciplinaPeriodo');
     const disciplinaStatusSelect = document.getElementById('principalDisciplinaStatus');
 
-    // Seletores do modal de Detalhes
     const modalDetalhesDisciplina = document.querySelector("#modalDetalhesDisciplina");
-    const fecharModalDetalhesDisciplinaBtn = document.querySelector("#fecharModalDetalhesDisciplina");
-    const okModalDetalhesDisciplinaBtn = document.querySelector("#okModalDetalhesDisciplina");
-    const modalDetalhesDisciplinaConteudo = document.querySelector("#modalDetalhesDisciplinaConteudo");
-    const modalDetalhesDisciplinaLabel = document.querySelector("#modalDetalhesDisciplinaLabel");
+    const detalheDisciplinaNome = document.querySelector("#detalhe-disciplina-nome");
+    const detalheDisciplinaDescricao = document.querySelector("#detalhe-disciplina-descricao");
+    const detalheDisciplinaProfessor = document.querySelector("#detalhe-disciplina-professor");
+    const detalheDisciplinaPeriodo = document.querySelector("#detalhe-disciplina-periodo");
+    const detalheDisciplinaStatus = document.querySelector("#detalhe-disciplina-status");
 
     let tabelaDisciplinasDt;
     let resizeDebounceTimer;
 
-    // --- DADOS MOCADOS (Simplificados) ---
+    // --- DADOS MOCADOS ---
     const listaDisciplinas = [
-        { id: "ITD201", nome: "Web Design Avançado – ITD201", professor: "Prof. João Paulo", periodo: "2024.1", status: "Ativa" },
-        { id: "ART101", nome: "Fundamentos de Design Gráfico – ART101", professor: "Prof. Jango", periodo: "2024.1", status: "Ativa" },
-        { id: "UXD301", nome: "Princípios de UX/UI Design – UXD301", professor: "Prof. Jason", periodo: "2024.2", status: "Ativa" },
-        { id: "ANI301", nome: "Técnicas de Animação 3D – ANI301", professor: "Prof. Pryzado", periodo: "2024.2", status: "Em Andamento" },
-        { id: "HAR202", nome: "História da Arte – HAR202", professor: "Prof. Olivia", periodo: "2024.1", status: "Concluída" },
-        { id: "PHO110", nome: "Fotografia Digital – PHO110", professor: "Prof. Lucas", periodo: "2024.2", status: "Ativa" },
-        { id: "CCO200", nome: "Programação Orientada a Objetos – CCO200", professor: "Prof. Ana", periodo: "2024.1", status: "Concluída" },
-        { id: "CCO210", nome: "Banco de Dados – CCO210", professor: "Prof. Carlos", periodo: "2024.2", status: "Ativa" },
-        { id: "CCO300", nome: "Redes de Computadores – CCO300", professor: "Prof. Beatriz", periodo: "2024.1", status: "Ativa" },
-        { id: "CCO401", nome: "Inteligência Artificial – CCO401", professor: "Prof. Eduardo", periodo: "2025.1", status: "Agendada" },
+        { id: "CS101", nome: "Algoritmos e Estrutura de Dados", descricao: "Estudo de algoritmos fundamentais, estruturas de dados como listas, filas, pilhas, árvores e grafos, e análise de complexidade.", professor: "Prof. Jango", periodo: "2025.1", status: "Ativa" },
+        { id: "CS102", nome: "Redes de Computadores", descricao: "Princípios de redes, modelo OSI, TCP/IP, protocolos de aplicação, camada de transporte e segurança de redes.", professor: "Prof. João Paulo", periodo: "2025.1", status: "Ativa" },
+        { id: "CS103", nome: "Banco de Dados", descricao: "Modelagem de dados, SQL, normalização, transações e sistemas de gerenciamento de bancos de dados relacionais e NoSQL.", professor: "Prof. Jason", periodo: "2025.1", status: "Ativa" },
+        { id: "CS104", nome: "Inteligência Artificial", descricao: "Introdução à IA, busca, representação de conhecimento, aprendizado de máquina e redes neurais.", professor: "Prof. Pryzado", periodo: "2025.2", status: "Em Andamento" },
+        { id: "CS105", nome: "Compiladores", descricao: "Teoria e prática da construção de compiladores, incluindo análise léxica, sintática e semântica, e geração de código.", professor: "Prof. Ada L.", periodo: "2025.2", status: "Agendada" },
+        { id: "CS210", nome: "Engenharia de Software", descricao: "Ciclo de vida de software, metodologias ágeis (Scrum, Kanban), UML, padrões de projeto e testes de software.", professor: "Prof. Fernanda", periodo: "2025.2", status: "Ativa" },
+        { id: "CS220", nome: "Sistemas Operacionais", descricao: "Gerenciamento de processos, memória, sistemas de arquivos e concorrência em sistemas operacionais modernos.", professor: "Prof. Linus T.", periodo: "2025.1", status: "Concluída" }
     ];
 
-
-    // --- FUNÇÕES DE VALIDAÇÃO (Simplificadas) ---
+    // --- FUNÇÕES DE VALIDAÇÃO ---
     function displayFieldError(inputElement, message) {
         clearFieldError(inputElement);
         inputElement.classList.add('is-invalid');
@@ -67,7 +58,6 @@ document.addEventListener("DOMContentLoaded", function () {
             { element: disciplinaPeriodoSelect, message: "Por favor, selecione o período." },
             { element: disciplinaStatusSelect, message: "Por favor, selecione o status." },
         ];
-
         fieldsToValidate.forEach(field => {
             if (!field.element) return;
             clearFieldError(field.element);
@@ -79,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return isValid;
     }
 
-    // --- FUNÇÕES DE UI ---
+    // --- FUNÇÕES DE UI E AUXILIARES ---
     function getStatusBadgeClass(status) {
         switch (status) {
             case 'Ativa': return 'bg-success-subtle text-success';
@@ -90,10 +80,37 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    function gerarDropdownHtml(disciplinaId) {
+        if (!disciplinaId) return '--';
+        return `
+            <div class="dropdown">
+                <button class="btn btn-sm btn-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-three-dots-vertical"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item btn-detalhar-disciplina" href="#" data-disciplina-id="${disciplinaId}"><i class="bi bi-eye me-2"></i>Detalhar</a></li>
+                    <li><a class="dropdown-item btn-edit-disciplina" href="#" data-disciplina-id="${disciplinaId}"><i class="bi bi-pencil-square me-2"></i>Editar</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item btn-remover-disciplina text-danger" href="#" data-disciplina-id="${disciplinaId}"><i class="bi bi-trash me-2"></i>Remover</a></li>
+                </ul>
+            </div>`;
+    }
+
+    function popularSelect(el, opts, selVal = null) {
+        if (!el) return;
+        el.innerHTML = '';
+        opts.forEach(opt => {
+            const o = document.createElement('option');
+            o.value = (typeof opt === 'object' ? opt.id : opt);
+            o.textContent = (typeof opt === 'object' ? opt.nome : opt);
+            if (selVal && (String(o.value) === String(selVal) || (typeof opt === 'object' && opt.nome === selVal))) o.selected = true;
+            el.appendChild(o);
+        });
+    }
+
     // --- DATATABLE INITIALIZATION ---
     function inicializarDataTable() {
         if (!window.jQuery || !$.fn.DataTable) return null;
-
         if ($.fn.DataTable.isDataTable('#tabelaDisciplinas')) {
             $('#tabelaDisciplinas').DataTable().destroy();
             $('#tabelaDisciplinas tbody').empty();
@@ -102,98 +119,158 @@ document.addEventListener("DOMContentLoaded", function () {
         tabelaDisciplinasDt = $('#tabelaDisciplinas').DataTable({
             responsive: { details: { type: 'column', target: 0 } },
             dom: '<"row dt-custom-header align-items-center mb-3"<"col-12 col-md-auto me-md-auto"f><"col-12 col-md-auto dt-buttons-container">>t<"row mt-3 align-items-center"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 dataTables_paginate_wrapper"p>>',
-            paging: false,
-            scrollY: '450px',
-            scrollCollapse: true,
-            lengthChange: false,
+            paging: false, scrollY: '450px', scrollCollapse: true, lengthChange: false,
             language: { url: 'https://cdn.datatables.net/plug-ins/2.0.7/i18n/pt-BR.json', search: "", searchPlaceholder: "Buscar disciplinas...", info: "Total de _TOTAL_ disciplinas" },
             columnDefs: [
                 { orderable: false, className: 'dtr-control', targets: 0 },
-                { responsivePriority: 1, targets: 1 }, // Nome
-                { responsivePriority: 2, targets: 2 }, // Professor
-                { responsivePriority: 3, targets: 3 }, // Período
-                { responsivePriority: 4, targets: 4 }, // Status
-                { orderable: false, className: "dt-actions-column no-export", targets: -1, responsivePriority: 10000 }
+                { responsivePriority: 1, targets: 1 }, { responsivePriority: 2, targets: 2 },
+                { responsivePriority: 3, targets: 3, className: 'dt-periodo-column' },
+                { responsivePriority: 4, targets: 4 },
+                { orderable: false, className: "dt-actions-column-left no-export", targets: -1, responsivePriority: 10000 }
             ],
             data: listaDisciplinas.map(disciplina => {
                 const statusBadgeHtml = `<span class="badge ${getStatusBadgeClass(disciplina.status)}">${disciplina.status}</span>`;
-                const dropdownHtml = `
-                    <div class="dropdown">
-                        <button class="btn btn-sm btn-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-three-dots-vertical"></i></button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item btn-detalhar-disciplina" href="#" data-disciplina-id="${disciplina.id}"><i class="bi bi-eye me-2"></i>Detalhar</a></li>
-                            <li><a class="dropdown-item btn-edit-disciplina" href="#" data-disciplina-id="${disciplina.id}"><i class="bi bi-pencil-square me-2"></i>Editar</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item btn-remover-disciplina text-danger" href="#" data-disciplina-id="${disciplina.id}"><i class="bi bi-trash me-2"></i>Remover</a></li>
-                        </ul>
-                    </div>`;
-
-                return [
-                    '', // dtr-control column
-                    disciplina.nome,
-                    disciplina.professor || '-',
-                    disciplina.periodo || '-',
-                    statusBadgeHtml,
-                    dropdownHtml
-                ];
+                return ['', disciplina.nome, disciplina.professor || '-', disciplina.periodo || '-', statusBadgeHtml, gerarDropdownHtml(disciplina.id)];
             }),
             initComplete: function () {
                 const api = this.api();
                 $('#tabelaDisciplinas_filter input').addClass('form-control form-control-sm');
-                
                 const buttonsContainer = $(this.api().table().container()).find('.dt-custom-header .dt-buttons-container');
-
-                // --- Filtros (Status e Período) ---
                 const filterStatusHtml = `<select id="filterStatusDisciplina" class="form-select dt-filter-select"><option value="">Todos os Status</option><option value="Ativa">Ativa</option><option value="Concluída">Concluída</option><option value="Em Andamento">Em Andamento</option><option value="Agendada">Agendada</option></select>`;
-                const filterPeriodoHtml = `<select id="filterPeriodo" class="form-select dt-filter-select"><option value="">Todos os Períodos</option><option value="2024.1">2024.1</option><option value="2024.2">2024.2</option><option value="2025.1">2025.1</option></select>`;
+                const filterPeriodoHtml = `<select id="filterPeriodo" class="form-select dt-filter-select"><option value="">Todos os Períodos</option><option value="2024.1">2024.1</option><option value="2025.1">2025.1</option><option value="2025.2">2025.2</option></select>`;
+                buttonsContainer.append(filterStatusHtml, filterPeriodoHtml);
                 
-                buttonsContainer.append(filterStatusHtml);
-                buttonsContainer.append(filterPeriodoHtml);
-                
-                // Mover o botão original para o cabeçalho da tabela
+                // ================== CÓDIGO CORRIGIDO ==================
                 if (abrirModalNovaDisciplinaBtnOriginal) {
-                    buttonsContainer.append(abrirModalNovaDisciplinaBtnOriginal);
+                    // Mover o botão original para o container da tabela, em vez de clonar
+                    buttonsContainer.append(abrirModalNovaDisciplinaBtnOriginal); 
                 }
+                // ======================================================
 
-                $('#filterStatusDisciplina').on('change', function() {
-                    api.column(4).search($(this).val() ? '^' + $(this).val() + '$' : '', true, false).draw();
-                });
-
-                $('#filterPeriodo').on('change', function() {
-                    api.column(3).search($(this).val() ? '^' + $(this).val() + '$' : '', true, false).draw();
-                });
-
-                $('#tabelaDisciplinas tbody tr').each(function(index) {
-                    $(this).data('completo', listaDisciplinas[index]);
+                $('#filterStatusDisciplina').on('change', function () { api.column(4).search($(this).val() ? '^' + $(this).val() + '$' : '', true, false).draw(); });
+                $('#filterPeriodo').on('change', function () { api.column(3).search($(this).val() ? '^' + $(this).val() + '$' : '', true, false).draw(); });
+                
+                $('#tabelaDisciplinas tbody tr').each(function (index, el) {
+                    const rowData = api.row(el).data();
+                    const disciplinaOriginal = listaDisciplinas.find(d => d.nome === rowData[1]);
+                    if (disciplinaOriginal) $(this).data('completo', disciplinaOriginal);
                 });
 
                 $(window).off('resize.dtDisciplinas').on('resize.dtDisciplinas', () => {
-                     clearTimeout(resizeDebounceTimer);
-                     resizeDebounceTimer = setTimeout(() => { if (tabelaDisciplinasDt) tabelaDisciplinasDt.columns.adjust().responsive.recalc(); }, 250);
+                    clearTimeout(resizeDebounceTimer);
+                    resizeDebounceTimer = setTimeout(() => { if (tabelaDisciplinasDt) tabelaDisciplinasDt.columns.adjust().responsive.recalc(); }, 250);
+                });
+            },
+            drawCallback: function (settings) {
+                const dropdownToggleList = [].slice.call(this.api().table().body().querySelectorAll('[data-bs-toggle="dropdown"]'));
+                dropdownToggleList.forEach(function (dropdownToggleEl) {
+                    if (!bootstrap.Dropdown.getInstance(dropdownToggleEl)) {
+                        new bootstrap.Dropdown(dropdownToggleEl, { popperConfig: { strategy: 'fixed' } });
+                    }
                 });
             }
         });
         return tabelaDisciplinasDt;
     }
 
-    // --- MANAGE MODAL ---
+    // --- AÇÕES DA TABELA (MODAL DE DETALHES, EDITAR, REMOVER) ---
+    $('#tabelaDisciplinas tbody').on('click', '.btn-detalhar-disciplina, .btn-edit-disciplina, .btn-remover-disciplina', function (e) {
+        e.preventDefault(); e.stopPropagation();
+        let tr = $(this).closest('tr');
+        if (tr.hasClass('dtr-bs-modal')) tr = tr.prev('tr.parent');
+
+        const dadosCompletos = tr.data('completo');
+        if (!dadosCompletos) return;
+
+        const dropdownElement = $(this).closest('.dropdown').find('[data-bs-toggle="dropdown"]')[0];
+        if (dropdownElement) { const dropdownInstance = bootstrap.Dropdown.getInstance(dropdownElement); if (dropdownInstance) dropdownInstance.hide(); }
+
+        if ($(this).hasClass('btn-edit-disciplina')) {
+            abrirModalFormDisciplina(true, dadosCompletos, tr[0]);
+        } else if ($(this).hasClass('btn-remover-disciplina')) {
+            if (confirm(`Tem certeza que deseja remover "${dadosCompletos.nome}"?`)) {
+                tabelaDisciplinasDt.row(tr).remove().draw();
+            }
+        } else if ($(this).hasClass('btn-detalhar-disciplina')) {
+            detalheDisciplinaNome.textContent = dadosCompletos.nome || 'Detalhes da Disciplina';
+            detalheDisciplinaDescricao.textContent = dadosCompletos.descricao || 'Nenhuma descrição fornecida.';
+            detalheDisciplinaProfessor.textContent = dadosCompletos.professor || '-';
+            detalheDisciplinaPeriodo.textContent = dadosCompletos.periodo || '-';
+            detalheDisciplinaStatus.innerHTML = `<span class="badge ${getStatusBadgeClass(dadosCompletos.status)}">${dadosCompletos.status}</span>`;
+            const bsModal = new bootstrap.Modal(modalDetalhesDisciplina);
+            bsModal.show();
+        }
+    });
+
+    // --- LÓGICA PARA MODAIS DE ADIÇÃO RÁPIDA (SIDEBAR) ---
+    (function setupQuickAddModals() {
+        const disciplinasParaSelects = ["Nenhuma", ...new Set(listaDisciplinas.map(d => d.nome))];
+        const atividadesPorDisciplina = { "Nenhuma": ["Nenhuma"] };
+        listaDisciplinas.forEach(d => {
+            atividadesPorDisciplina[d.nome] = ["Nenhuma", "Atividade Genérica 1", "Atividade Genérica 2"];
+        });
+
+        const modalTarefaEl = document.getElementById('modalTarefaAdicaoPrincipal');
+        if (modalTarefaEl) {
+            const form = modalTarefaEl.querySelector('form');
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                alert("Lógica para salvar Tarefa/Prova...");
+                bootstrap.Modal.getInstance(modalTarefaEl).hide();
+            });
+        }
+
+        const modalAnotacaoEl = document.getElementById('modalAnotacaoPrincipal');
+        if (modalAnotacaoEl) {
+            const form = modalAnotacaoEl.querySelector('form');
+            const disciplinaSelect = form.querySelector('#principalAnotacaoDisciplinaSelect');
+            const atividadeSelect = form.querySelector('#principalAnotacaoAtividadeSelect');
+            const conteudoTextarea = form.querySelector('#principalAnotacaoConteudoInput');
+
+            modalAnotacaoEl.addEventListener('show.bs.modal', () => {
+                form.reset();
+                popularSelect(disciplinaSelect, disciplinasParaSelects, "Nenhuma");
+                popularSelect(atividadeSelect, atividadesPorDisciplina[disciplinaSelect.value] || ["Nenhuma"], "Nenhuma");
+                if (typeof tinymce !== 'undefined') {
+                    tinymce.get(conteudoTextarea.id)?.destroy();
+                    tinymce.init({
+                        selector: `#${conteudoTextarea.id}`,
+                        plugins: 'lists link image table code help wordcount autoresize',
+                        toolbar: 'undo redo | blocks | bold italic | bullist numlist | link | code',
+                        height: 250, menubar: false, branding: false, statusbar: false,
+                        setup: (editor) => { editor.on('init', () => editor.setContent('')); }
+                    });
+                }
+            });
+            modalAnotacaoEl.addEventListener('hidden.bs.modal', () => {
+                tinymce.get(conteudoTextarea.id)?.destroy();
+            });
+            disciplinaSelect.addEventListener('change', function () {
+                popularSelect(atividadeSelect, atividadesPorDisciplina[this.value] || ["Nenhuma"], "Nenhuma");
+            });
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                alert("Lógica para salvar Anotação...");
+                bootstrap.Modal.getInstance(modalAnotacaoEl).hide();
+            });
+        }
+    })();
+    
+    // --- LÓGICA DO FORMULÁRIO PRINCIPAL DE EDIÇÃO/CRIAÇÃO DE DISCIPLINA ---
     function abrirModalFormDisciplina(isEditMode = false, dadosDisciplina = null, targetTr = null) {
-        if (!formDisciplina || !modalDisciplina || !disciplinaNomeInput) return;
-        
+        if (!formDisciplina || !modalDisciplinaAdicao || !disciplinaNomeInput) return;
         formDisciplina.reset();
-        [disciplinaNomeInput, disciplinaPeriodoSelect, disciplinaStatusSelect].forEach(clearFieldError);
-        
+        [disciplinaNomeInput, disciplinaDescricaoInput, disciplinaPeriodoSelect, disciplinaStatusSelect].forEach(el => el && clearFieldError(el));
         delete formDisciplina.dataset.disciplinaId;
         delete formDisciplina.dataset.rowIndex;
-        
         modalDisciplinaLabel.textContent = isEditMode ? "Editar Disciplina" : "Adicionar Disciplina";
 
         if (isEditMode && dadosDisciplina) {
             disciplinaNomeInput.value = dadosDisciplina.nome || '';
+            disciplinaDescricaoInput.value = dadosDisciplina.descricao || '';
             disciplinaProfessorInput.value = dadosDisciplina.professor || '';
             disciplinaPeriodoSelect.value = dadosDisciplina.periodo || '';
             disciplinaStatusSelect.value = dadosDisciplina.status || '';
-            
             formDisciplina.dataset.disciplinaId = dadosDisciplina.id;
             if (tabelaDisciplinasDt && targetTr) {
                 formDisciplina.dataset.rowIndex = tabelaDisciplinasDt.row(targetTr).index();
@@ -201,41 +278,10 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
             disciplinaStatusSelect.value = "Ativa";
         }
-        const bsModal = bootstrap.Modal.getInstance(modalDisciplina) || new bootstrap.Modal(modalDisciplina);
+        const bsModal = bootstrap.Modal.getInstance(modalDisciplinaAdicao) || new bootstrap.Modal(modalDisciplinaAdicao);
         bsModal.show();
     }
-    
-    // --- TABLE ACTIONS ---
-    $('#tabelaDisciplinas tbody').on('click', '.btn-detalhar-disciplina, .btn-edit-disciplina, .btn-remover-disciplina', function (e) {
-        e.preventDefault();
-        const tr = $(this).closest('tr');
-        const row = tabelaDisciplinasDt.row(tr);
-        const dadosCompletos = $(tr).data('completo');
 
-        if (!dadosCompletos) return;
-
-        if ($(this).hasClass('btn-edit-disciplina')) {
-            abrirModalFormDisciplina(true, dadosCompletos, tr[0]);
-        } else if ($(this).hasClass('btn-remover-disciplina')) {
-            if (confirm(`Tem certeza que deseja remover "${dadosCompletos.nome}"?`)) {
-                row.remove().draw(false);
-                // Lógica para remover do array de dados aqui
-            }
-        } else if ($(this).hasClass('btn-detalhar-disciplina')) {
-            // Preencher e abrir modal de detalhes (simplificado)
-            modalDetalhesDisciplinaLabel.textContent = dadosCompletos.nome;
-            modalDetalhesDisciplinaConteudo.innerHTML = `
-                <dl class="row">
-                  <dt class="col-sm-3">Professor:</dt><dd class="col-sm-9">${dadosCompletos.professor || '-'}</dd>
-                  <dt class="col-sm-3">Período:</dt><dd class="col-sm-9">${dadosCompletos.periodo || '-'}</dd>
-                  <dt class="col-sm-3">Status:</dt><dd class="col-sm-9"><span class="badge ${getStatusBadgeClass(dadosCompletos.status)}">${dadosCompletos.status}</span></dd>
-                </dl>`;
-            const bsModal = new bootstrap.Modal(modalDetalhesDisciplina);
-            bsModal.show();
-        }
-    });
-
-    // --- FORM SUBMISSION ---
     if (formDisciplina) {
         formDisciplina.addEventListener("submit", function (e) {
             e.preventDefault();
@@ -247,43 +293,36 @@ document.addEventListener("DOMContentLoaded", function () {
             const dadosCompletosDisciplina = {
                 id: formDisciplinaId || 'disc-' + new Date().getTime(),
                 nome: disciplinaNomeInput.value.trim(),
-                professor: disciplinaProfessorInput.value.trim(),
+                descricao: disciplinaDescricaoInput.value.trim(),
+                professor: disciplinaProfessorInput.value.trim() || '-',
                 periodo: disciplinaPeriodoSelect.value,
                 status: disciplinaStatusSelect.value,
             };
 
-            const statusBadgeHtml = `<span class="badge ${getStatusBadgeClass(dadosCompletosDisciplina.status)}">${dadosCompletosDisciplina.status}</span>`;
-            const dropdownHtml = `...`; // O HTML do dropdown seria gerado aqui
-
-            const dadosLinhaTabela = [
-                '',
-                dadosCompletosDisciplina.nome,
-                dadosCompletosDisciplina.professor || '-',
-                dadosCompletosDisciplina.periodo || '-',
-                statusBadgeHtml,
-                dropdownHtml
-            ];
-
-            if (formDisciplinaId && rowIndex !== undefined) {
-                tabelaDisciplinasDt.row(rowIndex).data(dadosLinhaTabela).draw(false);
+            const indexNaLista = listaDisciplinas.findIndex(d => d.id === formDisciplinaId);
+            if (indexNaLista > -1) {
+                listaDisciplinas[indexNaLista] = dadosCompletosDisciplina;
             } else {
-                tabelaDisciplinasDt.row.add(dadosLinhaTabela).draw(false);
+                listaDisciplinas.push(dadosCompletosDisciplina);
             }
+
+            const statusBadgeHtml = `<span class="badge ${getStatusBadgeClass(dadosCompletosDisciplina.status)}">${dadosCompletosDisciplina.status}</span>`;
+            const dadosLinhaTabela = ['', dadosCompletosDisciplina.nome, dadosCompletosDisciplina.professor, dadosCompletosDisciplina.periodo, statusBadgeHtml, gerarDropdownHtml(dadosCompletosDisciplina.id)];
             
-            const bsModal = bootstrap.Modal.getInstance(modalDisciplina);
+            let targetRowNode;
+            if (formDisciplinaId && rowIndex !== undefined) {
+                targetRowNode = tabelaDisciplinasDt.row(rowIndex).data(dadosLinhaTabela).node();
+            } else {
+                targetRowNode = tabelaDisciplinasDt.row.add(dadosLinhaTabela).node();
+            }
+            $(targetRowNode).data('completo', dadosCompletosDisciplina);
+            
+            tabelaDisciplinasDt.draw(false);
+            
+            const bsModal = bootstrap.Modal.getInstance(modalDisciplinaAdicao);
             if(bsModal) bsModal.hide();
         });
     }
-    
-    // --- EVENT LISTENERS PARA MODAIS ---
-    if(abrirModalNovaDisciplinaBtnOriginal) {
-        abrirModalNovaDisciplinaBtnOriginal.addEventListener('click', (e) => {
-            e.preventDefault();
-            abrirModalFormDisciplina();
-        });
-    }
-    if (fecharModalDetalhesDisciplinaBtn) fecharModalDetalhesDisciplinaBtn.addEventListener("click", (e) => e.preventDefault());
-    if (okModalDetalhesDisciplinaBtn) okModalDetalhesDisciplinaBtn.addEventListener("click", (e) => e.preventDefault());
 
     // --- INICIALIZAÇÃO ---
     inicializarDataTable();
