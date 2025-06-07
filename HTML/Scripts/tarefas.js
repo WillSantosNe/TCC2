@@ -1,11 +1,12 @@
 document.addEventListener("DOMContentLoaded", function () {
     // --- SELETORES DE ELEMENTOS ---
-    const modalTarefaDialog = document.querySelector("#modalTarefa"); 
-    const abrirModalNovaTarefaBtnOriginal = document.querySelector("#abrirModalNovaTarefa"); 
-    const fecharModalTarefaBtn = document.querySelector("#fecharModalTarefa"); 
-    const cancelarModalTarefaBtn = document.querySelector("#cancelarModalTarefa"); 
-    const formTarefaDialog = document.querySelector("#formTarefa");
+    const modalTarefaDialog = document.querySelector("#modalTarefa");
+    const abrirModalNovaTarefaBtnOriginal = document.querySelector("#abrirModalNovaTarefa");
+    const fecharModalTarefaBtn = document.querySelector("#fecharModalTarefa");
+    const cancelarModalTarefaBtn = document.querySelector("#cancelarModalTarefa");
+    const formTarefa = document.querySelector("#formTarefa");
     const modalTarefaLabel = document.querySelector("#modalTarefaLabel");
+    const tarefaIdInput = document.getElementById('tarefaId');
     const tarefaTituloInput = document.getElementById('tarefaTitulo');
     const tarefaDisciplinaSelect = document.getElementById('tarefaDisciplina');
     const tarefaTipoSelect = document.getElementById('tarefaTipo');
@@ -18,13 +19,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const okModalDetalhesBtn = document.querySelector("#okModalDetalhesTarefa");
     const modalDetalhesConteudo = document.querySelector("#modalDetalhesTarefaConteudo");
     const modalDetalhesTarefaLabel = document.querySelector("#modalDetalhesTarefaLabel");
-    const rapidaAnotacaoDisciplinaSelect = document.getElementById('rapidaAnotacaoDisciplinaSelect');
-    const rapidaAnotacaoAtividadeSelect = document.getElementById('rapidaAnotacaoAtividadeSelect');
 
     let tabelaTarefasDt;
-    let resizeDebounceTimer;
 
-    // Array com as disciplinas únicas
+    // --- DADOS MOCADOS ---
     const listaDisciplinas = [
         { id: "CS101", nome: "Algoritmos e Estrutura de Dados" },
         { id: "CS102", nome: "Redes de Computadores" },
@@ -32,378 +30,282 @@ document.addEventListener("DOMContentLoaded", function () {
         { id: "CS104", nome: "Inteligência Artificial" },
         { id: "CS105", nome: "Compiladores" }
     ];
-
-    // Array com todas as 20 atividades, exatamente como no Excel
     let listaTarefas = [
-        // Algoritmos e Estrutura de Dados
-        { id: "T001", titulo: "Complexidade e Estruturas Lineares", disciplinaId: "CS101", tipo: "Prova", dataEntrega: "2025-06-23", horarioEntrega: "19:00", status: "Agendada", descricao: "", anotacoesVinculadas: [] },
-       
-        // Redes de Computadores
-        { id: "T006", titulo: "Camadas de Transporte e Aplicação", disciplinaId: "CS102", tipo: "Prova", dataEntrega: "2025-06-24", horarioEntrega: "21:00", status: "Agendada", descricao: "", anotacoesVinculadas: [] },
-
-        // Banco de Dados
-        { id: "T010", titulo: "SQL e Normalização", disciplinaId: "CS103", tipo: "Prova", dataEntrega: "2025-06-25", horarioEntrega: "19:00", status: "Agendada", descricao: "", anotacoesVinculadas: [] },
-
-        // Inteligência Artificial
-        { id: "T013", titulo: "Machine Learning e Redes Neurais", disciplinaId: "CS104", tipo: "Prova", dataEntrega: "2025-06-26", horarioEntrega: "21:00", status: "Agendada", descricao: "", anotacoesVinculadas: [] },
-
-        // Compiladores
-        { id: "T017", titulo: "Análise Léxica e Sintática", disciplinaId: "CS105", tipo: "Prova", dataEntrega: "2025-06-29", horarioEntrega: "19:00", status: "Agendada", descricao: "", anotacoesVinculadas: [] }, 
+        { id: "T001", titulo: "Complexidade e Estruturas Lineares", disciplinaId: "CS101", tipo: "Prova", dataEntrega: "2025-06-23", horarioEntrega: "19:00", status: "Agendada", descricao: "Estudar capítulos 1 a 3 do livro Cormen. Foco em complexidade Big-O." },
+        { id: "T006", titulo: "Camadas de Transporte e Aplicação", disciplinaId: "CS102", tipo: "Prova", dataEntrega: "2025-06-24", horarioEntrega: "21:00", status: "Agendada", descricao: "Foco em protocolos TCP, UDP e HTTP." },
+        { id: "T010", titulo: "SQL e Normalização", disciplinaId: "CS103", tipo: "Prova", dataEntrega: "2025-06-25", horarioEntrega: "19:00", status: "Agendada", descricao: "Praticar joins e entender as formas normais (1FN, 2FN, 3FN)." },
+        { id: "T013", titulo: "Machine Learning e Redes Neurais", disciplinaId: "CS104", tipo: "Prova", dataEntrega: "2025-06-26", horarioEntrega: "21:00", status: "Agendada", descricao: "Revisar conceitos de regressão linear e redes neurais convolucionais." },
+        { id: "T017", titulo: "Análise Léxica e Sintática", disciplinaId: "CS105", tipo: "Prova", dataEntrega: "2025-06-29", horarioEntrega: "19:00", status: "Agendada", descricao: "Implementar um analisador léxico simples em Python." },
     ];
-    
-    let listaAnotacoes = [];
 
-    function displayFieldError(inputElement, message) {
-        if (!inputElement) return;
-        clearFieldError(inputElement);
-        inputElement.classList.add('is-invalid');
-        const inputWrapper = inputElement.closest('.input-wrapper');
-        let feedbackContainer = inputElement.parentElement;
-        if (inputWrapper) {
-            feedbackContainer = inputWrapper;
-        }
-        const feedbackDiv = document.createElement('div');
-        feedbackDiv.className = 'invalid-feedback d-block';
-        feedbackContainer.appendChild(feedbackDiv); 
-        feedbackDiv.textContent = message;
-    }
-
-    function clearFieldError(inputElement) {
-        if (!inputElement) return;
-        inputElement.classList.remove('is-invalid');
-        const inputWrapper = inputElement.closest('.input-wrapper');
-        let feedbackContainer = inputElement.parentElement;
-        if (inputWrapper) {
-            feedbackContainer = inputWrapper;
-        }
-        const feedbackElement = feedbackContainer.querySelector('.invalid-feedback.d-block');
-        if (feedbackElement) {
-            feedbackElement.remove();
-        }
-    }
-    
-    function popularSelectComOpcoes(selectElement, opcoes, valorPadraoTexto = "Selecione...", valorPadrao = "") {
-        if (!selectElement) return;
-        const valorAnterior = selectElement.value;
-        selectElement.innerHTML = `<option value="${valorPadrao}" ${!valorPadrao && !opcoes.some(op => op.id === valorAnterior) ? 'disabled selected' : ''}>${valorPadraoTexto}</option>`; 
-        opcoes.forEach(opcao => {
-            const optionElement = new Option(opcao.nome, opcao.id);
-            selectElement.add(optionElement);
-        });
-        if (opcoes.some(op => op.id === valorAnterior) || valorAnterior === valorPadrao ) {
-            selectElement.value = valorAnterior;
-        }
-    }
-    
-    function popularDisciplinasEmTodosOsSelects() {
-        const selectsDeDisciplina = [
-            tarefaDisciplinaSelect, 
-            rapidaAnotacaoDisciplinaSelect, 
-        ];
-        selectsDeDisciplina.forEach(select => {
-            if (select) {
-                popularSelectComOpcoes(select, listaDisciplinas, "Selecione... (Opcional)", "");
-            }
-        });
-    }
-
-    function popularAtividadesNoSelectAnotacao() {
-        if (!rapidaAnotacaoAtividadeSelect) return;
-        const atividadesParaSelect = listaTarefas.map(tarefa => ({ id: tarefa.id, nome: tarefa.titulo }));
-        popularSelectComOpcoes(rapidaAnotacaoAtividadeSelect, atividadesParaSelect, "Nenhuma atividade vinculada", "");
-    }
-
-    function validateFormTarefaPrincipal() { 
-        let isValid = true;
-        const fieldsToValidate = [
-            { element: tarefaTituloInput, message: "Por favor, informe o título da tarefa." },
-            { element: tarefaTipoSelect, message: "Por favor, selecione o tipo da tarefa." },
-            { element: tarefaDataEntregaInput, message: "Por favor, informe a data de entrega." },
-            { element: tarefaStatusSelect, message: "Por favor, selecione o status." }
-        ];
-        fieldsToValidate.forEach(field => {
-            if (!field.element) return;
-            clearFieldError(field.element);
-            if (!field.element.value || (field.element.value === "" && field.element.tagName === "SELECT")) {
-                displayFieldError(field.element, field.message);
-                isValid = false;
-            }
-        });
-        return isValid;
-    }
-
-    function abrirModalFormTarefaPrincipal(isEditMode = false, dadosTarefa = null, targetTr = null) {
-        if (!formTarefaDialog || !modalTarefaDialog || !modalTarefaLabel) {
-            console.error("Elementos do modal de tarefa (<dialog>) não encontrados.");
-            return;
-        }
-        formTarefaDialog.reset();
-        const fieldsToClearValidation = [
-            tarefaTituloInput, tarefaDisciplinaSelect, tarefaTipoSelect, tarefaDataEntregaInput,
-            tarefaHorarioEntregaInput, tarefaStatusSelect, tarefaDescricaoInput
-        ];
-        fieldsToClearValidation.forEach(el => { if (el) clearFieldError(el); });
-
-        delete formTarefaDialog.dataset.tarefaId;
-        delete formTarefaDialog.dataset.rowIndex;
-
-        popularDisciplinasEmTodosOsSelects(); 
-
-        modalTarefaLabel.textContent = isEditMode ? "Editar Tarefa" : "Adicionar Tarefa";
-
+    // --- FUNÇÕES DOS MODAIS ---
+    function abrirModalTarefa(isEditMode = false, dadosTarefa = null, targetTr = null) {
+        if (!modalTarefaDialog) return;
+        formTarefa.reset();
+        popularSelectDisciplinas();
+        modalTarefaLabel.textContent = isEditMode ? "Editar Tarefa/Prova" : "Adicionar Tarefa/Prova";
         if (isEditMode && dadosTarefa) {
-            if(tarefaTituloInput) tarefaTituloInput.value = dadosTarefa.titulo || '';
-            if(tarefaDisciplinaSelect) tarefaDisciplinaSelect.value = dadosTarefa.disciplinaId || '';
-            if(tarefaTipoSelect) tarefaTipoSelect.value = dadosTarefa.tipo || '';
-            if(tarefaDataEntregaInput) tarefaDataEntregaInput.value = dadosTarefa.dataEntrega || '';
-            if(tarefaHorarioEntregaInput) tarefaHorarioEntregaInput.value = dadosTarefa.horarioEntrega || '';
-            if(tarefaStatusSelect) tarefaStatusSelect.value = dadosTarefa.status || 'A Fazer';
-            if(tarefaDescricaoInput) tarefaDescricaoInput.value = dadosTarefa.descricao || '';
-            formTarefaDialog.dataset.tarefaId = dadosTarefa.id;
+            tarefaIdInput.value = dadosTarefa.id;
+            tarefaTituloInput.value = dadosTarefa.titulo || '';
+            tarefaDescricaoInput.value = dadosTarefa.descricao || '';
+            tarefaDataEntregaInput.value = dadosTarefa.dataEntrega || '';
+            tarefaTipoSelect.value = dadosTarefa.tipo || '';
+            tarefaDisciplinaSelect.value = dadosTarefa.disciplinaId || '';
+            tarefaHorarioEntregaInput.value = dadosTarefa.horarioEntrega || '';
+            tarefaStatusSelect.value = dadosTarefa.status || 'A Fazer';
             if (tabelaTarefasDt && targetTr) {
-                formTarefaDialog.dataset.rowIndex = tabelaTarefasDt.row(targetTr).index();
+                formTarefa.dataset.rowIndex = tabelaTarefasDt.row(targetTr).index();
             }
         } else {
-            if(tarefaDisciplinaSelect) tarefaDisciplinaSelect.value = "";
-            if(tarefaTipoSelect) tarefaTipoSelect.value = ""; 
-            if(tarefaStatusSelect) tarefaStatusSelect.value = "A Fazer";
+            tarefaIdInput.value = '';
+            tarefaTipoSelect.value = "";
+            tarefaDisciplinaSelect.value = "";
+            tarefaStatusSelect.value = "A Fazer";
         }
         modalTarefaDialog.showModal();
     }
 
-    function fecharModalFormTarefaPrincipal() { 
-        if (!modalTarefaDialog) return;
-        modalTarefaDialog.close();
+    function fecharModalTarefa() {
+        if (modalTarefaDialog) modalTarefaDialog.close();
     }
 
-    if (abrirModalNovaTarefaBtnOriginal) { 
-        abrirModalNovaTarefaBtnOriginal.addEventListener('click', (e) => {
-            e.preventDefault();
-            abrirModalFormTarefaPrincipal();
-        });
+    function abrirModalDetalhes(tarefaData) {
+        if (!modalDetalhesDialog) return;
+        const disciplina = listaDisciplinas.find(d => d.id === tarefaData.disciplinaId);
+        const dataFormatada = formatarDataHora(tarefaData.dataEntrega, tarefaData.horarioEntrega);
+        modalDetalhesTarefaLabel.textContent = `Detalhes: ${tarefaData.titulo}`;
+        const conteudoHtml = `
+            <div class="detalhes-tarefa p-2">
+                <p><strong><i class="bi bi-journal-bookmark-fill me-2"></i>Disciplina:</strong><br>${disciplina ? disciplina.nome : 'Não especificada'}</p>
+                <p><strong><i class="bi bi-calendar-event me-2"></i>Data de Entrega:</strong><br>${dataFormatada}</p>
+                <p><strong><i class="bi bi-tags-fill me-2"></i>Tipo:</strong> ${tarefaData.tipo || '-'}</p>
+                <p><strong><i class="bi bi-flag-fill me-2"></i>Status:</strong> ${tarefaData.status || '-'}</p>
+                <hr>
+                <p><strong><i class="bi bi-card-text me-2"></i>Descrição:</strong><br>${tarefaData.descricao || 'Nenhuma descrição fornecida.'}</p>
+            </div>`;
+        modalDetalhesConteudo.innerHTML = conteudoHtml;
+        modalDetalhesDialog.showModal();
     }
-    if (fecharModalTarefaBtn) fecharModalTarefaBtn.addEventListener("click", (e) => { e.preventDefault(); fecharModalFormTarefaPrincipal(); });
-    if (cancelarModalTarefaBtn) cancelarModalTarefaBtn.addEventListener("click", (e) => { e.preventDefault(); fecharModalFormTarefaPrincipal(); });
-    if (modalTarefaDialog) modalTarefaDialog.addEventListener("click", e => {
-        if (e.target === modalTarefaDialog) {
-            fecharModalFormTarefaPrincipal();
-        }
-    });
-    
-    if (formTarefaDialog) { 
-        formTarefaDialog.addEventListener("submit", function (e) {
+
+    // --- LISTENERS DOS MODAIS ---
+    if (fecharModalTarefaBtn) fecharModalTarefaBtn.addEventListener("click", (e) => { e.preventDefault(); fecharModalTarefa(); });
+    if (cancelarModalTarefaBtn) cancelarModalTarefaBtn.addEventListener("click", (e) => { e.preventDefault(); fecharModalTarefa(); });
+    if (modalTarefaDialog) modalTarefaDialog.addEventListener("click", e => { if (e.target === modalTarefaDialog) fecharModalTarefa(); });
+    if (fecharModalDetalhesBtn) fecharModalDetalhesBtn.addEventListener('click', () => modalDetalhesDialog.close());
+    if (okModalDetalhesBtn) okModalDetalhesBtn.addEventListener('click', () => modalDetalhesDialog.close());
+    if (modalDetalhesDialog) modalDetalhesDialog.addEventListener("click", e => { if (e.target === modalDetalhesDialog) modalDetalhesDialog.close(); });
+
+    // --- SUBMISSÃO DO FORMULÁRIO ---
+    if (formTarefa) {
+        formTarefa.addEventListener("submit", function (e) {
             e.preventDefault();
-            if (!validateFormTarefaPrincipal()) return;
-
-            const tarefaIdAttr = formTarefaDialog.dataset.tarefaId;
-            const isEditMode = !!tarefaIdAttr && tarefaIdAttr !== 'undefined';
-            const tarefaId = isEditMode ? tarefaIdAttr : 'TDialog-' + new Date().getTime(); 
-            const rowIndex = formTarefaDialog.dataset.rowIndex !== undefined ? parseInt(formTarefaDialog.dataset.rowIndex) : undefined;
-            const disciplinaSelecionadaObj = listaDisciplinas.find(d => d.id === (tarefaDisciplinaSelect ? tarefaDisciplinaSelect.value : ''));
-
+            const isEditMode = !!tarefaIdInput.value;
+            const tarefaId = isEditMode ? tarefaIdInput.value : 'T-' + new Date().getTime();
+            const rowIndex = formTarefa.dataset.rowIndex;
             const dadosCompletosTarefa = {
                 id: tarefaId,
-                titulo: tarefaTituloInput ? tarefaTituloInput.value.trim() : '',
-                disciplinaId: tarefaDisciplinaSelect ? tarefaDisciplinaSelect.value : '',
-                tipo: tarefaTipoSelect ? tarefaTipoSelect.value : '',
-                dataEntrega: tarefaDataEntregaInput ? tarefaDataEntregaInput.value : '',
-                horarioEntrega: tarefaHorarioEntregaInput ? tarefaHorarioEntregaInput.value : '',
-                status: tarefaStatusSelect ? tarefaStatusSelect.value : 'A Fazer',
-                descricao: tarefaDescricaoInput ? tarefaDescricaoInput.value.trim() : '',
-                anotacoesVinculadas: isEditMode ? (listaTarefas.find(t => t.id === tarefaId)?.anotacoesVinculadas || []) : []
+                titulo: tarefaTituloInput.value.trim(),
+                disciplinaId: tarefaDisciplinaSelect.value,
+                tipo: tarefaTipoSelect.value,
+                dataEntrega: tarefaDataEntregaInput.value,
+                horarioEntrega: tarefaHorarioEntregaInput.value,
+                status: tarefaStatusSelect.value,
+                descricao: tarefaDescricaoInput.value.trim(),
             };
-            dadosCompletosTarefa.disciplinaNome = disciplinaSelecionadaObj ? disciplinaSelecionadaObj.nome : '-';
-            salvarOuAtualizarTarefaNaListaEDataTable(dadosCompletosTarefa, isEditMode, rowIndex);
-            fecharModalFormTarefaPrincipal();
+            salvarOuAtualizarTarefaNaTabela(dadosCompletosTarefa, isEditMode, rowIndex);
+            fecharModalTarefa();
         });
     }
 
-    function salvarOuAtualizarTarefaNaListaEDataTable(dadosTarefa, isEditMode, rowIndex) {
-        const dataHoraFormatadaParaTabela = formatarDataHoraParaTabela(dadosTarefa.dataEntrega, dadosTarefa.horarioEntrega);
-        const statusBadgeHtml = `<span class="badge ${getStatusBadgeClass(dadosTarefa.status)}">${dadosTarefa.status}</span>`;
-        const tipoBadgeHtml = `<span class="badge ${getTipoBadgeClass(dadosTarefa.tipo)}">${dadosTarefa.tipo}</span>`;
+    // --- FUNÇÕES DA TABELA ---
+    function salvarOuAtualizarTarefaNaTabela(dadosTarefa, isEditMode, rowIndex) {
+        const dadosLinhaTabela = formatarDadosParaLinha(dadosTarefa);
+        if (isEditMode && rowIndex !== undefined) {
+            tabelaTarefasDt.row(rowIndex).data(dadosLinhaTabela).draw(false);
+            const indexLista = listaTarefas.findIndex(t => t.id === dadosTarefa.id);
+            if (indexLista !== -1) listaTarefas[indexLista] = dadosTarefa;
+        } else {
+            tabelaTarefasDt.row.add(dadosLinhaTabela).draw();
+            listaTarefas.push(dadosTarefa);
+        }
+    }
+
+    function formatarDadosParaLinha(tarefa) {
+        const disciplinaObj = listaDisciplinas.find(d => d.id === tarefa.disciplinaId);
+        const disciplinaNome = disciplinaObj ? disciplinaObj.nome : '-';
+        const dataHoraFormatada = formatarDataHora(tarefa.dataEntrega, tarefa.horarioEntrega);
+        const statusBadgeHtml = `<span class="badge ${getStatusBadgeClass(tarefa.status)}">${tarefa.status}</span>`;
+        const tipoBadgeHtml = `<span class="badge ${getTipoBadgeClass(tarefa.tipo)}">${tarefa.tipo}</span>`;
         const dropdownHtml = `
             <div class="dropdown">
-                <button class="btn btn-sm btn-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Ações da tarefa">
+                <button class="btn btn-sm btn-icon btn-actions" type="button" aria-expanded="false" aria-label="Ações da tarefa">
                     <i class="bi bi-three-dots-vertical"></i>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item btn-detalhar-tarefa" href="#" data-tarefa-id="${dadosTarefa.id}"><i class="bi bi-eye me-2"></i>Detalhar</a></li>
-                    <li><a class="dropdown-item btn-edit-tarefa" href="#" data-tarefa-id="${dadosTarefa.id}"><i class="bi bi-pencil-square me-2"></i>Editar</a></li>
+                    <li><a class="dropdown-item btn-detalhar-tarefa" href="#" data-tarefa-id="${tarefa.id}"><i class="bi bi-eye me-2"></i>Detalhar</a></li>
+                    <li><a class="dropdown-item btn-edit-tarefa" href="#" data-tarefa-id="${tarefa.id}"><i class="bi bi-pencil-square me-2"></i>Editar</a></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item btn-remover-tarefa text-danger" href="#" data-tarefa-id="${dadosTarefa.id}"><i class="bi bi-trash me-2"></i>Remover</a></li>
+                    <li><a class="dropdown-item btn-remover-tarefa" href="#" data-tarefa-id="${tarefa.id}"><i class="bi bi-trash me-2"></i>Remover</a></li>
                 </ul>
             </div>`;
-        const dadosLinhaTabela = ['', dadosTarefa.titulo, dadosTarefa.disciplinaNome || '-', tipoBadgeHtml, dataHoraFormatadaParaTabela, statusBadgeHtml, dropdownHtml];
-
-        if (tabelaTarefasDt) {
-            if (isEditMode && rowIndex !== undefined && tabelaTarefasDt.row(rowIndex).node()) {
-                tabelaTarefasDt.row(rowIndex).data(dadosLinhaTabela).draw(false);
-                const indexLista = listaTarefas.findIndex(t => t.id === dadosTarefa.id);
-                if(indexLista !== -1) listaTarefas[indexLista] = dadosTarefa;
-            } else {
-                tabelaTarefasDt.row.add(dadosLinhaTabela).draw(false);
-                listaTarefas.push(dadosTarefa);
-            }
-        }
+        return ['', tarefa.titulo, disciplinaNome, tipoBadgeHtml, dataHoraFormatada, statusBadgeHtml, dropdownHtml];
     }
 
     function inicializarDataTable() {
-        if (!window.jQuery || !$.fn.DataTable) {
-            return;
-        }
         if ($.fn.DataTable.isDataTable('#tabelaTarefas')) {
             $('#tabelaTarefas').DataTable().destroy();
-            $('#tabelaTarefas tbody').empty(); 
         }
-
         tabelaTarefasDt = $('#tabelaTarefas').DataTable({
             responsive: { details: { type: 'column', target: 0 } },
-            // ALTERAÇÃO 1: Removido o 'p' (paginação) do DOM.
-            dom: '<"row dt-custom-header align-items-center mb-3"<"col-12 col-md-auto"f><"col-12 col-md-auto ms-md-auto dt-buttons-container">>t<"row dt-footer-controls mt-3 align-items-center"<"col-sm-12 col-md-5"i>>',
-            
-            // ALTERAÇÃO 2: Paging desativado.
+            dom: '<"row dt-custom-header align-items-center mb-3"<"col-12 col-md-auto"f><"col-12 col-md-auto ms-md-auto dt-buttons-container">>t<"row dt-footer-controls mt-3 align-items-center"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
             paging: false,
-
             scrollY: '450px',
             scrollCollapse: true,
-            lengthChange: false, 
-            language: { url: 'https://cdn.datatables.net/plug-ins/2.0.7/i18n/pt-BR.json', search: "", searchPlaceholder: "Buscar tarefas...", info: "Total de _TOTAL_ tarefas" },
-            columnDefs: [
-                { orderable: false, targets: [0, -1] }
-            ],
-            data: listaTarefas.map(tarefa => {
-                const disciplinaObj = listaDisciplinas.find(d => d.id === tarefa.disciplinaId);
-                const disciplinaNome = disciplinaObj ? disciplinaObj.nome : '-';
-                const dataHoraFormatada = formatarDataHoraParaTabela(tarefa.dataEntrega, tarefa.horarioEntrega);
-                const statusBadgeHtml = `<span class="badge ${getStatusBadgeClass(tarefa.status)}">${tarefa.status}</span>`;
-                const tipoBadgeHtml = `<span class="badge ${getTipoBadgeClass(tarefa.tipo)}">${tarefa.tipo}</span>`;
-                const dropdownHtml = `
-                    <div class="dropdown">
-                        <button class="btn btn-sm btn-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Ações da tarefa">
-                            <i class="bi bi-three-dots-vertical"></i>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item btn-detalhar-tarefa" href="#" data-tarefa-id="${tarefa.id}"><i class="bi bi-eye me-2"></i>Detalhar</a></li>
-                            <li><a class="dropdown-item btn-edit-tarefa" href="#" data-tarefa-id="${tarefa.id}"><i class="bi bi-pencil-square me-2"></i>Editar</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item btn-remover-tarefa text-danger" href="#" data-tarefa-id="${tarefa.id}"><i class="bi bi-trash me-2"></i>Remover</a></li>
-                        </ul>
-                    </div>`;
-                return ['', tarefa.titulo, disciplinaNome, tipoBadgeHtml, dataHoraFormatada, statusBadgeHtml, dropdownHtml ];
-            }),
-            initComplete: function (settings, json) {
+            language: { url: 'https://cdn.datatables.net/plug-ins/2.0.7/i18n/pt-BR.json', search: "", searchPlaceholder: "Buscar tarefas..." },
+            columnDefs: [{ orderable: false, targets: [0, -1] }],
+            data: listaTarefas.map(formatarDadosParaLinha),
+            initComplete: function () {
                 const api = this.api();
-                $('#tabelaTarefas_filter input').addClass('form-control-sm');
-
                 const buttonsContainer = $('.dt-buttons-container');
-                if (abrirModalNovaTarefaBtnOriginal && buttonsContainer.length) {
-                    if($('#abrirModalNovaTarefaDt').length === 0) { 
-                        const abrirModalNovaTarefaBtnClone = abrirModalNovaTarefaBtnOriginal.cloneNode(true);
-                        
-                        abrirModalNovaTarefaBtnClone.style.display = 'inline-flex';
-                        
-                        abrirModalNovaTarefaBtnClone.id = 'abrirModalNovaTarefaDt'; 
-                        
-                        $(abrirModalNovaTarefaBtnClone).on('click', (e) => {
-                            e.preventDefault();
-                            abrirModalFormTarefaPrincipal();
-                        });
-                        buttonsContainer.append(abrirModalNovaTarefaBtnClone);
-                    }
+                if (abrirModalNovaTarefaBtnOriginal && buttonsContainer.length && $('#abrirModalNovaTarefaDt').length === 0) {
+                    const btnClone = $(abrirModalNovaTarefaBtnOriginal).clone().attr('id', 'abrirModalNovaTarefaDt').show();
+                    buttonsContainer.append(btnClone);
+                    btnClone.on('click', (e) => {
+                        e.preventDefault();
+                        abrirModalTarefa();
+                    });
                 }
-
-                const filterHtml = `
-                    <select id="filterTipoTarefa" class="form-select form-select-sm dt-filter-select ms-2">
-                        <option value="">Todos os Tipos</option> <option value="Tarefa">Tarefa</option> <option value="Prova">Prova</option>
-                    </select>
-                    <select id="filterDisciplina" class="form-select form-select-sm dt-filter-select ms-2">
-                        <option value="">Todas as Disciplinas</option>
-                    </select>`;
-                buttonsContainer.prepend(filterHtml); 
-
-                const filterDisciplinaSelect = $('#filterDisciplina');
-                listaDisciplinas.forEach(disciplina => {
-                    filterDisciplinaSelect.append(new Option(disciplina.nome, disciplina.nome)); 
-                });
-
-                $('#filterTipoTarefa').on('change', function() {
-                    const tipo = this.value;
-                    api.column(3).search(tipo ? '^' + $.fn.dataTable.util.escapeRegex(tipo) + '$' : '', true, false).draw();
-                });
-                $('#filterDisciplina').on('change', function() {
-                    const disciplina = this.value;
-                    api.column(2).search(disciplina ? '^' + $.fn.dataTable.util.escapeRegex(disciplina) + '$' : '', true, false).draw();
-                });
+                const filterHtml = `<select id="filterTipoTarefa" class="form-select form-select-sm dt-filter-select ms-2"><option value="">Todos os Tipos</option><option value="Tarefa">Tarefa</option><option value="Prova">Prova</option></select><select id="filterDisciplina" class="form-select form-select-sm dt-filter-select ms-2"><option value="">Todas as Disciplinas</option></select>`;
+                buttonsContainer.prepend(filterHtml);
+                listaDisciplinas.forEach(d => $('#filterDisciplina').append(new Option(d.nome, d.nome)));
+                $('#filterTipoTarefa').on('change', function () { api.column(3).search(this.value ? '^' + $.fn.dataTable.util.escapeRegex(this.value) + '$' : '', true, false).draw(); });
+                $('#filterDisciplina').on('change', function () { api.column(2).search(this.value ? '^' + $.fn.dataTable.util.escapeRegex(this.value) + '$' : '', true, false).draw(); });
             }
         });
     }
 
-    function formatarDataHoraParaTabela(dataStr, horaStr) {
-        if (!dataStr) return '-';
-        const [year, month, day] = dataStr.split('-');
-        const dataObj = new Date(Date.UTC(year, month - 1, day));
-        const meses = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
-        let formatted = `${dataObj.getUTCDate()} ${meses[dataObj.getUTCMonth()]} ${dataObj.getUTCFullYear()}`;
-        if (horaStr) { 
-            const [hour, minute] = horaStr.split(':');
-            let h = parseInt(hour);
-            const ampm = h >= 12 ? 'PM' : 'AM';
-            h = h % 12;
-            h = h ? h : 12;
-            const formattedTime = `${h}:${String(minute).padStart(2, '0')} ${ampm}`;
-            formatted += `, ${formattedTime}`;
-        }
-        return formatted;
+    // --- FUNÇÕES UTILITÁRIAS E EVENTOS DE EDIÇÃO/REMOÇÃO ---
+    function popularSelectDisciplinas() {
+        if (!tarefaDisciplinaSelect) return;
+        const valorAtual = tarefaDisciplinaSelect.value;
+        tarefaDisciplinaSelect.innerHTML = '';
+        listaDisciplinas.forEach(d => tarefaDisciplinaSelect.add(new Option(d.nome, d.id)));
+        tarefaDisciplinaSelect.value = valorAtual;
     }
-
-    function getStatusBadgeClass(status) {
-        switch (status) {
-            case 'Concluída': return 'bg-success-subtle text-success';
-            case 'Agendada':
-            case 'Em Andamento': return 'bg-info-subtle text-info';
-            case 'A Fazer': return 'bg-warning-subtle text-warning';
-            case 'Atrasada':
-            case 'Cancelada': return 'bg-danger-subtle text-danger';
-            default: return 'bg-secondary-subtle text-secondary';
+    
+    // -- LÓGICA DE CONTROLE DO DROPDOWN --
+    
+    // Função para fechar e resetar a posição de qualquer menu dropdown
+    function closeAndResetDropdown(menuElement) {
+        if (!menuElement || menuElement.length === 0) return;
+        
+        const originalParent = menuElement.data('originalParent');
+        if (originalParent) {
+            menuElement.removeClass('show').appendTo(originalParent);
         }
     }
 
-    function getTipoBadgeClass(tipo) {
-        switch (tipo) {
-            case 'Prova': return 'bg-danger-subtle text-danger'; 
-            case 'Tarefa': return 'bg-primary-subtle text-primary';
-            default: return 'bg-light-subtle text-dark';
-        }
-    }
-
-    $('#tabelaTarefas tbody').on('click', '.btn-edit-tarefa', function (e) {
+    $(document).on('click', '.btn-edit-tarefa', function (e) {
         e.preventDefault();
-        const tr = $(this).closest('tr');
+        const menu = $(this).closest('.dropdown-menu');
+        const rowIndex = menu.data('rowIndex');
+        const tarefaId = $(this).data('tarefa-id');
+        const tarefaData = listaTarefas.find(t => t.id === tarefaId);
+        const linhaNode = tabelaTarefasDt.row(rowIndex).node();
+        
+        if (tarefaData) {
+            abrirModalTarefa(true, tarefaData, linhaNode);
+        }
+        closeAndResetDropdown(menu);
+    });
+
+    $(document).on('click', '.btn-detalhar-tarefa', function (e) {
+        e.preventDefault();
+        const menu = $(this).closest('.dropdown-menu');
         const tarefaId = $(this).data('tarefa-id');
         const tarefaData = listaTarefas.find(t => t.id === tarefaId);
         if (tarefaData) {
-            abrirModalFormTarefaPrincipal(true, tarefaData, tr[0]);
+            abrirModalDetalhes(tarefaData);
         }
+        closeAndResetDropdown(menu);
     });
 
-    $('#tabelaTarefas tbody').on('click', '.btn-remover-tarefa', function (e) {
+    $(document).on('click', '.btn-remover-tarefa', function (e) {
         e.preventDefault();
+        const menu = $(this).closest('.dropdown-menu');
+        const rowIndex = menu.data('rowIndex');
         const tarefaId = $(this).data('tarefa-id');
-        const tarefaData = listaTarefas.find(t => t.id === tarefaId);
-        if (confirm(`Tem certeza que deseja remover a tarefa "${tarefaData.titulo}"?`)) {
-            const indexToRemove = listaTarefas.findIndex(t => t.id === tarefaId);
-            if (indexToRemove > -1) {
-                listaTarefas.splice(indexToRemove, 1);
-                tabelaTarefasDt.row($(this).closest('tr')).remove().draw();
-            }
-        }
-    });
-    
-    // ... (outros listeners como o de detalhar tarefa, se houver)
+        const tarefa = listaTarefas.find(t => t.id === tarefaId);
 
-    // Demais inicializações
-    popularDisciplinasEmTodosOsSelects(); 
-    popularAtividadesNoSelectAnotacao(); 
-    inicializarDataTable(); 
+        if (tarefa && confirm(`Tem certeza que deseja remover a tarefa "${tarefa.titulo}"?`)) {
+            listaTarefas = listaTarefas.filter(t => t.id !== tarefaId);
+            tabelaTarefasDt.row(rowIndex).remove().draw();
+        }
+        closeAndResetDropdown(menu);
+    });
+
+    const formatarDataHora = (data, hora) => {
+        if (!data) return '-';
+        const [year, month, day] = data.split('-');
+        let dataFormatada = `${day}/${month}/${year}`;
+        if (hora) {
+            const [h, m] = hora.split(':');
+            let ampm = parseInt(h) >= 12 ? 'PM' : 'AM';
+            let hour = parseInt(h) % 12;
+            hour = hour ? hour : 12;
+            dataFormatada += `, ${hour.toString().padStart(2, '0')}:${m} ${ampm}`;
+        }
+        return dataFormatada;
+    };
+
+    const getStatusBadgeClass = status => ({ 'Concluída': 'bg-success-subtle text-success', 'Em Andamento': 'bg-info-subtle text-info', 'Agendada': 'bg-primary-subtle text-primary', 'A Fazer': 'bg-warning-subtle text-warning', 'Atrasada': 'bg-danger-subtle text-danger' }[status] || 'bg-secondary-subtle text-secondary');
+    const getTipoBadgeClass = tipo => tipo === 'Prova' ? 'bg-danger-subtle text-danger' : 'bg-primary-subtle text-primary';
+
+    // --- BLOCO PRINCIPAL DE EXECUÇÃO ---
+    
+    inicializarDataTable();
+
+    $('#tabelaTarefas tbody').on('click', '.btn-actions', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const triggerButton = this;
+        const dropdownMenu = $(triggerButton).next('.dropdown-menu');
+        const isAlreadyOpen = dropdownMenu.hasClass('show');
+
+        // Fecha e reseta todos os outros menus antes de abrir um novo
+        closeAndResetDropdown($('.dropdown-menu.show'));
+
+        if (isAlreadyOpen) return; // Se o menu já estava aberto, o passo anterior já o fechou.
+
+        const triggerRow = $(triggerButton).closest('tr');
+        const rowIndex = tabelaTarefasDt.row(triggerRow).index();
+        
+        // Salva a "casa" original e o índice da linha no menu
+        dropdownMenu.data('originalParent', dropdownMenu.parent());
+        dropdownMenu.data('rowIndex', rowIndex);
+        
+        dropdownMenu.appendTo('body');
+        const rect = triggerButton.getBoundingClientRect();
+
+        dropdownMenu.css({
+            position: 'fixed',
+            top: rect.bottom + 'px',
+            left: 'auto',
+            right: (window.innerWidth - rect.right) + 'px',
+            zIndex: 1060
+        });
+
+        dropdownMenu.addClass('show');
+
+        // Listener para fechar clicando fora
+        setTimeout(() => {
+            $(document).one('click.closeDropdown', function (clickEvent) {
+                // Não fecha se o clique for dentro do próprio menu
+                if (!$(clickEvent.target).closest(dropdownMenu).length) {
+                    closeAndResetDropdown(dropdownMenu);
+                }
+            });
+        }, 0);
+    });
 });

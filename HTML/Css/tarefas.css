@@ -1,419 +1,207 @@
+/* ==========================================================================
+ ESTILOS PARA O MODAL <dialog> DE TAREFAS
+ ========================================================================== */
+
 dialog {
-    width: 90%;
-    border-radius: 12px; 
-    border: none; 
-    padding: 0; 
-    box-shadow: 0px 8px 24px rgba(20, 20, 22, 0.15); 
+  width: 90%;
+  border-radius: 12px;
+  border: none;
+  padding: 0;
+  box-shadow: 0px 8px 24px rgba(20, 20, 22, 0.15);
 }
 
 dialog::backdrop {
-    background-color: rgba(0, 0, 0, 0.5); 
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
-dialog#modalTarefa,
-dialog#modalDisciplina {
-    max-width: 800px; 
+dialog#modalTarefa {
+  max-width: 650px; /* Largura ajustada para o novo layout */
 }
 
-dialog#modalDetalhesTarefa {
-   max-width: 520px; 
-}
-
-dialog#modalTarefa .modal-header-studyflow,
-dialog#modalDisciplina .modal-header-studyflow {
+/* --- Cabeçalho, Corpo e Rodapé do Modal --- */
+.modal-header-custom, .modal-body-custom, .modal-footer-custom {
+    padding: 1.25rem 1.75rem;
     background-color: #FFFFFF;
-    padding: 1.25rem 1.75rem; /* Alinhado com modais-adicao.css */
-    border-bottom: 1px solid #E9E9F0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-top-left-radius: 12px; /* Para coincidir com o dialog */
-    border-top-right-radius: 12px;/* Para coincidir com o dialog */
-}
-dialog#modalTarefa .modal-title-wrapper,
-dialog#modalDisciplina .modal-title-wrapper {
-    display: flex;
-    align-items: center;
-}
-dialog#modalTarefa .modal-logo-icon,
-dialog#modalDisciplina .modal-logo-icon {
-    width: 24px; /* Alinhado com modais-adicao.css */
-    height: 24px;/* Alinhado com modais-adicao.css */
-    margin-right: .75rem;
-}
-dialog#modalTarefa .modal-title-custom,
-dialog#modalDisciplina .modal-title-custom {
-    font-weight: 600;
-    font-size: 1.2rem; /* Alinhado com modais-adicao.css */
-    color: #2E3A59;
-    margin-bottom: 0;
-}
-dialog#modalTarefa .btn-close-custom, 
-dialog#modalDisciplina .btn-close-custom,
-dialog#modalTarefa .btn-close.btn-close-white,
-dialog#modalDisciplina .btn-close.btn-close-white {
-    filter: none;
-    background: transparent;
-    border: none;
-    font-size: 1.5rem; /* Tamanho do X */
-    padding: .5rem;
-    line-height: 1;
-    opacity: 0.7; /* Opacidade padrão para X escuro */
-}
-dialog#modalTarefa .btn-close-custom:hover,
-dialog#modalDisciplina .btn-close-custom:hover,
-dialog#modalTarefa .btn-close.btn-close-white:hover,
-dialog#modalDisciplina .btn-close.btn-close-white:hover {
-    opacity: 1;
-}
-/* Para o btn-close-white de Bootstrap, o Bootstrap já o torna branco. Se for o btn-close-custom, ele precisa de cor se o fundo for escuro. */
-/* No caso de modal-header-studyflow, o fundo é branco, então o X padrão do Bootstrap (escuro) ou btn-close-custom (escuro) funciona. */
-
-
-/* --- Corpo do Modal --- */
-dialog#modalTarefa .modal-body-custom,
-dialog#modalDisciplina .modal-body-custom {
-    padding: 1.5rem 1.75rem; /* Alinhado com modais-adicao.css */
-    background: #FFF;
 }
 
-/* --- Estilos para Layout de Propriedades (Ícone - Label - Input) --- */
-/* Estas classes (.modal-property-item, etc.) devem ser adicionadas ao HTML interno dos seus <dialog> */
-dialog#modalTarefa .modal-property-item,
-dialog#modalDisciplina .modal-property-item {
-    display: flex;
-    align-items: center; 
-    gap: 0.75rem;
-    /* margin-bottom: 1rem; /* Já tratado pelo mb-3 no HTML sugerido */
-}
-dialog#modalTarefa .modal-property-item.align-items-start,
-dialog#modalDisciplina .modal-property-item.align-items-start { 
-    align-items: flex-start;
-}
-dialog#modalTarefa .modal-property-item.align-items-start .modal-property-icon,
-dialog#modalDisciplina .modal-property-item.align-items-start .modal-property-icon {
-    margin-top: 0.375rem; 
+.modal-header-custom {
+  border-bottom: 1px solid #E9E9F0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-dialog#modalTarefa .modal-property-icon,
-dialog#modalDisciplina .modal-property-icon {
-    font-size: 1.1rem;
-    color: #6c757d; 
-    flex-shrink: 0;
-    width: 24px; 
-    text-align: center;
-    line-height: 1.5; 
-}
-dialog#modalTarefa .modal-property-icon .bi,
-dialog#modalDisciplina .modal-property-icon .bi { 
-    vertical-align: middle;
-}
-
-dialog#modalTarefa .modal-property-label, /* Para os labels ao lado dos ícones */
-dialog#modalDisciplina .modal-property-label {
-    font-size: 0.875rem;
-    color: #4F5E7B; 
-    font-weight: 500;
-    margin-bottom: 0 !important; 
-    margin-right: 0.5rem;
-    flex-shrink: 0;
-    width: 90px; 
-}
-
-/* Wrapper para o input e feedback de erro, se necessário */
-dialog#modalTarefa .input-wrapper,
-dialog#modalDisciplina .input-wrapper { 
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-dialog#modalTarefa .modal-property-input, /* Use esta classe nos seus inputs/selects/textareas */
-dialog#modalDisciplina .modal-property-input {
-    width: 100%; 
-    font-size: 0.9rem; /* Alinhado com modais-adicao.css */
-    padding: 0.5rem 0.8rem; /* Alinhado com modais-adicao.css */
-    border: 1px solid #D9DDE7; 
-    border-radius: 8px;             
-    color: #2E3A59;             
-    background-color: #FFFFFF;  
-}
-dialog#modalTarefa textarea.modal-property-input, 
-dialog#modalDisciplina textarea.modal-property-input {
-    min-height: 80px; 
-}
-
-dialog#modalTarefa .modal-property-input::placeholder,
-dialog#modalDisciplina .modal-property-input::placeholder {
-    color: #A0AEC0; 
-}
-dialog#modalTarefa .modal-property-input:focus,
-dialog#modalDisciplina .modal-property-input:focus {
-    border-color: var(--primary-color, #5568FE); 
-    box-shadow: 0 0 0 .2rem rgba(var(--primary-rgb, 85,104,254),.25); 
-}
-
-dialog#modalTarefa .modal-property-input.is-invalid,
-dialog#modalDisciplina .modal-property-input.is-invalid {
-    border-color: #dc3545 !important; 
-}
-dialog#modalTarefa .input-wrapper > .invalid-feedback, /* Se o feedback estiver dentro do input-wrapper */
-dialog#modalDisciplina .input-wrapper > .invalid-feedback { 
-    width: 100%; margin-top: .25rem; font-size: .875em; color: #dc3545;
-}
-
-
-/* --- Rodapé do Modal --- */
-dialog#modalTarefa .modal-footer-studyflow,
-dialog#modalDisciplina .modal-footer-studyflow {
-    background: #FFFFFF; 
-    border-top: 1px solid #E9E9F0; 
-    padding: 1rem 1.75rem; /* Alinhado com modais-adicao.css */
+.modal-footer-custom {
+    border-top: 1px solid #E9E9F0;
     display: flex;
     justify-content: flex-end;
-    border-bottom-left-radius: 12px; /* Para coincidir com o dialog */
-    border-bottom-right-radius: 12px;/* Para coincidir com o dialog */
+    gap: 0.75rem;
 }
-dialog#modalTarefa .btn-modal-cancel,
-dialog#modalDisciplina .btn-modal-cancel {
-    background: #F1F3F6; 
-    border: 1px solid #F1F3F6;
-    color: #4F5E7B; 
-    padding: 0.5rem 1.2rem; /* Alinhado com modais-adicao.css */
-    border-radius: 8px; 
+
+/* --- Título e Logo do Cabeçalho --- */
+.modal-title-wrapper {
+  display: flex;
+  align-items: center;
+}
+.modal-logo-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: .75rem;
+}
+.modal-title-custom {
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: #2E3A59;
+  margin-bottom: 0;
+}
+.btn-close-custom {
+  background: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat;
+  border: 0;
+  border-radius: .375rem;
+  width: 1em;
+  height: 1em;
+  opacity: .5;
+}
+.btn-close-custom:hover {
+    opacity: 1;
+}
+
+/* --- Layout dos campos do formulário (Ícone > Label > Input) --- */
+.modal-property-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.modal-property-item.align-items-start {
+  align-items: flex-start;
+}
+.modal-property-item.align-items-start .modal-property-icon {
+  margin-top: 0.375rem;
+}
+.modal-property-icon {
+  font-size: 1.1rem;
+  color: #6c757d;
+  flex-shrink: 0;
+  width: 24px;
+  text-align: center;
+}
+.modal-property-label {
+  font-size: 0.875rem;
+  color: #4F5E7B;
+  font-weight: 500;
+  margin-bottom: 0 !important;
+  flex-shrink: 0;
+  width: 90px;
+}
+.input-wrapper {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+.modal-property-input {
+  font-size: 0.9rem;
+  border: 1px solid #D9DDE7;
+  border-radius: 8px;
+  color: #2E3A59;
+}
+.modal-property-input:focus {
+  border-color: var(--primary-color, #5568FE);
+  box-shadow: 0 0 0 .2rem rgba(var(--primary-rgb, 85,104,254),.25);
+}
+.modal-property-input.is-invalid, 
+.was-validated .modal-property-input:invalid {
+    border-color: #dc3545 !important;
+}
+.was-validated .input-wrapper .invalid-feedback {
+    display: block;
+}
+
+/* --- Botões do Rodapé --- */
+.btn-modal-cancel, .btn-modal-save {
+    padding: 0.5rem 1.2rem;
+    border-radius: 8px;
     font-weight: 500;
-    font-size: 0.9rem; /* Alinhado com modais-adicao.css */
+    font-size: 0.9rem;
+    border: 1px solid transparent;
 }
-dialog#modalTarefa .btn-modal-cancel:hover,
-dialog#modalDisciplina .btn-modal-cancel:hover {
+.btn-modal-cancel {
+    background: #F1F3F6;
+    border-color: #F1F3F6;
+    color: #4F5E7B;
+}
+.btn-modal-cancel:hover {
     background: #E2E6EB;
     border-color: #E2E6EB;
 }
-dialog#modalTarefa .btn-modal-save,
-dialog#modalDisciplina .btn-modal-save {
-    background: #2E3A59; 
-    border: 1px solid #2E3A59;
+.btn-modal-save {
+    background: #2E3A59;
     color: #FFF;
-    padding: 0.5rem 1.2rem; /* Alinhado com modais-adicao.css */
-    border-radius: 8px;
-    font-weight: 500;
-    font-size: 0.9rem; /* Alinhado com modais-adicao.css */
+    border-color: #2E3A59;
 }
-dialog#modalTarefa .btn-modal-save:hover,
-dialog#modalDisciplina .btn-modal-save:hover {
+.btn-modal-save:hover {
     background: #242E47;
     border-color: #242E47;
 }
 
 /* ==========================================================================
-   Estilos Específicos da Página de Tarefas (Títulos, Tabela, etc.)
-   (Estes estilos foram mantidos da sua versão anterior)
-   ========================================================================== */
-.sf-page-title {
-    font-weight: 600;
-    color: var(--text-title-color, #2E3A59); 
+ Estilos Específicos da Página de Tarefas (Tabela, etc.)
+ ========================================================================== */
+.sf-page-title, .sf-page-subtitle {
     margin-bottom: .25rem;
 }
-
 .sf-page-subtitle {
     font-size: .95rem;
-    color: var(--text-body-color, #4F5E7B); 
+    color: var(--text-body-color, #4F5E7B);
     margin-bottom: 1.5rem;
 }
-
-/* ===== Tabela e Ações ===== */
 .tarefas-table th {
-    font-weight: 600;
-    font-size: .85rem;
-    text-transform: uppercase;
-    color: var(--text-body-color, #4F5E7B); 
-    white-space: nowrap;
+  font-weight: 600;
+  font-size: .85rem;
+  text-transform: uppercase;
+  color: var(--text-body-color, #4F5E7B);
+  white-space: nowrap;
 }
-
 .tarefas-table td {
-    font-size: .9rem;
-    vertical-align: middle;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  font-size: .9rem;
+  vertical-align: middle;
 }
-.tarefas-table td.dt-column-title { max-width: 250px; } 
-.tarefas-table td.dt-column-disciplina { max-width: 200px; } 
-
-
-.tarefas-table th.dt-actions-column,
-.tarefas-table td.dt-actions-column {
-    text-align: center !important; 
-    padding: 0 .5rem !important;
-    min-width: 50px;
-    max-width: 70px;
-    width: 70px; 
-    overflow: visible; 
+.dt-actions-column {
+    width: 50px !important;
+    text-align: right !important;
 }
 
-/* DataTables responsive toggle */
-table.dataTable.dtr-inline.collapsed > tbody > tr > td.dtr-control::before,
-table.dataTable.dtr-inline.collapsed > tbody > tr > th.dtr-control::before {
-    content: "+";
-    width: 1.2em;
-    height: 1.2em;
-    line-height: 1.2em; 
-    text-align: center;
-    color: #FFF;
-    background-color: var(--primary-color, #5568FE); 
-    border-radius: 50%;
-    box-shadow: 0 1px 3px rgba(0,0,0,.2);
-}
-table.dataTable.dtr-inline.collapsed > tbody > tr.parent > td.dtr-control::before,
-table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th.dtr-control::before {
-    content: "–"; 
-    background-color: #d33333; 
-}
-
-
-/* Badges e ícones */
-.tarefas-table .badge {
-    font-size: .75rem;
-    padding: .35em .65em;
-    font-weight: 600;
-}
-.btn-icon {
-    color: var(--text-body-color, #4F5E7B);
-    padding: .25rem .5rem;
-    background: transparent;
-    border: none;
-}
-.btn-icon:hover,
-.btn-icon:focus {
-    color: var(--primary-color, #5568FE);
-    background: rgba(var(--primary-rgb, 85,104,254),.1);
-}
-.dropdown-menu {
-    font-size: .9rem;
-    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
-    z-index: 1056; 
-}
-
-/* Scroll da tabela DataTables */
-div.dataTables_scrollBody {
-    border: 1px solid var(--border-color, #dee2e6);
-    border-top: none;
-    border-bottom-left-radius: 6px;
-    border-bottom-right-radius: 6px;
-}
-
-/* ===== Controles do DataTables: busca, filtros, botão ===== */
-#tabelaTarefas_wrapper .dt-custom-header {
+/* DataTables Controls */
+.dt-custom-header {
     display: flex;
-    gap: 1rem;
     flex-wrap: wrap;
-    padding: 1rem 0; 
+    gap: 1rem;
     align-items: center;
 }
-
-div.dataTables_filter {
-    flex: 1 1 auto;
-    margin: 0;
-    min-width: 150px;
-} 
-div.dataTables_filter input {
-    height: 40px;
-    padding: 0.375rem 0.75rem; 
-    box-sizing: border-box;
+.dataTables_filter {
+    flex: 1 1 200px;
+}
+.dataTables_filter input {
     width: 100%;
-    border-radius: var(--bs-border-radius, .375rem); 
-    border: 1px solid var(--bs-border-color, #dee2e6); 
 }
-div.dataTables_filter input:focus {
-    border-color: var(--primary-color, #5568FE); 
-    box-shadow: 0 0 0 .25rem rgba(var(--primary-rgb, 85,104,254),.25); 
-}
-
-
 .dt-buttons-container {
     display: flex;
+    flex-wrap: nowrap;
+    gap: 0.75rem;
     align-items: center;
-    gap: .5rem;
-    flex-shrink: 0;
 }
-
 .dt-filter-select {
     width: auto !important;
-    max-width: 180px;
-    flex-shrink: 0;
-    font-size: 0.9rem; 
-    padding: 0.375rem 2.25rem 0.375rem 0.75rem; 
-    height: 40px; 
-    border-radius: var(--bs-border-radius, .375rem);
-    border: 1px solid var(--bs-border-color, #dee2e6);
-    background-color: var(--bs-body-bg, #fff);
-    color: var(--bs-body-color, #212529);
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e"); 
-    background-repeat: no-repeat;
-    background-position: right 0.75rem center;
-    background-size: 16px 12px;
-    appearance: none; 
-    -webkit-appearance: none;
-    -moz-appearance: none;
+    min-width: 160px;
 }
-.dt-filter-select:focus {
-    border-color: var(--primary-color, #5568FE);
-    box-shadow: 0 0 0 .25rem rgba(var(--primary-rgb, 85,104,254),.25);
+#abrirModalNovaTarefaDt {
+    white-space: nowrap;
 }
-
-.btn-add-task,
-#abrirModalNovaTarefaDt { 
-    height: 40px; 
-}
-.btn-add-task i,
-#abrirModalNovaTarefaDt i {
-    margin-right: 0.5rem;
-}
-
-@media (min-width: 768px) {
-    #tabelaTarefas_wrapper .dt-custom-header {
-        flex-wrap: nowrap;
-        padding: 1rem 0; 
+@media (max-width: 991.98px) {
+    .dt-buttons-container {
+        flex-grow: 1;
+        width: 100%;
     }
-
-    #tabelaTarefas_wrapper .dt-custom-header > div.dataTables_filter {
-        min-width: 200px;
-    }
-
-    #tabelaTarefas_wrapper .dt-custom-header > .dt-buttons-container {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(120px, 180px)) auto;
-        gap: .75rem;
-    }
-}
-
-@media (min-width: 768px) {
-    #tabelaTarefas_wrapper .dt-custom-header {
-        flex-wrap: nowrap;
-        padding: 1rem 0; 
-        align-items: center; 
-    }
-
-    #tabelaTarefas_wrapper .dt-custom-header > div.dataTables_filter {
-        min-width: 200px;
-        margin-right: auto;
-    }
-
-    #tabelaTarefas_wrapper .dt-custom-header > .dt-buttons-container {
-        display: flex;
-        align-items: center; 
-        gap: .75rem;
-    }
-
-    #tabelaTarefas_wrapper .dt-custom-header .dt-buttons-container > .dt-filter-select,
-    #tabelaTarefas_wrapper .dt-custom-header .dt-buttons-container > #abrirModalNovaTarefaDt {
-        height: 40px;
-        display: inline-flex; 
-        align-items: center;  
-        padding-top: 0;       
-        padding-bottom: 0;    
-    }
-    #tabelaTarefas_wrapper .dt-custom-header .dt-buttons-container > .dt-filter-select {
-        padding-top: 0.375rem;
-        padding-bottom: 0.375rem;
+    .dt-filter-select {
+        flex-grow: 1;
     }
 }
