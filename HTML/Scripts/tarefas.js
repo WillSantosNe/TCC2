@@ -297,11 +297,8 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         dropdownMenu.addClass('show');
-
-        // Listener para fechar clicando fora
         setTimeout(() => {
             $(document).one('click.closeDropdown', function (clickEvent) {
-                // Não fecha se o clique for dentro do próprio menu
                 if (!$(clickEvent.target).closest(dropdownMenu).length) {
                     closeAndResetDropdown(dropdownMenu);
                 }
