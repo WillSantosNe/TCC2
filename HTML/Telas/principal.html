@@ -351,31 +351,35 @@
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
                     </div>
                     <div class="modal-body modal-body-custom"> 
-                        <p class="text-muted mb-3 modal-edit-info" id="principalAnotacaoEditInfo">Nova anotação</p>
-                        <div class="mb-3"> 
-                            <input type="text" class="form-control form-control-lg modal-anotacao-title-input" id="principalAnotacaoTituloInput" placeholder="Título da Anotação" required>
-                            <div class="invalid-feedback">Título da anotação é obrigatório.</div>
-                        </div>
-                        <div class="modal-anotacao-properties-section">
-                            <div class="modal-property-item">
-                                <span class="modal-property-icon"><i class="bi bi-journal-bookmark-fill"></i></span>
-                                <label for="principalAnotacaoDisciplinaSelect" class="modal-property-label">Disciplina</label>
-                                <div class="input-wrapper">
-                                    <select class="form-select form-select-sm modal-property-input" id="principalAnotacaoDisciplinaSelect"></select>
+                        <div class="note-editor-modal-content-simplified w-100">
+                            <p class="text-muted mb-3 modal-edit-info" id="principalAnotacaoEditInfo">Nova anotação</p>
+                            <div class="mb-3"> 
+                                <input type="text" class="form-control" id="principalAnotacaoTituloInput" placeholder="Título da Anotação" required>
+                                <div class="invalid-feedback">
+                                    Título da anotação é obrigatório.
                                 </div>
                             </div>
-                            <div class="modal-property-item">
-                                <span class="modal-property-icon"><i class="bi bi-card-checklist"></i></span>
-                                <label for="principalAnotacaoAtividadeSelect" class="modal-property-label">Atividade</label>
-                                <div class="input-wrapper">
-                                    <select class="form-select form-select-sm modal-property-input" id="principalAnotacaoAtividadeSelect"></select>
+                            <div class="modal-anotacao-properties-section">
+                                <div class="modal-property-item">
+                                    <span class="modal-property-icon"><i class="bi bi-journal-bookmark-fill"></i></span>
+                                    <label for="principalAnotacaoDisciplinaSelect" class="modal-property-label">Disciplina</label>
+                                    <div class="input-wrapper">
+                                        <select class="form-select form-select-sm modal-property-input" id="principalAnotacaoDisciplinaSelect"></select>
+                                    </div>
+                                </div>
+                                <div class="modal-property-item">
+                                    <span class="modal-property-icon"><i class="bi bi-card-checklist"></i></span>
+                                    <label for="principalAnotacaoAtividadeSelect" class="modal-property-label">Atividade</label>
+                                    <div class="input-wrapper">
+                                        <select class="form-select form-select-sm modal-property-input" id="principalAnotacaoAtividadeSelect"></select>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <hr class="my-3">
-                        <div class="mb-3">
-                            <label for="principalAnotacaoConteudoInput" class="form-label visually-hidden">Conteúdo da Anotação</label>
-                            <textarea id="principalAnotacaoConteudoInput" rows="10"></textarea> 
+                            <hr class="my-3">
+                            <div class="mb-3">
+                                <label for="principalAnotacaoConteudoInput" class="form-label visually-hidden">Conteúdo da Anotação</label>
+                                <textarea id="principalAnotacaoConteudoInput" rows="10"></textarea> 
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer-custom modal-footer-studyflow"> 

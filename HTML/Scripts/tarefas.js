@@ -11,14 +11,23 @@ document.addEventListener("DOMContentLoaded", function () {
     const tarefaDisciplinaSelect = document.getElementById('tarefaDisciplina');
     const tarefaTipoSelect = document.getElementById('tarefaTipo');
     const tarefaDataEntregaInput = document.getElementById('tarefaDataEntrega');
-    const tarefaHorarioEntregaInput = document.getElementById('tarefaHorarioEntrega');
     const tarefaStatusSelect = document.getElementById('tarefaStatus');
-    const tarefaDescricaoInput = document.getElementById('tarefaDescricao');
+    const tarefaDescricaoInput = document.getElementById('tarefaDescricao'); // Permanece como textarea simples no modal de Tarefa
     const modalDetalhesDialog = document.querySelector("#modalDetalhesTarefa");
     const fecharModalDetalhesBtn = document.querySelector("#fecharModalDetalhesTarefa");
     const okModalDetalhesBtn = document.querySelector("#okModalDetalhesTarefa");
     const modalDetalhesConteudo = document.querySelector("#modalDetalhesTarefaConteudo");
-    const modalDetalhesTarefaLabel = document.querySelector("#modalDetalhesTarefaLabel");
+    const modalDetalhesTarefaLabel = document.getElementById('modalDetalhesTarefaLabel');
+
+    // --- Seletores para o modal de ANOTAÇÃO RÁPIDA (onde o TinyMCE será inicializado) ---
+    // Importante: usei modalAnotacaoAdicaoRapidaEl que corresponde ao HTML fornecido
+    const modalAnotacaoAdicaoRapidaEl = document.getElementById('modalAnotacaoAdicaoRapida');
+    const formAnotacaoAdicaoRapida = modalAnotacaoAdicaoRapidaEl ? modalAnotacaoAdicaoRapidaEl.querySelector('#formAnotacaoAdicaoRapida') : null;
+    const rapidaAnotacaoTituloInput = document.getElementById('rapidaAnotacaoTituloInput');
+    const rapidaAnotacaoDisciplinaSelect = document.getElementById('rapidaAnotacaoDisciplinaSelect');
+    const rapidaAnotacaoAtividadeSelect = document.getElementById('rapidaAnotacaoAtividadeSelect');
+    const rapidaAnotacaoConteudoTextarea = document.getElementById('rapidaAnotacaoConteudoInput'); // Onde o TinyMCE será inicializado
+    const salvarAnotacaoRapidaBtn = document.getElementById('salvarAnotacaoRapidaBtn'); // Botão de submit para anotação rápida
 
     let tabelaTarefasDt;
 
@@ -31,27 +40,40 @@ document.addEventListener("DOMContentLoaded", function () {
         { id: "CS105", nome: "Compiladores" }
     ];
     let listaTarefas = [
-        { id: "T001", titulo: "Complexidade e Estruturas Lineares", disciplinaId: "CS101", tipo: "Prova", dataEntrega: "2025-06-23", horarioEntrega: "19:00", status: "Agendada", descricao: "Estudar capítulos 1 a 3 do livro Cormen. Foco em complexidade Big-O." },
-        { id: "T006", titulo: "Camadas de Transporte e Aplicação", disciplinaId: "CS102", tipo: "Prova", dataEntrega: "2025-06-24", horarioEntrega: "21:00", status: "Agendada", descricao: "Foco em protocolos TCP, UDP e HTTP." },
-        { id: "T010", titulo: "SQL e Normalização", disciplinaId: "CS103", tipo: "Prova", dataEntrega: "2025-06-25", horarioEntrega: "19:00", status: "Agendada", descricao: "Praticar joins e entender as formas normais (1FN, 2FN, 3FN)." },
-        { id: "T013", titulo: "Machine Learning e Redes Neurais", disciplinaId: "CS104", tipo: "Prova", dataEntrega: "2025-06-26", horarioEntrega: "21:00", status: "Agendada", descricao: "Revisar conceitos de regressão linear e redes neurais convolucionais." },
-        { id: "T017", titulo: "Análise Léxica e Sintática", disciplinaId: "CS105", tipo: "Prova", dataEntrega: "2025-06-29", horarioEntrega: "19:00", status: "Agendada", descricao: "Implementar um analisador léxico simples em Python." },
+        { id: "T001", titulo: "Complexidade e Estruturas Lineares", disciplinaId: "CS101", tipo: "Prova", dataEntrega: "2025-06-23", status: "Agendada", descricao: "Estudar capítulos 1 a 3 do livro Cormen. Foco em complexidade Big-O." },
+        { id: "T006", titulo: "Camadas de Transporte e Aplicação", disciplinaId: "CS102", tipo: "Prova", dataEntrega: "2025-06-24", status: "Agendada", descricao: "Foco em protocolos TCP, UDP e HTTP." },
+        { id: "T010", titulo: "SQL e Normalização", disciplinaId: "CS103", tipo: "Prova", dataEntrega: "2025-06-25", status: "Agendada", descricao: "Praticar joins e entender as formas normais (1FN, 2FN, 3FN)." },
+        { id: "T013", titulo: "Machine Learning e Redes Neurais", disciplinaId: "CS104", tipo: "Prova", dataEntrega: "2025-06-26", status: "Agendada", descricao: "Revisar conceitos de regressão linear e redes neurais convolucionais." },
+        { id: "T017", titulo: "Análise Léxica e Sintática", disciplinaId: "CS105", tipo: "Prova", dataEntrega: "2025-06-29", status: "Agendada", descricao: "Implementar um analisador léxico simples em Python." },
     ];
 
-    // --- FUNÇÕES DOS MODAIS ---
+    // Dados para os selects de Anotações Rápidas (como no principal.js)
+    const disciplinasFixasParaSelects = ["Nenhuma", ...listaDisciplinas.map(d => d.nome), "TCC 1", "Outra"];
+    const atividadesPorDisciplinaParaSelects = {
+        "Nenhuma": ["Nenhuma"],
+        "Algoritmos e Estrutura de Dados": ["Nenhuma", "Implementação de Estrutura", "Análise de Algoritmo"],
+        "Redes de Computadores": ["Nenhuma", "Programação de Sockets"],
+        "Banco de Dados": ["Nenhuma", "Modelagem de Dados"],
+        "Inteligência Artificial": ["Nenhuma", "Treinamento de Modelo"],
+        "Compiladores": ["Nenhuma", "Analisador Léxico"],
+        "TCC 1": ["Nenhuma", "Revisão Bibliográfica"],
+        "Outra": ["Nenhuma"]
+    };
+    const atividadesPadraoParaSelects = ["Nenhuma", "Outra"];
+
+    // --- FUNÇÕES DOS MODAIS DE TAREFA ---
     function abrirModalTarefa(isEditMode = false, dadosTarefa = null, targetTr = null) {
         if (!modalTarefaDialog) return;
         formTarefa.reset();
-        popularSelectDisciplinas();
+        popularSelectDisciplinas(); // Este é para o select oculto no modal de tarefa
         modalTarefaLabel.textContent = isEditMode ? "Editar Tarefa/Prova" : "Adicionar Tarefa/Prova";
         if (isEditMode && dadosTarefa) {
             tarefaIdInput.value = dadosTarefa.id;
             tarefaTituloInput.value = dadosTarefa.titulo || '';
-            tarefaDescricaoInput.value = dadosTarefa.descricao || '';
+            tarefaDescricaoInput.value = dadosTarefa.descricao || ''; // Continua sendo um textarea normal
             tarefaDataEntregaInput.value = dadosTarefa.dataEntrega || '';
             tarefaTipoSelect.value = dadosTarefa.tipo || '';
             tarefaDisciplinaSelect.value = dadosTarefa.disciplinaId || '';
-            tarefaHorarioEntregaInput.value = dadosTarefa.horarioEntrega || '';
             tarefaStatusSelect.value = dadosTarefa.status || 'A Fazer';
             if (tabelaTarefasDt && targetTr) {
                 formTarefa.dataset.rowIndex = tabelaTarefasDt.row(targetTr).index();
@@ -72,12 +94,12 @@ document.addEventListener("DOMContentLoaded", function () {
     function abrirModalDetalhes(tarefaData) {
         if (!modalDetalhesDialog) return;
         const disciplina = listaDisciplinas.find(d => d.id === tarefaData.disciplinaId);
-        const dataFormatada = formatarDataHora(tarefaData.dataEntrega, tarefaData.horarioEntrega);
+        const dataFormatada = formatarData(tarefaData.dataEntrega);
         modalDetalhesTarefaLabel.textContent = `Detalhes: ${tarefaData.titulo}`;
         const conteudoHtml = `
             <div class="detalhes-tarefa p-2">
-                <p><strong><i class="bi bi-journal-bookmark-fill me-2"></i>Disciplina:</strong><br>${disciplina ? disciplina.nome : 'Não especificada'}</p>
                 <p><strong><i class="bi bi-calendar-event me-2"></i>Data de Entrega:</strong><br>${dataFormatada}</p>
+                <p><strong><i class="bi bi-journal-bookmark-fill me-2"></i>Disciplina:</strong><br>${disciplina ? disciplina.nome : 'Não especificada'}</p>
                 <p><strong><i class="bi bi-tags-fill me-2"></i>Tipo:</strong> ${tarefaData.tipo || '-'}</p>
                 <p><strong><i class="bi bi-flag-fill me-2"></i>Status:</strong> ${tarefaData.status || '-'}</p>
                 <hr>
@@ -105,12 +127,11 @@ document.addEventListener("DOMContentLoaded", function () {
             const dadosCompletosTarefa = {
                 id: tarefaId,
                 titulo: tarefaTituloInput.value.trim(),
-                disciplinaId: tarefaDisciplinaSelect.value,
+                disciplinaId: tarefaDisciplinaSelect.value, // Mantém este, mesmo que oculto
                 tipo: tarefaTipoSelect.value,
                 dataEntrega: tarefaDataEntregaInput.value,
-                horarioEntrega: tarefaHorarioEntregaInput.value,
-                status: tarefaStatusSelect.value,
-                descricao: tarefaDescricaoInput.value.trim(),
+                status: tarefaStatusSelect.value, // Mantém este, mesmo que oculto
+                descricao: tarefaDescricaoInput.value.trim(), // Pega o valor do textarea normal
             };
             salvarOuAtualizarTarefaNaTabela(dadosCompletosTarefa, isEditMode, rowIndex);
             fecharModalTarefa();
@@ -133,7 +154,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function formatarDadosParaLinha(tarefa) {
         const disciplinaObj = listaDisciplinas.find(d => d.id === tarefa.disciplinaId);
         const disciplinaNome = disciplinaObj ? disciplinaObj.nome : '-';
-        const dataHoraFormatada = formatarDataHora(tarefa.dataEntrega, tarefa.horarioEntrega);
+        const dataFormatada = formatarData(tarefa.dataEntrega);
         const statusBadgeHtml = `<span class="badge ${getStatusBadgeClass(tarefa.status)}">${tarefa.status}</span>`;
         const tipoBadgeHtml = `<span class="badge ${getTipoBadgeClass(tarefa.tipo)}">${tarefa.tipo}</span>`;
         const dropdownHtml = `
@@ -148,7 +169,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <li><a class="dropdown-item btn-remover-tarefa" href="#" data-tarefa-id="${tarefa.id}"><i class="bi bi-trash me-2"></i>Remover</a></li>
                 </ul>
             </div>`;
-        return ['', tarefa.titulo, disciplinaNome, tipoBadgeHtml, dataHoraFormatada, statusBadgeHtml, dropdownHtml];
+        return ['', tarefa.titulo, disciplinaNome, tipoBadgeHtml, dataFormatada, statusBadgeHtml, dropdownHtml];
     }
 
     function inicializarDataTable() {
@@ -187,18 +208,34 @@ document.addEventListener("DOMContentLoaded", function () {
     // --- FUNÇÕES UTILITÁRIAS E EVENTOS DE EDIÇÃO/REMOÇÃO ---
     function popularSelectDisciplinas() {
         if (!tarefaDisciplinaSelect) return;
-        const valorAtual = tarefaDisciplinaSelect.value;
-        tarefaDisciplinaSelect.innerHTML = '';
+        // Adiciona uma opção vazia "Selecione..." para o modal de tarefa
+        tarefaDisciplinaSelect.innerHTML = '<option value="" selected disabled>Selecione...</option>';
         listaDisciplinas.forEach(d => tarefaDisciplinaSelect.add(new Option(d.nome, d.id)));
-        tarefaDisciplinaSelect.value = valorAtual;
+        // Não define valor padrão se for nova tarefa, o "Selecione..." já cuida
+    }
+
+    // Função auxiliar para popular selects genéricos
+    function popularSelect(element, options, selectedValue = null) {
+        if (!element) return;
+        element.innerHTML = '';
+        options.forEach(option => {
+            const optElement = document.createElement('option');
+            const value = (typeof option === 'object' && option !== null) ? option.id : option;
+            const textContent = (typeof option === 'object' && option !== null) ? option.nome : option;
+
+            optElement.value = value;
+            optElement.textContent = textContent;
+
+            if (selectedValue !== null && (String(value) === String(selectedValue) || (typeof option === 'object' && option !== null && option.nome === selectedValue))) {
+                optElement.selected = true;
+            }
+            element.appendChild(optElement);
+        });
     }
     
     // -- LÓGICA DE CONTROLE DO DROPDOWN --
-    
-    // Função para fechar e resetar a posição de qualquer menu dropdown
     function closeAndResetDropdown(menuElement) {
         if (!menuElement || menuElement.length === 0) return;
-        
         const originalParent = menuElement.data('originalParent');
         if (originalParent) {
             menuElement.removeClass('show').appendTo(originalParent);
@@ -244,25 +281,16 @@ document.addEventListener("DOMContentLoaded", function () {
         closeAndResetDropdown(menu);
     });
 
-    const formatarDataHora = (data, hora) => {
+    const formatarData = (data) => {
         if (!data) return '-';
         const [year, month, day] = data.split('-');
-        let dataFormatada = `${day}/${month}/${year}`;
-        if (hora) {
-            const [h, m] = hora.split(':');
-            let ampm = parseInt(h) >= 12 ? 'PM' : 'AM';
-            let hour = parseInt(h) % 12;
-            hour = hour ? hour : 12;
-            dataFormatada += `, ${hour.toString().padStart(2, '0')}:${m} ${ampm}`;
-        }
-        return dataFormatada;
+        return `${day}/${month}/${year}`;
     };
 
     const getStatusBadgeClass = status => ({ 'Concluída': 'bg-success-subtle text-success', 'Em Andamento': 'bg-info-subtle text-info', 'Agendada': 'bg-primary-subtle text-primary', 'A Fazer': 'bg-warning-subtle text-warning', 'Atrasada': 'bg-danger-subtle text-danger' }[status] || 'bg-secondary-subtle text-secondary');
     const getTipoBadgeClass = tipo => tipo === 'Prova' ? 'bg-danger-subtle text-danger' : 'bg-primary-subtle text-primary';
 
     // --- BLOCO PRINCIPAL DE EXECUÇÃO ---
-    
     inicializarDataTable();
 
     $('#tabelaTarefas tbody').on('click', '.btn-actions', function (e) {
@@ -273,15 +301,13 @@ document.addEventListener("DOMContentLoaded", function () {
         const dropdownMenu = $(triggerButton).next('.dropdown-menu');
         const isAlreadyOpen = dropdownMenu.hasClass('show');
 
-        // Fecha e reseta todos os outros menus antes de abrir um novo
         closeAndResetDropdown($('.dropdown-menu.show'));
 
-        if (isAlreadyOpen) return; // Se o menu já estava aberto, o passo anterior já o fechou.
+        if (isAlreadyOpen) return;
 
         const triggerRow = $(triggerButton).closest('tr');
         const rowIndex = tabelaTarefasDt.row(triggerRow).index();
         
-        // Salva a "casa" original e o índice da linha no menu
         dropdownMenu.data('originalParent', dropdownMenu.parent());
         dropdownMenu.data('rowIndex', rowIndex);
         
@@ -305,4 +331,168 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         }, 0);
     });
+
+    // ================== LÓGICA DO MODAL DE ADIÇÃO RÁPIDA DE TAREFAS (no tarefas.html) ==================
+    // Este modal é o que o HTML da página de tarefas utiliza para "Adicionar Tarefa/Prova" via sidebar
+    const modalTarefaAdicaoRapidaEl = document.getElementById('modalTarefaAdicaoRapida');
+    if (modalTarefaAdicaoRapidaEl) {
+        const form = modalTarefaAdicaoRapidaEl.querySelector('#formTarefaAdicaoRapida');
+        modalTarefaAdicaoRapidaEl.addEventListener('show.bs.modal', () => {
+            if (form) form.reset();
+            // Remover validação do formulário ao abrir para evitar erro inicial
+            form.classList.remove('was-validated');
+            form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+            // Você pode popular selects específicos para este modal aqui, se necessário
+        });
+        if (form) {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                // Validar o formulário do Bootstrap
+                if (!form.checkValidity()) {
+                    e.stopPropagation(); // Impede o envio
+                    form.classList.add('was-validated'); // Adiciona a classe para exibir feedbacks
+                    return;
+                }
+                // Lógica para salvar a tarefa/prova deste modal
+                alert("Salvar Tarefa/Prova (lógica a ser implementada no tarefas.js para modalTarefaAdicaoRapida)");
+                // Esconder o modal
+                const bsModal = bootstrap.Modal.getInstance(modalTarefaAdicaoRapidaEl);
+                bsModal?.hide();
+            });
+        }
+    }
+
+
+    // ================== LÓGICA DO MODAL DE ADIÇÃO RÁPIDA DE ANOTAÇÕES (COM TINYMCE) ==================
+    // Este é o modal que está no tarefas.html para "Adicionar Anotação" via sidebar
+    if (modalAnotacaoAdicaoRapidaEl) {
+        /**
+         * Atualiza as opções do select de atividades com base na disciplina selecionada.
+         * @param {string} disciplinaSelecionada - O nome da disciplina selecionada.
+         */
+        function atualizarAtividadesAnotacaoRapida(disciplinaSelecionada) {
+            const atividades = atividadesPorDisciplinaParaSelects[disciplinaSelecionada] || atividadesPadraoParaSelects;
+            popularSelect(rapidaAnotacaoAtividadeSelect, atividades, "Nenhuma");
+        }
+
+        // Listener para quando o modal de anotação rápida é aberto
+        modalAnotacaoAdicaoRapidaEl.addEventListener('show.bs.modal', () => {
+            formAnotacaoAdicaoRapida?.reset(); // Reseta o formulário
+            // Limpa o estado de validação do input do título
+            rapidaAnotacaoTituloInput?.classList.remove('is-invalid');
+            if (rapidaAnotacaoTituloInput?.nextElementSibling) {
+                // Remove qualquer mensagem de erro do feedback
+                rapidaAnotacaoTituloInput.nextElementSibling.textContent = ""; 
+            }
+            // Garante que o formulário não inicie com a classe 'was-validated'
+            formAnotacaoAdicaoRapida?.classList.remove('was-validated');
+
+
+            // Popula os selects ao abrir o modal
+            popularSelect(rapidaAnotacaoDisciplinaSelect, disciplinasFixasParaSelects, "Nenhuma");
+            atualizarAtividadesAnotacaoRapida(rapidaAnotacaoDisciplinaSelect?.value || "Nenhuma");
+
+            // Inicializa ou re-inicializa o TinyMCE
+            if (typeof tinymce !== 'undefined' && rapidaAnotacaoConteudoTextarea) {
+                const editorId = rapidaAnotacaoConteudoTextarea.id;
+                // Destroi qualquer instância anterior para evitar duplicidade ou erros
+                tinymce.get(editorId)?.destroy();
+
+                tinymce.init({
+                    selector: `#${editorId}`,
+                    plugins: 'lists link image table code help wordcount autoresize',
+                    toolbar: 'undo redo | blocks | bold italic underline | bullist numlist | alignleft aligncenter alignright | link image table | code | help',
+                    menubar: 'edit view insert format tools table help',
+                    height: 400, // Altura inicial do editor (igual ao principal.js)
+                    min_height: 400, // Altura mínima que o editor pode ter (igual ao principal.js)
+                    autoresize_bottom_margin: 30, // Margem inferior ao usar autoresize (igual ao principal.js)
+                    branding: false, // Remove a marca TinyMCE
+                    statusbar: false, // Remove a barra de status
+                    setup: (editor) => {
+                        editor.on('init', () => {
+                            // Limpa o conteúdo ao inicializar para nova anotação (igual ao principal.js)
+                            editor.setContent('');
+                        });
+                        // Garante que os diálogos do TinyMCE fiquem sobre o modal do Bootstrap (igual ao principal.js)
+                        editor.on('OpenWindow', function(e) {
+                            const modalZIndex = parseInt(window.getComputedStyle(modalAnotacaoAdicaoRapidaEl).zIndex, 10);
+                            const toxDialog = document.querySelector('.tox-dialog-wrap');
+                            if (toxDialog) {
+                                toxDialog.style.zIndex = modalZIndex + 50; // Coloca o diálogo acima do modal
+                            }
+                        });
+                    }
+                }).catch(err => console.error("Erro ao inicializar TinyMCE no modal de anotações rápidas:", err));
+            }
+        });
+
+        // Destroi a instância do TinyMCE ao fechar o modal para liberar recursos (igual ao principal.js)
+        modalAnotacaoAdicaoRapidaEl.addEventListener('hidden.bs.modal', () => {
+            if (typeof tinymce !== 'undefined' && rapidaAnotacaoConteudoTextarea && tinymce.get(rapidaAnotacaoConteudoTextarea.id)) {
+                tinymce.get(rapidaAnotacaoConteudoTextarea.id).destroy();
+            }
+        });
+
+        // Listener para mudança na disciplina do modal de anotação rápida
+        if (rapidaAnotacaoDisciplinaSelect) {
+            rapidaAnotacaoDisciplinaSelect.addEventListener('change', function() {
+                atualizarAtividadesAnotacaoRapida(this.value);
+            });
+        }
+        
+        // Listener para o botão de salvar anotação rápida (igual ao principal.js)
+        if (salvarAnotacaoRapidaBtn) {
+            salvarAnotacaoRapidaBtn.addEventListener('click', (e) => {
+                e.preventDefault(); // Impede o envio padrão do formulário
+                
+                let isValid = true;
+                // Validação para o título (igual ao principal.js)
+                if (!rapidaAnotacaoTituloInput || !rapidaAnotacaoTituloInput.value.trim()) {
+                    rapidaAnotacaoTituloInput?.classList.add('is-invalid');
+                    // Garante que a mensagem de erro seja exibida ao tentar salvar
+                    if (rapidaAnotacaoTituloInput?.nextElementSibling) {
+                        rapidaAnotacaoTituloInput.nextElementSibling.textContent = "Título da anotação é obrigatório.";
+                    }
+                    isValid = false;
+                } else {
+                    rapidaAnotacaoTituloInput.classList.remove('is-invalid');
+                    if (rapidaAnotacaoTituloInput?.nextElementSibling) {
+                        rapidaAnotacaoTituloInput.nextElementSibling.textContent = ""; // Limpa a mensagem
+                    }
+                }
+
+                if (!isValid) {
+                    // Adiciona a classe 'was-validated' ao formulário para exibir feedback de validação do Bootstrap
+                    formAnotacaoAdicaoRapida?.classList.add('was-validated');
+                    return; // Interrompe se a validação falhar
+                }
+                
+                // Remover 'was-validated' após validação bem-sucedida (opcional, mas boa prática)
+                formAnotacaoAdicaoRapida?.classList.remove('was-validated');
+
+                // Obter o conteúdo do editor TinyMCE
+                const conteudoAnotacao = (typeof tinymce !== 'undefined' && rapidaAnotacaoConteudoTextarea && tinymce.get(rapidaAnotacaoConteudoTextarea.id))
+                                        ? tinymce.get(rapidaAnotacaoConteudoTextarea.id).getContent()
+                                        : rapidaAnotacaoConteudoTextarea?.value.trim(); // Fallback
+
+                // Coletar outros dados da anotação
+                const novaAnotacao = {
+                    // id: rapidaAnotacaoIdInput?.value || 'A-' + new Date().getTime(), // Descomente se usar o input hidden
+                    id: 'A-' + new Date().getTime(), // Gera um ID simples
+                    titulo: rapidaAnotacaoTituloInput?.value.trim(),
+                    disciplina: rapidaAnotacaoDisciplinaSelect?.value,
+                    atividade: rapidaAnotacaoAtividadeSelect?.value,
+                    conteudo: conteudoAnotacao
+                    // Adicione aqui outros campos se houver
+                };
+
+                console.log("Nova Anotação Salva (Tarefas):", novaAnotacao);
+                alert("Salvar Anotação (lógica a ser implementada). Ver console para detalhes.");
+
+                // Fechar o modal
+                const bsModal = bootstrap.Modal.getInstance(modalAnotacaoAdicaoRapidaEl);
+                bsModal?.hide();
+            });
+        }
+    }
 });
