@@ -1,3 +1,4 @@
+// calendario.js
 document.addEventListener('DOMContentLoaded', function () {
     console.log("✔️ DOMContentLoaded disparado. Iniciando calendario.js...");
 
@@ -5,46 +6,134 @@ document.addEventListener('DOMContentLoaded', function () {
     let viewDropdown;
     let calendarInstance;
 
-    // --- Dados Mockados para os Selects dos Modais ---
-    const disciplinasFixasParaModais = ["Nenhuma", "Cálculo I", "Programação Orientada a Objetos", "Engenharia de Software", "TCC 1", "Outra"];
-    const atividadesPorDisciplinaParaModais = {
-        "Nenhuma": ["Nenhuma"],
-        "Cálculo I": ["Nenhuma", "Lista de Exercícios 1", "Prova P1", "Outra"],
-        "Programação Orientada a Objetos": ["Nenhuma", "Projeto Prático 1", "Laboratório 3", "Outra"],
-        "Engenharia de Software": ["Nenhuma", "Documentação", "Protótipo", "Outra"],
-        "TCC 1": ["Nenhuma", "Definição do Tema", "Revisão Bibliográfica Inicial", "Desenvolvimento da Proposta", "Apresentação Parcial", "Outra"],
-        "Outra": ["Nenhuma", "Atividade Genérica", "Outra"],
-        "": ["Nenhuma"] // Default para quando nenhuma disciplina é selecionada
+    // --- DADOS MOCADOS PARA O CALENDÁRIO e GLOBALIZADOS PARA OS MODAIS ---
+    const disciplinasDoCalendario = [
+        { id: "CS101", nome: "Algoritmos e Estrutura de Dados" },
+        { id: "CS102", nome: "Redes de Computadores" },
+        { id: "CS103", nome: "Banco de Dados" },
+        { id: "CS104", nome: "Inteligência Artificial" },
+        { id: "CS105", nome: "Compiladores" }
+    ];
+
+    const tarefasDoCalendario = [
+        { id: "T001", titulo: "Complexidade e Estruturas Lineares", disciplinaId: "CS101", tipo: "Prova", dataEntrega: "2025-06-23", status: "Agendada", descricao: "Estudar capítulos 1 a 3 do livro Cormen. Foco em complexidade Big-O." },
+        { id: "T006", titulo: "Camadas de Transporte e Aplicação", disciplinaId: "CS102", tipo: "Prova", dataEntrega: "2025-06-24", status: "Agendada", descricao: "Foco em protocolos TCP, UDP e HTTP." },
+        { id: "T010", titulo: "SQL e Normalização", disciplinaId: "CS103", tipo: "Prova", dataEntrega: "2025-06-25", status: "Agendada", descricao: "Praticar joins e entender as formas normais (1FN, 2FN, 3FN)." },
+        { id: "T013", titulo: "Machine Learning e Redes Neurais", disciplinaId: "CS104", tipo: "Prova", dataEntrega: "2025-06-26", status: "Agendada", descricao: "Revisar conceitos de regressão linear e redes neurais convolucionais." },
+        { id: "T017", titulo: "Análise Léxica e Sintática", disciplinaId: "CS105", tipo: "Prova", dataEntrega: "2025-06-29", status: "Agendada", descricao: "Implementar um analisador léxico simples em Python." },
+        { id: "T018", titulo: "Trabalho de Grafos", disciplinaId: "CS101", tipo: "Tarefa", dataEntrega: "2025-07-01", status: "A Fazer", descricao: "Implementar algoritmos de travessia em grafos (BFS, DFS)." },
+        { id: "T019", titulo: "Relatório de Simulação de Redes", disciplinaId: "CS102", tipo: "Tarefa", dataEntrega: "2025-07-03", status: "Em Andamento", descricao: "Analisar resultados de simulação com NS3." }
+    ];
+
+
+    // --- GLOBALIZAÇÃO DOS DADOS PARA OS MODAIS COMPARTILHADOS ---
+    window.listaDisciplinas = disciplinasDoCalendario;
+    window.listaTarefas = tarefasDoCalendario;
+
+    window.disciplinasFixasParaSelects = [
+        { id: "", nome: "Selecione..." },
+        ...disciplinasDoCalendario.map(d => ({id: d.id, nome: d.nome}))
+    ];
+    
+    window.atividadesPorDisciplinaParaSelects = {
+        "": [{id: "", nome: "Nenhuma"}],
+        "Nenhuma": [{id: "", nome: "Nenhuma"}],
+        ...Object.fromEntries(
+            disciplinasDoCalendario.map(d => [
+                d.id,
+                [{id: "", nome: "Nenhuma"}]
+                    .concat(tarefasDoCalendario.filter(t => t.disciplinaId === d.id).map(t => ({id: t.id, nome: t.titulo})))
+            ])
+        ),
+        "TCC 1": [{id: "", nome: "Nenhuma"}, {id: "TCC1_Proj", nome: "Revisão Bibliográfica"}, {id: "TCC1_Def", nome: "Defesa da Monografia"}],
+        "Outra": [{id: "", nome: "Nenhuma"}, {id: "OUTRA_Gen", nome: "Atividade Geral"}]
     };
-    const atividadesPadraoParaModais = ["Nenhuma", "Outra"];
+    window.atividadesPadraoParaSelects = [{id: "", nome: "Nenhuma"}];
 
-    // --- FUNÇÕES UTILITÁRIAS ---
-    function popularSelect(selectElement, optionsArray, valorSelecionado = null) {
-        if (!selectElement) {
-            // console.warn("Elemento select não fornecido para popularSelect.");
-            return;
-        }
-        selectElement.innerHTML = '';
-        optionsArray.forEach(optText => {
-            const option = document.createElement('option');
-            option.value = optText;
-            option.textContent = optText;
-            if (valorSelecionado && optText === valorSelecionado) {
-                option.selected = true;
+    // --- FUNÇÕES UTILITÁRIAS (GLOBALIZADAS) ---
+    if (typeof window.popularSelect === 'undefined') {
+        window.popularSelect = function (element, options, selectedValue = null) {
+            if (!element) {
+                console.warn("Elemento select não encontrado para popularSelect.", element);
+                return;
             }
-            selectElement.appendChild(option);
-        });
-    }
+            element.innerHTML = '';
+            const defaultOption = document.createElement('option');
+            defaultOption.value = "";
+            defaultOption.textContent = "Selecione...";
+            defaultOption.disabled = true;
+            defaultOption.selected = (selectedValue === null || selectedValue === '');
+            element.appendChild(defaultOption);
 
-    function getTipoBadgeClass(tipo) {
-        if (!tipo) return 'bg-secondary-subtle text-secondary';
-        const tipoLower = tipo.toLowerCase();
-        if (tipoLower === "prova") return 'bg-danger-subtle text-danger';
-        if (tipoLower === "tarefa") return 'bg-primary-subtle text-primary';
-        if (tipoLower === "reuniao" || tipoLower === "reunião") return 'bg-success-subtle text-success';
-        return 'bg-secondary-subtle text-secondary';
+            options.forEach(option => {
+                const optElement = document.createElement('option');
+                const value = (typeof option === 'object' && option !== null) ? option.id : option;
+                const textContent = (typeof option === 'object' && option !== null) ? option.nome : option;
+
+                optElement.value = value;
+                optElement.textContent = textContent;
+
+                if (selectedValue !== null && (String(value) === String(selectedValue) || String(textContent) === String(selectedValue))) {
+                    optElement.selected = true;
+                    defaultOption.selected = false;
+                }
+                element.appendChild(optElement);
+            });
+        }
     }
     
+    window.formatarData = (dataStr) => {
+        if (!dataStr) return '-';
+        const [year,month,day]=dataStr.split('-');
+        const d=new Date(dataStr + 'T00:00:00');
+        return new Intl.DateTimeFormat('pt-BR', {day: '2-digit', month: '2-digit', year: 'numeric'}).format(d);
+    };
+
+    window.formatarDataParaWidget = (dataStr) => {
+        if (!dataStr) return 'Sem data';
+        const [y,m,d]=dataStr.split('-');
+        const dt=new Date(Date.UTC(Number(y),Number(m)-1,Number(d)));
+        const meses=["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov", "Dez"];
+        return `${dt.getUTCDate()} ${meses[dt.getUTCMonth()]} ${dt.getUTCFullYear()}`;
+    };
+
+    window.getStatusBadgeClass = (s) => {
+        switch(s){
+            case'Concluída':return'bg-success-subtle text-success';
+            case'Agendada':case'Em Andamento':case'A Fazer':return'bg-info-subtle text-info';
+            case'Atrasada':return'bg-danger-subtle text-danger';
+            default:return'bg-secondary-subtle text-secondary';
+        }
+    };
+    
+    // Esta função retorna as CLASSES CSS do Bootstrap para os badges.
+    window.getTipoBadgeClass = (tipo) => {
+        if (!tipo) return 'bg-secondary-subtle text-secondary';
+        const tipoLower = tipo.toLowerCase();
+        switch (tipoLower) {
+            case "prova": return 'bg-danger-subtle text-danger'; // Vermelho para Prova
+            case "tarefa": return 'bg-primary-subtle text-primary'; // Azul para Tarefa
+            case "reuniao":
+            case "reunião": return 'bg-success-subtle text-success'; // Verde para Reunião (se houver)
+            default: return 'bg-secondary-subtle text-secondary'; // Cinza para outros
+        }
+    };
+
+    // Nova função para retornar a COR PRIMÁRIA do evento no FullCalendar.
+    // Usaremos as variáveis CSS customizadas definidas em calendario.css
+    window.getEventColor = (tipo) => {
+        if (!tipo) return 'var(--event-fc-default)'; // Cor padrão do Bootstrap secondary
+        const tipoLower = tipo.toLowerCase();
+        switch (tipoLower) {
+            case "prova": return 'var(--event-fc-prova)';   // Cor definida em calendario.css para Prova
+            case "tarefa": return 'var(--event-fc-tarefa)'; // Cor definida em calendario.css para Tarefa
+            case "reuniao":
+            case "reunião": return 'var(--event-fc-reuniao)'; // Cor definida em calendario.css para Reunião
+            default: return 'var(--event-fc-default)'; // Cor padrão
+        }
+    };
+
+
     // --- FULLCALENDAR LÓGICA ---
     if (!calendarEl) {
         console.warn("⚠️ Elemento #calendar não encontrado no DOM. FullCalendar não será inicializado.");
@@ -58,24 +147,47 @@ document.addEventListener('DOMContentLoaded', function () {
                 customButtons: {
                     viewMenuCustomButton: { text: '⋯', click: () => { if (viewDropdown) viewDropdown.classList.toggle('show'); } }
                 },
-                events: fetchEvents,
+                events: window.listaTarefas.map(tarefa => ({
+                    id: tarefa.id,
+                    title: tarefa.titulo,
+                    start: tarefa.dataEntrega,
+                    allDay: true, 
+                    // Usamos a função global para a cor de fundo e borda do evento
+                    backgroundColor: window.getEventColor(tarefa.tipo), 
+                    borderColor: window.getEventColor(tarefa.tipo),     
+                    // Adiciona uma classe com prefixo 'event-tipo-' para estilização CSS fina
+                    classNames: ['event-tipo-' + tarefa.tipo.toLowerCase()], 
+                    extendedProps: { 
+                        disciplinaId: tarefa.disciplinaId,
+                        tipo: tarefa.tipo,
+                        status: tarefa.status,
+                        description: tarefa.descricao
+                    }
+                })),
                 dateClick: function (info) {
-                    const dataFormatada = new Date(info.dateStr + 'T00:00:00'); 
-                    openEventModal({ 
-                        date: dataFormatada.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric', timeZone: 'UTC' }), 
-                        allDay: info.allDay, 
-                        title: 'Novo Evento para ' + dataFormatada.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', timeZone: 'UTC' }) 
-                    });
+                    console.log("Data clicada no calendário:", info.dateStr);
                 },
                 eventClick: function (info) {
-                    openEventModal({
-                        id: info.event.id, title: info.event.title, start: info.event.startStr, end: info.event.endStr,
-                        allDay: info.event.allDay, description: info.event.extendedProps.description || '', tipo: info.event.extendedProps.tipo || ''
-                    });
+                    console.log("Evento clicado:", info.event.id);
+                    const clickedEventData = window.listaTarefas.find(t => t.id === info.event.id);
+                    
+                    if (clickedEventData && window.abrirModalDetalhesAtividade) {
+                        window.abrirModalDetalhesAtividade({
+                            id: clickedEventData.id,
+                            titulo: clickedEventData.titulo,
+                            disciplinaId: clickedEventData.disciplinaId,
+                            tipo: clickedEventData.tipo,
+                            dataEntrega: clickedEventData.dataEntrega,
+                            status: clickedEventData.status,
+                            descricao: clickedEventData.descricao
+                        });
+                    } else {
+                        console.warn("Dados do evento não encontrados ou abrirModalDetalhesAtividade não disponível.");
+                    }
                 }
             });
             calendarInstance.render();
-            // console.log("✅ FullCalendar renderizado.");
+            console.log("✅ FullCalendar renderizado.");
 
             const fcToolbarChunk = document.querySelector('.fc-header-toolbar .fc-toolbar-chunk:last-child');
             const viewMenuButton = fcToolbarChunk ? fcToolbarChunk.querySelector('.fc-viewMenuCustomButton-button') : null;
@@ -91,247 +203,36 @@ document.addEventListener('DOMContentLoaded', function () {
         } catch (error) { console.error("❌ ERRO no FullCalendar:", error); }
     }
 
-    // --- LÓGICA PARA MODAIS DE ADIÇÃO (BOOTSTRAP) ---
-    // Modal Adicionar Anotação
-    const modalAnotacaoCalendarioEl = document.getElementById('modalAnotacaoCalendario');
-    if (modalAnotacaoCalendarioEl) {
-        const formAnotacao = modalAnotacaoCalendarioEl.querySelector('#formAnotacaoCalendario');
-        const tituloInput = modalAnotacaoCalendarioEl.querySelector('#anotacaoCalTituloInput');
-        const disciplinaSelect = modalAnotacaoCalendarioEl.querySelector('#anotacaoCalDisciplinaSelect');
-        const atividadeSelect = modalAnotacaoCalendarioEl.querySelector('#anotacaoCalAtividadeSelect');
-        const conteudoInput = modalAnotacaoCalendarioEl.querySelector('#anotacaoCalConteudoInput');
-        const editInfo = modalAnotacaoCalendarioEl.querySelector('#modalAnotacaoCalEditInfo');
-        const idInput = modalAnotacaoCalendarioEl.querySelector('#anotacaoCalIdInput');
-        const modalLabel = modalAnotacaoCalendarioEl.querySelector('#modalAnotacaoCalendarioLabelTitulo');
-        const salvarBtn = modalAnotacaoCalendarioEl.querySelector('#salvarAnotacaoCalBtn');
-
-        function atualizarOpcoesAtividadeAnotacaoCalendario(disciplinaSelecionada, selectAtividadeEl, atividadePreSelecionada = "Nenhuma") {
-            if (!selectAtividadeEl) return;
-            const atividadesParaDisc = atividadesPorDisciplinaParaModais[disciplinaSelecionada] || atividadesPorDisciplinaParaModais["Nenhuma"] || atividadesPadraoParaModais;
-            popularSelect(selectAtividadeEl, atividadesParaDisc, atividadePreSelecionada);
-        }
-
-        modalAnotacaoCalendarioEl.addEventListener('show.bs.modal', () => {
-            console.log("Modal Anotação (Calendário) show.bs.modal - INÍCIO");
-            if (formAnotacao) {
-                formAnotacao.reset(); // Reseta valores do formulário
-                formAnotacao.classList.remove('was-validated'); // Remove classe de validação do Bootstrap do formulário
-                // Limpa classes e mensagens de erro de todos os campos dentro do formulário
-                formAnotacao.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
-                formAnotacao.querySelectorAll('.invalid-feedback').forEach(el => el.textContent = '');
-            }
+    // --- FUNÇÃO abrirModalDetalhesAtividade (Globalizada, como em outras páginas) ---
+    // Esta função exibe o modal #modalDetalhesAtividade e espera os mesmos seletores e formatação.
+    // É crucial que seja a mesma função que você tem em principal.js e tarefas.js para este modal.
+    // O ideal é que esta função seja única e global (ex: em geral.js) para evitar duplicação.
+    // Para garantir que funcione neste arquivo, a incluímos aqui se não estiver já no window.
+    if (typeof window.abrirModalDetalhesAtividade === 'undefined') {
+        window.abrirModalDetalhesAtividade = function (tarefaData) {
+            const modalDetalhesAtividadeEl = document.getElementById('modalDetalhesAtividade');
+            if (!modalDetalhesAtividadeEl) { console.warn("Modal #modalDetalhesAtividade não encontrado."); return; }
             
-            if (idInput) idInput.value = ''; 
-            if (modalLabel) modalLabel.textContent = 'Nova Anotação';
-            if (editInfo) editInfo.textContent = 'Nova anotação';
-            if (tituloInput) tituloInput.value = ""; // Garante que o valor do título seja explicitamente limpo
+            const detalheAtividadeNome = modalDetalhesAtividadeEl.querySelector('#detalhe-atividade-nome');
+            const detalheAtividadeDisciplina = modalDetalhesAtividadeEl.querySelector('#detalhe-atividade-disciplina');
+            const detalheAtividadeTipo = modalDetalhesAtividadeEl.querySelector('#detalhe-atividade-tipo');
+            const detalheAtividadeData = modalDetalhesAtividadeEl.querySelector('#detalhe-atividade-data');
+            const detalheAtividadeStatus = modalDetalhesAtividadeEl.querySelector('#detalhe-atividade-status');
+            const detalheAtividadeDescricao = modalDetalhesAtividadeEl.querySelector('#detalhe-atividade-descricao');
 
-            popularSelect(disciplinaSelect, disciplinasFixasParaModais, "Nenhuma");
-            if (disciplinaSelect && atividadeSelect) { // Garante que ambos existem
-                atualizarOpcoesAtividadeAnotacaoCalendario(disciplinaSelect.value, atividadeSelect);
-            }
+            const disciplinaObj = window.listaDisciplinas.find(d => d.id === tarefaData.disciplinaId);
+
+            detalheAtividadeNome.textContent = tarefaData.titulo || "Detalhes da Atividade";
+            detalheAtividadeDisciplina.textContent = disciplinaObj ? disciplinaObj.nome : 'Não especificada';
+            detalheAtividadeTipo.innerHTML = `<span class="badge ${window.getTipoBadgeClass(tarefaData.tipo)}">${tarefaData.tipo || '-'}</span>`;
+            detalheAtividadeData.textContent = window.formatarData(tarefaData.dataEntrega); 
+            detalheAtividadeStatus.innerHTML = `<span class="badge ${window.getStatusBadgeClass(tarefaData.status)}">${tarefaData.status || '-'}</span>`;
+            detalheAtividadeDescricao.textContent = tarefaData.descricao || 'Nenhuma descrição fornecida.';
             
-            if (conteudoInput && typeof tinymce !== 'undefined') {
-                const editorId = conteudoInput.id;
-                const existingEditor = tinymce.get(editorId);
-                if (existingEditor) {
-                    console.log("Destruindo editor TinyMCE existente antes de recriar:", editorId);
-                    existingEditor.destroy();
-                }
-                
-                console.log("Inicializando TinyMCE para:", editorId);
-                tinymce.init({
-                    selector: `#${editorId}`,
-                    plugins: 'lists link image table code help wordcount autoresize',
-                    toolbar: 'undo redo | blocks | bold italic underline | bullist numlist | alignleft aligncenter alignright | link image table | code | help',
-                    menubar: 'edit view insert format tools table help',
-                    height: 400, 
-                    min_height: 400, 
-                    autoresize_bottom_margin: 30,
-                    branding: false, 
-                    statusbar: false, 
-                    setup: function(editor) {
-                        editor.on('init', function() { editor.setContent(''); });
-                        editor.on('OpenWindow', function(e) { 
-                            const modalShow = document.querySelector('.modal.show');
-                            const toxDialog = document.querySelector('.tox-dialog-wrap');
-                            if (toxDialog && modalShow) {
-                                const modalZIndex = window.getComputedStyle(modalShow).zIndex;
-                                toxDialog.style.zIndex = parseInt(modalZIndex) + 100;
-                            }
-                        });
-                    }
-                }).catch(err => console.error("Erro ao inicializar TinyMCE para anotações no calendário:", err));
-            } else if (!conteudoInput) {
-                console.error("Textarea #" + (conteudoInput ? conteudoInput.id : "anotacaoCalConteudoInput") + " não encontrado para o TinyMCE.");
-            } else if (typeof tinymce === 'undefined') {
-                console.error("Objeto TinyMCE não está definido. Verifique o carregamento do script.");
-            }
-            console.log("Modal Anotação (Calendário) show.bs.modal - FIM");
-        });
-
-        if (disciplinaSelect && atividadeSelect) { // Garante que ambos existem para adicionar o listener
-            disciplinaSelect.addEventListener('change', function() {
-                atualizarOpcoesAtividadeAnotacaoCalendario(this.value, atividadeSelect);
-            });
-        }
-
-        modalAnotacaoCalendarioEl.addEventListener('shown.bs.modal', () => { if (tituloInput) tituloInput.focus(); });
-        modalAnotacaoCalendarioEl.addEventListener('hidden.bs.modal', () => { 
-            if (conteudoInput && tinymce.get(conteudoInput.id)) {
-                tinymce.get(conteudoInput.id).destroy();
-                console.log("Editor TinyMCE (Anotação Calendário) destruído.");
-            }
-        });
-        
-        if(formAnotacao && salvarBtn) { // Adicionado verificação do formAnotacao
-            // Usar o evento submit do formulário em vez do clique do botão,
-            // já que o botão é type="submit"
-            formAnotacao.addEventListener('submit', function(e) { 
-                e.preventDefault(); // Previne a submissão padrão do formulário
-                
-                let isValid = true;
-                if (!tituloInput || !tituloInput.value.trim()) {
-                    if(tituloInput) {
-                        tituloInput.classList.add('is-invalid');
-                        const feedback = tituloInput.nextElementSibling;
-                        if(feedback && feedback.classList.contains('invalid-feedback')) {
-                            feedback.textContent = "Título da anotação é obrigatório."; // Mensagem do HTML
-                        }
-                    }
-                    isValid = false;
-                } else {
-                    if(tituloInput) tituloInput.classList.remove('is-invalid');
-                }
-
-                if (!isValid) {
-                    // Opcional: focar no campo inválido se houver apenas um ou o primeiro
-                    if(tituloInput && !tituloInput.value.trim()) tituloInput.focus();
-                    return; // Interrompe se a validação falhar
-                }
-
-                const dadosAnotacao = {
-                    id: idInput ? (idInput.value || 'ANOT_CAL_' + new Date().getTime()) : 'ANOT_CAL_' + new Date().getTime(),
-                    titulo: tituloInput ? tituloInput.value : 'Sem Título',
-                    disciplinaNome: disciplinaSelect ? (disciplinaSelect.value === "Nenhuma" ? "" : disciplinaSelect.value) : "",
-                    atividadeVinculadaNome: atividadeSelect ? (atividadeSelect.value === "Nenhuma" ? "" : atividadeSelect.value) : "",
-                    conteudo: (conteudoInput && tinymce.get(conteudoInput.id)) ? tinymce.get(conteudoInput.id).getContent() : (conteudoInput ? conteudoInput.value : ""),
-                    dataCriacao: new Date().toISOString(),
-                    ultimaModificacao: new Date().toISOString()
-                };
-                console.log("Salvando anotação (do calendário):", dadosAnotacao);
-                alert("Anotação salva (simulado)! Verifique o console para os dados.");
-                
-                bootstrap.Modal.getInstance(modalAnotacaoCalendarioEl).hide();
-            });
+            const bsModalDetalhesAtividade = new bootstrap.Modal(modalDetalhesAtividadeEl);
+            bsModalDetalhesAtividade.show();
         }
     }
-
-    // Modal Adicionar Disciplina
-    const modalDisciplinaAdicaoEl = document.getElementById('modalDisciplinaAdicaoCalendario');
-    if (modalDisciplinaAdicaoEl) {
-        const form = modalDisciplinaAdicaoEl.querySelector('#formDisciplinaAdicaoCalendario');
-        modalDisciplinaAdicaoEl.addEventListener('show.bs.modal', () => { 
-            if (form) {
-                form.reset();
-                form.classList.remove('was-validated');
-                form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
-                form.querySelectorAll('.invalid-feedback').forEach(el => el.textContent = '');
-            }
-        });
-        if (form) {
-            form.addEventListener('submit', (e) => { 
-                e.preventDefault(); 
-                if (!form.checkValidity()) {
-                    e.stopPropagation();
-                    form.classList.add('was-validated');
-                    return;
-                }
-                const nomeDisc = modalDisciplinaAdicaoEl.querySelector('#calDisciplinaNome').value;
-                console.log("Salvando disciplina (do calendário):", { nome: nomeDisc });
-                alert(`Salvar Disciplina: ${nomeDisc} (Lógica Pendente)`); 
-                bootstrap.Modal.getInstance(modalDisciplinaAdicaoEl).hide(); 
-            });
-        }
-    }
-
-    // Modal Adicionar Tarefa/Prova
-    const modalTarefaAdicaoEl = document.getElementById('modalTarefaAdicaoCalendario');
-    if (modalTarefaAdicaoEl) {
-        const form = modalTarefaAdicaoEl.querySelector('#formTarefaAdicaoCalendario');
-        modalTarefaAdicaoEl.addEventListener('show.bs.modal', () => { 
-            if (form) {
-                form.reset(); 
-                form.classList.remove('was-validated');
-                form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
-                form.querySelectorAll('.invalid-feedback').forEach(el => el.textContent = '');
-            }
-        });
-        if (form) {
-            form.addEventListener('submit', (e) => { 
-                e.preventDefault(); 
-                if (!form.checkValidity()) {
-                    e.stopPropagation();
-                    form.classList.add('was-validated');
-                    return;
-                }
-                const tituloTarefa = modalTarefaAdicaoEl.querySelector('#calTarefaTitulo').value;
-                console.log("Salvando tarefa/prova (do calendário):", { titulo: tituloTarefa });
-                alert(`Salvar Tarefa/Prova: ${tituloTarefa} (Lógica Pendente)`); 
-                bootstrap.Modal.getInstance(modalTarefaAdicaoEl).hide(); 
-            });
-        }
-    }
-    
-    // Modal Detalhes Evento Calendário (<dialog>)
-    const modalDetalhesEventoEl = document.getElementById('modalDetalhesEventoCalendario');
-    const fecharModalDetalhesEventoBtn = document.getElementById('fecharModalDetalhesEvento');
-    const okModalDetalhesEventoBtn = document.getElementById('okModalDetalhesEvento');
-    if (fecharModalDetalhesEventoBtn && modalDetalhesEventoEl) fecharModalDetalhesEventoBtn.addEventListener('click', () => modalDetalhesEventoEl.close());
-    if (okModalDetalhesEventoBtn && modalDetalhesEventoEl) okModalDetalhesEventoBtn.addEventListener('click', () => modalDetalhesEventoEl.close());
-    if (modalDetalhesEventoEl) modalDetalhesEventoEl.addEventListener("click", e => { if (e.target === modalDetalhesEventoEl) modalDetalhesEventoEl.close(); });
 
     console.log("👍 calendario.js listeners e inicializações configurados.");
-}); 
-
-// --- FUNÇÕES GLOBAIS OU NO FINAL DO ARQUIVO (usadas pelo FullCalendar e Modais) ---
-function fetchEvents(info, successCallback, failureCallback) {
-    let hoje = new Date();
-    const mockEvents = [
-        { id: 'ev1', title: 'Prova Cálculo', start: new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate() + 2).toISOString().split('T')[0], allDay: true, tipo: 'prova', description: 'Capítulos 1 a 3.' },
-        { id: 'ev2', title: 'Entrega POO', start: new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate() + 5).toISOString().split('T')[0] + 'T14:00:00', end: new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate() + 5).toISOString().split('T')[0] + 'T16:00:00', tipo: 'tarefa', description: 'Projeto final da disciplina.' },
-        { id: 'ev3', title: 'Reunião TCC', start: new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate() - 1).toISOString().split('T')[0], allDay: true, tipo: 'reuniao', description: 'Alinhar cronograma.' },
-    ];
-    setTimeout(() => {
-        try {
-            const events = mockEvents.map(evt => ({
-                id: evt.id, title: evt.title, start: evt.start, end: evt.end || null,
-                allDay: evt.allDay || false, classNames: evt.tipo ? ['event-' + evt.tipo.toLowerCase()] : [],
-                extendedProps: { description: evt.description, tipo: evt.tipo }
-            }));
-            successCallback(events);
-        } catch (err) { failureCallback(err); }
-    }, 200);
-}
-
-function openEventModal(eventData) {
-    const modalEl = document.getElementById('modalDetalhesEventoCalendario');
-    if (!modalEl) { console.warn("Modal #modalDetalhesEventoCalendario não encontrado."); return; }
-    const modalTitleEl = modalEl.querySelector('#modalDetalhesEventoLabel');
-    const modalBodyEl = modalEl.querySelector('#modalDetalhesEventoConteudo');
-
-    if (modalTitleEl) modalTitleEl.textContent = eventData.id ? `${eventData.title}` : (eventData.title || 'Novo Evento');
-    if (modalBodyEl) {
-        let content = `<p><strong>Início:</strong> ${eventData.start ? new Date(eventData.start).toLocaleString('pt-BR',{timeZone:'UTC'}) : (eventData.date ? eventData.date : 'N/A')}</p>`;
-        if (eventData.end && eventData.start !== eventData.end) content += `<p><strong>Fim:</strong> ${new Date(eventData.end).toLocaleString('pt-BR',{timeZone:'UTC'})}</p>`;
-        if (!eventData.id) { 
-             content += `<p><strong>Dia Inteiro:</strong> ${eventData.allDay ? 'Sim' : 'Não (horário específico a definir)'}</p>`;
-        } else { 
-             content += `<p><strong>Dia Inteiro:</strong> ${eventData.allDay ? 'Sim' : 'Não'}</p>`;
-        }
-        if (eventData.description) content += `<p><strong>Descrição:</strong></p><pre style="white-space: pre-wrap; word-wrap: break-word; font-family: inherit; background-color: #f8f9fa; padding: 0.5rem; border-radius: 4px;">${eventData.description.replace(/\n/g, '<br>')}</pre>`;
-        if (eventData.tipo) content += `<p><strong>Tipo:</strong> <span class="badge ${getTipoBadgeClass(eventData.tipo)}">${eventData.tipo.charAt(0).toUpperCase() + eventData.tipo.slice(1)}</span></p>`;
-        modalBodyEl.innerHTML = content;
-    }
-    if (typeof modalEl.showModal === 'function') modalEl.showModal();
-}
+});
