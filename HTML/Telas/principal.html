@@ -332,7 +332,19 @@
                                    <div class="invalid-feedback">Tipo é obrigatório.</div>
                             </div>
                         </div>
-                    </div>
+                        <div class="modal-property-item mb-3">
+                            <span class="modal-property-icon"><i class="bi bi-hourglass-split"></i></span>
+                            <label for="principalTarefaStatus" class="modal-property-label">Status</label>
+                            <div class="input-wrapper">
+                                <select class="form-select modal-property-input" id="principalTarefaStatus" required>
+                                    <option value="A FAZER" selected>A fazer</option>
+                                    <option value="EM ANDAMENTO">Em andamento</option>
+                                    <option value="CONCLUÍDA">Concluída</option>
+                                </select>
+                                <div class="invalid-feedback">Status é obrigatório.</div>
+                            </div>
+                        </div>
+                        </div>
                     <div class="modal-footer-custom modal-footer-studyflow">
                         <button type="button" class="btn btn-modal-cancel" data-bs-dismiss="modal">Cancelar</button>
                         <button type="submit" class="btn btn-modal-save">Salvar Tarefa</button>

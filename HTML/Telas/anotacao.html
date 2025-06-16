@@ -13,7 +13,8 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.2/css/responsive.bootstrap5.css">
 
     <link rel="stylesheet" href="../Css/geral.css">
-    <link rel="stylesheet" href="../Css/tela_principal.css"> <link rel="stylesheet" href="../Css/modais-adicao.css">
+    <link rel="stylesheet" href="../Css/tela_principal.css">
+    <link rel="stylesheet" href="../Css/modais-adicao.css">
     <link rel="stylesheet" href="../Css/anotacao.css">
     <link rel="stylesheet" href="../Css/modal-configuracoes.css">
     
@@ -106,7 +107,7 @@
                                     <label for="anotacaoDisciplinaSelect" class="modal-property-label">Disciplina</label>
                                     <div class="input-wrapper">
                                         <select class="form-select form-select-sm modal-property-input" id="anotacaoDisciplinaSelect">
-                                            </select>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="modal-property-item">
@@ -114,7 +115,7 @@
                                     <label for="anotacaoAtividadeSelect" class="modal-property-label">Atividade</label>
                                     <div class="input-wrapper">
                                         <select class="form-select form-select-sm modal-property-input" id="anotacaoAtividadeSelect">
-                                            </select>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -159,7 +160,10 @@
                     <hr>
                     <div id="visualizarAnotacaoConteudo" class="mt-2 anotacao-conteudo-display"></div>
                 </div>
-                <div class="modal-footer-custom modal-footer-studyflow">
+                <div class="modal-footer-custom modal-footer-studyflow d-flex justify-content-between align-items-center">
+                    <button type="button" class="btn btn-outline-secondary" id="btnCompartilharAnotacao">
+                        <i class="bi bi-share-fill me-2"></i>Compartilhar
+                    </button>
                     <button type="button" class="btn btn-modal-ok" data-bs-dismiss="modal">Fechar</button>
                 </div>
             </div>

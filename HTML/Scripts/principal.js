@@ -63,21 +63,21 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: "CS102", nome: "Redes de Computadores", descricao: "Princípios de redes, modelo OSI, TCP/IP, protocolos de aplicação, camada de transporte e segurança de redes.", professor: "Prof. João Paulo", periodo: "2025.1", status: "Ativa" },
         { id: "CS103", nome: "Banco de Dados", descricao: "Modelagem de dados, SQL, normalização, transações e sistemas de gerenciamento de bancos de dados relacionais e NoSQL.", professor: "Prof. Jason", periodo: "2025.1", status: "Ativa" },
         { id: "CS104", nome: "Inteligência Artificial", descricao: "Introdução à IA, busca, representação de conhecimento, aprendizado de máquina e redes neurais.", professor: "Prof. Pryzado", periodo: "2025.2", status: "Em Andamento" },
-        { id: "CS105", nome: "Compiladores", descricao: "Teoria e prática da construção de compiladores, incluindo análise léxica, sintática e semântica, e geração de código.", professor: "Prof. Ada L.", periodo: "2025.2", status: "Agendada" },
+        { id: "CS105", nome: "Compiladores", descricao: "Teoria e prática da construção de compiladores, incluindo análise léxica, sintática e semântica, e geração de código.", professor: "Prof. Ada L.", periodo: "2025.2", status: "Em Andamento" },
     ];
 
     const tarefasExemploDashboard = [
         { id: "T001dash", titulo: "Implementação de Fila e Pilha", disciplinaId: "CS101", tipo: "Tarefa", dataEntrega: "2025-06-18", status: "Em Andamento", descricao: "Implementar as estruturas de dados Fila e Pilha em Java, incluindo testes de unidade." },
         { id: "T002dash", titulo: "Análise de Pacotes com Wireshark", disciplinaId: "CS102", tipo: "Tarefa", dataEntrega: "2025-06-22", status: "A Fazer", descricao: "Capturar e analisar o handshake TCP de uma conexão HTTPS." },
         { id: "T003dash", titulo: "Projeto de Modelagem MER", disciplinaId: "CS103", tipo: "Tarefa", dataEntrega: "2025-06-25", status: "A Fazer", descricao: "Criar o Modelo Entidade-Relacionamento para um sistema acadêmico." },
-        { id: "T004dash", titulo: "Trabalho sobre Classificação com CNN", disciplinaId: "CS104", tipo: "Tarefa", dataEntrega: "2025-07-05", status: "Agendada", descricao: "Desenvolver e treinar uma Rede Neural Convolucional para classificar imagens." }
+        { id: "T004dash", titulo: "Trabalho sobre Classificação com CNN", disciplinaId: "CS104", tipo: "Tarefa", dataEntrega: "2025-07-05", status: "Em Andamento", descricao: "Desenvolver e treinar uma Rede Neural Convolucional para classificar imagens." }
     ];
 
     const provasDashboardDados = [
         { id: "P001", tituloProva: "Complexidade e Estruturas Lineares", dataOriginal: "2025-05-28", status: "Concluída", disciplinaId: "CS101", tipo: "Prova", descricao: "Prova sobre análise de complexidade (Big O), Filas, Pilhas e Listas." },
-        { id: "P002", tituloProva: "SQL e Normalização", dataOriginal: "2025-06-15", status: "Agendada", disciplinaId: "CS103", tipo: "Prova", descricao: "Avaliação sobre consultas SQL avançadas e formas normais (1FN, 2FN, 3FN)." },
-        { id: "P003", tituloProva: "Camadas de Transporte e Aplicação", dataOriginal: "2025-06-28", status: "Agendada", disciplinaId: "CS102", tipo: "Prova", descricao: "Prova teórica sobre os protocolos TCP, UDP, HTTP, DNS e FTP." },
-        { id: "P004", tituloProva: "Análise Léxica e Sintática", dataOriginal: "2025-07-10", status: "Agendada", disciplinaId: "CS105", tipo: "Prova", descricao: "Prova prática sobre criação de analisadores com Flex e Bison." }
+        { id: "P002", tituloProva: "SQL e Normalização", dataOriginal: "2025-06-15", status: "Em Andamento", disciplinaId: "CS103", tipo: "Prova", descricao: "Avaliação sobre consultas SQL avançadas e formas normais (1FN, 2FN, 3FN)." },
+        { id: "P003", tituloProva: "Camadas de Transporte e Aplicação", dataOriginal: "2025-06-28", status: "Em Andamento", disciplinaId: "CS102", tipo: "Prova", descricao: "Prova teórica sobre os protocolos TCP, UDP, HTTP, DNS e FTP." },
+        { id: "P004", tituloProva: "Análise Léxica e Sintática", dataOriginal: "2025-07-10", status: "Em Andamento", disciplinaId: "CS105", tipo: "Prova", descricao: "Prova prática sobre criação de analisadores com Flex e Bison." }
     ];
 
     const disciplinasFixasParaSelects = ["Nenhuma", ...disciplinasDashboard.map(d => d.nome), "TCC 1", "Outra"];
