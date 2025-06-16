@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let tabelaDisciplinasDt;
     let resizeDebounceTimer;
 
-    // --- DADOS MOCADOS ---
+    // --- DADOS MOCADOS (SEU CÓDIGO ORIGINAL) ---
     const listaDisciplinas = [
         { id: "CS101", nome: "Algoritmos e Estrutura de Dados", descricao: "Estudo de algoritmos fundamentais, estruturas de dados como listas, filas, pilhas, árvores e grafos, e análise de complexidade.", professor: "Prof. Jango", periodo: "2025.1", status: "Ativa" },
         { id: "CS102", nome: "Redes de Computadores", descricao: "Princípios de redes, modelo OSI, TCP/IP, protocolos de aplicação, camada de transporte e segurança de redes.", professor: "Prof. João Paulo", periodo: "2025.1", status: "Ativa" },
@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function () {
         { id: "CS220", nome: "Sistemas Operacionais", descricao: "Gerenciamento de processos, memória, sistemas de arquivos e concorrência em sistemas operacionais modernos.", professor: "Prof. Linus T.", periodo: "2025.1", status: "Concluída" }
     ];
 
-    // --- FUNÇÕES DE VALIDAÇÃO ---
+    // --- FUNÇÕES DE VALIDAÇÃO (SEU CÓDIGO ORIGINAL) ---
     function displayFieldError(inputElement, message) {
         clearFieldError(inputElement);
         inputElement.classList.add('is-invalid');
@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return isValid;
     }
 
-    // --- FUNÇÕES DE UI E AUXILIARES ---
+    // --- FUNÇÕES DE UI E AUXILIARES (SEU CÓDIGO ORIGINAL) ---
     function getStatusBadgeClass(status) {
         switch (status) {
             case 'Ativa': return 'bg-success-subtle text-success';
@@ -136,37 +136,44 @@ document.addEventListener("DOMContentLoaded", function () {
                 const api = this.api();
                 $('#tabelaDisciplinas_filter input').addClass('form-control form-control-sm');
                 const buttonsContainer = $(this.api().table().container()).find('.dt-custom-header .dt-buttons-container');
-                const filterStatusHtml = `<select id="filterStatusDisciplina" class="form-select dt-filter-select"><option value="">Todos os Status</option><option value="Ativa">Ativa</option><option value="Concluída">Concluída</option><option value="Em Andamento">Em Andamento</option><option value="Agendada">Agendada</option></select>`;
+                
+                // --- INÍCIO DAS MUDANÇAS ---
+
+                // 1. Cria o HTML para os dois filtros que você quer
+                const filterStatusHtml = `<select id="filterStatusDisciplina" class="form-select form-select-sm dt-filter-select"><option value="">Todos os Status</option><option value="Ativa">Ativa</option><option value="Concluída">Concluída</option><option value="Em Andamento">Em Andamento</option><option value="Agendada">Agendada</option></select>`;
                 const filterPeriodoHtml = `<select id="filterPeriodo" class="form-select dt-filter-select"><option value="">Todos os Períodos</option><option value="2024.1">2024.1</option><option value="2025.1">2025.1</option><option value="2025.2">2025.2</option></select>`;
+                
+                // 2. Adiciona os dois filtros ao container de botões
                 buttonsContainer.append(filterStatusHtml, filterPeriodoHtml);
+                buttonsContainer.addClass('d-flex flex-wrap gap-2'); // Adiciona classes para alinhar
+                
+                // 3. Move o botão original de "Adicionar Disciplina" para junto dos filtros
                 if (abrirModalNovaDisciplinaBtnOriginal) {
+                    // O botão que já existe no seu HTML é movido para cá
                     buttonsContainer.append(abrirModalNovaDisciplinaBtnOriginal); 
                 }
+
+                // 4. Ativa a funcionalidade dos filtros
                 $('#filterStatusDisciplina').on('change', function () { api.column(4).search($(this).val() ? '^' + $(this).val() + '$' : '', true, false).draw(); });
                 $('#filterPeriodo').on('change', function () { api.column(3).search($(this).val() ? '^' + $(this).val() + '$' : '', true, false).draw(); });
                 
+                // --- FIM DAS MUDANÇAS ---
+
                 $(window).off('resize.dtDisciplinas').on('resize.dtDisciplinas', () => {
                     clearTimeout(resizeDebounceTimer);
                     resizeDebounceTimer = setTimeout(() => { if (tabelaDisciplinasDt) tabelaDisciplinasDt.columns.adjust().responsive.recalc(); }, 250);
                 });
             },
-            // ================== CORREÇÃO APLICADA AQUI ==================
             drawCallback: function (settings) {
                 const api = this.api();
-                
-                // Itera sobre todas as linhas da página atual da tabela
                 api.rows({ page: 'current' }).nodes().each(function (rowNode, index) {
-                    // 1. Garante que os dropdowns de ação sejam inicializados
                     const dropdownToggleEl = rowNode.querySelector('[data-bs-toggle="dropdown"]');
                     if (dropdownToggleEl && !bootstrap.Dropdown.getInstance(dropdownToggleEl)) {
                         new bootstrap.Dropdown(dropdownToggleEl, { popperConfig: { strategy: 'fixed' } });
                     }
-
-                    // 2. Garante que os dados completos estejam anexados a CADA linha
                     if (!$(rowNode).data('completo')) {
                         const rowData = api.row(rowNode).data();
                         if (rowData) {
-                            // Encontra o objeto completo na nossa lista de dados principal
                             const disciplinaOriginal = listaDisciplinas.find(d => d.nome === rowData[1]);
                             if (disciplinaOriginal) {
                                 $(rowNode).data('completo', disciplinaOriginal);
@@ -186,7 +193,6 @@ document.addEventListener("DOMContentLoaded", function () {
         if (tr.hasClass('dtr-bs-modal')) tr = tr.prev('tr.parent');
 
         const dadosCompletos = tr.data('completo');
-        // Se os dados não forem encontrados, não faz nada.
         if (!dadosCompletos) {
             console.error("Não foi possível encontrar os dados completos para a linha.", tr);
             return;
@@ -199,7 +205,6 @@ document.addEventListener("DOMContentLoaded", function () {
             abrirModalFormDisciplina(true, dadosCompletos, tr[0]);
         } else if ($(this).hasClass('btn-remover-disciplina')) {
             if (confirm(`Tem certeza que deseja remover "${dadosCompletos.nome}"?`)) {
-                // Remove da lista principal e redesenha a tabela
                 const indexNaLista = listaDisciplinas.findIndex(d => d.id === dadosCompletos.id);
                 if(indexNaLista > -1) listaDisciplinas.splice(indexNaLista, 1);
                 tabelaDisciplinasDt.row(tr).remove().draw();
@@ -215,9 +220,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // --- LÓGICA PARA MODAIS DE ADIÇÃO RÁPIDA (SIDEBAR) ---
-    // (Esta parte permanece a mesma)
-    
     // --- LÓGICA DO FORMULÁRIO PRINCIPAL DE EDIÇÃO/CRIAÇÃO DE DISCIPLINA ---
     function abrirModalFormDisciplina(isEditMode = false, dadosDisciplina = null, targetTr = null) {
         if (!formDisciplina || !modalDisciplinaAdicao || !disciplinaNomeInput) return;
@@ -243,6 +245,13 @@ document.addEventListener("DOMContentLoaded", function () {
         const bsModal = bootstrap.Modal.getInstance(modalDisciplinaAdicao) || new bootstrap.Modal(modalDisciplinaAdicao);
         bsModal.show();
     }
+    
+    // Liga o botão estático de Adicionar Disciplina à função que abre o modal
+    if (abrirModalNovaDisciplinaBtnOriginal) {
+        abrirModalNovaDisciplinaBtnOriginal.addEventListener('click', () => {
+            abrirModalFormDisciplina(false);
+        });
+    }
 
     if (formDisciplina) {
         formDisciplina.addEventListener("submit", function (e) {
@@ -264,7 +273,6 @@ document.addEventListener("DOMContentLoaded", function () {
             const indexNaLista = listaDisciplinas.findIndex(d => d.id === formDisciplinaId);
             if (indexNaLista > -1) {
                 listaDisciplinas[indexNaLista] = dadosCompletosDisciplina;
-                // Atualiza a linha na tabela
                 tabelaDisciplinasDt.row(rowIndex).data([
                     '', dadosCompletosDisciplina.nome, dadosCompletosDisciplina.professor, 
                     dadosCompletosDisciplina.periodo, 
@@ -273,7 +281,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 ]).draw(false);
             } else {
                 listaDisciplinas.push(dadosCompletosDisciplina);
-                // Adiciona a nova linha na tabela
                 tabelaDisciplinasDt.row.add([
                     '', dadosCompletosDisciplina.nome, dadosCompletosDisciplina.professor, 
                     dadosCompletosDisciplina.periodo, 
