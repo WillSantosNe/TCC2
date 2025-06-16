@@ -1,4 +1,3 @@
-// tarefaRapidaModal.js
 document.addEventListener('DOMContentLoaded', function() {
     // Seletores ajustados para o NOVO ID do modal rápido da sidebar
     const modalTarefaPrincipalQuickAddEl = document.getElementById('modalTarefaPrincipalQuickAdd');
@@ -13,50 +12,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // Instancia o modal Bootstrap
     const modalTarefaPrincipalQuickAdd = new bootstrap.Modal(modalTarefaPrincipalQuickAddEl);
 
-    // Dados para popular o select de Disciplina (assumindo que listaDisciplinas está disponível globalmente ou aqui)
-    const listaDisciplinasQuickAdd = [
-        { id: "CS101", nome: "Algoritmos e Estrutura de Dados" },
-        { id: "CS102", nome: "Redes de Computadores" },
-        { id: "CS103", nome: "Banco de Dados" },
-        { id: "CS104", nome: "Inteligência Artificial" },
-        { id: "CS105", nome: "Compiladores" }
-    ];
-    // Função auxiliar para popular selects (copiada de tarefas.js para ser independente)
-    function popularSelectQuickAdd(element, options, selectedValue = null) {
-        if (!element) return;
-        element.innerHTML = '';
-        const defaultOption = document.createElement('option');
-        defaultOption.value = "";
-        defaultOption.textContent = "Selecione...";
-        defaultOption.disabled = true;
-        defaultOption.selected = true;
-        element.appendChild(defaultOption);
-
-        options.forEach(option => {
-            const optElement = document.createElement('option');
-            const value = (typeof option === 'object' && option !== null) ? option.id : option;
-            const textContent = (typeof option === 'object' && option !== null) ? option.nome : option;
-
-            optElement.value = value;
-            optElement.textContent = textContent;
-
-            if (selectedValue !== null && (String(value) === String(selectedValue) || String(textContent) === String(selectedValue))) {
-                optElement.selected = true;
-                defaultOption.selected = false;
-            }
-            element.appendChild(optElement);
-        });
-    }
-
     // Evento para quando o modal é aberto (limpar formulário, etc.)
     modalTarefaPrincipalQuickAddEl.addEventListener('show.bs.modal', function () {
         formTarefaPrincipalQuickAdd.reset(); // Limpa todos os campos do formulário
         formTarefaPrincipalQuickAdd.classList.remove('was-validated'); // Remove classes de validação Bootstrap
         
         // Popula os selects para o modal rápido
-        popularSelectQuickAdd(principalTarefaDisciplinaQuickAddSelect, listaDisciplinasQuickAdd.map(d => ({id: d.id, nome: d.nome})), '');
-        popularSelectQuickAdd(principalTarefaTipoQuickAddSelect, ["Tarefa", "Prova"], '');
-        popularSelectQuickAdd(principalTarefaStatusQuickAddSelect, ["A FAZER", "EM ANDAMENTO", "CONCLUÍDA"], "A FAZER");
+        // Assegura que listaDisciplinas e popularSelect (do tarefas.js) estejam disponíveis globalmente
+        if (window.listaDisciplinas && window.popularSelect) {
+            window.popularSelect(principalTarefaDisciplinaQuickAddSelect, window.listaDisciplinas.map(d => ({id: d.id, nome: d.nome})), '');
+            window.popularSelect(principalTarefaTipoQuickAddSelect, ["Tarefa", "Prova"], '');
+            window.popularSelect(principalTarefaStatusQuickAddSelect, ["A fazer", "Em andamento", "Concluída"], "A fazer");
+        } else {
+            console.error("Variáveis globais (listaDisciplinas ou popularSelect) não encontradas. Verifique a ordem dos scripts.");
+        }
     });
 
     // Listener para o submit do formulário
@@ -76,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 disciplinaId: principalTarefaDisciplinaQuickAddSelect.value, // Pega o valor do novo campo
                 dataEntrega: principalTarefaDataEntregaQuickAddInput.value,
                 tipo: principalTarefaTipoQuickAddSelect.value,
-                status: principalTarefaStatusQuickAddSelect.value // Pega o valor do novo campo
+                status: principalTarefaStatusQuickAddSelect.value 
             };
 
             console.log('Nova Tarefa/Prova Adicionada (Quick Add):', novaTarefa);
@@ -85,10 +54,9 @@ document.addEventListener('DOMContentLoaded', function() {
             // Se você quiser que a tabela na página principal seja atualizada,
             // você precisará de um mecanismo para comunicar essa nova tarefa.
             // Por exemplo, um evento customizado ou se 'listaTarefas' e 'tabelaTarefasDt' forem globais.
-            // Exemplo:
-            // if (window.salvarOuAtualizarTarefaNaTabela && window.tabelaTarefasDt) {
-            //     window.salvarOuAtualizarTarefaNaTabela(novaTarefa, false);
-            // }
+            if (window.salvarOuAtualizarTarefaNaTabela) {
+                window.salvarOuAtualizarTarefaNaTabela(novaTarefa, false);
+            }
 
             // Esconde o modal
             modalTarefaPrincipalQuickAdd.hide();

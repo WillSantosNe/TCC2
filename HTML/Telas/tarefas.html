@@ -28,7 +28,7 @@
             <a href="#" class="sf-nav-link sf-quick-add-link" id="quickAddDisciplinaBtnSidebar" data-bs-toggle="modal" data-bs-target="#modalDisciplinaAdicaoPrincipal">
                 <span class="quick-add-icon"><i class="bi bi-plus-lg"></i></span> Adicionar Disciplina
             </a>
-            <a href="#" class="sf-nav-link sf-quick-add-link" id="quickAddTarefaBtnSidebar" data-bs-toggle="modal" data-bs-target="#modalTarefaAdicaoPrincipal">
+            <a href="#" class="sf-nav-link sf-quick-add-link" id="quickAddTarefaBtnSidebar" data-bs-toggle="modal" data-bs-target="#modalTarefaPrincipalQuickAdd">
                 <span class="quick-add-icon"><i class="bi bi-plus-lg"></i></span> Adicionar Tarefa/Prova
             </a>
             <a href="#" class="sf-nav-link sf-quick-add-link" id="quickAddAnotacaoBtnSidebar" data-bs-toggle="modal" data-bs-target="#modalAnotacaoPrincipal">
@@ -65,16 +65,8 @@
                         alt="Avatar do usuário">
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuBtn">
-                    <li>
-                        <a class="dropdown-item" href="./configuracoes.html">
-                            <i class="bi bi-gear me-2"></i>Configurações de Usuário
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="./notificacoes.html">
-                            <i class="bi bi-bell me-2"></i>Notificações
-                        </a>
-                    </li>
+                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#cModalConfig" data-modal-section="configuracoes"><i class="bi bi-gear me-2"></i>Configurações</a></li>
+                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#cModalConfig" data-modal-section="notificacoes"><i class="bi bi-bell me-2"></i>Notificações</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li>
                         <a class="dropdown-item text-danger" href="./login.html">
@@ -255,7 +247,7 @@
                             <div class="input-wrapper">
                                 <select class="form-select modal-property-input" id="tarefaDisciplina" required>
                                     <option value="" selected disabled>Selecione...</option>
-                                    </select>
+                                </select>
                                 <div class="invalid-feedback">Disciplina é obrigatória.</div>
                             </div>
                         </div>
@@ -309,19 +301,44 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modalDetalhesTarefa" tabindex="-1" aria-labelledby="modalDetalhesTarefaLabel" aria-hidden="true">
+    <div class="modal fade" id="modalDetalhesAtividade" tabindex="-1" aria-labelledby="modalDetalhesAtividadeLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalDetalhesTarefaLabel">Detalhes da Atividade</h5>
+                    <h5 class="modal-title" id="detalhe-atividade-nome">Detalhes da Atividade</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                 </div>
                 <div class="modal-body">
-                    <div id="modalDetalhesTarefaConteudo" class="modal-detalhes-tarefa-conteudo">
+                    <dl class="row mb-3">
+                        <dt class="col-sm-3">Disciplina:</dt>
+                        <dd class="col-sm-9" id="detalhe-atividade-disciplina">-</dd>
+                        <dt class="col-sm-3">Tipo:</dt>
+                        <dd class="col-sm-9" id="detalhe-atividade-tipo"><span class="badge"></span></dd>
+                        <dt class="col-sm-3">Data de Entrega:</dt>
+                        <dd class="col-sm-9" id="detalhe-atividade-data">-</dd>
+                        <dt class="col-sm-3">Status:</dt>
+                        <dd class="col-sm-9" id="detalhe-atividade-status"><span class="badge"></span></dd>
+                        <dt class="col-sm-12 mt-3">Descrição:</dt>
+                        <dd class="col-sm-12" id="detalhe-atividade-descricao">-</dd>
+                    </dl>
+                    <hr>
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title"><i class="bi bi-file-earmark-text me-2"></i>Anotações</h6>
+                                    <p class="card-text text-muted small">Crie ou visualize anotações para esta atividade.</p>
+                                    <button class="btn btn-outline-primary btn-sm">Ver Anotações</button>
+                                </div>
+                            </div>
                         </div>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="okModalDetalhesTarefa">OK</button>
+                <div class="modal-footer d-flex justify-content-between align-items-center">
+                    <button type="button" class="btn btn-outline-secondary" id="btnCompartilharAtividade">
+                        <i class="bi bi-share-fill me-2"></i>Compartilhar
+                    </button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
                 </div>
             </div>
         </div>
@@ -397,14 +414,14 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modalTarefaPrincipalQuickAdd" tabindex="-1" aria-labelledby="modalTarefaAdicaoPrincipalLabel" aria-hidden="true">
+    <div class="modal fade" id="modalTarefaPrincipalQuickAdd" tabindex="-1" aria-labelledby="modalTarefaPrincipalQuickAddLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <form id="formTarefaPrincipalQuickAdd" novalidate>
                     <div class="modal-header-custom modal-header-studyflow">
                         <div class="modal-title-wrapper">
                             <img src="../imgs/logo.png" class="modal-logo-icon" alt="StudyFlow Logo">
-                            <h5 class="modal-title-custom" id="modalTarefaAdicaoPrincipalLabelQuickAdd">Adicionar Tarefa/Prova</h5>
+                            <h5 class="modal-title-custom" id="modalTarefaPrincipalQuickAddLabel">Adicionar Tarefa/Prova</h5>
                         </div>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
                     </div>
@@ -413,10 +430,11 @@
                             <span class="modal-property-icon"><i class="bi bi-card-heading"></i></span>
                             <label for="principalTarefaTituloQuickAdd" class="modal-property-label">Título</label>
                             <div class="input-wrapper">
-                                <input type="text" class="form-control modal-property-input" id="principalTarefaTituloQuickAdd" required placeholder="Ex: Prova de Cálculo">
+                                <input type="text" class="form-control modal-property-input" id="principalTarefaTituloQuickAdd" placeholder="Ex: Prova de Cálculo, Trabalho de POO" required>
                                 <div class="invalid-feedback">Título é obrigatório.</div>
                             </div>
                         </div>
+
                         <div class="modal-property-item mb-3 align-items-start">
                             <span class="modal-property-icon"><i class="bi bi-file-text-fill"></i></span>
                             <label for="principalTarefaDescricaoQuickAdd" class="modal-property-label">Descrição</label>
@@ -424,16 +442,18 @@
                                 <textarea class="form-control modal-property-input" id="principalTarefaDescricaoQuickAdd" rows="3" placeholder="Detalhes da tarefa/prova... (Opcional)"></textarea>
                             </div>
                         </div>
+
                         <div class="modal-property-item mb-3">
                             <span class="modal-property-icon"><i class="bi bi-journal-bookmark-fill"></i></span>
                             <label for="principalTarefaDisciplinaQuickAdd" class="modal-property-label">Disciplina</label>
                             <div class="input-wrapper">
                                 <select class="form-select modal-property-input" id="principalTarefaDisciplinaQuickAdd" required>
                                     <option value="" selected disabled>Selecione...</option>
-                                    </select>
+                                </select>
                                 <div class="invalid-feedback">Disciplina é obrigatória.</div>
                             </div>
                         </div>
+
                         <div class="modal-property-item mb-3">
                             <span class="modal-property-icon"><i class="bi bi-calendar-check"></i></span>
                             <label for="principalTarefaDataEntregaQuickAdd" class="modal-property-label">Data</label>
@@ -442,6 +462,7 @@
                                 <div class="invalid-feedback">Data de entrega é obrigatória.</div>
                             </div>
                         </div>
+
                         <div class="modal-property-item mb-3">
                             <span class="modal-property-icon"><i class="bi bi-tags-fill"></i></span>
                             <label for="principalTarefaTipoQuickAdd" class="modal-property-label">Tipo</label>
@@ -454,6 +475,7 @@
                                 <div class="invalid-feedback">Tipo é obrigatório.</div>
                             </div>
                         </div>
+                        
                         <div class="modal-property-item mb-3">
                             <span class="modal-property-icon"><i class="bi bi-hourglass-split"></i></span>
                             <label for="principalTarefaStatusQuickAdd" class="modal-property-label">Status</label>
@@ -475,6 +497,7 @@
             </div>
         </div>
     </div>
+
 
     <div class="modal fade" id="modalAnotacaoPrincipal" tabindex="-1" aria-labelledby="modalAnotacaoPrincipalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg"> 
@@ -531,23 +554,85 @@
     <div class="modal fade" id="cModalConfig" tabindex="-1" aria-labelledby="cModalConfigLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header-custom modal-header-studyflow">
-                    <div class="modal-title-wrapper">
-                        <img src="../imgs/logo.png" class="modal-logo-icon" alt="StudyFlow Logo">
-                        <h5 class="modal-title-custom">Configurações</h5>
+                <div class="modal-custom-content">
+                    <div class="modal-sidebar">
+                        <img src="../imgs/logo.png" alt="Logo" class="img-fluid mb-3">
+                        <ul class="list-group list-group-flush w-100">
+                            <li class="list-group-item">
+                                <a href="#" class="list-group-item-action" data-section="trocar-senha">Trocar senha</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="#" class="list-group-item-action" data-section="trocar-foto">Trocar foto de perfil</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="#" class="list-group-item-action" data-section="notificacoes">Notificações</a>
+                            </li>
+                            <li class="list-group-item back-link">
+                                <a href="#" class="list-group-item-action" id="backLink" data-bs-dismiss="modal">Voltar</a>
+                            </li>
+                        </ul>
                     </div>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                </div>
-                <div class="modal-body modal-body-custom">
-                    <p>Conteúdo completo do modal de configurações (com sidebar e seções) deve vir aqui...</p>
-                </div>
-                <div class="modal-footer-custom modal-footer-studyflow">
-                    <button type="button" class="btn btn-modal-ok" data-bs-dismiss="modal">OK</button>
+
+                    <div class="modal-main-content">
+                        <div id="modal-welcome-content" class="modal-section active">
+                            <h2>Bem-vindo às Configurações!</h2>
+                            <p>Aqui você pode gerenciar as opções da sua conta.</p>
+                            <p>Use o menu lateral para navegar ou clique em "Voltar" para fechar.</p>
+                        </div>
+                        <div id="modal-trocar-senha" class="modal-section">
+                            <h3>Trocar Senha</h3>
+                            <form>
+                                <div class="mb-3">
+                                    <label for="currentPassword" class="form-label">Senha Atual</label>
+                                    <input type="password" class="form-control" id="currentPassword" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="newPassword" class="form-label">Nova Senha</label>
+                                    <input type="password" class="form-control" id="newPassword" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="confirmNewPassword" class="form-label">Confirmar Nova Senha</label>
+                                    <input type="password" class="form-control" id="confirmNewPassword" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Salvar Nova Senha</button>
+                            </form>
+                        </div>
+                        <div id="modal-trocar-foto" class="modal-section">
+                            <h3>Trocar Foto de Perfil</h3>
+                            <div class="text-center mb-3">
+                                <img src="../imgs/avatar.png" class="rounded-circle mb-3" style="width:120px;height:120px;" alt="Foto de Perfil Atual">
+                                <input type="file" class="form-control" id="profilePictureInput" accept="image/*">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Salvar Foto</button>
+                        </div>
+                        <div id="modal-notificacoes" class="modal-section">
+                            <h3>Configurações de Notificações</h3>
+                            <form>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="emailNotificacoes" checked>
+                                    <label class="form-check-label" for="emailNotificacoes">Notificações por Email</label>
+                                </div>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="appNotificacoes" checked>
+                                    <label class="form-check-label" for="appNotificacoes">Notificações no Aplicativo</label>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="notificationFrequency" class="form-label">Frequência de Notificações</label>
+                                    <select class="form-select" id="notificationFrequency">
+                                        <option value="instant">Instantâneas</option>
+                                        <option value="daily">Diárias</option>
+                                        <option value="weekly">Semanais</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Salvar Configurações</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
+    
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/2.0.7/js/dataTables.js"></script>
@@ -555,11 +640,10 @@
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.bootstrap5.js"></script>
 
-    <script src="../Scripts/geral.js" defer></script>
+    <script src="../Scripts/geral.js" defer></script> 
     <script src="../Scripts/tarefas.js" defer></script>
-    <script src="../Scripts/modal-configuracoes.js" defer></script>
-    <script src="../Scripts/disciplinaModal.js" defer></script> 
-    <script src="../Scripts/tarefaRapidaModal.js" defer></script> 
-    <script src="../Scripts/anotacaoModal.js" defer></script> 
+    <script src="../Scripts/modal-configuracoes.js" defer></script> <script src="../Scripts/modals/disciplinaModal.js" defer></script> 
+    <script src="../Scripts/modals/anotacaoModal.js" defer></script> 
+    <script src="../Scripts/modals/tarefaRapidaModal.js" defer></script> 
 </body>
 </html>

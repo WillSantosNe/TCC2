@@ -33,7 +33,7 @@
         <nav class="nav flex-column">
             <div class="sf-sidebar-section">Botões Rápidos</div>
             <a href="#" class="sf-nav-link sf-quick-add-link" data-bs-toggle="modal" data-bs-target="#modalDisciplinaAdicaoPrincipal"> <span class="quick-add-icon"><i class="bi bi-plus-lg"></i></span> Adicionar Disciplina </a>
-            <a href="#" class="sf-nav-link sf-quick-add-link" data-bs-toggle="modal" data-bs-target="#modalTarefaAdicaoPrincipal"> <span class="quick-add-icon"><i class="bi bi-plus-lg"></i></span> Adicionar Tarefa/Prova </a>
+            <a href="#" class="sf-nav-link sf-quick-add-link" data-bs-toggle="modal" data-bs-target="#modalTarefaPrincipalQuickAdd"> <span class="quick-add-icon"><i class="bi bi-plus-lg"></i></span> Adicionar Tarefa/Prova </a>
             <a href="#" class="sf-nav-link sf-quick-add-link" data-bs-toggle="modal" data-bs-target="#modalAnotacaoPrincipal"> <span class="quick-add-icon"><i class="bi bi-plus-lg"></i></span> Adicionar Anotação </a>
             <div class="sf-sidebar-section">Acadêmico</div>
             <a href="./principal.html" class="sf-nav-link active">Dashboard</a>
@@ -285,66 +285,81 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modalTarefaAdicaoPrincipal" tabindex="-1" aria-labelledby="modalTarefaAdicaoPrincipalLabel" aria-hidden="true">
+    <div class="modal fade" id="modalTarefaPrincipalQuickAdd" tabindex="-1" aria-labelledby="modalTarefaPrincipalQuickAddLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <form id="formTarefaAdicaoPrincipal" novalidate>
+                <form id="formTarefaPrincipalQuickAdd" novalidate>
                     <div class="modal-header-custom modal-header-studyflow">
                         <div class="modal-title-wrapper">
                             <img src="../imgs/logo.png" class="modal-logo-icon" alt="StudyFlow Logo">
-                            <h5 class="modal-title-custom" id="modalTarefaAdicaoPrincipalLabel">Adicionar Tarefa/Prova</h5>
+                            <h5 class="modal-title-custom" id="modalTarefaPrincipalQuickAddLabel">Adicionar Tarefa/Prova</h5>
                         </div>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
                     </div>
                     <div class="modal-body modal-body-custom">
                         <div class="modal-property-item mb-3">
                             <span class="modal-property-icon"><i class="bi bi-card-heading"></i></span>
-                            <label for="principalTarefaTitulo" class="modal-property-label">Título</label>
+                            <label for="principalTarefaTituloQuickAdd" class="modal-property-label">Título</label>
                             <div class="input-wrapper">
-                                <input type="text" class="form-control modal-property-input" id="principalTarefaTitulo" required placeholder="Ex: Prova de Cálculo">
+                                <input type="text" class="form-control modal-property-input" id="principalTarefaTituloQuickAdd" placeholder="Ex: Prova de Cálculo, Trabalho de POO" required>
                                 <div class="invalid-feedback">Título é obrigatório.</div>
                             </div>
                         </div>
-                           <div class="modal-property-item mb-3 align-items-start">
+
+                        <div class="modal-property-item mb-3 align-items-start">
                             <span class="modal-property-icon"><i class="bi bi-file-text-fill"></i></span>
-                            <label for="principalTarefaDescricao" class="modal-property-label">Descrição</label>
+                            <label for="principalTarefaDescricaoQuickAdd" class="modal-property-label">Descrição</label>
                             <div class="input-wrapper">
-                                <textarea class="form-control modal-property-input" id="principalTarefaDescricao" rows="3" placeholder="Detalhes da tarefa/prova... (Opcional)"></textarea>
+                                <textarea class="form-control modal-property-input" id="principalTarefaDescricaoQuickAdd" rows="3" placeholder="Detalhes da tarefa/prova... (Opcional)"></textarea>
                             </div>
                         </div>
+
+                        <div class="modal-property-item mb-3">
+                            <span class="modal-property-icon"><i class="bi bi-journal-bookmark-fill"></i></span>
+                            <label for="principalTarefaDisciplinaQuickAdd" class="modal-property-label">Disciplina</label>
+                            <div class="input-wrapper">
+                                <select class="form-select modal-property-input" id="principalTarefaDisciplinaQuickAdd" required>
+                                    <option value="" selected disabled>Selecione...</option>
+                                </select>
+                                <div class="invalid-feedback">Disciplina é obrigatória.</div>
+                            </div>
+                        </div>
+
                         <div class="modal-property-item mb-3">
                             <span class="modal-property-icon"><i class="bi bi-calendar-check"></i></span>
-                            <label for="principalTarefaDataEntrega" class="modal-property-label">Data</label>
+                            <label for="principalTarefaDataEntregaQuickAdd" class="modal-property-label">Data</label>
                             <div class="input-wrapper">
-                                <input type="date" class="form-control modal-property-input" id="principalTarefaDataEntrega" required>
+                                <input type="date" class="form-control modal-property-input" id="principalTarefaDataEntregaQuickAdd" required>
                                 <div class="invalid-feedback">Data de entrega é obrigatória.</div>
                             </div>
                         </div>
+
                         <div class="modal-property-item mb-3">
                             <span class="modal-property-icon"><i class="bi bi-tags-fill"></i></span>
-                            <label for="principalTarefaTipo" class="modal-property-label">Tipo</label>
+                            <label for="principalTarefaTipoQuickAdd" class="modal-property-label">Tipo</label>
                             <div class="input-wrapper">
-                                <select class="form-select modal-property-input" id="principalTarefaTipo" required>
+                                <select class="form-select modal-property-input" id="principalTarefaTipoQuickAdd" required>
                                     <option value="" selected disabled>Selecione...</option>
                                     <option value="Tarefa">Tarefa</option>
                                     <option value="Prova">Prova</option>
                                 </select>
-                                   <div class="invalid-feedback">Tipo é obrigatório.</div>
+                                <div class="invalid-feedback">Tipo é obrigatório.</div>
                             </div>
                         </div>
+                        
                         <div class="modal-property-item mb-3">
                             <span class="modal-property-icon"><i class="bi bi-hourglass-split"></i></span>
-                            <label for="principalTarefaStatus" class="modal-property-label">Status</label>
+                            <label for="principalTarefaStatusQuickAdd" class="modal-property-label">Status</label>
                             <div class="input-wrapper">
-                                <select class="form-select modal-property-input" id="principalTarefaStatus" required>
+                                <select class="form-select modal-property-input" id="principalTarefaStatusQuickAdd" required>
                                     <option value="A FAZER" selected>A fazer</option>
-                                    <option value="EM ANDAMENTO">Em andamento</option>
+                                    <option value="EM ANDAMENTO">Em Andamento</option>
                                     <option value="CONCLUÍDA">Concluída</option>
                                 </select>
                                 <div class="invalid-feedback">Status é obrigatório.</div>
                             </div>
                         </div>
-                        </div>
+                    </div>
                     <div class="modal-footer-custom modal-footer-studyflow">
                         <button type="button" class="btn btn-modal-cancel" data-bs-dismiss="modal">Cancelar</button>
                         <button type="submit" class="btn btn-modal-save">Salvar Tarefa</button>
@@ -353,6 +368,7 @@
             </div>
         </div>
     </div>
+
 
     <div class="modal fade" id="modalAnotacaoPrincipal" tabindex="-1" aria-labelledby="modalAnotacaoPrincipalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg"> 
@@ -411,7 +427,7 @@
             <div class="modal-content">
                 <div class="modal-custom-content">
                     <div class="modal-sidebar">
-                        <img src="../imgs/logo.png" alt="Logo" class="img-fluid mb-3">
+                        <img src="../imgs/logo.png" class="img-fluid mb-3">
                         <ul class="list-group list-group-flush w-100">
                             <li class="list-group-item">
                                 <a href="#" class="list-group-item-action" data-section="trocar-senha">Trocar senha</a>
@@ -493,5 +509,8 @@
     <script src="../Scripts/geral.js" defer></script>
     <script src="../Scripts/principal.js" defer></script>
     <script src="../Scripts/modal-configuracoes.js" defer></script>
+    <script src="../Scripts/modals/disciplinaModal.js" defer></script> 
+    <script src="../Scripts/modals/anotacaoModal.js" defer></script> 
+    <script src="../Scripts/modals/tarefaRapidaModal.js" defer></script> 
 </body>
 </html>
