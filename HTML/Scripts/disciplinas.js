@@ -15,13 +15,16 @@ document.addEventListener("DOMContentLoaded", function () {
         { id: "CCO210", nome: "Programação Orientada a Objetos", professor: "Prof. Ana", status: "Concluída", periodo: "2024.1", descricao: "Paradigmas e aplicação da programação orientada a objetos." }
     ];
 
+    // Função para retornar classes CSS para os badges de status.
     function getStatusBadgeClass(status) {
         switch (status) {
-            case 'Ativa': return 'bg-success text-white';
-            case 'Em Andamento': return 'bg-info text-dark';
-            case 'Concluída': return 'bg-secondary text-white';
-            case 'Agendada': return 'bg-primary text-white';
-            default: return 'bg-light text-dark';
+            case 'Ativa':
+            case 'Concluída':
+                return 'status-green';
+            case 'Em Andamento':
+                return 'status-blue';
+            default:
+                return 'status-gray';
         }
     }
 
@@ -56,12 +59,12 @@ document.addEventListener("DOMContentLoaded", function () {
             { data: null, defaultContent: '', orderable: false, className: 'dtr-control' },
             { data: 'nome' },
             { data: 'professor' },
-            { data: 'status', render: (data) => `<span class="badge ${getStatusBadgeClass(data)}">${data}</span>` },
+            { data: 'status', render: (data) => `<span class="badge rounded-pill ${getStatusBadgeClass(data)}">${data}</span>` },
             { data: 'id', orderable: false, className: 'text-center dt-actions-column', render: (data) => gerarDropdownHtml(data) },
             { data: 'periodo', visible: false }
         ],
         drawCallback: function () {
-            // Re-inicializa os dropdowns do Bootstrap após cada redesenho da tabela
+            // Re-inicializa os dropdowns do Bootstrap
             const dropdowns = this.api().table().body().querySelectorAll('[data-bs-toggle="dropdown"]');
             dropdowns.forEach((dd) => {
                 new bootstrap.Dropdown(dd, {
@@ -103,7 +106,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const disciplina = listaDisciplinas.find(d => d.id === disciplinaId);
         if (!disciplina) return;
         
-        // CORREÇÃO 2: Esconde o dropdown ao clicar em um item que abre um modal
         const dropdownDoItem = bootstrap.Dropdown.getInstance($(this).closest('.dropdown').find('[data-bs-toggle="dropdown"]'));
         if (dropdownDoItem) {
             dropdownDoItem.hide();
@@ -112,7 +114,6 @@ document.addEventListener("DOMContentLoaded", function () {
         if ($(this).hasClass('btn-excluir-disciplina')) {
             if (confirm(`Tem certeza que deseja excluir a disciplina "${disciplina.nome}"?`)) {
                 listaDisciplinas = listaDisciplinas.filter(d => d.id !== disciplinaId);
-                // Encontra a linha da tabela e a remove
                 tabelaDisciplinasDt.row($(this).closest('tr')).remove().draw();
                 popularDropdownsDeDisciplinas();
             }
@@ -122,10 +123,11 @@ document.addEventListener("DOMContentLoaded", function () {
             $('#detalhe-disciplina-descricao').text(disciplina.descricao || "Nenhuma descrição fornecida.");
             $('#detalhe-disciplina-professor').text(disciplina.professor);
             $('#detalhe-disciplina-periodo').text(disciplina.periodo);
-            $('#detalhe-disciplina-status').html(`<span class="badge ${getStatusBadgeClass(disciplina.status)}">${disciplina.status}</span>`);
+            $('#detalhe-disciplina-status').html(`<span class="badge rounded-pill ${getStatusBadgeClass(disciplina.status)}">${disciplina.status}</span>`);
 
             const detalhesModal = new bootstrap.Modal('#modalDetalhesDisciplina');
             
+            // --- LÓGICA DO MODAL ATUALIZADA ---
             document.getElementById('verTarefasDisciplina').onclick = () => {
                 alert(`Aqui você redirecionaria ou filtraria para ver as tarefas de: ${disciplina.nome}`);
                 detalhesModal.hide();
@@ -134,9 +136,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 alert(`Aqui você redirecionaria ou filtraria para ver as anotações de: ${disciplina.nome}`);
                 detalhesModal.hide();
             };
-            document.getElementById('btnCompartilharDisciplina').onclick = () => {
-                alert(`Aqui você implementaria a lógica para compartilhar a disciplina: ${disciplina.nome}`);
-            };
+            // A lógica para o botão de compartilhar foi removida.
 
             detalhesModal.show();
         } else if ($(this).hasClass('btn-editar-disciplina')) {
@@ -159,13 +159,10 @@ document.addEventListener("DOMContentLoaded", function () {
             const dadosAtualizados = { id: disciplinaEmEdicaoId, nome, professor, status, periodo, descricao };
 
             if (indexNaLista !== -1) {
-                // Atualiza a lista de dados original
                 listaDisciplinas[indexNaLista] = dadosAtualizados;
-                
-                // CORREÇÃO 1: Atualiza apenas a linha específica na tabela do DataTables
                 tabelaDisciplinasDt.rows().every(function() {
                     if (this.data().id === disciplinaEmEdicaoId) {
-                        this.data(dadosAtualizados).draw(false); // O 'false' mantém a paginação atual
+                        this.data(dadosAtualizados).draw(false);
                     }
                 });
             }
@@ -176,8 +173,6 @@ document.addEventListener("DOMContentLoaded", function () {
             const novoId = Math.random().toString(36).substring(2, 9).toUpperCase();
             const novaDisciplina = { id: novoId, nome, professor, status, periodo, descricao };
             listaDisciplinas.push(novaDisciplina);
-            
-            // Adiciona a nova linha à tabela
             tabelaDisciplinasDt.row.add(novaDisciplina).draw(false);
         }
 
