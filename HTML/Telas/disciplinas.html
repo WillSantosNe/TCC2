@@ -28,7 +28,7 @@
             <div class="sf-sidebar-section">Botões Rápidos</div>
             <a href="#" class="sf-nav-link sf-quick-add-link" id="quickAddDisciplinaBtnSidebar" data-bs-toggle="modal" data-bs-target="#modalDisciplinaAdicaoPrincipal"> <span class="quick-add-icon"><i class="bi bi-plus-lg"></i></span> Adicionar Disciplina </a>
             <a href="#" class="sf-nav-link sf-quick-add-link" id="quickAddTarefaBtnSidebar" data-bs-toggle="modal" data-bs-target="#modalTarefaPrincipalQuickAdd"> <span class="quick-add-icon"><i class="bi bi-plus-lg"></i></span> Adicionar Tarefa/Prova </a>
-            <a href="#" class="sf-nav-link sf-quick-add-link" id="quickAddAnotacaoBtnSidebar" data-bs-toggle="modal" data-bs-target="#modalAnotacaoPrincipal"> <span class="quick-add-icon"><i class="bi bi-plus-lg"></i></span> Adicionar Anotação </a>
+            <a href="#" class="sf-nav-link sf-quick-add-link" id="quickAddAnotacaoBtnSidebar" data-bs-toggle="modal" data-bs-target="#modalNovaAnotacao"> <span class="quick-add-icon"><i class="bi bi-plus-lg"></i></span> Adicionar Anotação </a>
             <div class="sf-sidebar-section">Acadêmico</div>
             <a class="sf-nav-link" href="./principal.html">Dashboard</a>
             <a class="sf-nav-link" href="./tarefas.html">Tarefas e Provas</a>
@@ -221,7 +221,7 @@
     </div>
 
 
-    <div class="modal fade" id="modalAnotacaoPrincipal" tabindex="-1" aria-labelledby="modalAnotacaoPrincipalLabel" aria-hidden="true">
+    <div class="modal fade" id="modalNovaAnotacao" tabindex="-1" aria-labelledby="modalAnotacaoPrincipalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg"> 
             <div class="modal-content"> 
                 <form id="formAnotacaoPrincipal" novalidate>
@@ -259,8 +259,8 @@
                             </div>
                             <hr class="my-3">
                             <div class="mb-3">
-                                <label for="principalAnotacaoConteudoInput" class="form-label visually-hidden">Conteúdo da Anotação</label>
-                                <textarea id="principalAnotacaoConteudoInput" rows="10"></textarea> 
+                                <label for="conteudoAnotacao" class="form-label visually-hidden">Conteúdo da Anotação</label>
+                                <textarea id="conteudoAnotacao" rows="10"></textarea> 
                             </div>
                         </div>
                     </div>
@@ -272,7 +272,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade" id="cModalConfig" tabindex="-1" aria-labelledby="cModalConfigLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">

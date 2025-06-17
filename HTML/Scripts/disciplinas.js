@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
     // --- DADOS MOCADOS ---
-    // Re-adding listaDisciplinas here as requested.
     const listaDisciplinas = [
         { id: "CS101", nome: "Algoritmos e Estrutura de Dados", descricao: "Estudo de algoritmos fundamentais, estruturas de dados como listas, filas, pilhas, árvores e grafos, e análise de complexidade.", professor: "Prof. Jango", periodo: "2025.1", status: "Ativa" },
         { id: "CS102", nome: "Redes de Computadores", descricao: "Princípios de redes, modelo OSI, TCP/IP, protocolos de aplicação, camada de transporte e segurança de redes.", professor: "Prof. João Paulo", periodo: "2025.1", status: "Ativa" },
@@ -17,12 +16,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const formDisciplina = document.querySelector("#formDisciplinaPrincipal");
     const modalDisciplinaLabel = document.querySelector("#modalDisciplinaAdicaoPrincipalLabel");
     const disciplinaNomeInput = document.getElementById('principalDisciplinaNome');
-    const disciplinaDescricaoInput = document.getElementById('principalDisciplinaDescricao'); // This will be a standard textarea
+    const disciplinaDescricaoInput = document.getElementById('principalDisciplinaDescricao');
     const disciplinaProfessorInput = document.getElementById('principalDisciplinaProfessor');
     const disciplinaPeriodoSelect = document.getElementById('principalDisciplinaPeriodo');
     const disciplinaStatusSelect = document.getElementById('principalDisciplinaStatus');
 
-    // Selectors for the new modal details
     const modalDetalhesDisciplina = document.querySelector("#modalDetalhesDisciplina");
     const detalheDisciplinaNome = document.querySelector("#detalhe-disciplina-nome");
     const detalheDisciplinaDescricao = document.querySelector("#detalhe-disciplina-descricao");
@@ -33,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let tabelaDisciplinasDt;
     let resizeDebounceTimer;
 
-    // --- FUNÇÕES DE VALIDAÇÃO (SEU CÓDIGO ORIGINAL) ---
+    // --- FUNÇÕES DE VALIDAÇÃO ---
     function displayFieldError(inputElement, message) {
         clearFieldError(inputElement);
         inputElement.classList.add('is-invalid');
@@ -71,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return isValid;
     }
 
-    // --- FUNÇÕES DE UI E AUXILIARES (SEU CÓDIGO ORIGINAL) ---
+    // --- FUNÇÕES DE UI E AUXILIARES ---
     function getStatusBadgeClass(status) {
         switch (status) {
             case 'Ativa': return 'bg-success-subtle text-success';
@@ -213,14 +211,12 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // --- LÓGICA DO FORMULÁRIO PRINCIPAL DE EDIÇÃO/CRIAÇÃO DE DISCIPLINA ---
+    // --- LÓGICA DO FORMULÁRIO DE DISCIPLINA ---
     function abrirModalFormDisciplina(isEditMode = false, dadosDisciplina = null, targetTr = null) {
         if (!formDisciplina || !modalDisciplinaAdicao || !disciplinaNomeInput) return;
         formDisciplina.reset();
-        // Clear validation feedback for all relevant fields
         [disciplinaNomeInput, disciplinaDescricaoInput, disciplinaPeriodoSelect, disciplinaStatusSelect].forEach(el => el && clearFieldError(el));
         
-        // Remove dataset attributes for clean state
         delete formDisciplina.dataset.disciplinaId;
         delete formDisciplina.dataset.rowIndex;
         
@@ -228,7 +224,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (isEditMode && dadosDisciplina) {
             disciplinaNomeInput.value = dadosDisciplina.nome || '';
-            disciplinaDescricaoInput.value = dadosDisciplina.descricao || ''; // Set description for standard textarea
+            disciplinaDescricaoInput.value = dadosDisciplina.descricao || '';
             disciplinaProfessorInput.value = dadosDisciplina.professor || '';
             disciplinaPeriodoSelect.value = dadosDisciplina.periodo || '';
             disciplinaStatusSelect.value = dadosDisciplina.status || '';
@@ -237,15 +233,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 formDisciplina.dataset.rowIndex = tabelaDisciplinasDt.row(targetTr).index();
             }
         } else {
-            disciplinaStatusSelect.value = "Ativa"; // Default status for new discipline
-            disciplinaDescricaoInput.value = ''; // Clear description for new discipline
+            disciplinaStatusSelect.value = "Ativa";
+            disciplinaDescricaoInput.value = '';
         }
 
         const bsModal = bootstrap.Modal.getInstance(modalDisciplinaAdicao) || new bootstrap.Modal(modalDisciplinaAdicao);
         bsModal.show();
     }
     
-    // Liga o botão estático de Adicionar Disciplina à função que abre o modal
     if (abrirModalNovaDisciplinaBtnOriginal) {
         abrirModalNovaDisciplinaBtnOriginal.addEventListener('click', () => {
             abrirModalFormDisciplina(false);
@@ -259,14 +254,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const formDisciplinaId = formDisciplina.dataset.disciplinaId;
             const rowIndex = formDisciplina.dataset.rowIndex;
-
-            // Get content from standard textarea
             const descriptionContent = disciplinaDescricaoInput.value.trim();
 
             const dadosCompletosDisciplina = {
                 id: formDisciplinaId || 'disc-' + new Date().getTime(),
                 nome: disciplinaNomeInput.value.trim(),
-                descricao: descriptionContent, // Use content from standard textarea
+                descricao: descriptionContent,
                 professor: disciplinaProfessorInput.value.trim() || '-',
                 periodo: disciplinaPeriodoSelect.value,
                 status: disciplinaStatusSelect.value,
@@ -296,8 +289,43 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // No TinyMCE destroy listener needed here as it's not initialized for discipline description.
+    // --- CÓDIGO ADICIONADO PARA O MODAL DE ANOTAÇÃO ---
+    
+    // 1. FUNÇÃO PARA INICIALIZAR O EDITOR DE TEXTO DA ANOTAÇÃO
+    function inicializarEditorAnotacao() {
+        if (typeof tinymce !== 'undefined') {
+            tinymce.remove('#conteudoAnotacao'); // Limpa instâncias anteriores
+            tinymce.init({
+                selector: '#conteudoAnotacao',
+                plugins: 'lists link image table code help wordcount',
+                toolbar: 'undo redo | blocks | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image',
+                height: 350,
+                menubar: true, // <<< ALTERAÇÃO AQUI: de 'false' para 'true'
+                branding: false,
+                statusbar: false,
+                language: 'pt_BR'
+            });
+        } else {
+            console.error("TinyMCE não foi carregado.");
+        }
+    }
+    // 2. LÓGICA PARA O MODAL DE NOVA ANOTAÇÃO
+    const modalAnotacao = document.getElementById('modalNovaAnotacao'); // Este é o ID do seu modal de anotação
+    if (modalAnotacao) {
+        // Inicializa o editor quando o modal é completamente exibido
+        modalAnotacao.addEventListener('shown.bs.modal', function () {
+            inicializarEditorAnotacao();
+        });
 
-    // --- INICIALIZAÇÃO ---
+        // Destrói o editor quando o modal é fechado para liberar recursos
+        modalAnotacao.addEventListener('hidden.bs.modal', function () {
+            const editor = tinymce.get('conteudoAnotacao');
+            if (editor) {
+                editor.destroy();
+            }
+        });
+    }
+    
+    // --- INICIALIZAÇÃO GERAL ---
     inicializarDataTable();
 });
