@@ -207,7 +207,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 height: 350,
                 menubar: false,
                 branding: false,
-                language: 'pt_BR'
+                language: 'pt_BR',
+                statusbar: false, // <-- AJUSTE APLICADO AQUI
             });
         }
     }
