@@ -57,11 +57,11 @@
 /* Coluna de Ações */
 .disciplinas-table th.dt-actions-column,
 .disciplinas-table td.dt-actions-column {
-    text-align: center !important; /* CORRIGIDO: Garante que o título e o ícone fiquem centralizados */
+    text-align: center !important;
     padding-left: 0.5rem !important;
     padding-right: 0.5rem !important;
-    width: 70px; /* Largura fixa para a coluna */
-    overflow: visible; /* Permite que o dropdown se expanda */
+    width: 70px;
+    overflow: visible;
 }
 
 /* Controle de expandir/colapsar do DataTables Responsive */
@@ -152,7 +152,7 @@ div.dataTables_wrapper div.dataTables_filter input {
 }
 .dt-filter-select {
     width: auto !important;
-    max-width: 180px;
+    max-width: 220px; /* ATUALIZADO: Aumento da largura máxima geral */
     font-size: 0.9rem;
     padding: 0.6rem 2.5rem 0.6rem 1rem;
     border-radius: 8px;
@@ -189,7 +189,8 @@ div.dataTables_wrapper div.dataTables_filter input {
     .dt-buttons-container {
         display: grid;
         grid-template-areas: "filtroA filtroB botao";
-        grid-template-columns: minmax(100px, 180px) minmax(100px, 180px) auto;
+        /* ATUALIZADO: Aumento da largura máxima das colunas dos filtros */
+        grid-template-columns: minmax(100px, 220px) minmax(100px, 220px) auto;
         gap: .5rem;
         flex-wrap: nowrap;
         width: auto;
