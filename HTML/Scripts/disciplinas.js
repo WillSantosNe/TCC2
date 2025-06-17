@@ -292,23 +292,27 @@ document.addEventListener("DOMContentLoaded", function () {
     // --- CÓDIGO ADICIONADO PARA O MODAL DE ANOTAÇÃO ---
     
     // 1. FUNÇÃO PARA INICIALIZAR O EDITOR DE TEXTO DA ANOTAÇÃO
-    function inicializarEditorAnotacao() {
-        if (typeof tinymce !== 'undefined') {
-            tinymce.remove('#conteudoAnotacao'); // Limpa instâncias anteriores
-            tinymce.init({
-                selector: '#conteudoAnotacao',
-                plugins: 'lists link image table code help wordcount',
-                toolbar: 'undo redo | blocks | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image',
-                height: 350,
-                menubar: true, // <<< ALTERAÇÃO AQUI: de 'false' para 'true'
-                branding: false,
-                statusbar: false,
-                language: 'pt_BR'
-            });
-        } else {
-            console.error("TinyMCE não foi carregado.");
-        }
+function inicializarEditorAnotacao() {
+    if (typeof tinymce !== 'undefined') {
+        tinymce.remove('#conteudoAnotacao');
+        tinymce.init({
+            selector: '#conteudoAnotacao',
+            plugins: 'lists link image table code help wordcount',
+            
+            // VERSÃO FINAL E CORRIGIDA DA TOOLBAR:
+            // A barra principal está mais enxuta e o grupo de 5 ícones está isolado no final.
+            toolbar: 'undo redo | blocks | bold italic underline | bullist numlist alignleft aligncenter alignright | link image table code help',
+
+            height: 350,
+            menubar: true,
+            branding: false,
+            statusbar: false,
+            language: 'pt_BR'
+        });
+    } else {
+        console.error("TinyMCE não foi carregado.");
     }
+}   
     // 2. LÓGICA PARA O MODAL DE NOVA ANOTAÇÃO
     const modalAnotacao = document.getElementById('modalNovaAnotacao'); // Este é o ID do seu modal de anotação
     if (modalAnotacao) {
