@@ -13,13 +13,15 @@
 }
 
 /* ===== Tabela de Anotações e Ações ===== */
-.anotacoes-table th { 
+.anotacoes-table th {
     font-weight: 600;
     font-size: .85rem;
     text-transform: uppercase;
     color: var(--text-body-color);
     white-space: nowrap;
+    vertical-align: middle; /* <<-- ADICIONE ESTA LINHA */
 }
+
 .anotacoes-table td { 
     font-size: .9rem;
     vertical-align: middle;
@@ -32,15 +34,34 @@
 .anotacoes-table td:nth-child(3) { max-width: 200px; } /* Disciplina */
 .anotacoes-table td:nth-child(4) { max-width: 200px; } /* Atividade */
 
-
-.anotacoes-table th.dt-actions-column,
-.anotacoes-table td.dt-actions-column { 
+/* Ajustes para a coluna de AÇÕES */
+.anotacoes-table th.dt-actions-column { 
+    /* Específico para o cabeçalho da coluna de AÇÕES */
     text-align: center!important; 
     padding: 0 .5rem!important;
-    min-width: 50px;
+    min-width: 60px; /* Garante que tenha espaço suficiente */
     max-width: 70px;
-    overflow: visible;
+    width: 60px; /* Tentando fixar a largura do cabeçalho */
 }
+
+.anotacoes-table td.dt-actions-column { 
+    /* Para as células de dados da coluna de AÇÕES */
+    text-align: center!important; 
+    padding: 0 .5rem!important;
+    min-width: 60px; /* Mesmo min-width para células de dados */
+    max-width: 70px;
+    overflow: visible; /* Essencial para que o dropdown não seja cortado */
+}
+
+/* Garante que o dropdown button seja centralizado dentro da célula de dados */
+.anotacoes-table td.dt-actions-column .dropdown {
+    display: flex; /* Usar flexbox para centralizar o item dentro da célula */
+    justify-content: center; /* Centraliza horizontalmente */
+    align-items: center; /* Centraliza verticalmente */
+    width: 100%; /* Ocupa a largura total para centralização mais eficaz */
+    height: 100%; /* Ocupa a altura total para centralização mais eficaz */
+}
+
 
 /* DataTables responsive toggle */
 table.dataTable.dtr-inline.collapsed td.dtr-control::before,

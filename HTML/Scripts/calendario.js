@@ -25,13 +25,10 @@ document.addEventListener('DOMContentLoaded', function () {
         { id: "T019", titulo: "Relatório de Simulação de Redes", disciplinaId: "CS102", tipo: "Tarefa", dataEntrega: "2025-07-03", status: "Em Andamento", descricao: "Analisar resultados de simulação com NS3." }
     ];
 
-
-    // --- GLOBALIZAÇÃO DOS DADOS PARA OS MODAIS COMPARTILHADOS ---
     window.listaDisciplinas = disciplinasDoCalendario;
     window.listaTarefas = tarefasDoCalendario;
 
     window.disciplinasFixasParaSelects = [
-        { id: "", nome: "Selecione..." },
         ...disciplinasDoCalendario.map(d => ({id: d.id, nome: d.nome}))
     ];
     

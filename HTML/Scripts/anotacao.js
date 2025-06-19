@@ -260,7 +260,7 @@ document.addEventListener("DOMContentLoaded", function () {
             dom: '<"row dt-custom-header align-items-center mb-3"<"col-12 col-md-auto"f><"col-12 col-md-auto ms-auto dt-buttons-anotacoes-container">>t<"row dt-table-footer align-items-center mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
             paging: false, lengthChange: false, scrollY: '450px', scrollCollapse: true,
             language: { url: 'https://cdn.datatables.net/plug-ins/2.0.7/i18n/pt-BR.json', search: "", searchPlaceholder: "Buscar...", info: "Total de _TOTAL_ anotações", infoEmpty: "Nenhuma anotação", infoFiltered: "(de _MAX_)" },
-            columnDefs: [ { orderable: false, className: 'dtr-control', targets: 0 }, { responsivePriority: 1, targets: 1 }, { responsivePriority: 2, targets: 2 }, { responsivePriority: 3, targets: 3 }, { responsivePriority: 5, targets: 4, type: 'date-br' }, { responsivePriority: 4, targets: 5, type: 'date-br' }, { orderable: false, className: "text-center", targets: 6, responsivePriority: 1 } ],
+            columnDefs: [ { orderable: false, className: 'dtr-control', targets: 0 }, { responsivePriority: 1, targets: 1 }, { responsivePriority: 2, targets: 2 }, { responsivePriority: 3, targets: 3 }, { responsivePriority: 5, targets: 4, type: 'date-br' }, { responsivePriority: 4, targets: 5, type: 'date-br' }, { orderable: false, className: "text-center dt-actions-column", targets: 6, responsivePriority: 1 }],
             data: mapAnotacoesParaDataTable(listaAnotacoes),
             createdRow: function(row, data, dataIndex) { const o=listaAnotacoes[dataIndex]; if(o)$(row).data('anotacao-id-interno', o.id);},
             initComplete: function () {

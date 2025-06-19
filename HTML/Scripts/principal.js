@@ -94,7 +94,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }))); 
 
     window.disciplinasFixasParaSelects = [
-        { id: "", nome: "Selecione..." }, 
         ...disciplinasDashboard.map(d => ({id: d.id, nome: d.nome}))
     ];
     

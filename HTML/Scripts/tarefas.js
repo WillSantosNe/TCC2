@@ -22,9 +22,19 @@ document.addEventListener("DOMContentLoaded", function () {
     const detalheAtividadeStatus = document.getElementById('detalhe-atividade-status');
     const detalheAtividadeDescricao = document.getElementById('detalhe-atividade-descricao');
 
+    // --- INÍCIO: SELETORES ADICIONADOS PARA O MODAL DE ANOTAÇÃO RÁPIDA ---
+    // OBS: Verifique se estes IDs correspondem ao seu HTML!
+    const modalAnotacaoRapidaEl = document.getElementById('modalAnotacaoRapida'); 
+    const abrirModalAnotacaoRapidaBtn = document.getElementById('abrirModalAnotacaoRapidaBtn'); // Botão para abrir o modal
+    const anotacaoRapidaDisciplinaSelect = document.getElementById('anotacaoRapidaDisciplinaSelect');
+    const anotacaoRapidaAtividadeSelect = document.getElementById('anotacaoRapidaAtividadeSelect');
+    // --- FIM: SELETORES ADICIONADOS ---
+
     // Instâncias de modais Bootstrap
     const bsModalTarefa = new bootstrap.Modal(modalTarefaEl); 
-    const bsModalDetalhesAtividade = new bootstrap.Modal(modalDetalhesAtividadeEl, { keyboard: false }); 
+    const bsModalDetalhesAtividade = new bootstrap.Modal(modalDetalhesAtividadeEl, { keyboard: false });
+    // Instância do novo modal (se ele existir no HTML)
+    const bsModalAnotacaoRapida = modalAnotacaoRapidaEl ? new bootstrap.Modal(modalAnotacaoRapidaEl) : null;
 
     let tabelaTarefasDt;
 
@@ -49,7 +59,6 @@ document.addEventListener("DOMContentLoaded", function () {
     window.listaTarefas = listaTarefas; 
     
     window.disciplinasFixasParaSelects = [
-        { id: "", nome: "Selecione..." }, 
         ...listaDisciplinas.map(d => ({id: d.id, nome: d.nome}))
     ];
     
@@ -115,6 +124,60 @@ document.addEventListener("DOMContentLoaded", function () {
         
         bsModalDetalhesAtividade.show();
     }
+
+    // --- INÍCIO: FUNÇÕES ADICIONADAS PARA O MODAL DE ANOTAÇÃO RÁPIDA ---
+    /**
+     * Filtra a lista de tarefas com base na disciplina e popula o select de atividades.
+     * @param {string} disciplinaIdSelecionada - O ID da disciplina para filtrar.
+     * @param {HTMLElement} selectDeAtividadeParaAtualizar - O elemento <select> de atividades a ser populado.
+     * @param {string|null} atividadeSalvaId - O ID de uma atividade para pré-selecionar.
+     */
+    function atualizarOpcoesAtividade(disciplinaIdSelecionada, selectDeAtividadeParaAtualizar, atividadeSalvaId = null) {
+        if (!selectDeAtividadeParaAtualizar) return;
+
+        let atividadesFiltradas = [];
+        if (disciplinaIdSelecionada) {
+            // Se uma disciplina foi selecionada, filtra a lista global de tarefas
+            atividadesFiltradas = listaTarefas.filter(tarefa => tarefa.disciplinaId === disciplinaIdSelecionada);
+        } else {
+            // Se não, usa a lista completa
+            atividadesFiltradas = listaTarefas;
+        }
+        
+        // Usa a função global para popular o select com as atividades filtradas
+        const options = atividadesFiltradas.map(t => ({id: t.id, nome: t.titulo}));
+        window.popularSelect(selectDeAtividadeParaAtualizar, options, atividadeSalvaId);
+        
+        // Garante que a opção padrão tenha um texto adequado se o select estiver vazio
+        if (selectDeAtividadeParaAtualizar.options.length <= 1) { // Só tem a opção "Selecione..."
+            selectDeAtividadeParaAtualizar.innerHTML = ''; // Limpa
+            const defaultOpt = document.createElement('option');
+            defaultOpt.value = "";
+            defaultOpt.textContent = "Nenhuma atividade";
+            selectDeAtividadeParaAtualizar.appendChild(defaultOpt);
+        }
+    }
+
+    /**
+     * Abre e inicializa o modal de anotação rápida.
+     */
+    function abrirModalAnotacaoRapida() {
+        if (!bsModalAnotacaoRapida) {
+            console.error("Modal de anotação rápida não encontrado!");
+            return;
+        }
+        
+        // Popula o select de disciplinas
+        const disciplinasOptions = listaDisciplinas.map(d => ({id: d.id, nome: d.nome}));
+        window.popularSelect(anotacaoRapidaDisciplinaSelect, disciplinasOptions);
+
+        // Dispara a atualização do select de atividades (inicialmente com todas)
+        atualizarOpcoesAtividade(null, anotacaoRapidaAtividadeSelect);
+        
+        bsModalAnotacaoRapida.show();
+    }
+    // --- FIM: FUNÇÕES ADICIONADAS ---
+
 
     // --- LISTENERS DOS MODAIS DE TAREFA (PRINCIPAL) ---
     if (formTarefa) {
@@ -267,6 +330,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // --- BLOCO PRINCIPAL DE EXECUÇÃO ---
     inicializarDataTable();
+
+    // --- INÍCIO: LISTENERS ADICIONADOS PARA O MODAL DE ANOTAÇÃO RÁPIDA ---
+    if (abrirModalAnotacaoRapidaBtn) {
+        abrirModalAnotacaoRapidaBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            abrirModalAnotacaoRapida();
+        });
+    }
+
+    if (anotacaoRapidaDisciplinaSelect) {
+        anotacaoRapidaDisciplinaSelect.addEventListener('change', function() {
+            // Ao mudar a disciplina, chama a função de atualização, 
+            // passando o ID selecionado e o elemento select de atividades do modal rápido.
+            atualizarOpcoesAtividade(this.value, anotacaoRapidaAtividadeSelect);
+        });
+    }
+    // --- FIM: LISTENERS ADICIONADOS ---
+
 
     // -- LÓGICA DE CONTROLE DE DROPDOWN (JQUERY) --
     function closeAndResetDropdown(menuElement) {
