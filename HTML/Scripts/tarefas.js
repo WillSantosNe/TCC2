@@ -1,7 +1,7 @@
 // tarefas.js
 document.addEventListener("DOMContentLoaded", function () {
     // --- SELETORES DE ELEMENTOS ---
-    const modalTarefaEl = document.getElementById('modalTarefa'); 
+    const modalTarefaEl = document.getElementById('modalTarefa');
     const formTarefa = document.getElementById('formTarefa');
     const modalTarefaLabel = document.getElementById('modalTarefaLabel');
     const tarefaIdInput = document.getElementById('tarefaId');
@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const tarefaStatusSelect = document.getElementById('tarefaStatus');
     const tarefaHorarioEntregaInput = document.getElementById('tarefaHorarioEntrega');
 
-    // Modal de Detalhes da Atividade (agora padronizado)
+    // Modal de Detalhes da Atividade
     const modalDetalhesAtividadeEl = document.getElementById('modalDetalhesAtividade');
     const detalheAtividadeNome = document.getElementById('detalhe-atividade-nome');
     const detalheAtividadeDisciplina = document.getElementById('detalhe-atividade-disciplina');
@@ -22,68 +22,108 @@ document.addEventListener("DOMContentLoaded", function () {
     const detalheAtividadeStatus = document.getElementById('detalhe-atividade-status');
     const detalheAtividadeDescricao = document.getElementById('detalhe-atividade-descricao');
 
-    // --- INÍCIO: SELETORES ADICIONADOS PARA O MODAL DE ANOTAÇÃO RÁPIDA ---
-    // OBS: Verifique se estes IDs correspondem ao seu HTML!
-    const modalAnotacaoRapidaEl = document.getElementById('modalAnotacaoRapida'); 
-    const abrirModalAnotacaoRapidaBtn = document.getElementById('abrirModalAnotacaoRapidaBtn'); // Botão para abrir o modal
-    const anotacaoRapidaDisciplinaSelect = document.getElementById('anotacaoRapidaDisciplinaSelect');
-    const anotacaoRapidaAtividadeSelect = document.getElementById('anotacaoRapidaAtividadeSelect');
-    // --- FIM: SELETORES ADICIONADOS ---
-
     // Instâncias de modais Bootstrap
-    const bsModalTarefa = new bootstrap.Modal(modalTarefaEl); 
-    const bsModalDetalhesAtividade = new bootstrap.Modal(modalDetalhesAtividadeEl, { keyboard: false });
-    // Instância do novo modal (se ele existir no HTML)
-    const bsModalAnotacaoRapida = modalAnotacaoRapidaEl ? new bootstrap.Modal(modalAnotacaoRapidaEl) : null;
+    const bsModalTarefa = new bootstrap.Modal(modalTarefaEl);
+    const bsModalDetalhesAtividade = new bootstrap.Modal(modalDetalhesAtividadeEl, {
+        keyboard: false
+    });
 
     let tabelaTarefasDt;
 
-    // --- DADOS MOCADOS (AGORA GLOBALIZADOS DE FORMA CONSISTENTE) ---
-    const listaDisciplinas = [
-        { id: "CS101", nome: "Algoritmos e Estrutura de Dados" },
-        { id: "CS102", nome: "Redes de Computadores" },
-        { id: "CS103", nome: "Banco de Dados" },
-        { id: "CS104", nome: "Inteligência Artificial" },
-        { id: "CS105", nome: "Compiladores" }
-    ];
-    let listaTarefas = [
-        { id: "T001", titulo: "Complexidade e Estruturas Lineares", disciplinaId: "CS101", tipo: "Prova", dataEntrega: "2025-06-23", status: "Agendada", descricao: "Estudar capítulos 1 a 3 do livro Cormen. Foco em complexidade Big-O." },
-        { id: "T006", titulo: "Camadas de Transporte e Aplicação", disciplinaId: "CS102", tipo: "Prova", dataEntrega: "2025-06-24", status: "Agendada", descricao: "Foco em protocolos TCP, UDP e HTTP." },
-        { id: "T010", titulo: "SQL e Normalização", disciplinaId: "CS103", tipo: "Prova", dataEntrega: "2025-06-25", status: "Agendada", descricao: "Praticar joins e entender as formas normais (1FN, 2FN, 3FN)." },
-        { id: "T013", titulo: "Machine Learning e Redes Neurais", disciplinaId: "CS104", tipo: "Prova", dataEntrega: "2025-06-26", status: "Agendada", descricao: "Revisar conceitos de regressão linear e redes neurais convolucionais." },
-        { id: "T017", titulo: "Análise Léxica e Sintática", disciplinaId: "CS105", tipo: "Prova", dataEntrega: "2025-06-29", status: "Agendada", descricao: "Implementar um analisador léxico simples em Python." },
-    ];
+    // --- DADOS MOCADOS ---
+    const listaDisciplinas = [{
+        id: "CS101",
+        nome: "Algoritmos e Estrutura de Dados"
+    }, {
+        id: "CS102",
+        nome: "Redes de Computadores"
+    }, {
+        id: "CS103",
+        nome: "Banco de Dados"
+    }, {
+        id: "CS104",
+        nome: "Inteligência Artificial"
+    }, {
+        id: "CS105",
+        nome: "Compiladores"
+    }];
+    let listaTarefas = [{
+        id: "T001",
+        titulo: "Complexidade e Estruturas Lineares",
+        disciplinaId: "CS101",
+        tipo: "Prova",
+        dataEntrega: "2025-06-23",
+        status: "Agendada",
+        descricao: "Estudar capítulos 1 a 3 do livro Cormen. Foco em complexidade Big-O."
+    }, {
+        id: "T006",
+        titulo: "Camadas de Transporte e Aplicação",
+        disciplinaId: "CS102",
+        tipo: "Prova",
+        dataEntrega: "2025-06-24",
+        status: "Agendada",
+        descricao: "Foco em protocolos TCP, UDP e HTTP."
+    }, {
+        id: "T010",
+        titulo: "SQL e Normalização",
+        disciplinaId: "CS103",
+        tipo: "Prova",
+        dataEntrega: "2025-06-25",
+        status: "Agendada",
+        descricao: "Praticar joins e entender as formas normais (1FN, 2FN, 3FN)."
+    }, {
+        id: "T013",
+        titulo: "Machine Learning e Redes Neurais",
+        disciplinaId: "CS104",
+        tipo: "Prova",
+        dataEntrega: "2025-06-26",
+        status: "Agendada",
+        descricao: "Revisar conceitos de regressão linear e redes neurais convolucionais."
+    }, {
+        id: "T017",
+        titulo: "Análise Léxica e Sintática",
+        disciplinaId: "CS105",
+        tipo: "Prova",
+        dataEntrega: "2025-06-29",
+        status: "Agendada",
+        descricao: "Implementar um analisador léxico simples em Python."
+    }, ];
+
+    // --- GLOBALIZAÇÃO DOS DADOS PARA ANOTAÇÕES ---
+    window.listaDisciplinas = listaDisciplinas;
+    window.listaTarefas = listaTarefas;
+
+    // A função `popularSelect` agora cuida da opção padrão
+    window.disciplinasFixasParaSelects = listaDisciplinas.map(d => ({
+        id: d.id,
+        nome: d.nome
+    }));
+
+    // A opção "Nenhuma" foi removida daqui também
+    window.atividadesPorDisciplinaParaSelects = Object.fromEntries(
+        listaDisciplinas.map(d => [
+            d.id,
+            listaTarefas.filter(t => t.disciplinaId === d.id).map(t => ({
+                id: t.id,
+                nome: t.titulo
+            }))
+        ])
+    );
     
-    // --- GLOBALIZAÇÃO DOS DADOS PARA ANOTAÇÕES (IMPORTANTE PARA anotacaoModal.js) ---
-    window.listaDisciplinas = listaDisciplinas; 
-    window.listaTarefas = listaTarefas; 
-    
-    window.disciplinasFixasParaSelects = [
-        ...listaDisciplinas.map(d => ({id: d.id, nome: d.nome}))
-    ];
-    
-    window.atividadesPorDisciplinaParaSelects = { 
-        "": [{id: "", nome: "Nenhuma"}], 
-        "Nenhuma": [{id: "", nome: "Nenhuma"}], 
-        ...Object.fromEntries(
-            listaDisciplinas.map(d => [
-                d.id, 
-                [{id: "", nome: "Nenhuma"}] 
-                    .concat(listaTarefas.filter(t => t.disciplinaId === d.id).map(t => ({id: t.id, nome: t.titulo})))
-            ])
-        ),
-        "TCC 1": [{id: "", nome: "Nenhuma"}, {id: "TCC1_Proj", nome: "Revisão Bibliográfica"}, {id: "TCC1_Def", nome: "Defesa da Monografia"}],
-        "Outra": [{id: "", nome: "Nenhuma"}, {id: "OUTRA_Gen", nome: "Atividade Geral"}]
-    };
-    window.atividadesPadraoParaSelects = [{id: "", nome: "Nenhuma"}]; 
+    // A opção "Nenhuma" foi removida daqui também
+    window.atividadesPadraoParaSelects = listaTarefas.map(t => ({id: t.id, nome: t.titulo}));
+
 
     // --- FUNÇÕES DOS MODAIS DE TAREFA (PRINCIPAL) ---
     function abrirModalTarefa(isEditMode = false, dadosTarefa = null, targetTr = null) {
         formTarefa.reset();
-        formTarefa.classList.remove('was-validated'); 
-        
-        popularSelect(tarefaDisciplinaSelect, listaDisciplinas.map(d => ({id: d.id, nome: d.nome})), dadosTarefa ? dadosTarefa.disciplinaId : ''); 
-        popularSelect(tarefaStatusSelect, ["A fazer", "Em andamento", "Concluída", "Agendada"], dadosTarefa ? dadosTarefa.status : "A fazer");
+        formTarefa.classList.remove('was-validated');
+
+        popularSelect(tarefaDisciplinaSelect, listaDisciplinas.map(d => ({
+            id: d.id,
+            nome: d.nome
+        })), dadosTarefa ? dadosTarefa.disciplinaId : '', 'Selecione a Disciplina');
+        popularSelect(tarefaStatusSelect, ["A fazer", "Em andamento", "Concluída", "Agendada"], dadosTarefa ? dadosTarefa.status : "A fazer", 'Selecione o Status');
 
         modalTarefaLabel.textContent = isEditMode ? "Editar Tarefa/Prova" : "Adicionar Tarefa/Prova";
 
@@ -100,7 +140,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         } else {
             tarefaIdInput.value = '';
-            delete formTarefa.dataset.rowIndex; 
+            delete formTarefa.dataset.rowIndex;
         }
         bsModalTarefa.show();
     }
@@ -121,80 +161,22 @@ document.addEventListener("DOMContentLoaded", function () {
         detalheAtividadeData.textContent = dataFormatada;
         detalheAtividadeStatus.innerHTML = `<span class="badge ${getStatusBadgeClass(tarefaData.status)}">${tarefaData.status || '-'}</span>`;
         detalheAtividadeDescricao.textContent = tarefaData.descricao || 'Nenhuma descrição fornecida.';
-        
+
         bsModalDetalhesAtividade.show();
     }
-
-    // --- INÍCIO: FUNÇÕES ADICIONADAS PARA O MODAL DE ANOTAÇÃO RÁPIDA ---
-    /**
-     * Filtra a lista de tarefas com base na disciplina e popula o select de atividades.
-     * @param {string} disciplinaIdSelecionada - O ID da disciplina para filtrar.
-     * @param {HTMLElement} selectDeAtividadeParaAtualizar - O elemento <select> de atividades a ser populado.
-     * @param {string|null} atividadeSalvaId - O ID de uma atividade para pré-selecionar.
-     */
-    function atualizarOpcoesAtividade(disciplinaIdSelecionada, selectDeAtividadeParaAtualizar, atividadeSalvaId = null) {
-        if (!selectDeAtividadeParaAtualizar) return;
-
-        let atividadesFiltradas = [];
-        if (disciplinaIdSelecionada) {
-            // Se uma disciplina foi selecionada, filtra a lista global de tarefas
-            atividadesFiltradas = listaTarefas.filter(tarefa => tarefa.disciplinaId === disciplinaIdSelecionada);
-        } else {
-            // Se não, usa a lista completa
-            atividadesFiltradas = listaTarefas;
-        }
-        
-        // Usa a função global para popular o select com as atividades filtradas
-        const options = atividadesFiltradas.map(t => ({id: t.id, nome: t.titulo}));
-        window.popularSelect(selectDeAtividadeParaAtualizar, options, atividadeSalvaId);
-        
-        // Garante que a opção padrão tenha um texto adequado se o select estiver vazio
-        if (selectDeAtividadeParaAtualizar.options.length <= 1) { // Só tem a opção "Selecione..."
-            selectDeAtividadeParaAtualizar.innerHTML = ''; // Limpa
-            const defaultOpt = document.createElement('option');
-            defaultOpt.value = "";
-            defaultOpt.textContent = "Nenhuma atividade";
-            selectDeAtividadeParaAtualizar.appendChild(defaultOpt);
-        }
-    }
-
-    /**
-     * Abre e inicializa o modal de anotação rápida.
-     */
-    function abrirModalAnotacaoRapida() {
-        if (!bsModalAnotacaoRapida) {
-            console.error("Modal de anotação rápida não encontrado!");
-            return;
-        }
-        
-        // Popula o select de disciplinas
-        const disciplinasOptions = listaDisciplinas.map(d => ({id: d.id, nome: d.nome}));
-        window.popularSelect(anotacaoRapidaDisciplinaSelect, disciplinasOptions);
-
-        // Dispara a atualização do select de atividades (inicialmente com todas)
-        atualizarOpcoesAtividade(null, anotacaoRapidaAtividadeSelect);
-        
-        bsModalAnotacaoRapida.show();
-    }
-    // --- FIM: FUNÇÕES ADICIONADAS ---
-
 
     // --- LISTENERS DOS MODAIS DE TAREFA (PRINCIPAL) ---
     if (formTarefa) {
         formTarefa.addEventListener("submit", function (e) {
             e.preventDefault();
-            
-            formTarefa.classList.add('was-validated'); 
-
+            formTarefa.classList.add('was-validated');
             if (!formTarefa.checkValidity()) {
                 e.stopPropagation();
                 return;
             }
-
             const isEditMode = !!tarefaIdInput.value;
             const tarefaId = isEditMode ? tarefaIdInput.value : 'T-' + new Date().getTime();
             const rowIndex = formTarefa.dataset.rowIndex;
-            
             const dadosCompletosTarefa = {
                 id: tarefaId,
                 titulo: tarefaTituloInput.value.trim(),
@@ -203,7 +185,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 dataEntrega: tarefaDataEntregaInput.value,
                 tipo: tarefaTipoSelect.value,
                 status: tarefaStatusSelect.value,
-                tarefaHorarioEntrega: tarefaHorarioEntregaInput.value 
+                tarefaHorarioEntrega: tarefaHorarioEntregaInput.value
             };
             salvarOuAtualizarTarefaNaTabela(dadosCompletosTarefa, isEditMode, rowIndex);
             fecharModalTarefa();
@@ -232,17 +214,17 @@ document.addEventListener("DOMContentLoaded", function () {
         const statusBadgeHtml = `<span class="badge ${getStatusBadgeClass(tarefa.status)}">${tarefa.status}</span>`;
         const tipoBadgeHtml = `<span class="badge ${getTipoBadgeClass(tarefa.tipo)}">${tarefa.tipo}</span>`;
         const dropdownHtml = `
-            <div class="dropdown">
-                <button class="btn btn-sm btn-icon btn-actions" type="button" aria-expanded="false" aria-label="Ações da tarefa">
-                    <i class="bi bi-three-dots-vertical"></i>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item btn-detalhar-tarefa" href="#" data-tarefa-id="${tarefa.id}"><i class="bi bi-eye me-2"></i>Detalhar</a></li>
-                    <li><a class="dropdown-item btn-edit-tarefa" href="#" data-tarefa-id="${tarefa.id}"><i class="bi bi-pencil-square me-2"></i>Editar</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item btn-remover-tarefa" href="#" data-tarefa-id="${tarefa.id}"><i class="bi bi-trash me-2"></i>Remover</a></li>
-                </ul>
-            </div>`;
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-icon btn-actions" type="button" aria-expanded="false" aria-label="Ações da tarefa">
+                        <i class="bi bi-three-dots-vertical"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item btn-detalhar-tarefa" href="#" data-tarefa-id="${tarefa.id}"><i class="bi bi-eye me-2"></i>Detalhar</a></li>
+                        <li><a class="dropdown-item btn-edit-tarefa" href="#" data-tarefa-id="${tarefa.id}"><i class="bi bi-pencil-square me-2"></i>Editar</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item btn-remover-tarefa" href="#" data-tarefa-id="${tarefa.id}"><i class="bi bi-trash me-2"></i>Remover</a></li>
+                    </ul>
+                </div>`;
         return ['', tarefa.titulo, disciplinaNome, tipoBadgeHtml, dataFormatada, statusBadgeHtml, dropdownHtml];
     }
 
@@ -265,9 +247,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if ($('#abrirModalNovaTarefaDt').length === 0) {
                     const btnAddTask = $('<button class="btn btn-primary btn-sm btn-add-task" id="abrirModalNovaTarefaDt" data-bs-toggle="modal" data-bs-target="#modalTarefa"> <i class="bi bi-plus-lg me-sm-2"></i> <span class="d-none d-sm-inline">Adicionar Tarefa</span> </button>');
                     buttonsContainer.append(btnAddTask);
-                    btnAddTask.on('click', function() {
-                        abrirModalTarefa(false);
-                    });
+                    btnAddTask.on('click', function () { abrirModalTarefa(false); });
                 }
                 const filterHtml = `<select id="filterTipoTarefa" class="form-select form-select-sm dt-filter-select ms-2"><option value="">Todos os Tipos</option><option value="Tarefa">Tarefa</option><option value="Prova">Prova</option></select><select id="filterDisciplina" class="form-select form-select-sm dt-filter-select ms-2"><option value="">Todas as Disciplinas</option></select>`;
                 buttonsContainer.prepend(filterHtml);
@@ -279,75 +259,56 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // --- FUNÇÕES UTILITÁRIAS (GLOBALIZADAS) ---
-    // Esta função é globalizada para ser usada por outros scripts, como anotacaoModal.js
-    window.popularSelect = function (element, options, selectedValue = null) {
+    /**
+     * Popula um elemento <select> com opções.
+     * A primeira opção é sempre um placeholder clicável com valor vazio.
+     * @param {HTMLElement} element - O elemento <select>.
+     * @param {Array<object|string>} options - Array de opções. Cada item pode ser uma string ou um objeto com {id, nome/titulo}.
+     * @param {string|null} selectedValue - O valor que deve ser selecionado inicialmente.
+     * @param {string} placeholderText - O texto para a primeira opção (ex: "Selecione...").
+     */
+    window.popularSelect = function (element, options, selectedValue = null, placeholderText = 'Selecione...') {
         if (!element) {
             console.warn("Elemento select não encontrado para popular:", element);
             return;
         }
         element.innerHTML = '';
-        
+
+        // Cria a opção padrão (placeholder), que agora é clicável.
         const defaultOption = document.createElement('option');
         defaultOption.value = "";
-        defaultOption.textContent = "Selecione...";
-        defaultOption.disabled = true;
-        defaultOption.selected = (selectedValue === null || selectedValue === ''); 
+        defaultOption.textContent = placeholderText;
         element.appendChild(defaultOption);
 
+        // Popula as outras opções
         options.forEach(option => {
             const optElement = document.createElement('option');
             const value = (typeof option === 'object' && option !== null) ? option.id : option;
-            const textContent = (typeof option === 'object' && option !== null) ? option.nome : option;
-
+            const textContent = (typeof option === 'object' && option !== null) ? (option.nome || option.titulo) : option;
             optElement.value = value;
             optElement.textContent = textContent;
-
-            if (selectedValue !== null && (String(value) === String(selectedValue) || String(textContent) === String(selectedValue))) {
-                optElement.selected = true;
-                defaultOption.selected = false; 
-            }
             element.appendChild(optElement);
         });
-    }
-    
-    // Globaliza outras funções utilitárias
-    window.formatarData = (data) => {
-        if (!data) return '-';
-        const [year, month, day] = data.split('-');
-        const d = new Date(data + 'T00:00:00'); 
-        return new Intl.DateTimeFormat('pt-BR', {day: '2-digit', month: '2-digit', year: 'numeric'}).format(d);
+
+        // Define o valor inicial selecionado para todo o <select>
+        if (selectedValue) {
+            element.value = selectedValue;
+        } else {
+            defaultOption.selected = true;
+        }
     };
 
-    window.getStatusBadgeClass = status => ({ 
-        'Concluída': 'bg-success-subtle text-success', 
-        'Em Andamento': 'bg-info-subtle text-info', 
-        'Agendada': 'bg-primary-subtle text-primary', 
-        'A Fazer': 'bg-warning-subtle text-warning', 
-        'Atrasada': 'bg-danger-subtle text-danger' 
-    }[status] || 'bg-secondary-subtle text-secondary');
+    window.formatarData = (data) => {
+        if (!data) return '-';
+        const d = new Date(data + 'T00:00:00');
+        return new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(d);
+    };
 
+    window.getStatusBadgeClass = status => ({ 'Concluída': 'bg-success-subtle text-success', 'Em Andamento': 'bg-info-subtle text-info', 'Agendada': 'bg-primary-subtle text-primary', 'A Fazer': 'bg-warning-subtle text-warning', 'Atrasada': 'bg-danger-subtle text-danger' }[status] || 'bg-secondary-subtle text-secondary');
     window.getTipoBadgeClass = tipo => tipo === 'Prova' ? 'bg-danger-subtle text-danger' : 'bg-primary-subtle text-primary';
 
     // --- BLOCO PRINCIPAL DE EXECUÇÃO ---
     inicializarDataTable();
-
-    // --- INÍCIO: LISTENERS ADICIONADOS PARA O MODAL DE ANOTAÇÃO RÁPIDA ---
-    if (abrirModalAnotacaoRapidaBtn) {
-        abrirModalAnotacaoRapidaBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            abrirModalAnotacaoRapida();
-        });
-    }
-
-    if (anotacaoRapidaDisciplinaSelect) {
-        anotacaoRapidaDisciplinaSelect.addEventListener('change', function() {
-            // Ao mudar a disciplina, chama a função de atualização, 
-            // passando o ID selecionado e o elemento select de atividades do modal rápido.
-            atualizarOpcoesAtividade(this.value, anotacaoRapidaAtividadeSelect);
-        });
-    }
-    // --- FIM: LISTENERS ADICIONADOS ---
-
 
     // -- LÓGICA DE CONTROLE DE DROPDOWN (JQUERY) --
     function closeAndResetDropdown(menuElement) {
@@ -365,7 +326,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const tarefaId = $(this).data('tarefa-id');
         const tarefaData = listaTarefas.find(t => t.id === tarefaId);
         const linhaNode = tabelaTarefasDt.row(rowIndex).node();
-        
         if (tarefaData) {
             abrirModalTarefa(true, tarefaData, linhaNode);
         }
@@ -389,7 +349,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const rowIndex = menu.data('rowIndex');
         const tarefaId = $(this).data('tarefa-id');
         const tarefa = listaTarefas.find(t => t.id === tarefaId);
-
         if (tarefa && confirm(`Tem certeza que deseja remover a tarefa "${tarefa.titulo}"?`)) {
             listaTarefas = listaTarefas.filter(t => t.id !== tarefaId);
             tabelaTarefasDt.row(rowIndex).remove().draw();
@@ -400,32 +359,18 @@ document.addEventListener("DOMContentLoaded", function () {
     $('#tabelaTarefas tbody').on('click', '.btn-actions', function (e) {
         e.preventDefault();
         e.stopPropagation();
-
         const triggerButton = this;
         const dropdownMenu = $(triggerButton).next('.dropdown-menu');
         const isAlreadyOpen = dropdownMenu.hasClass('show');
-
         closeAndResetDropdown($('.dropdown-menu.show'));
-
         if (isAlreadyOpen) return;
-
         const triggerRow = $(triggerButton).closest('tr');
         const rowIndex = tabelaTarefasDt.row(triggerRow).index();
-        
         dropdownMenu.data('originalParent', dropdownMenu.parent());
         dropdownMenu.data('rowIndex', rowIndex);
-        
         dropdownMenu.appendTo('body');
         const rect = triggerButton.getBoundingClientRect();
-
-        dropdownMenu.css({
-            position: 'fixed',
-            top: rect.bottom + 'px',
-            left: 'auto',
-            right: (window.innerWidth - rect.right) + 'px',
-            zIndex: 1060
-        });
-
+        dropdownMenu.css({ position: 'fixed', top: rect.bottom + 'px', left: 'auto', right: (window.innerWidth - rect.right) + 'px', zIndex: 1060 });
         dropdownMenu.addClass('show');
         setTimeout(() => {
             $(document).one('click.closeDropdown', function (clickEvent) {
