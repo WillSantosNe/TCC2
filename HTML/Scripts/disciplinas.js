@@ -10,7 +10,33 @@ document.addEventListener("DOMContentLoaded", function () {
         { id: "CS220", nome: "Sistemas Operacionais", descricao: "Gerenciamento de processos, memória, sistemas de arquivos e concorrência em sistemas operacionais modernos.", professor: "Prof. Linus T.", periodo: "2025.1", status: "Concluída" }
     ];
 
-    // --- ELEMENT SELECTORS ---
+    // =======================================================================
+    // == ADIÇÃO 1: DADOS E ESTRUTURAS AUXILIARES PARA O MODAL DE ANOTAÇÃO ====
+    // =======================================================================
+    // Estes dados são essenciais para saber quais tarefas existem.
+    const listaTarefas = [
+        { id: "T001", titulo: "Complexidade e Estruturas Lineares", disciplinaId: "CS101" },
+        { id: "T002", titulo: "Trabalho sobre Árvores AVL", disciplinaId: "CS101" },
+        { id: "T006", titulo: "Camadas de Transporte e Aplicação", disciplinaId: "CS102" },
+        { id: "T007", titulo: "Configuração de Roteadores", disciplinaId: "CS102" },
+        { id: "T010", titulo: "Modelagem Entidade-Relacionamento", disciplinaId: "CS103" }
+    ];
+
+    // Estruturas que formatam os dados para os dropdowns.
+    const disciplinasParaSelect = listaDisciplinas.map(d => ({ id: d.id, nome: d.nome }));
+    const todasAtividadesParaSelect = listaTarefas.map(t => ({ id: t.id, nome: t.titulo }));
+    const atividadesPorDisciplina = listaDisciplinas.reduce((acc, disciplina) => {
+        acc[disciplina.id] = listaTarefas
+            .filter(t => t.disciplinaId === disciplina.id)
+            .map(t => ({ id: t.id, nome: t.titulo }));
+        return acc;
+    }, {});
+    // =======================================================================
+    // == FIM DA ADIÇÃO 1 ====================================================
+    // =======================================================================
+
+
+    // --- ELEMENT SELECTORS --- (CÓDIGO ORIGINAL INTACTO)
     const modalDisciplinaAdicao = document.querySelector("#modalDisciplinaAdicaoPrincipal");
     const abrirModalNovaDisciplinaBtnOriginal = document.querySelector("#abrirModalNovaDisciplina");
     const formDisciplina = document.querySelector("#formDisciplinaPrincipal");
@@ -31,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let tabelaDisciplinasDt;
     let resizeDebounceTimer;
 
-    // --- FUNÇÕES DE VALIDAÇÃO ---
+    // --- FUNÇÕES DE VALIDAÇÃO --- (CÓDIGO ORIGINAL INTACTO)
     function displayFieldError(inputElement, message) {
         clearFieldError(inputElement);
         inputElement.classList.add('is-invalid');
@@ -69,7 +95,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return isValid;
     }
 
-    // --- FUNÇÕES DE UI E AUXILIARES ---
+    // --- FUNÇÕES DE UI E AUXILIARES --- (CÓDIGO ORIGINAL INTACTO, COM UMA ADIÇÃO)
     function getStatusBadgeClass(status) {
         switch (status) {
             case 'Ativa': return 'bg-success-subtle text-success';
@@ -96,11 +122,30 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>`;
     }
 
-    // --- FUNÇÕES UTILITÁRIAS PADRONIZADAS ---
-    // (Esta seção foi removida pois agora o tarefas.js irá provê-las)
-    // Se ainda precisar da função popularSelect aqui, ela deve ser window.popularSelect
+    // =======================================================================
+    // == ADIÇÃO 2: A FUNÇÃO popularSelect É NECESSÁRIA PARA O MODAL =========
+    // =======================================================================
+    function popularSelect(element, options, selectedValue = null, placeholderText = 'Selecione...') {
+        if (!element) return;
+        element.innerHTML = '';
+        const defaultOption = document.createElement('option');
+        defaultOption.value = "";
+        defaultOption.textContent = placeholderText;
+        element.appendChild(defaultOption);
+        options.forEach(option => {
+            const optElement = document.createElement('option');
+            optElement.value = option.id;
+            optElement.textContent = option.nome;
+            element.appendChild(optElement);
+        });
+        element.value = selectedValue || "";
+    }
+    // =======================================================================
+    // == FIM DA ADIÇÃO 2 ====================================================
+    // =======================================================================
 
-    // --- DATATABLE INITIALIZATION ---
+
+    // --- DATATABLE INITIALIZATION --- (CÓDIGO ORIGINAL INTACTO)
     function inicializarDataTable() {
         if (!window.jQuery || !$.fn.DataTable) return null;
         if ($.fn.DataTable.isDataTable('#tabelaDisciplinas')) {
@@ -169,7 +214,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return tabelaDisciplinasDt;
     }
 
-    // --- AÇÕES DA TABELA (MODAL DE DETALHES, EDITAR, REMOVER) ---
+    // --- AÇÕES DA TABELA (MODAL DE DETALHES, EDITAR, REMOVER) --- (CÓDIGO ORIGINAL INTACTO)
     $('#tabelaDisciplinas tbody').on('click', '.btn-detalhar-disciplina, .btn-edit-disciplina, .btn-remover-disciplina', function (e) {
         e.preventDefault(); e.stopPropagation();
         let tr = $(this).closest('tr');
@@ -203,7 +248,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // --- LÓGICA DO FORMULÁRIO DE DISCIPLINA ---
+    // --- LÓGICA DO FORMULÁRIO DE DISCIPLINA --- (CÓDIGO ORIGINAL INTACTO)
     function abrirModalFormDisciplina(isEditMode = false, dadosDisciplina = null, targetTr = null) {
         if (!formDisciplina || !modalDisciplinaAdicao || !disciplinaNomeInput) return;
         formDisciplina.reset();
@@ -281,14 +326,16 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // --- CÓDIGO PARA O MODAL DE ANOTAÇÃO (ANTIGO) ---
+    // =======================================================================
+    // == SEÇÃO DO MODAL DE ANOTAÇÃO - CORRIGIDA E COMPLETA ==================
+    // =======================================================================
     function inicializarEditorAnotacao() {
         if (typeof tinymce !== 'undefined') {
             tinymce.remove('#conteudoAnotacao');
             tinymce.init({
                 selector: '#conteudoAnotacao',
-                plugins: 'lists link image table code help wordcount',
-                toolbar: 'undo redo | blocks | bold italic underline | bullist numlist alignleft aligncenter alignright | link image table code help',
+                plugins: 'lists link image table code help wordcount autoresize',
+                toolbar: 'undo redo | blocks | bold italic underline | bullist numlist | alignleft aligncenter alignright | link image table code help',
                 height: 350,
                 menubar: true,
                 branding: false,
@@ -298,19 +345,41 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
             console.error("TinyMCE não foi carregado.");
         }
-    }   
+    }
+
     const modalAnotacao = document.getElementById('modalNovaAnotacao');
     if (modalAnotacao) {
+        const anotacaoDisciplinaSelect = document.getElementById('principalAnotacaoDisciplinaSelect');
+        const anotacaoAtividadeSelect = document.getElementById('principalAnotacaoAtividadeSelect');
+
+        modalAnotacao.addEventListener('show.bs.modal', function () {
+            popularSelect(anotacaoDisciplinaSelect, disciplinasParaSelect, null, "Selecione uma disciplina...");
+            popularSelect(anotacaoAtividadeSelect, todasAtividadesParaSelect, null, "Qualquer Atividade");
+            anotacaoAtividadeSelect.disabled = false;
+        });
+
         modalAnotacao.addEventListener('shown.bs.modal', function () {
             inicializarEditorAnotacao();
         });
+
         modalAnotacao.addEventListener('hidden.bs.modal', function () {
             const editor = tinymce.get('conteudoAnotacao');
             if (editor) {
                 editor.destroy();
             }
         });
+
+        anotacaoDisciplinaSelect.addEventListener('change', function () {
+            const disciplinaId = this.value;
+            if (disciplinaId) {
+                const atividadesFiltradas = atividadesPorDisciplina[disciplinaId] || [];
+                popularSelect(anotacaoAtividadeSelect, atividadesFiltradas, null, "Nenhuma atividade específica");
+            } else {
+                popularSelect(anotacaoAtividadeSelect, todasAtividadesParaSelect, null, "Qualquer Atividade");
+            }
+        });
     }
-    
+
+    // --- INICIALIZAÇÃO GERAL ---
     inicializarDataTable();
 });
