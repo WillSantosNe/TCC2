@@ -353,8 +353,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const anotacaoAtividadeSelect = document.getElementById('principalAnotacaoAtividadeSelect');
 
         modalAnotacao.addEventListener('show.bs.modal', function () {
-            popularSelect(anotacaoDisciplinaSelect, disciplinasParaSelect, null, "Selecione uma disciplina...");
-            popularSelect(anotacaoAtividadeSelect, todasAtividadesParaSelect, null, "Qualquer Atividade");
+            popularSelect(anotacaoDisciplinaSelect, disciplinasParaSelect, null, "Selecione...");
+            popularSelect(anotacaoAtividadeSelect, todasAtividadesParaSelect, null, "Selecione...");
             anotacaoAtividadeSelect.disabled = false;
         });
 

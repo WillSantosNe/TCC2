@@ -155,7 +155,7 @@ document.addEventListener("DOMContentLoaded", function () {
             atividadesFiltradas = listaTarefas;
         }
         
-        popularSelect(anotacaoAtividadeSelectElem, atividadesFiltradas, atividadeSalvaId, "Nenhuma atividade vinculada");
+        popularSelect(anotacaoAtividadeSelectElem, atividadesFiltradas, atividadeSalvaId, "Selecione...");
     }
 
     function abrirModalFormAnotacao(isEditMode = false, dadosAnotacao = null) {
@@ -167,7 +167,7 @@ document.addEventListener("DOMContentLoaded", function () {
         let atividadeSalvaId = "";
 
         // Popula as disciplinas no modal de anotação
-        popularSelect(anotacaoDisciplinaSelectElem, listaDisciplinas, null, "Selecione a Disciplina");
+        popularSelect(anotacaoDisciplinaSelectElem, listaDisciplinas, null, "Selecione...");
 
         if (isEditMode && dadosAnotacao) {
             if (modalAnotacaoLabelTituloElem) modalAnotacaoLabelTituloElem.textContent = "Editar Anotação";
