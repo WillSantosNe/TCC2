@@ -1,311 +1,314 @@
 /* Existing tela_principal.css content */
 /* --------- SIDEBAR ÚNICA --------- */
 #sidebar {
- width: var(--sidebar-width, 256px); /* Adicionado fallback */
- height: 100vh;
- background: #0f1a35 !important;
- color: #fff;
- display: flex;
- flex-direction: column;
- padding: 1.75rem 1rem;
- z-index: 1055 !important;
+    width: var(--sidebar-width, 256px);
+    height: 100vh;
+    background: #0f1a35 !important;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    padding: 1.75rem 1rem;
+    z-index: 1055 !important;
 }
 
 @media (min-width: 992px) {
- #sidebar {
-  position: fixed !important;
-  top: 0;
-  left: 0;
-  transform: none !important;
-  visibility: visible !important;
- }
+    #sidebar {
+        position: fixed !important;
+        top: 0;
+        left: 0;
+        transform: none !important;
+        visibility: visible !important;
+    }
 }
-
-@media (max-width: 768px) {
- .calendar-widget {
-  display: none;
- }
-}
-
 
 .brand-text {
- font-size: .9rem;
- font-weight: 600;
- line-height: 1.25;
- margin-bottom: 2.25rem;
+    font-size: .9rem;
+    font-weight: 600;
+    line-height: 1.25;
+    margin-bottom: 2.25rem;
 }
 
 .sf-nav-link {
- display: flex;
- align-items: center;
- gap: .5rem;
- color: #fff;
- font-size: .95rem;
- font-weight: 500;
- padding: .6rem .9rem;
- border-radius: var(--default-radius, 6px); /* Usando var com fallback */
- text-decoration: none;
- transition: background-color .2s;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    color: #fff;
+    font-size: .95rem;
+    font-weight: 500;
+    padding: .6rem .9rem;
+    border-radius: var(--default-radius, 6px);
+    text-decoration: none;
+    transition: background-color .2s;
 }
 
 .sf-nav-link:hover,
 .sf-nav-link.active {
- background: rgba(255, 255, 255, .12);
+    background: rgba(255, 255, 255, .12);
 }
 
 .sf-sidebar-section {
- font-size: .75rem;
- text-transform: uppercase;
- opacity: .6;
- margin: 2rem 0 .5rem;
- padding-left: .9rem;
+    font-size: .75rem;
+    text-transform: uppercase;
+    opacity: .6;
+    margin: 2rem 0 .5rem;
+    padding-left: .9rem;
 }
 
 /* --------- LAYOUT PRINCIPAL ------- */
 .sf-main {
- margin-left: var(--sidebar-width, 256px); /* Adicionado fallback */
- width: calc(100% - var(--sidebar-width, 256px)); /* Adicionado fallback */
- min-height: 100vh;
- display: flex;
- flex-direction: column;
- background: var(--background-light-color, #f8f9fa); /* Adicionado fallback */
+    margin-left: var(--sidebar-width, 256px);
+    width: calc(100% - var(--sidebar-width, 256px));
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--background-light-color, #f8f9fa);
 }
 
 @media (max-width: 991.98px) {
- .sf-main {
-  margin-left: 0;
-  width: 100%;
- }
+    .sf-main {
+        margin-left: 0;
+        width: 100%;
+    }
 }
 
 /* --------- HEADER COM LOGO -------- */
 .sf-header {
- height: var(--header-height, 64px); /* Adicionado fallback */
- background: #fff;
- border-bottom: 1px solid var(--border-color, #dee2e6); /* Adicionado fallback */
- display: flex;
- align-items: center;
- justify-content: flex-end;
- padding: 0 1.5rem;
- position: sticky;
- top: 0;
- z-index: 1000;
+    height: var(--header-height, 64px);
+    background: #fff;
+    border-bottom: 1px solid var(--border-color, #dee2e6);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 .sf-header-brand {
- position: absolute;
- left: 50%;
- top: 50%;
- transform: translate(-50%, -50%);
- display: flex;
- align-items: center;
- gap: .55rem;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    gap: .55rem;
 }
 
 .sf-header-brand img {
- width: 34px;
- height: 34px;
+    width: 34px;
+    height: 34px;
 }
 
 .sf-header-brand span {
- font-weight: 700;
- font-size: 1.35rem;
- color: var(--text-title-color, #212529); /* Adicionado fallback */
+    font-weight: 700;
+    font-size: 1.35rem;
+    color: var(--text-title-color, #212529);
 }
 
 .btn-menu {
- border: none;
- background: transparent;
- font-size: 1.6rem;
- color: #0f1a35;
+    border: none;
+    background: transparent;
+    font-size: 1.6rem;
+    color: #0f1a35;
 }
 
 /* --------- CONTEÚDO (Layout Geral da Página da Dashboard) --------------- */
 .sf-content {
- padding: 2rem 2rem 3rem;
- flex-grow: 1;
+    padding: 2rem 2rem 3rem;
+    flex-grow: 1;
 }
 
 body.dashboard-body {
-  background-color: var(--background-light-color, #f8f9fa); /* Adicionado fallback */
-  display: block;
-  align-items: initial;
-  justify-content: initial;
-  padding: 0;
+    background-color: var(--background-light-color, #f8f9fa);
+    display: block;
+    align-items: initial;
+    justify-content: initial;
+    padding: 0;
 }
 
 .text-sm {
-  font-size: 0.875em;
+    font-size: 0.875em;
 }
 .btn-link.text-sm {
-  text-decoration: none;
+    text-decoration: none;
 }
 
 /* Estilos de Cards da Dashboard (hero, calendar, course, task) */
 .hero-card {
- background: #fff;
- border-radius: var(--default-radius, 8px); /* Adicionado fallback */
- box-shadow: 0 1px 4px rgba(0, 0, 0, .06);
- padding: 2rem;
- height: 100%;
+    background: #fff;
+    border-radius: var(--default-radius, 8px);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .06);
+    padding: 2rem;
+    height: 100%;
 }
 
 .hero-title {
- font-size: 1rem;
- font-weight: 600;
+    font-size: 1rem;
+    font-weight: 600;
 }
 
 .hero-subtitle {
- font-size: 1.4rem;
- font-weight: 700;
- color: var(--text-title-color, #212529); /* Adicionado fallback */
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-title-color, #212529);
 }
 
 .calendar-widget {
- position: relative;
- width: 100%; /* Faz o widget ocupar a largura da coluna (col-lg-3) */
- max-width: 300px; /* Mantém uma largura máxima razoável */
- height: 320px;
- background: #fff;
- border-radius: var(--default-radius, 8px); /* Adicionado fallback */
- box-shadow: 0 1px 4px rgba(0,0,0,0.06);
- overflow: hidden;
- margin: 0 auto; /* Centraliza se a coluna for mais larga que max-width */
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+    height: 320px;
+    background: #fff;
+    border-radius: var(--default-radius, 8px);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    overflow: hidden;
+    margin: 0 auto;
 }
 
 .calendar-widget iframe {
- position: absolute;
- top: 0;
- left: 0;
- width: 100%;
- height: 100%;
- border: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
 }
 
-/* ===== Carrossel Compacto de Disciplinas (AJUSTADO para manter estilo antigo do card) ===== */
+/* ===== Carrossel Compacto de Disciplinas ===== */
 .disciplines-carousel-section {
- margin-bottom: 1rem;
+    margin-bottom: 1rem;
 }
 
 .courses-carousel-wrapper {
- position: relative;
- overflow: hidden;
- width: 100%;
- height: 110px; /* Ajuste esta altura conforme necessário para seus cards */
- margin-bottom: 0.5rem;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 110px;
+    margin-bottom: 0.5rem;
 }
 
-.courses-carousel { /* Este é o #coursesContainer no seu HTML */
- display: flex;
- gap: 0.75rem;
- transition: transform 0.4s ease-in-out;
- height: 100%;
+.courses-carousel {
+    display: flex;
+    gap: 0.75rem;
+    transition: transform 0.4s ease-in-out;
+    height: 100%;
 }
 
 .courses-carousel .course-card {
- flex: 0 0 calc(25% - 0.5625rem); 
- box-sizing: border-box;
- border-radius: var(--default-radius, 8px);
- box-shadow: 0 1px 3px rgba(0, 0, 0, .05);
- padding: 1rem 1.25rem; 
- border-left-width: 6px; 
- border-left-style: solid;
- font-size: .9rem; 
- height: 100%; 
- display: flex;
- flex-direction: column;
- justify-content: center; 
+    flex: 0 0 calc(25% - 0.5625rem); 
+    box-sizing: border-box;
+    border-radius: var(--default-radius, 8px);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .05);
+    padding: 1rem 1.25rem; 
+    border-left-width: 6px; 
+    border-left-style: solid;
+    font-size: .9rem; 
+    height: 100%; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
 }
 
 .courses-carousel .course-card strong,
 .courses-carousel .course-card span {
- display: block;
+    display: block;
 }
 
+/* == CORREÇÃO APLICADA AQUI == */
+/* Todas as cores dos cards estão juntas agora, fora de qualquer @media */
 .courses-carousel .course-card.course-1 {
- border-left-color: #8f7bff !important;
- background: var(--card-1, #e6e2ff) !important; 
- color: #3c3299; 
+    border-left-color: #8f7bff !important;
+    background: var(--card-1, #e6e2ff) !important; 
+    color: #3c3299; 
 }
 .courses-carousel .course-card.course-2 {
- border-left-color: #ffca63 !important;
- background: var(--card-2, #ffedc5) !important;
- color: #8c6d31; 
+    border-left-color: #ffca63 !important;
+    background: var(--card-2, #ffedc5) !important;
+    color: #8c6d31; 
 }
 .courses-carousel .course-card.course-3 {
- border-left-color: #45a6ff !important;
- background: var(--card-3, #d9f1ff) !important;
- color: #1c4a70; 
+    border-left-color: #45a6ff !important;
+    background: var(--card-3, #d9f1ff) !important;
+    color: #1c4a70; 
 }
 .courses-carousel .course-card.course-4 {
- border-left-color: #31c979 !important;
- background: var(--card-4, #d3f8e4) !important;
- color: #155e35; 
+    border-left-color: #31c979 !important;
+    background: var(--card-4, #d3f8e4) !important;
+    color: #155e35; 
+}
+.courses-carousel .course-card.course-5 {
+    border-left-color: #ff8fab !important; /* Cor da borda (Rosa) */
+    background: #ffe2e9 !important;     /* Cor de fundo (Rosa claro) */
+    color: #8c3b51;                     /* Cor do texto */
 }
 
-
 .carousel-nav {
- display: flex;
- gap: 0.25rem;
+    display: flex;
+    gap: 0.25rem;
 }
 
 .carousel-nav button {
- width: 2rem;
- height: 2rem;
- border: 1px solid var(--border-color, #ccc);
- background: #fff;
- border-radius: var(--default-radius, 4px);
- display: inline-flex;
- align-items: center;
- justify-content: center;
- font-size: 1rem;
- padding: 0;
- transition: background-color 0.2s, border-color 0.2s;
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid var(--border-color, #ccc);
+    background: #fff;
+    border-radius: var(--default-radius, 4px);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    padding: 0;
+    transition: background-color 0.2s, border-color 0.2s;
 }
 .carousel-nav button:hover {
-  background-color: #f8f9fa;
-  border-color: #adb5bd;
+    background-color: #f8f9fa;
+    border-color: #adb5bd;
 }
 .carousel-nav button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
+/* Media Queries para responsividade do carrossel */
 @media (max-width: 1199.98px) { 
- .courses-carousel .course-card {
-  flex: 0 0 calc(33.333% - 0.75rem * 2 / 3); 
-  padding: 0.8rem 1rem; 
-  font-size: 0.85rem;
- }
+    .courses-carousel .course-card {
+        flex: 0 0 calc(33.333% - 0.75rem * 2 / 3); 
+        padding: 0.8rem 1rem; 
+        font-size: 0.85rem;
+    }
 }
 
 @media (max-width: 991.98px) { 
- .courses-carousel .course-card {
-  flex: 0 0 calc(50% - 0.75rem * 1 / 2); 
-  padding: 0.75rem;
-  font-size: 0.8rem;
- }
+    .courses-carousel .course-card {
+        flex: 0 0 calc(50% - 0.75rem * 1 / 2); 
+        padding: 0.75rem;
+        font-size: 0.8rem;
+    }
 }
 
-@media (max-width: 767.98px) { 
- .courses-carousel .course-card {
-  flex: 0 0 calc(80% - 0.75rem); 
-  height: 90px;
-  font-size: 0.75rem;
-  padding: 0.6rem;
- }
- .courses-carousel-wrapper {
-  height: 100px; 
- }
+@media (max-width: 768px) { 
+    .courses-carousel .course-card {
+        flex: 0 0 calc(80% - 0.75rem); 
+        height: 90px;
+        font-size: 0.75rem;
+        padding: 0.6rem;
+    }
+    .courses-carousel-wrapper {
+        height: 100px; 
+    }
+    .calendar-widget {
+        display: none;
+    }
 }
 
-/* Estilos para o task-item (exemplo, já existente no seu CSS) */
+/* Estilos para o task-item */
 .task-item {
     background-color: #fff;
     padding: 0.75rem 1rem;
     border-radius: var(--default-radius, 6px);
     box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-    border-left-width: 4px !important; /* Forçando a largura da borda */
+    border-left-width: 4px !important;
     border-left-style: solid;
     font-size: 0.85rem;
 }
@@ -316,137 +319,10 @@ body.dashboard-body {
 .task-item small {
     display: block;
     color: var(--text-body-color);
-    font-size: 0.9em; /* Relativo ao font-size do .task-item */
+    font-size: 0.9em;
 }
 .task-item .task-status {
     font-size: 0.7rem;
     padding: 0.25em 0.5em;
     font-weight: 600;
-}
-
-
-/* NOVOS ESTILOS PARA O MODAL DE DISCIPLINA (copiados de disciplinas.css) */
-dialog#modalDisciplina {
-    width: 90%;
-    max-width: 520px;
-    border-radius: 12px;
-    border: none;
-    padding: 0;
-    box-shadow: 0px 8px 24px rgba(20, 20, 22, 0.15);
-}
-dialog#modalDisciplina::backdrop {
-    background-color: rgba(0, 0, 0, 0.5);
-}
-
-dialog#modalDisciplina .modal-header-studyflow { /* Usando classe mais específica para evitar conflito */
-    background-color: #FFFFFF;
-    padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid #E9E9F0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-dialog#modalDisciplina .modal-title-wrapper {
-    display: flex;
-    align-items: center;
-}
-
-dialog#modalDisciplina .modal-logo-icon {
-    width: 28px;
-    height: 28px;
-    margin-right: 0.75rem;
-}
-
-dialog#modalDisciplina .modal-title-custom {
-    font-weight: 600;
-    font-size: 1.3rem;
-    color: #2E3A59;
-    margin-bottom: 0;
-}
-
-/* Reutilizando .btn-close-custom de geral.css se for o mesmo, 
-   senão, defina especificamente aqui ou assegure que geral.css cubra.
-   O .btn-close-custom de geral.css parece adequado. */
-/* dialog#modalDisciplina .btn-close-custom { ... } */
-
-
-dialog#modalDisciplina .modal-body-custom {
-    padding: 1.5rem 1.75rem;
-    background-color: #FFFFFF;
-}
-
-dialog#modalDisciplina .form-label { /* Estilo específico para labels dentro deste modal */
-    font-size: 0.875rem;
-    color: #4F5E7B;
-    font-weight: 500;
-    margin-bottom: 0.375rem;
-}
-
-dialog#modalDisciplina .form-control,
-dialog#modalDisciplina .form-select,
-dialog#modalDisciplina textarea.form-control { /* Estilo específico para inputs dentro deste modal */
-    background-color: #FFFFFF;
-    border: 1px solid #D9DDE7;
-    border-radius: 8px;
-    padding: 0.75rem 1rem;
-    font-size: 0.95rem;
-    color: #2E3A59;
-}
-dialog#modalDisciplina .form-control::placeholder {
-    color: #A0AEC0;
-}
-dialog#modalDisciplina .form-control:focus,
-dialog#modalDisciplina .form-select:focus {
-    border-color: var(--primary-color); /* Use sua variável global */
-    box-shadow: 0 0 0 0.2rem rgba(85, 104, 254, 0.25); /* Use sua variável global com alfa */
-}
-
-dialog#modalDisciplina .is-invalid {
-    border-color: #dc3545 !important; /* Garante a prioridade */
-}
-dialog#modalDisciplina .invalid-feedback {
-    display: block;
-    width: 100%;
-    margin-top: .25rem;
-    font-size: .875em;
-    color: #dc3545;
-}
-
-dialog#modalDisciplina .modal-footer-studyflow { /* Usando classe mais específica */
-    background-color: #FFFFFF;
-    border-top: 1px solid #E9E9F0;
-    padding: 1.25rem 1.75rem;
-    display: flex;
-    justify-content: flex-end;
-    border-bottom-left-radius: 12px;
-    border-bottom-right-radius: 12px;
-}
-
-dialog#modalDisciplina .btn-modal-cancel {
-    background-color: #F1F3F6;
-    border-color: #F1F3F6;
-    color: #4F5E7B;
-    padding: 0.6rem 1.3rem;
-    border-radius: 8px;
-    font-weight: 500;
-    font-size: 0.95rem;
-}
-dialog#modalDisciplina .btn-modal-cancel:hover {
-    background-color: #E2E6EB;
-    border-color: #E2E6EB;
-}
-
-dialog#modalDisciplina .btn-modal-save {
-    background-color: #2E3A59; /* Cor escura para salvar */
-    border-color: #2E3A59;
-    color: #FFFFFF;
-    padding: 0.6rem 1.3rem;
-    border-radius: 8px;
-    font-weight: 500;
-    font-size: 0.95rem;
-}
-dialog#modalDisciplina .btn-modal-save:hover {
-    background-color: #242E47; /* Mais escuro no hover */
-    border-color: #242E47;
 }
