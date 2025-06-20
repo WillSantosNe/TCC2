@@ -96,17 +96,9 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>`;
     }
 
-    function popularSelect(el, opts, selVal = null) {
-        if (!el) return;
-        el.innerHTML = '';
-        opts.forEach(opt => {
-            const o = document.createElement('option');
-            o.value = (typeof opt === 'object' ? opt.id : opt);
-            o.textContent = (typeof opt === 'object' ? opt.nome : opt);
-            if (selVal && (String(o.value) === String(selVal) || (typeof opt === 'object' && opt.nome === selVal))) o.selected = true;
-            el.appendChild(o);
-        });
-    }
+    // --- FUNÇÕES UTILITÁRIAS PADRONIZADAS ---
+    // (Esta seção foi removida pois agora o tarefas.js irá provê-las)
+    // Se ainda precisar da função popularSelect aqui, ela deve ser window.popularSelect
 
     // --- DATATABLE INITIALIZATION ---
     function inicializarDataTable() {
@@ -289,39 +281,29 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // --- CÓDIGO ADICIONADO PARA O MODAL DE ANOTAÇÃO ---
-    
-    // 1. FUNÇÃO PARA INICIALIZAR O EDITOR DE TEXTO DA ANOTAÇÃO
-function inicializarEditorAnotacao() {
-    if (typeof tinymce !== 'undefined') {
-        tinymce.remove('#conteudoAnotacao');
-        tinymce.init({
-            selector: '#conteudoAnotacao',
-            plugins: 'lists link image table code help wordcount',
-            
-            // VERSÃO FINAL E CORRIGIDA DA TOOLBAR:
-            // A barra principal está mais enxuta e o grupo de 5 ícones está isolado no final.
-            toolbar: 'undo redo | blocks | bold italic underline | bullist numlist alignleft aligncenter alignright | link image table code help',
-
-            height: 350,
-            menubar: true,
-            branding: false,
-            statusbar: false,
-            language: 'pt_BR'
-        });
-    } else {
-        console.error("TinyMCE não foi carregado.");
-    }
-}   
-    // 2. LÓGICA PARA O MODAL DE NOVA ANOTAÇÃO
-    const modalAnotacao = document.getElementById('modalNovaAnotacao'); // Este é o ID do seu modal de anotação
+    // --- CÓDIGO PARA O MODAL DE ANOTAÇÃO (ANTIGO) ---
+    function inicializarEditorAnotacao() {
+        if (typeof tinymce !== 'undefined') {
+            tinymce.remove('#conteudoAnotacao');
+            tinymce.init({
+                selector: '#conteudoAnotacao',
+                plugins: 'lists link image table code help wordcount',
+                toolbar: 'undo redo | blocks | bold italic underline | bullist numlist alignleft aligncenter alignright | link image table code help',
+                height: 350,
+                menubar: true,
+                branding: false,
+                statusbar: false,
+                language: 'pt_BR'
+            });
+        } else {
+            console.error("TinyMCE não foi carregado.");
+        }
+    }   
+    const modalAnotacao = document.getElementById('modalNovaAnotacao');
     if (modalAnotacao) {
-        // Inicializa o editor quando o modal é completamente exibido
         modalAnotacao.addEventListener('shown.bs.modal', function () {
             inicializarEditorAnotacao();
         });
-
-        // Destrói o editor quando o modal é fechado para liberar recursos
         modalAnotacao.addEventListener('hidden.bs.modal', function () {
             const editor = tinymce.get('conteudoAnotacao');
             if (editor) {
@@ -330,6 +312,5 @@ function inicializarEditorAnotacao() {
         });
     }
     
-    // --- INICIALIZAÇÃO GERAL ---
     inicializarDataTable();
 });
