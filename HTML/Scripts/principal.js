@@ -273,7 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (form) form.reset();
             form.classList.remove('was-validated');
             form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
-        });
+        }); 
         if (form) {
             form.addEventListener('submit', (e) => {
                 e.preventDefault();

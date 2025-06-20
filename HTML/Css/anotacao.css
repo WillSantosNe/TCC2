@@ -82,21 +82,46 @@ div.dataTables_scrollBody, #tabelaAnotacoes_wrapper, .table-container { overflow
 #abrirModalNovaAnotacaoDt { padding-top: 0.75rem; padding-bottom: 0.75rem; } /* Estilo para o botão clonado */
 #abrirModalNovaAnotacaoDt i { margin-right: 0.5rem; }
 
-/* Responsividade */
-@media (min-width: 768px) {
-    #tabelaAnotacoes_wrapper .dt-custom-header { flex-wrap: nowrap; align-items: center; }
-    #tabelaAnotacoes_wrapper .dt-custom-header > div.dataTables_filter { flex-grow: 1; flex-shrink: 1; flex-basis: 0; min-width: 200px; }
-    #tabelaAnotacoes_wrapper .dt-custom-header > .dt-buttons-anotacoes-container {display: grid; grid-template-areas: "botao"; grid-template-columns: auto; grid-template-rows: auto; gap: .5rem; align-items: center; }
-    #tabelaAnotacoes_wrapper .dt-custom-header .dt-buttons-anotacoes-container > #abrirModalNovaAnotacaoDt { grid-area: botao; width: auto; }
-}
+/* anotacao.css - SOLUÇÃO FINAL COM CSS GRID */
+
+/* anotacao.css - AJUSTE FINAL PARA BOTÃO QUADRADO */
+
 @media (max-width: 767.98px) {
-    #tabelaAnotacoes_wrapper .dt-custom-header { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; padding: 1rem!important; }
-    #tabelaAnotacoes_wrapper .dt-custom-header > div.dataTables_filter { order: 1; flex: 1 1 0; min-width: 70px; }
-    #tabelaAnotacoes_wrapper .dt-custom-header > div.dataTables_filter input { width: 100%; }
-    #tabelaAnotacoes_wrapper .dt-custom-header > .dt-buttons-anotacoes-container { order: 2; display: flex; flex-direction: column; align-items: stretch; width: 100%; gap: .75rem; flex-grow: 0; flex-shrink: 0; }
-    #tabelaAnotacoes_wrapper .dt-custom-header .dt-buttons-anotacoes-container > #abrirModalNovaAnotacaoDt { order: 1; width: 44px; height: 44px; padding: 0.75rem !important; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-left: auto; }
-    #abrirModalNovaAnotacaoDt span { display: none !important; }
-    #abrirModalNovaAnotacaoDt i { margin-right: 0 !important; font-size: 1.25rem; }
+    /* 1. Mantém o Grid Layout para o cabeçalho, pois é o mais estável */
+    #tabelaAnotacoes_wrapper .dt-custom-header {
+        display: grid;
+        grid-template-columns: 1fr auto; /* Coluna da busca cresce, coluna do botão tem tamanho automático */
+        align-items: center;
+        gap: 0.75rem;
+        /* Removemos o padding para que ele se alinhe melhor aos limites do container pai */
+        padding-bottom: 1rem !important; 
+    }
+
+    /* 2. Garante que o input da busca ocupe todo o espaço da sua coluna */
+    #tabelaAnotacoes_wrapper .dt-custom-header > div.dataTables_filter input {
+        width: 100%; 
+    }
+    
+    /* 3. Estilo que transforma o botão em um quadrado */
+    #abrirModalNovaAnotacaoDt {
+        width: 42px;  /* Largura fixa */
+        height: 42px; /* Altura fixa, formando um quadrado */
+        padding: 0;   /* Removemos o padding para centralizar o ícone */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* 4. Esconde o texto "Adicionar Anotação" dentro do botão */
+    #abrirModalNovaAnotacaoDt span {
+        display: none !important;
+    }
+
+    /* 5. Ajusta o ícone "+" para ficar centralizado e sem margens */
+    #abrirModalNovaAnotacaoDt i {
+        margin-right: 0 !important;
+        font-size: 1.5rem; /* Tamanho do ícone um pouco maior */
+    }
 }
 
 #modalVisualizarAnotacao .anotacao-conteudo-display {
@@ -104,3 +129,5 @@ div.dataTables_scrollBody, #tabelaAnotacoes_wrapper, .table-container { overflow
     padding-top: 0.5rem;
     line-height: 1.6;
 }
+
+
