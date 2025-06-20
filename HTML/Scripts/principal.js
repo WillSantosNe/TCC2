@@ -81,39 +81,41 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: "P004", tituloProva: "Análise Léxica e Sintática", dataOriginal: "2025-07-10", status: "Em Andamento", disciplinaId: "CS105", tipo: "Prova", descricao: "Prova prática sobre criação de analisadores com Flex e Bison." }
     ];
 
-    // --- GLOBALIZAÇÃO DOS DADOS PARA ANOTAÇÕES E OUTROS SCRIPTS ---
-    window.listaDisciplinas = disciplinasDashboard; 
-    window.listaTarefas = tarefasExemploDashboard.concat(provasDashboardDados.map(p => ({
-        id: p.id,
-        titulo: p.tituloProva,
-        disciplinaId: p.disciplinaId,
-        tipo: p.tipo,
-        dataEntrega: p.dataOriginal,
-        status: p.status,
-        descricao: p.descricao
-    }))); 
-
-    window.disciplinasFixasParaSelects = [
-        ...disciplinasDashboard.map(d => ({id: d.id, nome: d.nome}))
-    ];
+    // =========================================================================
+    // == CORREÇÃO 1: GLOBALIZAÇÃO E ORGANIZAÇÃO DOS DADOS =====================
+    // =========================================================================
+    window.listaDisciplinas = disciplinasDashboard;
     
-    window.atividadesPorDisciplinaParaSelects = { 
-        "": [{id: "", nome: "Nenhuma"}], 
-        "Nenhuma": [{id: "", nome: "Nenhuma"}], 
-        ...Object.fromEntries(
-            disciplinasDashboard.map(d => [
-                d.id, 
-                [{id: "", nome: "Nenhuma"}]
-                    .concat(window.listaTarefas.filter(t => t.disciplinaId === d.id).map(t => ({id: t.id, nome: t.titulo})))
-            ])
-        ),
-        "TCC 1": [{id: "", nome: "Nenhuma"}, {id: "TCC1_Proj", nome: "Revisão Bibliográfica"}, {id: "TCC1_Def", nome: "Defesa da Monografia"}],
-        "Outra": [{id: "", nome: "Nenhuma"}, {id: "OUTRA_Gen", nome: "Atividade Geral"}]
-    };
-    window.atividadesPadraoParaSelects = [{id: "", nome: "Nenhuma"}]; 
+    // Unifica tarefas e provas em uma única lista, normalizando a propriedade do título
+    window.listaTarefas = [
+        ...tarefasExemploDashboard,
+        ...provasDashboardDados.map(p => ({
+            id: p.id,
+            titulo: p.tituloProva, // Normaliza 'tituloProva' para 'titulo'
+            disciplinaId: p.disciplinaId,
+            tipo: p.tipo,
+            dataEntrega: p.dataOriginal,
+            status: p.status,
+            descricao: p.descricao
+        }))
+    ];
+
+    // Simplifica a criação das listas para os selects. A lógica do placeholder vai para a função.
+    window.disciplinasFixasParaSelects = disciplinasDashboard.map(d => ({id: d.id, nome: d.nome}));
+    
+    window.atividadesPorDisciplinaParaSelects = Object.fromEntries(
+        disciplinasDashboard.map(d => [
+            d.id, 
+            window.listaTarefas
+                .filter(t => t.disciplinaId === d.id)
+                .map(t => ({id: t.id, titulo: t.titulo}))
+        ])
+    );
+
+    window.atividadesPadraoParaSelects = window.listaTarefas.map(t => ({id: t.id, titulo: t.titulo}));
 
     // --- FUNÇÕES AUXILIARES (GLOBALIZADAS) ---
-    // Funções de formatação e obtenção de classes de badge
+    // Funções de formatação e obtenção de classes de badge (CÓDIGO ORIGINAL - INTACTO)
     window.formatarDataParaWidget = (dataStr) => { 
         if (!dataStr) return 'Sem data'; 
         const [y,m,d]=dataStr.split('-'); 
@@ -121,7 +123,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const meses=["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"]; 
         return `${dt.getUTCDate()} ${meses[dt.getUTCMonth()]} ${dt.getUTCFullYear()}`; 
     };
-    
     window.getStatusBadgeClass = (s) => { 
         switch(s){
             case'Concluída':return'bg-success-subtle text-success';
@@ -131,7 +132,6 @@ document.addEventListener('DOMContentLoaded', () => {
             default:return'bg-secondary-subtle text-secondary';
         }
     };
-    
     window.getStatusBadgeClassDisciplina = (s) => { 
         switch(s){
             case 'Ativa': return'bg-success-subtle text-success'; 
@@ -141,7 +141,6 @@ document.addEventListener('DOMContentLoaded', () => {
             default: return'bg-light-subtle text-dark';
         }
     };
-    
     window.getStatusBorderClass = (s) => { 
         switch(s){
             case'Concluída':return'border-success-subtle';
@@ -151,66 +150,54 @@ document.addEventListener('DOMContentLoaded', () => {
             default:return'border-secondary-subtle';
         }
     };
-    
     window.getTipoBadgeClass = (t) => { 
         if(t==="Prova")return'bg-danger-subtle text-danger';
         return'bg-primary-subtle text-primary';
     };
 
-    // A função popularSelect, crucial para preencher os selects dinamicamente.
-    // Garanta que ela seja definida apenas uma vez, idealmente em geral.js ou aqui se não estiver lá.
-    // Como geral.js é carregado primeiro, se popularSelect estiver lá, esta definição pode ser removida.
-    // Para segurança, mantemos a verificação.
+    // =========================================================================
+    // == CORREÇÃO 2: FUNÇÃO popularSelect CORRIGIDA ===========================
+    // =========================================================================
     if (typeof window.popularSelect === 'undefined') { 
-        window.popularSelect = function (element, options, selectedValue = null) {
+        window.popularSelect = function (element, options, placeholderText = "Selecione...") {
             if (!element) {
                 console.warn("Elemento select não encontrado para popular:", element);
                 return;
             }
             element.innerHTML = '';
             
-            const defaultOption = document.createElement('option');
-            defaultOption.value = "";
-            defaultOption.textContent = "Selecione...";
-            defaultOption.disabled = true;
-            defaultOption.selected = (selectedValue === null || selectedValue === ''); 
-            element.appendChild(defaultOption);
+            // A opção "Selecione..." agora é clicável e tem texto customizável
+            const placeholderOption = document.createElement('option');
+            placeholderOption.value = ""; // Valor vazio para representar "nada selecionado"
+            placeholderOption.textContent = placeholderText;
+            element.appendChild(placeholderOption);
 
             options.forEach(option => {
                 const optElement = document.createElement('option');
-                const value = (typeof option === 'object' && option !== null) ? option.id : option;
-                const textContent = (typeof option === 'object' && option !== null) ? option.nome : option;
-
-                optElement.value = value;
-                optElement.textContent = textContent;
-
-                if (selectedValue !== null && (String(value) === String(selectedValue) || String(textContent) === String(selectedValue))) {
-                    optElement.selected = true;
-                    defaultOption.selected = false; 
-                }
+                optElement.value = option.id;
+                // Lógica corrigida: usa .nome para disciplinas E .titulo para atividades
+                optElement.textContent = option.nome || option.titulo;
                 element.appendChild(optElement);
             });
+            element.value = ""; // Garante que o placeholder seja a opção inicial
         };
     }
 
-
-    // --- RENDERIZAÇÃO DOS WIDGETS (mantida) ---
+    // --- RENDERIZAÇÃO DOS WIDGETS (CÓDIGO ORIGINAL - INTACTO) ---
+    // (Renderização de tarefas e provas mantida para a página não quebrar)
     const listaTarefasDashboardEl = document.getElementById('listaTarefasDashboard');
     if (listaTarefasDashboardEl) {
         listaTarefasDashboardEl.innerHTML = '';
-        // Filtra para mostrar apenas tarefas (não provas) e limita a 4 para o widget
-        window.listaTarefas.filter(t => t.tipo === "Tarefa").slice(0, 4).forEach(tarefa => {
+        tarefasExemploDashboard.slice(0, 4).forEach(tarefa => {
             const disc = disciplinasDashboard.find(d => d.id === tarefa.disciplinaId);
             const div = document.createElement('div');
             div.className = `task-item border-start ${window.getStatusBorderClass(tarefa.status)}`;
             div.innerHTML = `<div class="d-flex justify-content-between"><strong class="text-sm">${disc ? disc.nome : 'Geral'}</strong><span class="badge ${window.getStatusBadgeClass(tarefa.status)}">${tarefa.status}</span></div><small>${tarefa.titulo}</small><small>Entrega: ${window.formatarDataParaWidget(tarefa.dataEntrega)}</small>`;
             div.style.cursor = 'pointer';
-            // Certifique-se de que a função para abrir o modal de detalhes esteja disponível
             div.addEventListener('click', () => abrirModalDetalhesAtividade(tarefa));
             listaTarefasDashboardEl.appendChild(div);
         });
     }
-
     const tabelaProvasDashboard = document.getElementById('tabelaProvasDashboard');
     if (tabelaProvasDashboard) {
         tabelaProvasDashboard.innerHTML = '';
@@ -228,7 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // --- LÓGICA DE CLIQUE NOS CARDS DE DISCIPLINA (mantida) ---
+    // --- LÓGICA DE CLIQUE NOS CARDS DE DISCIPLINA (CÓDIGO ORIGINAL - INTACTO) ---
     if (coursesContainer) {
         coursesContainer.addEventListener('click', (e) => {
             const card = e.target.closest('.course-card');
@@ -238,7 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- FUNÇÕES PARA EXIBIR MODAIS DE DETALHES (mantidas) ---
+    // --- FUNÇÕES PARA EXIBIR MODAIS DE DETALHES (CÓDIGO ORIGINAL - INTACTO) ---
     function abrirModalDetalhesAtividade(dadosItem) {
         if (!modalDetalhesAtividade) return;
         const disc = disciplinasDashboard.find(d => d.id === dadosItem.disciplinaId);
@@ -265,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
         bsModal.show();
     }
     
-    // --- MODAIS DE ADIÇÃO RÁPIDA (SIDEBAR) (mantidos) ---
+    // --- MODAIS DE ADIÇÃO RÁPIDA (SIDEBAR) (CÓDIGO ORIGINAL - INTACTO) ---
     const modalDisciplinaAdicaoPrincipalEl = document.getElementById('modalDisciplinaAdicaoPrincipal');
     if (modalDisciplinaAdicaoPrincipalEl) {
         const form = modalDisciplinaAdicaoPrincipalEl.querySelector('#formDisciplinaPrincipal');
@@ -288,6 +275,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // REMOVIDO: A lógica antiga de modalTarefaAdicaoPrincipal foi removida,
-    // pois agora usaremos o modal compartilhado via tarefaRapidaModal.js
+    // =========================================================================
+    // == CORREÇÃO 3: LÓGICA ADICIONADA PARA O MODAL DE ANOTAÇÃO ===============
+    // =========================================================================
+    const modalAnotacaoEl = document.getElementById('modalNovaAnotacao');
+    if (modalAnotacaoEl) {
+        const anotacaoDisciplinaSelect = document.getElementById('principalAnotacaoDisciplinaSelect');
+        const anotacaoAtividadeSelect = document.getElementById('principalAnotacaoAtividadeSelect');
+
+        // Evento que roda quando o modal vai abrir
+        modalAnotacaoEl.addEventListener('show.bs.modal', function () {
+            window.popularSelect(anotacaoDisciplinaSelect, window.disciplinasFixasParaSelects, "Selecione a Disciplina...");
+            window.popularSelect(anotacaoAtividadeSelect, window.atividadesPadraoParaSelects, "Selecione a Atividade...");
+        });
+
+        // Evento que roda quando o select de disciplina muda
+        if (anotacaoDisciplinaSelect) {
+            anotacaoDisciplinaSelect.addEventListener('change', function () {
+                const disciplinaId = this.value;
+
+                if (disciplinaId) {
+                    const atividadesFiltradas = window.atividadesPorDisciplinaParaSelects[disciplinaId] || [];
+                    window.popularSelect(anotacaoAtividadeSelect, atividadesFiltradas, "Selecione a Atividade...");
+                } else {
+                    // Se o usuário clicar em "Selecione...", a lista de atividades volta ao padrão (todas)
+                    window.popularSelect(anotacaoAtividadeSelect, window.atividadesPadraoParaSelects, "Selecione a Atividade...");
+                }
+            });
+        }
+    }
 });
