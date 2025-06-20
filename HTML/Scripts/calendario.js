@@ -22,8 +22,6 @@ const tarefasDoCalendario = [
     { id: "T010", titulo: "SQL e Normalização", disciplinaId: "CS103", tipo: "Prova", dataEntrega: "2025-06-25", status: "Agendada", descricao: "Praticar joins e entender as formas normais (1FN, 2FN, 3FN)." },
     { id: "T013", titulo: "Machine Learning e Redes Neurais", disciplinaId: "CS104", tipo: "Prova", dataEntrega: "2025-06-26", status: "Agendada", descricao: "Revisar conceitos de regressão linear e redes neurais convolucionais." },
     { id: "T017", titulo: "Análise Léxica e Sintática", disciplinaId: "CS105", tipo: "Prova", dataEntrega: "2025-06-29", status: "Agendada", descricao: "Implementar um analisador léxico simples em Python." },
-    { id: "T018", titulo: "Trabalho de Grafos", disciplinaId: "CS101", tipo: "Tarefa", dataEntrega: "2025-07-01", status: "A Fazer", descricao: "Implementar algoritmos de travessia em grafos (BFS, DFS)." },
-    { id: "T019", titulo: "Relatório de Simulação de Redes", disciplinaId: "CS102", tipo: "Tarefa", dataEntrega: "2025-07-03", status: "Em Andamento", descricao: "Analisar resultados de simulação com NS3." }
 ];
 
 // --- Globalização dos dados para outros scripts ---
