@@ -337,6 +337,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 plugins: 'lists link image table code help wordcount autoresize',
                 toolbar: 'undo redo | blocks | bold italic underline | bullist numlist | alignleft aligncenter alignright | link image table code help',
                 height: 350,
+                min_height: 400,
                 menubar: true,
                 branding: false,
                 statusbar: false,
