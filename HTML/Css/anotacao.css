@@ -1,16 +1,6 @@
 /* Css/anotacao.css */
 
 /* ===== Página de Anotações (Tabela, etc.) ===== */
-.sf-page-title {
-    font-weight: 600;
-    color: var(--text-title-color); 
-    margin-bottom: .25rem;
-}
-.sf-page-subtitle {
-    font-size: .95rem;
-    color: var(--text-body-color); 
-    margin-bottom: 1.5rem;
-}
 
 /* ===== Tabela de Anotações e Ações ===== */
 .anotacoes-table th {

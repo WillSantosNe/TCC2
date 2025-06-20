@@ -1,14 +1,5 @@
 /* Estilos específicos da página de Disciplinas */
-.sf-page-title {
-    font-weight: 600;
-    color: var(--text-title-color);
-    margin-bottom: 0.25rem;
-}
-.sf-page-subtitle {
-    font-size: 0.95rem;
-    color: var(--text-body-color);
-    margin-bottom: 1.5rem;
-}
+
 
 /* Ajustes para alinhar o botão "Adicionar Disciplina" */
 .btn-add-discipline {

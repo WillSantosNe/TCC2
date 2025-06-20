@@ -146,14 +146,7 @@ dialog#modalTarefa {
 /* ==========================================================================
  Estilos Específicos da Página de Tarefas (Tabela, etc.)
  ========================================================================== */
-.sf-page-title, .sf-page-subtitle {
-    margin-bottom: .25rem;
-}
-.sf-page-subtitle {
-    font-size: .95rem;
-    color: var(--text-body-color, #4F5E7B);
-    margin-bottom: 1.5rem;
-}
+
 .tarefas-table th {
   font-weight: 600;
   font-size: .85rem;

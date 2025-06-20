@@ -54,6 +54,19 @@ body { /* Estilos comuns a todos os bodys */
   background-color: var(--background-light-color);
   line-height: 1.6; /* Melhor legibilidade */
 }
+/* === ESTILOS DE TÍTULOS DE PÁGINA === */
+.sf-page-title {
+  font-weight: normal; /* Define o peso da fonte como normal para todas as páginas */
+  font-size: 1.75rem;   /* Sugestão de tamanho consistente, ajuste se necessário */
+  color: var(--text-title-color);
+  margin-bottom: 0.25rem;
+}
+
+.sf-page-subtitle {
+  font-size: 0.95rem;
+  color: var(--text-body-color);
+  margin-bottom: 1.5rem;
+}
 
 /* Estilos específicos para body em páginas de autenticação */
 body.auth-body {
