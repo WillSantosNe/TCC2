@@ -170,16 +170,16 @@ document.addEventListener("DOMContentLoaded", function () {
                     data: null, // Para o botão de controle responsivo
                     defaultContent: '',
                     className: 'dtr-control',
-                    orderable: false
+                    orderable: false,
+                    responsivePriority: 1 // Prioridade MÁXIMA para o controle '+'
                 },
-                { data: 'nome', responsivePriority: 1 },
-                { data: 'professor', responsivePriority: 2 },
-                { data: 'periodo', responsivePriority: 3, className: 'dt-periodo-column' },
+                { data: 'nome', responsivePriority: 2 }, // SEGUNDA maior prioridade
+                { data: 'professor', responsivePriority: 10002 }, // Prioridade baixa
+                { data: 'periodo', responsivePriority: 10003, className: 'dt-periodo-column' }, // Prioridade baixa
                 {
                     data: 'status',
-                    responsivePriority: 4,
+                    responsivePriority: 10004, // Prioridade baixa
                     render: function (data, type, row) {
-                        // Renderiza o badge de status
                         return `<span class="badge ${getStatusBadgeClass(data)}">${data}</span>`;
                     }
                 },
@@ -187,9 +187,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     data: 'id', // Usa o ID para criar o dropdown
                     orderable: false,
                     className: "dt-actions-column-left no-export",
-                    responsivePriority: 10000,
+                    responsivePriority: 3, // TERCEIRA maior prioridade
                     render: function (data, type, row) {
-                        // Renderiza o menu de ações
                         return gerarDropdownHtml(data);
                     }
                 }

@@ -176,6 +176,7 @@ div.dataTables_wrapper div.dataTables_filter input {
 }
 
 /* Responsividade (Desktop vs. Mobile) */
+/* O bloco que escondia o texto do botão foi removido para que ele apareça em todas as telas */
 @media (min-width: 768px) {
     .dt-buttons-container {
         display: grid;
@@ -195,12 +196,6 @@ div.dataTables_wrapper div.dataTables_filter input {
     #abrirModalNovaDisciplina {
         grid-area: botao;
     }
-    #abrirModalNovaDisciplina span {
-        display: inline !important;
-    }
-    #abrirModalNovaDisciplina i {
-        margin-right: 0.5rem !important;
-    }
 }
 @media (max-width: 767.98px) {
     #tabelaDisciplinas_wrapper .dt-custom-header {
@@ -215,12 +210,6 @@ div.dataTables_wrapper div.dataTables_filter input {
     .dt-filter-select {
         max-width: none;
         width: 100%;
-    }
-    #abrirModalNovaDisciplina span {
-        display: none !important;
-    }
-    #abrirModalNovaDisciplina i {
-        margin-right: 0 !important;
     }
 }
 

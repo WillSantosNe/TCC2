@@ -243,7 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (form) {
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
-                alert("Salvar Disciplina (lógica a ser implementada)");
+                // alert("Salvar Disciplina (lógica a ser implementada)");
                 bootstrap.Modal.getInstance(modalDisciplinaAdicaoPrincipalEl).hide();
             });
         }

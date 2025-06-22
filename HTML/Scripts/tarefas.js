@@ -238,18 +238,28 @@ document.addEventListener("DOMContentLoaded", function () {
             paging: false,
             scrollY: '450px',
             scrollCollapse: true,
-            language: { url: 'https://cdn.datatables.net/plug-ins/2.0.7/i18n/pt-BR.json', search: "", searchPlaceholder: "Buscar tarefas..." },
-            columnDefs: [{ orderable: false, targets: [0, -1] }],
+            language: { url: 'https://cdn.datatables.net/plug-ins/2.0.7/i18n/pt-BR.json', search: "", searchPlaceholder: "Buscar tarefas/provas..." },
+            columnDefs: [
+                { orderable: false, targets: [0, 6] },
+                { responsivePriority: 1, targets: 0 },
+                { responsivePriority: 2, targets: 1 },
+                { responsivePriority: 3, targets: 6 },
+                { responsivePriority: 4, targets: 4 },
+                { responsivePriority: 5, targets: 5 },
+                { responsivePriority: 6, targets: 2 },
+                { responsivePriority: 7, targets: 3 }
+            ],
             data: listaTarefas.map(formatarDadosParaLinha),
             initComplete: function () {
                 const api = this.api();
                 const buttonsContainer = $('.dt-buttons-container');
                 if ($('#abrirModalNovaTarefaDt').length === 0) {
-                    const btnAddTask = $('<button class="btn btn-primary btn-sm btn-add-task" id="abrirModalNovaTarefaDt" data-bs-toggle="modal" data-bs-target="#modalTarefa"> <i class="bi bi-plus-lg me-sm-2"></i> <span class="d-none d-sm-inline">Adicionar Tarefa</span> </button>');
+                    // A classe .btn-sm foi removida para o botão ficar maior
+                    const btnAddTask = $('<button class="btn btn-primary btn-add-task" id="abrirModalNovaTarefaDt" data-bs-toggle="modal" data-bs-target="#modalTarefa"> <i class="bi bi-plus-lg me-2"></i> <span>Adicionar Tarefa/Prova</span> </button>');
                     buttonsContainer.append(btnAddTask);
                     btnAddTask.on('click', function () { abrirModalTarefa(false); });
                 }
-                const filterHtml = `<select id="filterTipoTarefa" class="form-select form-select-sm dt-filter-select ms-2"><option value="">Todos os Tipos</option><option value="Tarefa">Tarefa</option><option value="Prova">Prova</option></select><select id="filterDisciplina" class="form-select form-select-sm dt-filter-select ms-2"><option value="">Todas as Disciplinas</option></select>`;
+                const filterHtml = `<select id="filterTipoTarefa" class="form-select dt-filter-select ms-2"><option value="">Todos os Tipos</option><option value="Tarefa">Tarefa</option><option value="Prova">Prova</option></select><select id="filterDisciplina" class="form-select dt-filter-select ms-2"><option value="">Todas as Disciplinas</option></select>`;
                 buttonsContainer.prepend(filterHtml);
                 listaDisciplinas.forEach(d => $('#filterDisciplina').append(new Option(d.nome, d.nome)));
                 $('#filterTipoTarefa').on('change', function () { api.column(3).search(this.value ? '^' + $.fn.dataTable.util.escapeRegex(this.value) + '$' : '', true, false).draw(); });

@@ -59,9 +59,9 @@
                     <h2 class="sf-page-title">Disciplinas Matriculadas</h2>
                     <p class="text-muted sf-page-subtitle">Gerencie suas disciplinas, horários e locais.</p>
                 </div>
-                <button class="btn btn-primary" id="abrirModalNovaDisciplina" data-bs-toggle="modal" data-bs-target="#modalDisciplinaAdicaoPrincipal">
-                    <i class="bi bi-plus-lg me-sm-2"></i><span class="d-none d-sm-inline">Adicionar Disciplina</span>
-                </button>
+                    <button class="btn btn-primary" id="abrirModalNovaDisciplina" data-bs-toggle="modal" data-bs-target="#modalDisciplinaAdicaoPrincipal">
+                        <i class="bi bi-plus-lg me-2"></i><span>Adicionar Disciplina</span>
+                    </button>
             </div>
             <div class="table-container shadow-sm">
                 <table id="tabelaDisciplinas" class="table table-hover dt-responsive nowrap align-middle mb-0 bg-white border rounded-3 disciplinas-table" style="width:100%">
@@ -277,22 +277,77 @@
             <div class="modal-content">
                 <div class="modal-custom-content">
                     <div class="modal-sidebar">
-                        <img src="../imgs/logo.png" alt="Logo" class="img-fluid mb-3">
+                        <img src="../imgs/logo.png" class="img-fluid mb-3">
                         <ul class="list-group list-group-flush w-100">
-                            <li class="list-group-item"><a href="#" class="list-group-item-action" data-section="trocar-senha">Trocar senha</a></li>
-                            <li class="list-group-item"><a href="#" class="list-group-item-action" data-section="trocar-foto">Trocar foto de perfil</a></li>
-                            <li class="list-group-item"><a href="#" class="list-group-item-action" data-section="notificacoes">Notificações</a></li>
-                            <li class="list-group-item back-link"><a href="#" class="list-group-item-action" id="backLink" data-bs-dismiss="modal">Voltar</a></li>
+                            <li class="list-group-item">
+                                <a href="#" class="list-group-item-action" data-section="trocar-senha">Trocar senha</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="#" class="list-group-item-action" data-section="trocar-foto">Trocar foto de perfil</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="#" class="list-group-item-action" data-section="notificacoes">Notificações</a>
+                            </li>
+                            <li class="list-group-item back-link">
+                                <a href="#" class="list-group-item-action" id="backLink" data-bs-dismiss="modal">Voltar</a>
+                            </li>
                         </ul>
                     </div>
+
                     <div class="modal-main-content">
                         <div id="modal-welcome-content" class="modal-section active">
                             <h2>Bem-vindo às Configurações!</h2>
+                            <p>Aqui você pode gerenciar as opções da sua conta.</p>
                             <p>Use o menu lateral para navegar ou clique em "Voltar" para fechar.</p>
                         </div>
-                        <div id="modal-trocar-senha" class="modal-section"><h3>Trocar Senha</h3></div>
-                        <div id="modal-trocar-foto" class="modal-section"><h3>Trocar Foto de Perfil</h3></div>
-                        <div id="modal-notificacoes" class="modal-section"><h3>Configurações de Notificações</h3></div>
+                        <div id="modal-trocar-senha" class="modal-section">
+                            <h3>Trocar Senha</h3>
+                            <form>
+                                <div class="mb-3">
+                                    <label for="currentPassword" class="form-label">Senha Atual</label>
+                                    <input type="password" class="form-control" id="currentPassword" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="newPassword" class="form-label">Nova Senha</label>
+                                    <input type="password" class="form-control" id="newPassword" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="confirmNewPassword" class="form-label">Confirmar Nova Senha</label>
+                                    <input type="password" class="form-control" id="confirmNewPassword" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Salvar Nova Senha</button>
+                            </form>
+                        </div>
+                        <div id="modal-trocar-foto" class="modal-section">
+                            <h3>Trocar Foto de Perfil</h3>
+                            <div class="text-center mb-3">
+                                <img src="../imgs/avatar.png" class="rounded-circle mb-3" style="width:120px;height:120px;" alt="Foto de Perfil Atual">
+                                <input type="file" class="form-control" id="profilePictureInput" accept="image/*">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Salvar Foto</button>
+                        </div>
+                        <div id="modal-notificacoes" class="modal-section">
+                            <h3>Configurações de Notificações</h3>
+                            <form>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="emailNotificacoes" checked>
+                                    <label class="form-check-label" for="emailNotificacoes">Notificações por Email</label>
+                                </div>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="appNotificacoes" checked>
+                                    <label class="form-check-label" for="appNotificacoes">Notificações no Aplicativo</label>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="notificationFrequency" class="form-label">Frequência de Notificações</label>
+                                    <select class="form-select" id="notificationFrequency">
+                                        <option value="instant">Instantâneas</option>
+                                        <option value="daily">Diárias</option>
+                                        <option value="weekly">Semanais</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Salvar Configurações</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

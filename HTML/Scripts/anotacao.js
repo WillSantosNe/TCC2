@@ -257,50 +257,53 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function inicializarTabelaAnotacoes() {
-        if (!window.jQuery || !$.fn.DataTable) { console.error("jQuery ou DataTables não carregado!"); return; }
-        listaAnotacoes.sort((a, b) => new Date(b.ultimaModificacao) - new Date(a.ultimaModificacao));
-        if ($.fn.DataTable.isDataTable('#tabelaAnotacoes')) { $('#tabelaAnotacoes').DataTable().clear().destroy(); $('#tabelaAnotacoes tbody').empty(); }
-        tabelaAnotacoesDt = $('#tabelaAnotacoes').DataTable({
-            responsive: { details: { type: 'column', target: 0 }},
-            dom: '<"row dt-custom-header align-items-center mb-3"<"col-12 col-md-auto"f><"col-12 col-md-auto ms-auto dt-buttons-anotacoes-container">>t<"row dt-table-footer align-items-center mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-            paging: false, lengthChange: false, scrollY: '450px', scrollCollapse: true,
-            language: { url: 'https://cdn.datatables.net/plug-ins/2.0.7/i18n/pt-BR.json', search: "", searchPlaceholder: "Buscar...", info: "Total de _TOTAL_ anotações", infoEmpty: "Nenhuma anotação", infoFiltered: "(de _MAX_)" },
-            columnDefs: [
-                { orderable: false, className: 'dtr-control', targets: 0 }, // Coluna do ícone '+'
-                { responsivePriority: 1, targets: 1 }, // Título da Anotação (Maior Prioridade)
-                { responsivePriority: 10001, targets: 2 }, // Disciplina (Prioridade Baixa)
-                { responsivePriority: 10002, targets: 3 }, // Atividade (Prioridade Baixa)
-                { responsivePriority: 10003, targets: 4 }, // Data de Criação (Prioridade Baixa)
-                { responsivePriority: 10004, targets: 5 }, // Última Modificação (Prioridade Baixa)
-                { 
-                    orderable: false, 
-                    className: "text-center dt-actions-column", 
-                    targets: 6, 
-                    responsivePriority: 2 // Ações (Segunda Maior Prioridade)
+    if (!window.jQuery || !$.fn.DataTable) { console.error("jQuery ou DataTables não carregado!"); return; }
+    listaAnotacoes.sort((a, b) => new Date(b.ultimaModificacao) - new Date(a.ultimaModificacao));
+    if ($.fn.DataTable.isDataTable('#tabelaAnotacoes')) { $('#tabelaAnotacoes').DataTable().clear().destroy(); $('#tabelaAnotacoes tbody').empty(); }
+    tabelaAnotacoesDt = $('#tabelaAnotacoes').DataTable({
+        responsive: { details: { type: 'column', target: 0 }},
+        dom: '<"row dt-custom-header align-items-center mb-3"<"col-12 col-md-auto"f><"col-12 col-md-auto ms-auto dt-buttons-anotacoes-container">>t<"row dt-table-footer align-items-center mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+        paging: false, lengthChange: false, scrollY: '450px', scrollCollapse: true,
+        language: { url: 'https://cdn.datatables.net/plug-ins/2.0.7/i18n/pt-BR.json', search: "", searchPlaceholder: "Buscar...", info: "Total de _TOTAL_ anotações", infoEmpty: "Nenhuma anotação", infoFiltered: "(de _MAX_)" },
+        
+        // --- BLOCO ATUALIZADO ---
+        columnDefs: [
+            // Desativa a ordenação para a primeira e última coluna
+            { orderable: false, targets: [0, 6] },
+
+            // Define a prioridade de exibição para cada coluna
+            { responsivePriority: 1, targets: 0, className: 'dtr-control' },         // 1º: Controle '+'
+            { responsivePriority: 2, targets: 1 },                                     // 2º: Título da Anotação
+            { responsivePriority: 3, targets: 6, className: "text-center dt-actions-column" }, // 3º: Ações
+            { responsivePriority: 4, targets: 5 },                                     // 4º: Última Modificação
+            { responsivePriority: 5, targets: 2 },                                     // 5º: Disciplina
+            { responsivePriority: 6, targets: 3 },                                     // 6º: Atividade
+            { responsivePriority: 7, targets: 4 }                                      // 7º: Data de Criação
+        ],
+        // --- FIM DO BLOCO ATUALIZADO ---
+
+        data: mapAnotacoesParaDataTable(listaAnotacoes),
+        createdRow: function(row, data, dataIndex) { const o=listaAnotacoes[dataIndex]; if(o)$(row).data('anotacao-id-interno', o.id);},
+        initComplete: function () {
+            $('#tabelaAnotacoes_filter input').addClass('form-control-sm').attr('aria-label', 'Buscar');
+            $('#tabelaAnotacoes_filter label').contents().filter(function() { return this.nodeType===3;}).remove();
+            const btnContainer = $('.dt-buttons-anotacoes-container');
+            if (abrirModalNovaAnotacaoPrincipalBtn && btnContainer.length && $('#abrirModalNovaAnotacaoDt').length === 0) {
+                const clone = abrirModalNovaAnotacaoPrincipalBtn.cloneNode(true); 
+                clone.id = 'abrirModalNovaAnotacaoDt'; 
+                clone.style.display = 'inline-flex'; 
+                $(clone).removeClass('d-none').off('click').on('click', (e)=>{e.preventDefault();abrirModalFormAnotacao(false);}); 
+                btnContainer.append(clone);
+                if (anotacoesHeaderOriginalEl && anotacoesHeaderOriginalEl.querySelector('#abrirModalNovaAnotacaoPrincipal')) { 
+                    $(anotacoesHeaderOriginalEl.querySelector('#abrirModalNovaAnotacaoPrincipal')).hide(); 
                 }
-            ],
-            data: mapAnotacoesParaDataTable(listaAnotacoes),
-            createdRow: function(row, data, dataIndex) { const o=listaAnotacoes[dataIndex]; if(o)$(row).data('anotacao-id-interno', o.id);},
-            initComplete: function () {
-                $('#tabelaAnotacoes_filter input').addClass('form-control-sm').attr('aria-label', 'Buscar');
-                $('#tabelaAnotacoes_filter label').contents().filter(function() { return this.nodeType===3;}).remove();
-                const btnContainer = $('.dt-buttons-anotacoes-container');
-                if (abrirModalNovaAnotacaoPrincipalBtn && btnContainer.length && $('#abrirModalNovaAnotacaoDt').length === 0) {
-                    const clone = abrirModalNovaAnotacaoPrincipalBtn.cloneNode(true); 
-                    clone.id = 'abrirModalNovaAnotacaoDt'; 
-                    clone.style.display = 'inline-flex'; 
-                    $(clone).removeClass('d-none').off('click').on('click', (e)=>{e.preventDefault();abrirModalFormAnotacao(false);}); 
-                    btnContainer.append(clone);
-                    if (anotacoesHeaderOriginalEl && anotacoesHeaderOriginalEl.querySelector('#abrirModalNovaAnotacaoPrincipal')) { 
-                        $(anotacoesHeaderOriginalEl.querySelector('#abrirModalNovaAnotacaoPrincipal')).hide(); 
-                    }
-                }
-                if (tabelaAnotacoesDt) tabelaAnotacoesDt.columns.adjust().responsive.recalc();
             }
-        });
-        if ($.fn.dataTable.ext) {$.extend($.fn.dataTable.ext.type.order,{"date-br-pre":function(d){if(!d||typeof d!=='string')return 0;const p=d.match(/(\d{2})\/(\d{2})\/(\d{4}), (\d{2}):(\d{2})/);return p?parseInt(p[3]+p[2]+p[1]+p[4]+p[5]):0;},"date-br-asc":function(a,b){return a<b?-1:(a>b?1:0);},"date-br-desc":function(a,b){return a<b?1:(a>b?-1:0);}}); }
-        $(window).off('resize.dtAnotacoesGlobal').on('resize.dtAnotacoesGlobal', ()=>{clearTimeout(resizeDebounceTimer);resizeDebounceTimer=setTimeout(()=>{if(tabelaAnotacoesDt)tabelaAnotacoesDt.columns.adjust().responsive.recalc();},250);});
-    }
+            if (tabelaAnotacoesDt) tabelaAnotacoesDt.columns.adjust().responsive.recalc();
+        }
+    });
+    if ($.fn.dataTable.ext) {$.extend($.fn.dataTable.ext.type.order,{"date-br-pre":function(d){if(!d||typeof d!=='string')return 0;const p=d.match(/(\d{2})\/(\d{2})\/(\d{4}), (\d{2}):(\d{2})/);return p?parseInt(p[3]+p[2]+p[1]+p[4]+p[5]):0;},"date-br-asc":function(a,b){return a<b?-1:(a>b?1:0);},"date-br-desc":function(a,b){return a<b?1:(a>b?-1:0);}}); }
+    $(window).off('resize.dtAnotacoesGlobal').on('resize.dtAnotacoesGlobal', ()=>{clearTimeout(resizeDebounceTimer);resizeDebounceTimer=setTimeout(()=>{if(tabelaAnotacoesDt)tabelaAnotacoesDt.columns.adjust().responsive.recalc();},250);});
+}
 
     // --- EVENT LISTENERS ---
     $(document).on('click', '.dropdown-menu .btn-visualizar-anotacao, .dropdown-menu .btn-edit-anotacao, .dropdown-menu .btn-remover-anotacao', function(e){
