@@ -397,3 +397,9 @@ document.addEventListener("DOMContentLoaded", function () {
     inicializarTabelaAnotacoes(); 
     console.log("anotacao.js carregado e inicializado.");
 });
+
+
+
+
+
+
