@@ -5,9 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
         { id: "CS102", nome: "Redes de Computadores", descricao: "Princípios de redes, modelo OSI, TCP/IP, protocolos de aplicação, camada de transporte e segurança de redes.", professor: "Prof. João Paulo", periodo: "2025.1", status: "Ativa" },
         { id: "CS103", nome: "Banco de Dados", descricao: "Modelagem de dados, SQL, normalização, transações e sistemas de gerenciamento de bancos de dados relacionais e NoSQL.", professor: "Prof. Jason", periodo: "2025.1", status: "Ativa" },
         { id: "CS104", nome: "Inteligência Artificial", descricao: "Introdução à IA, busca, representação de conhecimento, aprendizado de máquina e redes neurais.", professor: "Prof. Pryzado", periodo: "2025.2", status: "Em Andamento" },
-        { id: "CS105", nome: "Compiladores", descricao: "Teoria e prática da construção de compiladores, incluindo análise léxica, sintática e semântica, e geração de código.", professor: "Prof. Ada L.", periodo: "2025.2", status: "Agendada" },
-        { id: "CS210", nome: "Engenharia de Software", descricao: "Ciclo de vida de software, metodologias ágeis (Scrum, Kanban), UML, padrões de projeto e testes de software.", professor: "Prof. Fernanda", periodo: "2025.2", status: "Ativa" },
-        { id: "CS220", nome: "Sistemas Operacionais", descricao: "Gerenciamento de processos, memória, sistemas de arquivos e concorrência em sistemas operacionais modernos.", professor: "Prof. Linus T.", periodo: "2025.1", status: "Concluída" }
+        { id: "CS105", nome: "Compiladores", descricao: "Teoria e prática da construção de compiladores, incluindo análise léxica, sintática e semântica, e geração de código.", professor: "Prof. Ada L.", periodo: "2025.2", status: "Agendada" }
     ];
 
     // =======================================================================
