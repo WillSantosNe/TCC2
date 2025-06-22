@@ -145,9 +145,12 @@ document.addEventListener("DOMContentLoaded", function () {
     // =======================================================================
 
 
-    // --- DATATABLE INITIALIZATION --- (CÓDIGO ORIGINAL INTACTO)
+    // --- DATATABLE INITIALIZATION (VERSÃO CORRIGIDA E ROBUSTA) ---
     function inicializarDataTable() {
-        if (!window.jQuery || !$.fn.DataTable) return null;
+        if (!window.jQuery || !$.fn.DataTable) {
+            console.error("jQuery ou DataTables não foi carregado.");
+            return null;
+        }
         if ($.fn.DataTable.isDataTable('#tabelaDisciplinas')) {
             $('#tabelaDisciplinas').DataTable().destroy();
             $('#tabelaDisciplinas tbody').empty();
@@ -156,19 +159,45 @@ document.addEventListener("DOMContentLoaded", function () {
         tabelaDisciplinasDt = $('#tabelaDisciplinas').DataTable({
             responsive: { details: { type: 'column', target: 0 } },
             dom: '<"row dt-custom-header align-items-center mb-3"<"col-12 col-md-auto me-md-auto"f><"col-12 col-md-auto dt-buttons-container">>t<"row mt-3 align-items-center"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 dataTables_paginate_wrapper"p>>',
-            paging: false, scrollY: '450px', scrollCollapse: true, lengthChange: false,
+            paging: false,
+            scrollY: '450px',
+            scrollCollapse: true,
+            lengthChange: false,
             language: { url: 'https://cdn.datatables.net/plug-ins/2.0.7/i18n/pt-BR.json', search: "", searchPlaceholder: "Buscar disciplinas...", info: "Total de _TOTAL_ disciplinas" },
-            columnDefs: [
-                { orderable: false, className: 'dtr-control', targets: 0 },
-                { responsivePriority: 1, targets: 1 }, { responsivePriority: 2, targets: 2 },
-                { responsivePriority: 3, targets: 3, className: 'dt-periodo-column' },
-                { responsivePriority: 4, targets: 4 },
-                { orderable: false, className: "dt-actions-column-left no-export", targets: -1, responsivePriority: 10000 }
+            
+            // --- MUDANÇA PRINCIPAL AQUI ---
+            data: listaDisciplinas, // Passa o array de objetos diretamente
+            columns: [
+                {
+                    data: null, // Para o botão de controle responsivo
+                    defaultContent: '',
+                    className: 'dtr-control',
+                    orderable: false
+                },
+                { data: 'nome', responsivePriority: 1 },
+                { data: 'professor', responsivePriority: 2 },
+                { data: 'periodo', responsivePriority: 3, className: 'dt-periodo-column' },
+                {
+                    data: 'status',
+                    responsivePriority: 4,
+                    render: function (data, type, row) {
+                        // Renderiza o badge de status
+                        return `<span class="badge ${getStatusBadgeClass(data)}">${data}</span>`;
+                    }
+                },
+                {
+                    data: 'id', // Usa o ID para criar o dropdown
+                    orderable: false,
+                    className: "dt-actions-column-left no-export",
+                    responsivePriority: 10000,
+                    render: function (data, type, row) {
+                        // Renderiza o menu de ações
+                        return gerarDropdownHtml(data);
+                    }
+                }
             ],
-            data: listaDisciplinas.map(disciplina => {
-                const statusBadgeHtml = `<span class="badge ${getStatusBadgeClass(disciplina.status)}">${disciplina.status}</span>`;
-                return ['', disciplina.nome, disciplina.professor || '-', disciplina.periodo || '-', statusBadgeHtml, gerarDropdownHtml(disciplina.id)];
-            }),
+            // -----------------------------
+
             initComplete: function () {
                 const api = this.api();
                 $('#tabelaDisciplinas_filter input').addClass('form-control form-control-sm');
@@ -178,35 +207,31 @@ document.addEventListener("DOMContentLoaded", function () {
                 const filterPeriodoHtml = `<select id="filterPeriodo" class="form-select dt-filter-select"><option value="">Todos os Períodos</option><option value="2024.1">2024.1</option><option value="2025.1">2025.1</option><option value="2025.2">2025.2</option></select>`;
                 
                 buttonsContainer.append(filterStatusHtml, filterPeriodoHtml);
-                buttonsContainer.addClass('d-flex flex-wrap gap-2'); 
+                buttonsContainer.addClass('d-flex flex-wrap gap-2');
                 
                 if (abrirModalNovaDisciplinaBtnOriginal) {
-                    buttonsContainer.append(abrirModalNovaDisciplinaBtnOriginal); 
+                    buttonsContainer.append(abrirModalNovaDisciplinaBtnOriginal);
                 }
 
-                $('#filterStatusDisciplina').on('change', function () { api.column(4).search($(this).val() ? '^' + $(this).val() + '$' : '', true, false).draw(); });
-                $('#filterPeriodo').on('change', function () { api.column(3).search($(this).val() ? '^' + $(this).val() + '$' : '', true, false).draw(); });
-                
+                // Os filtros agora usam a API 'render' para buscar o texto dentro dos badges
+                $('#filterStatusDisciplina').on('change', function () {
+                    api.column(4).search($(this).val() ? `>${$(this).val()}<` : '', true, false).draw();
+                });
+                $('#filterPeriodo').on('change', function () {
+                    api.column(3).search($(this).val() ? `^${$(this).val()}$` : '', true, false).draw();
+                });
+
                 $(window).off('resize.dtDisciplinas').on('resize.dtDisciplinas', () => {
                     clearTimeout(resizeDebounceTimer);
                     resizeDebounceTimer = setTimeout(() => { if (tabelaDisciplinasDt) tabelaDisciplinasDt.columns.adjust().responsive.recalc(); }, 250);
                 });
             },
             drawCallback: function (settings) {
-                const api = this.api();
-                api.rows({ page: 'current' }).nodes().each(function (rowNode, index) {
+                // Inicializa os dropdowns do Bootstrap que foram recém-criados
+                this.api().rows({ page: 'current' }).nodes().each(function (rowNode, index) {
                     const dropdownToggleEl = rowNode.querySelector('[data-bs-toggle="dropdown"]');
                     if (dropdownToggleEl && !bootstrap.Dropdown.getInstance(dropdownToggleEl)) {
                         new bootstrap.Dropdown(dropdownToggleEl, { popperConfig: { strategy: 'fixed' } });
-                    }
-                    if (!$(rowNode).data('completo')) {
-                        const rowData = api.row(rowNode).data();
-                        if (rowData) {
-                            const disciplinaOriginal = listaDisciplinas.find(d => d.nome === rowData[1]);
-                            if (disciplinaOriginal) {
-                                $(rowNode).data('completo', disciplinaOriginal);
-                            }
-                        }
                     }
                 });
             }
@@ -214,27 +239,45 @@ document.addEventListener("DOMContentLoaded", function () {
         return tabelaDisciplinasDt;
     }
 
-    // --- AÇÕES DA TABELA (MODAL DE DETALHES, EDITAR, REMOVER) --- (CÓDIGO ORIGINAL INTACTO)
+    // --- EVENT LISTENER DE CLICK NA TABELA (VERSÃO CORRIGIDA E ROBUSTA) ---
     $('#tabelaDisciplinas tbody').on('click', '.btn-detalhar-disciplina, .btn-edit-disciplina, .btn-remover-disciplina', function (e) {
-        e.preventDefault(); e.stopPropagation();
+        e.preventDefault();
+        e.stopPropagation();
+
         let tr = $(this).closest('tr');
-        if (tr.hasClass('dtr-bs-modal')) tr = tr.prev('tr.parent');
+        if (tr.hasClass('dtr-bs-modal')) {
+            tr = tr.prev('tr.parent');
+        }
 
-        const dadosCompletos = tr.data('completo');
+        // --- MUDANÇA PRINCIPAL AQUI ---
+        // Pega o objeto de dados completo diretamente da linha da tabela
+        const dadosCompletos = tabelaDisciplinasDt.row(tr).data();
+        // -----------------------------
+
         if (!dadosCompletos) {
-            console.error("Não foi possível encontrar os dados completos para a linha.", tr);
+            console.error("Não foi possível encontrar os dados da disciplina para esta linha.", tr);
             return;
-        };
+        }
 
+        // ADICIONE ESTA LINHA:
+    console.log("1. DADOS CAPTURADOS DA LINHA:", dadosCompletos);
+
+        // Fecha o dropdown de ações, se estiver aberto
         const dropdownElement = $(this).closest('.dropdown').find('[data-bs-toggle="dropdown"]')[0];
-        if (dropdownElement) { const dropdownInstance = bootstrap.Dropdown.getInstance(dropdownElement); if (dropdownInstance) dropdownInstance.hide(); }
+        if (dropdownElement) {
+            const dropdownInstance = bootstrap.Dropdown.getInstance(dropdownElement);
+            if (dropdownInstance) dropdownInstance.hide();
+        }
 
         if ($(this).hasClass('btn-edit-disciplina')) {
             abrirModalFormDisciplina(true, dadosCompletos, tr[0]);
+
         } else if ($(this).hasClass('btn-remover-disciplina')) {
             if (confirm(`Tem certeza que deseja remover "${dadosCompletos.nome}"?`)) {
                 const indexNaLista = listaDisciplinas.findIndex(d => d.id === dadosCompletos.id);
-                if(indexNaLista > -1) listaDisciplinas.splice(indexNaLista, 1);
+                if(indexNaLista > -1) {
+                    listaDisciplinas.splice(indexNaLista, 1);
+                }
                 tabelaDisciplinasDt.row(tr).remove().draw();
             }
         } else if ($(this).hasClass('btn-detalhar-disciplina')) {
@@ -243,37 +286,61 @@ document.addEventListener("DOMContentLoaded", function () {
             detalheDisciplinaProfessor.textContent = dadosCompletos.professor || '-';
             detalheDisciplinaPeriodo.textContent = dadosCompletos.periodo || '-';
             detalheDisciplinaStatus.innerHTML = `<span class="badge ${getStatusBadgeClass(dadosCompletos.status)}">${dadosCompletos.status}</span>`;
+            
             const bsModal = new bootstrap.Modal(modalDetalhesDisciplina);
             bsModal.show();
         }
     });
 
-    // --- LÓGICA DO FORMULÁRIO DE DISCIPLINA --- (CÓDIGO ORIGINAL INTACTO)
+    // --- LÓGICA DO FORMULÁRIO DE DISCIPLINA (VERSÃO FINAL COM CORREÇÃO DE TIMING) ---
     function abrirModalFormDisciplina(isEditMode = false, dadosDisciplina = null, targetTr = null) {
-        if (!formDisciplina || !modalDisciplinaAdicao || !disciplinaNomeInput) return;
+        // Verifica se os elementos essenciais existem
+        if (!formDisciplina || !modalDisciplinaAdicao || !disciplinaNomeInput) {
+            console.error("Elementos essenciais do modal não foram encontrados. Verifique os IDs no HTML.");
+            return;
+        }
+        console.log("2. DADOS RECEBIDOS PELO MODAL:", dadosDisciplina);
+
+        // 1. Limpa o formulário para um estado inicial.
+        // É seguro usar reset() aqui, pois vamos preencher os dados depois.
         formDisciplina.reset();
-        [disciplinaNomeInput, disciplinaDescricaoInput, disciplinaPeriodoSelect, disciplinaStatusSelect].forEach(el => el && clearFieldError(el));
         
+        // (Você pode descomentar esta linha depois, se tiver certeza que todos os IDs estão corretos)
+        // [disciplinaNomeInput, disciplinaDescricaoInput, disciplinaPeriodoSelect, disciplinaStatusSelect, disciplinaProfessorInput].forEach(el => el && clearFieldError(el));
+
+        // 2. Configura os dados necessários para a submissão do formulário
         delete formDisciplina.dataset.disciplinaId;
         delete formDisciplina.dataset.rowIndex;
-        
-        modalDisciplinaLabel.textContent = isEditMode ? "Editar Disciplina" : "Adicionar Disciplina";
 
         if (isEditMode && dadosDisciplina) {
-            disciplinaNomeInput.value = dadosDisciplina.nome || '';
-            disciplinaDescricaoInput.value = dadosDisciplina.descricao || '';
-            disciplinaProfessorInput.value = dadosDisciplina.professor || '';
-            disciplinaPeriodoSelect.value = dadosDisciplina.periodo || '';
-            disciplinaStatusSelect.value = dadosDisciplina.status || '';
             formDisciplina.dataset.disciplinaId = dadosDisciplina.id;
             if (tabelaDisciplinasDt && targetTr) {
                 formDisciplina.dataset.rowIndex = tabelaDisciplinasDt.row(targetTr).index();
             }
-        } else {
-            disciplinaStatusSelect.value = "Ativa";
-            disciplinaDescricaoInput.value = '';
         }
 
+        // 3. Define o título do modal
+        modalDisciplinaLabel.textContent = isEditMode ? "Editar Disciplina" : "Adicionar Disciplina";
+
+        // 4. A MÁGICA ACONTECE AQUI:
+        // Usamos .one() para que o evento só seja executado UMA VEZ a cada vez que o modal abre.
+        $(modalDisciplinaAdicao).one('shown.bs.modal', function () {
+            console.log("4. MODAL COMPLETAMENTE VISÍVEL. Preenchendo os campos agora.");
+            
+            if (isEditMode && dadosDisciplina) {
+                // MODO EDIÇÃO: Preenchemos os campos AGORA, que o modal está estável.
+                disciplinaNomeInput.value = dadosDisciplina.nome || '';
+                disciplinaDescricaoInput.value = dadosDisciplina.descricao || '';
+                disciplinaProfessorInput.value = dadosDisciplina.professor || '';
+                disciplinaPeriodoSelect.value = dadosDisciplina.periodo || '';
+                disciplinaStatusSelect.value = dadosDisciplina.status || '';
+            } else {
+                // MODO ADIÇÃO: Apenas garantimos um valor padrão para o status.
+                disciplinaStatusSelect.value = "Ativa";
+            }
+        });
+        
+        // 5. Finalmente, mandamos o Bootstrap mostrar o modal.
         const bsModal = bootstrap.Modal.getInstance(modalDisciplinaAdicao) || new bootstrap.Modal(modalDisciplinaAdicao);
         bsModal.show();
     }
@@ -284,43 +351,46 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    // --- EVENT LISTENER DE SUBMIT (VERSÃO CORRIGIDA E ROBUSTA) ---
     if (formDisciplina) {
         formDisciplina.addEventListener("submit", function (e) {
             e.preventDefault();
-            if (!validateFormDisciplina()) return;
+            if (!validateFormDisciplina()) {
+                console.warn("Formulário inválido.");
+                return;
+            }
 
             const formDisciplinaId = formDisciplina.dataset.disciplinaId;
             const rowIndex = formDisciplina.dataset.rowIndex;
-            const descriptionContent = disciplinaDescricaoInput.value.trim();
+            const isEditMode = !!formDisciplinaId;
 
+            // Cria o objeto com os dados atualizados do formulário
             const dadosCompletosDisciplina = {
-                id: formDisciplinaId || 'disc-' + new Date().getTime(),
+                id: isEditMode ? formDisciplinaId : 'disc-' + new Date().getTime(),
                 nome: disciplinaNomeInput.value.trim(),
-                descricao: descriptionContent,
+                descricao: disciplinaDescricaoInput.value.trim(),
                 professor: disciplinaProfessorInput.value.trim() || '-',
                 periodo: disciplinaPeriodoSelect.value,
                 status: disciplinaStatusSelect.value,
             };
 
-            const indexNaLista = listaDisciplinas.findIndex(d => d.id === formDisciplinaId);
-            if (indexNaLista > -1) {
-                listaDisciplinas[indexNaLista] = dadosCompletosDisciplina;
-                tabelaDisciplinasDt.row(rowIndex).data([
-                    '', dadosCompletosDisciplina.nome, dadosCompletosDisciplina.professor, 
-                    dadosCompletosDisciplina.periodo, 
-                    `<span class="badge ${getStatusBadgeClass(dadosCompletosDisciplina.status)}">${dadosCompletosDisciplina.status}</span>`, 
-                    gerarDropdownHtml(dadosCompletosDisciplina.id)
-                ]).draw(false);
+            if (isEditMode) {
+                // MODO EDIÇÃO: Atualiza a lista principal de dados
+                const indexNaLista = listaDisciplinas.findIndex(d => d.id === formDisciplinaId);
+                if (indexNaLista > -1) {
+                    listaDisciplinas[indexNaLista] = dadosCompletosDisciplina;
+                }
+                // Atualiza os dados da linha na tabela e a redesenha
+                tabelaDisciplinasDt.row(rowIndex).data(dadosCompletosDisciplina).draw(false);
+                
             } else {
+                // MODO ADIÇÃO: Adiciona na lista principal de dados
                 listaDisciplinas.push(dadosCompletosDisciplina);
-                tabelaDisciplinasDt.row.add([
-                    '', dadosCompletosDisciplina.nome, dadosCompletosDisciplina.professor, 
-                    dadosCompletosDisciplina.periodo, 
-                    `<span class="badge ${getStatusBadgeClass(dadosCompletosDisciplina.status)}">${dadosCompletosDisciplina.status}</span>`, 
-                    gerarDropdownHtml(dadosCompletosDisciplina.id)
-                ]).draw(false);
+                // Adiciona uma nova linha na tabela e a redesenha
+                tabelaDisciplinasDt.row.add(dadosCompletosDisciplina).draw(false);
             }
             
+            // Fecha o modal
             const bsModal = bootstrap.Modal.getInstance(modalDisciplinaAdicao);
             if(bsModal) bsModal.hide();
         });
