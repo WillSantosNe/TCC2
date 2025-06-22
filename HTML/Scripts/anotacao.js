@@ -158,46 +158,51 @@ document.addEventListener("DOMContentLoaded", function () {
         popularSelect(anotacaoAtividadeSelectElem, atividadesFiltradas, atividadeSalvaId, "Selecione...");
     }
 
+    // Modal de Anotações (VERSÃO CORRIGIDA)
     function abrirModalFormAnotacao(isEditMode = false, dadosAnotacao = null) {
+        // 1. Prepara o modal limpando os erros e o ID.
         clearFieldError(anotacaoTituloInputElem, tituloFeedbackDiv);
-        
         if (anotacaoIdInput) anotacaoIdInput.value = '';
-        let initialEditorContent = '';
-        let disciplinaSalvaId = "";
-        let atividadeSalvaId = "";
 
-        // Popula as disciplinas no modal de anotação
-        popularSelect(anotacaoDisciplinaSelectElem, listaDisciplinas, null, "Selecione...");
-
+        // 2. Define os textos do cabeçalho e o ID para o formulário (se for edição).
         if (isEditMode && dadosAnotacao) {
             if (modalAnotacaoLabelTituloElem) modalAnotacaoLabelTituloElem.textContent = "Editar Anotação";
-            if (modalAnotacaoEditInfoElem) modalAnotacaoEditInfoElem.textContent = `Editando: ${dadosAnotacao.titulo.substring(0,30)}${dadosAnotacao.titulo.length > 30 ? '...' : ''}`;
+            if (modalAnotacaoEditInfoElem) modalAnotacaoEditInfoElem.textContent = `Editando: ${dadosAnotacao.titulo.substring(0, 30)}${dadosAnotacao.titulo.length > 30 ? '...' : ''}`;
             if (anotacaoIdInput) anotacaoIdInput.value = dadosAnotacao.id;
-            if (anotacaoTituloInputElem) anotacaoTituloInputElem.value = dadosAnotacao.titulo || '';
-            
-            disciplinaSalvaId = dadosAnotacao.disciplinaId || "";
-            if (anotacaoDisciplinaSelectElem) anotacaoDisciplinaSelectElem.value = disciplinaSalvaId;
-            
-            atividadeSalvaId = dadosAnotacao.atividadeVinculadaId || "";
-            initialEditorContent = dadosAnotacao.conteudo || '';
         } else {
             if (modalAnotacaoLabelTituloElem) modalAnotacaoLabelTituloElem.textContent = "Nova Anotação";
             if (modalAnotacaoEditInfoElem) modalAnotacaoEditInfoElem.textContent = 'Nova anotação';
-            if (anotacaoTituloInputElem) anotacaoTituloInputElem.value = '';
-            // Define o valor padrão para os selects na criação de nova anotação
-            if (anotacaoDisciplinaSelectElem) anotacaoDisciplinaSelectElem.value = ""; 
-            if (anotacaoAtividadeSelectElem) anotacaoAtividadeSelectElem.value = "";
-            initialEditorContent = '';
         }
-        
-        atualizarOpcoesAtividadeAnotacao(anotacaoDisciplinaSelectElem.value, atividadeSalvaId);
-        inicializarTinyMCE(initialEditorContent); 
 
-        if (modalAnotacaoBootstrapEl) {
-            const bsModal = bootstrap.Modal.getInstance(modalAnotacaoBootstrapEl) || new bootstrap.Modal(modalAnotacaoBootstrapEl);
-            $(modalAnotacaoBootstrapEl).off('shown.bs.modal').on('shown.bs.modal', () => { if(tinymce.get('anotacaoConteudoInput')) tinymce.get('anotacaoConteudoInput').focus(); });
-            bsModal.show();
-        }
+        // 3. Registra um evento que só será executado UMA VEZ, quando o modal estiver 100% visível.
+        $(modalAnotacaoBootstrapEl).one('shown.bs.modal', function () {
+            console.log("Modal de anotação visível. Preenchendo todos os campos...");
+
+            const disciplinaSalvaId = (isEditMode && dadosAnotacao) ? dadosAnotacao.disciplinaId : null;
+            const atividadeSalvaId = (isEditMode && dadosAnotacao) ? dadosAnotacao.atividadeVinculadaId : null;
+
+            // A. Preenche o título (o campo que estava falhando).
+            if (anotacaoTituloInputElem) {
+                anotacaoTituloInputElem.value = (isEditMode && dadosAnotacao) ? dadosAnotacao.titulo || '' : '';
+            }
+            
+            // B. Popula o select de disciplinas.
+            popularSelect(anotacaoDisciplinaSelectElem, listaDisciplinas, disciplinaSalvaId, "Selecione...");
+
+            // C. Atualiza e popula o select de atividades com base na disciplina.
+            atualizarOpcoesAtividadeAnotacao(anotacaoDisciplinaSelectElem.value, atividadeSalvaId);
+            
+            // D. Inicializa o editor de texto com o conteúdo correto.
+            const initialEditorContent = (isEditMode && dadosAnotacao) ? dadosAnotacao.conteudo || '' : '';
+            inicializarTinyMCE(initialEditorContent);
+
+            // E. Foca no campo de título para melhor usabilidade.
+            if (anotacaoTituloInputElem) anotacaoTituloInputElem.focus();
+        });
+
+        // 4. Manda o Bootstrap exibir o modal.
+        const bsModal = bootstrap.Modal.getInstance(modalAnotacaoBootstrapEl) || new bootstrap.Modal(modalAnotacaoBootstrapEl);
+        bsModal.show();
     }
 
     if (anotacaoDisciplinaSelectElem) {
