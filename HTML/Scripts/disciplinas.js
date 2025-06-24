@@ -162,7 +162,7 @@ document.addEventListener("DOMContentLoaded", function () {
             scrollCollapse: true,
             lengthChange: false,
             language: { url: 'https://cdn.datatables.net/plug-ins/2.0.7/i18n/pt-BR.json', search: "", searchPlaceholder: "Buscar disciplinas...", info: "Total de _TOTAL_ disciplinas" },
-            
+
             // --- MUDANÇA PRINCIPAL AQUI ---
             data: listaDisciplinas, // Passa o array de objetos diretamente
             columns: [
@@ -199,21 +199,27 @@ document.addEventListener("DOMContentLoaded", function () {
                 const api = this.api();
                 $('#tabelaDisciplinas_filter input').addClass('form-control form-control-sm');
                 const buttonsContainer = $(this.api().table().container()).find('.dt-custom-header .dt-buttons-container');
-                
+
                 const filterStatusHtml = `<select id="filterStatusDisciplina" class="form-select form-select-sm dt-filter-select"><option value="">Todos os Status</option><option value="Ativa">Ativa</option><option value="Concluída">Concluída</option><option value="Em Andamento">Em Andamento</option><option value="Agendada">Agendada</option></select>`;
                 const filterPeriodoHtml = `<select id="filterPeriodo" class="form-select dt-filter-select"><option value="">Todos os Períodos</option><option value="2024.1">2024.1</option><option value="2025.1">2025.1</option><option value="2025.2">2025.2</option></select>`;
-                
+
                 buttonsContainer.append(filterStatusHtml, filterPeriodoHtml);
                 buttonsContainer.addClass('d-flex flex-wrap gap-2');
-                
+
                 if (abrirModalNovaDisciplinaBtnOriginal) {
                     buttonsContainer.append(abrirModalNovaDisciplinaBtnOriginal);
                 }
 
-                // Os filtros agora usam a API 'render' para buscar o texto dentro dos badges
+                // ##### AJUSTE REALIZADO AQUI #####
+                // O filtro de status agora busca pelo valor exato, assim como o filtro de período.
                 $('#filterStatusDisciplina').on('change', function () {
-                    api.column(4).search($(this).val() ? `>${$(this).val()}<` : '', true, false).draw();
+                    const statusSelecionado = $(this).val();
+                    // A busca usa uma expressão regular para encontrar o valor exato na coluna.
+                    // O `^` significa "início da string" e `$` significa "fim da string".
+                    api.column(4).search(statusSelecionado ? '^' + statusSelecionado + '$' : '', true, false).draw();
                 });
+                // ##### FIM DO AJUSTE #####
+
                 $('#filterPeriodo').on('change', function () {
                     api.column(3).search($(this).val() ? `^${$(this).val()}$` : '', true, false).draw();
                 });
@@ -257,7 +263,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         // ADICIONE ESTA LINHA:
-    console.log("1. DADOS CAPTURADOS DA LINHA:", dadosCompletos);
+        console.log("1. DADOS CAPTURADOS DA LINHA:", dadosCompletos);
 
         // Fecha o dropdown de ações, se estiver aberto
         const dropdownElement = $(this).closest('.dropdown').find('[data-bs-toggle="dropdown"]')[0];
@@ -272,7 +278,7 @@ document.addEventListener("DOMContentLoaded", function () {
         } else if ($(this).hasClass('btn-remover-disciplina')) {
             if (confirm(`Tem certeza que deseja remover "${dadosCompletos.nome}"?`)) {
                 const indexNaLista = listaDisciplinas.findIndex(d => d.id === dadosCompletos.id);
-                if(indexNaLista > -1) {
+                if (indexNaLista > -1) {
                     listaDisciplinas.splice(indexNaLista, 1);
                 }
                 tabelaDisciplinasDt.row(tr).remove().draw();
@@ -283,7 +289,7 @@ document.addEventListener("DOMContentLoaded", function () {
             detalheDisciplinaProfessor.textContent = dadosCompletos.professor || '-';
             detalheDisciplinaPeriodo.textContent = dadosCompletos.periodo || '-';
             detalheDisciplinaStatus.innerHTML = `<span class="badge ${getStatusBadgeClass(dadosCompletos.status)}">${dadosCompletos.status}</span>`;
-            
+
             const bsModal = new bootstrap.Modal(modalDetalhesDisciplina);
             bsModal.show();
         }
@@ -301,7 +307,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // 1. Limpa o formulário para um estado inicial.
         // É seguro usar reset() aqui, pois vamos preencher os dados depois.
         formDisciplina.reset();
-        
+
         // (Você pode descomentar esta linha depois, se tiver certeza que todos os IDs estão corretos)
         // [disciplinaNomeInput, disciplinaDescricaoInput, disciplinaPeriodoSelect, disciplinaStatusSelect, disciplinaProfessorInput].forEach(el => el && clearFieldError(el));
 
@@ -323,7 +329,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Usamos .one() para que o evento só seja executado UMA VEZ a cada vez que o modal abre.
         $(modalDisciplinaAdicao).one('shown.bs.modal', function () {
             console.log("4. MODAL COMPLETAMENTE VISÍVEL. Preenchendo os campos agora.");
-            
+
             if (isEditMode && dadosDisciplina) {
                 // MODO EDIÇÃO: Preenchemos os campos AGORA, que o modal está estável.
                 disciplinaNomeInput.value = dadosDisciplina.nome || '';
@@ -336,12 +342,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 disciplinaStatusSelect.value = "Ativa";
             }
         });
-        
+
         // 5. Finalmente, mandamos o Bootstrap mostrar o modal.
         const bsModal = bootstrap.Modal.getInstance(modalDisciplinaAdicao) || new bootstrap.Modal(modalDisciplinaAdicao);
         bsModal.show();
     }
-    
+
     if (abrirModalNovaDisciplinaBtnOriginal) {
         abrirModalNovaDisciplinaBtnOriginal.addEventListener('click', () => {
             abrirModalFormDisciplina(false);
@@ -379,17 +385,17 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
                 // Atualiza os dados da linha na tabela e a redesenha
                 tabelaDisciplinasDt.row(rowIndex).data(dadosCompletosDisciplina).draw(false);
-                
+
             } else {
                 // MODO ADIÇÃO: Adiciona na lista principal de dados
                 listaDisciplinas.push(dadosCompletosDisciplina);
                 // Adiciona uma nova linha na tabela e a redesenha
                 tabelaDisciplinasDt.row.add(dadosCompletosDisciplina).draw(false);
             }
-            
+
             // Fecha o modal
             const bsModal = bootstrap.Modal.getInstance(modalDisciplinaAdicao);
-            if(bsModal) bsModal.hide();
+            if (bsModal) bsModal.hide();
         });
     }
 
@@ -448,6 +454,5 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // --- INICIALIZAÇÃO GERAL ---
     inicializarDataTable();
 });
