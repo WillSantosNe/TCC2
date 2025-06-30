@@ -1,14 +1,40 @@
+import os
+from dotenv import load_dotenv
 from flask import Flask, render_template
+from flask_sqlalchemy import SQLAlchemy
+
+load_dotenv() # Carrega as variáveis do arquivo .env
 
 # Cria a instância da aplicação Flask
 app = Flask(__name__)
 
-# Rota para a página de login (página inicial)
+# --- CONFIGURAÇÃO DO BANCO DE DADOS ---
+# Conecta ao banco de dados MySQL 'studyflow_db' que você criou no Workbench.
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Inicializa a extensão SQLAlchemy com a aplicação
+db = SQLAlchemy(app)
+# ------------------------------------
+
+
+# --- MODELOS DO BANCO DE DADOS ---
+# Esta classe define a estrutura da tabela 'usuario' no banco de dados.
+class Usuario(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(150), nullable=False)
+    email = db.Column(db.String(150), unique=True, nullable=False)
+    senha_hash = db.Column(db.String(256), nullable=False) # Armazenará a senha criptografada
+
+# Futuramente, as classes para Disciplina, Tarefa, etc., virão aqui.
+# ------------------------------------
+
+
+# --- ROTAS DA APLICAÇÃO ---
 @app.route('/')
 def rota_login():
     return render_template('login.html')
 
-# Rota para a página de cadastro
 @app.route('/cadastro')
 def rota_cadastro():
     return render_template('cadastro.html')
@@ -17,41 +43,31 @@ def rota_cadastro():
 def rota_dashboard():
     return render_template('principal.html')
 
-
-
-
-
-# --- ROTAS ADICIONAIS (BÔNUS) ---
-
-# Rota para a página de tarefas
 @app.route('/tarefas')
 def rota_tarefas():
     return render_template('tarefas.html')
 
-# Rota para a página de disciplinas
 @app.route('/disciplinas')
 def rota_disciplinas():
     return render_template('disciplinas.html')
 
-# Rota para a página de calendário
 @app.route('/calendario')
 def rota_calendario():
     return render_template('calendario.html')
 
-# Rota para a página de anotações
 @app.route('/anotacao')
 def rota_anotacao():
     return render_template('anotacao.html')
 
-# Rota para a página de esqueci a senha
 @app.route('/esqueceu_senha')
 def rota_esqueceu_senha():
     return render_template('esqueceu_senha.html')
 
-# Rota para o código de redefinição de senha
 @app.route('/codigo')
 def rota_codigo():
     return render_template('codigo.html')
+
+# ------------------------------------
 
 # Permite executar o servidor rodando o script com 'python app.py'
 if __name__ == '__main__':
