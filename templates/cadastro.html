@@ -28,28 +28,42 @@
         <h2 class="mb-1">Cadastro</h2>
         <p class="subtitle mb-4">Crie sua conta e personalize sua jornada de estudos!</p>
 
-        <form id="cadastroForm" novalidate>
+        <!-- Bloco para exibir mensagens de erro/sucesso do Flask -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} mt-3" role="alert">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
 
+        <form id="cadastroForm" method="POST" action="{{ url_for('rota_cadastro') }}" novalidate>
           <div class="row">
             <div class="col-sm-6 mb-3">
               <label for="nome" class="form-label">Nome</label>
-              <input type="text" id="nome" class="form-control" placeholder="Seu nome" >
+              <!-- Adicionado o atributo name="nome" -->
+              <input type="text" id="nome" name="nome" class="form-control" placeholder="Seu nome" >
               </div>
             <div class="col-sm-6 mb-3">
               <label for="sobrenome" class="form-label">Sobrenome</label>
+              <!-- O sobrenome não precisa de 'name' pois não estamos salvando no DB ainda -->
               <input type="text" id="sobrenome" class="form-control" placeholder="Seu sobrenome" >
               </div>
           </div>
 
           <div class="mb-3">
             <label for="email" class="form-label">Email</label>
-            <input type="email" id="email" class="form-control" placeholder="seu@email.com" >
+            <!-- Adicionado o atributo name="email" -->
+            <input type="email" id="email" name="email" class="form-control" placeholder="seu@email.com" >
             </div>
 
           <div class="mb-3">
             <label for="senha" class="form-label">Senha</label>
             <div class="input-group position-relative">
-              <input type="password" id="senha" class="form-control pe-5" placeholder="••••••••" >
+              <!-- Adicionado o atributo name="senha" -->
+              <input type="password" id="senha" name="senha" class="form-control pe-5" placeholder="••••••••" >
               <span class="password-toggle-icon position-absolute end-0 pe-3" style="cursor: pointer;">
                 <i class="bi bi-eye-slash"></i>
               </span>
@@ -78,7 +92,8 @@
 
         <div class="text-center mb-3 text-sm">
           Já tem uma conta?
-          <a href="{{ url_for('rota_logout') }}" class="fw-semibold text-primary ms-1">Faça login</a>
+          <!-- Corrigido o link para apontar para a rota de login -->
+          <a href="{{ url_for('rota_login') }}" class="fw-semibold text-primary ms-1">Faça login</a>
         </div>
 
         <div class="divider d-flex align-items-center my-3">

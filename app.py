@@ -92,18 +92,23 @@ def create_app():
             email = request.form.get('email')
             senha = request.form.get('senha')
 
+            # Validação básica no servidor
+            if not nome or not email or not senha:
+                flash('Todos os campos são obrigatórios!', 'danger')
+                return redirect(url_for('rota_cadastro'))
+
             usuario_existente = Usuario.query.filter_by(email=email).first()
             if usuario_existente:
-                # Futuramente, isso será uma mensagem de erro para o usuário (flash message)
-                return "Este e-mail já está cadastrado!"
+                flash('Este e-mail já está em uso. Por favor, escolha outro.', 'danger')
+                return redirect(url_for('rota_cadastro'))
 
             novo_usuario = Usuario(nome=nome, email=email)
             novo_usuario.set_senha(senha)
 
             db.session.add(novo_usuario)
             db.session.commit()
-            
-            # Futuramente, redirecionar com uma mensagem de sucesso
+
+            flash('Conta criada com sucesso! Por favor, faça o login.', 'success')
             return redirect(url_for('rota_login'))
 
         return render_template('cadastro.html')

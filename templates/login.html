@@ -29,11 +29,14 @@
         <h2>Login</h2>
         <p class="subtitle mb-4">Bem-vindo de volta! Faça login com seu email e senha.</p>
 
-        {% with messages = get_flashed_messages() %}
+        <!-- Bloco para exibir mensagens de erro/sucesso do Flask -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
           {% if messages %}
-            <div class="alert alert-danger" role="alert">
-              {{ messages[0] }}
-            </div>
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} mt-3" role="alert">
+                {{ message }}
+              </div>
+            {% endfor %}
           {% endif %}
         {% endwith %}
         <form id="loginForm" method="POST" novalidate>
