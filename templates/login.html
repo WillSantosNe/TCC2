@@ -29,16 +29,23 @@
         <h2>Login</h2>
         <p class="subtitle mb-4">Bem-vindo de volta! Faça login com seu email e senha.</p>
 
-        <form id="loginForm" novalidate>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="alert alert-danger" role="alert">
+              {{ messages[0] }}
+            </div>
+          {% endif %}
+        {% endwith %}
+        <form id="loginForm" method="POST" novalidate>
           <div class="form-group mb-3">
             <label for="email" class="form-label">Email</label>
-            <input type="email" id="email" class="form-control" placeholder="seu@email.com">
+            <input type="email" id="email"  name="email" class="form-control" placeholder="seu@email.com">
           </div>
 
           <div class="form-group mb-3">
             <label for="senha" class="form-label">Senha</label>
             <div class="input-group position-relative">
-              <input type="password" id="senha" class="form-control pe-5" placeholder="••••••••">
+              <input type="password" id="senha" name="senha" class="form-control pe-5" placeholder="••••••••">
               <span class="password-toggle-icon position-absolute end-0 pe-3" style="cursor: pointer;">
                 <i class="bi bi-eye-slash"></i>
               </span>
