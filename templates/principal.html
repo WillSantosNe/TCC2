@@ -114,7 +114,7 @@
                                 </thead>
                                 <tbody id="tabelaProvasDashboard">
                                     {% for prova in provas_dashboard %}
-                                        <tr>
+                                        <tr class="atividade-clicavel" data-atividade-id="{{ prova.id }}" style="cursor: pointer;">
                                             <td>{{ prova.titulo }}</td>
                                             <td>{{ prova.disciplina.nome }}</td>
                                             <td>{{ prova.data_entrega.strftime('%d/%m/%Y') }}</td>
@@ -146,12 +146,12 @@
                     </div>
                     <div class="vstack gap-3" id="listaTarefasDashboard">
                         {% for tarefa in tarefas_dashboard %}
-                            <div class="task-item border-start 
+                            <div class="task-item atividade-clicavel border-start 
                                 {% if tarefa.status.name == 'CONCLUIDA' %} border-success 
                                 {% elif tarefa.status.name == 'A_FAZER' %} border-warning 
                                 {% elif tarefa.status.name == 'ANDAMENTO' %} border-info 
                                 {% else %} border-secondary 
-                                {% endif %}">
+                                {% endif %}" data-atividade-id="{{ tarefa.id }}" style="cursor: pointer;">
                                 
                                 <div class="d-flex justify-content-between">
                                     <strong class="text-sm">{{ tarefa.disciplina.nome }}</strong>
@@ -173,6 +173,101 @@
             </div>
         </main>
     </div>
+
+    <div class="modal fade" id="modalDetalhesDisciplina" tabindex="-1" aria-labelledby="modalDetalhesDisciplinaLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalDetalhesDisciplinaLabel">
+                        <i class="bi bi-journal-bookmark-fill me-2"></i>
+                        <span id="detalhe-disciplina-nome">Nome da Disciplina</span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <h6 class="mb-2">Descrição</h6>
+                    <p class="text-muted" id="detalhe-disciplina-descricao">Nenhuma descrição fornecida.</p>
+                    <hr>
+                    <dl class="row mt-3 mb-4">
+                        <dt class="col-sm-3">Professor:</dt>
+                        <dd class="col-sm-9" id="detalhe-disciplina-professor">-</dd>
+                        <dt class="col-sm-3">Período:</dt>
+                        <dd class="col-sm-9" id="detalhe-disciplina-periodo">-</dd>
+                        <dt class="col-sm-3">Status:</dt>
+                        <dd class="col-sm-9" id="detalhe-disciplina-status"><span class="badge"></span></dd>
+                    </dl>
+                    <hr>
+                    <div class="row mt-4">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title"><i class="bi bi-card-checklist me-2"></i>Tarefas e Provas</h6>
+                                    <p class="card-text text-muted small">Visualize todas as atividades associadas.</p>
+                                    <button class="btn btn-outline-primary btn-sm">Ver Tarefas</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title"><i class="bi bi-file-earmark-text me-2"></i>Anotações</h6>
+                                    <p class="card-text text-muted small">Acesse todas as suas anotações.</p>
+                                    <button class="btn btn-outline-primary btn-sm">Ver Anotações</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalDetalhesAtividade" tabindex="-1" aria-labelledby="modalDetalhesAtividadeLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detalhe-atividade-nome">Detalhes da Atividade</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <dl class="row mb-3">
+                        <dt class="col-sm-3">Disciplina:</dt>
+                        <dd class="col-sm-9" id="detalhe-atividade-disciplina">-</dd>
+                        <dt class="col-sm-3">Tipo:</dt>
+                        <dd class="col-sm-9" id="detalhe-atividade-tipo"><span class="badge"></span></dd>
+                        <dt class="col-sm-3">Data de Entrega:</dt>
+                        <dd class="col-sm-9" id="detalhe-atividade-data">-</dd>
+                        <dt class="col-sm-3">Status:</dt>
+                        <dd class="col-sm-9" id="detalhe-atividade-status"><span class="badge"></span></dd>
+                        <dt class="col-sm-12 mt-3">Descrição:</dt>
+                        <dd class="col-sm-12" id="detalhe-atividade-descricao">-</dd>
+                    </dl>
+                    <hr>
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title"><i class="bi bi-file-earmark-text me-2"></i>Anotações</h6>
+                                    <p class="card-text text-muted small">Crie ou visualize anotações para esta atividade.</p>
+                                    <button class="btn btn-outline-primary btn-sm">Ver Anotações</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-between align-items-center">
+                    <button type="button" class="btn btn-outline-secondary" id="btnCompartilharAtividade">
+                        <i class="bi bi-share-fill me-2"></i>Compartilhar
+                    </button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <div class="modal fade" id="modalDisciplinaAdicaoPrincipal" tabindex="-1" aria-labelledby="modalDisciplinaAdicaoPrincipalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -341,7 +436,7 @@
                         <div class="note-editor-modal-content-simplified w-100">
                             <p class="text-muted mb-3 modal-edit-info" id="principalAnotacaoEditInfo">Nova anotação</p>
                             <div class="mb-3"> 
-                                <input type="text" class="form-control" id="principalAnotacaoTituloInput" name="principalAnotacaoTitulo" placeholder="Título da Anotação" required>
+                                <input type="text" class="form-control modal-property-input" id="principalAnotacaoTituloInput" name="principalAnotacaoTitulo" placeholder="Título da Anotação" required>
                                 <div class="invalid-feedback">
                                     Título da anotação é obrigatório.
                                 </div>
@@ -351,7 +446,7 @@
                                     <span class="modal-property-icon"><i class="bi bi-journal-bookmark-fill"></i></span>
                                     <label for="principalAnotacaoDisciplinaSelect" class="modal-property-label">Disciplina</label>
                                     <div class="input-wrapper">
-                                        <select class="form-select ..." id="principalAnotacaoDisciplinaSelect" name="principalAnotacaoDisciplina">
+                                        <select class="form-select modal-property-input" id="principalAnotacaoDisciplinaSelect" name="principalAnotacaoDisciplina">
                                             <option value="">Nenhuma</option> {% for disciplina in disciplinas %}
                                                 <option value="{{ disciplina.id }}">{{ disciplina.nome }}</option>
                                             {% endfor %}
@@ -362,7 +457,7 @@
                                     <span class="modal-property-icon"><i class="bi bi-card-checklist"></i></span>
                                     <label for="principalAnotacaoAtividadeSelect" class="modal-property-label">Atividade</label>
                                     <div class="input-wrapper">
-                                        <select class="form-select ..." id="principalAnotacaoAtividadeSelect" name="principalAnotacaoAtividade">
+                                        <select class="form-select modal-property-input" id="principalAnotacaoAtividadeSelect" name="principalAnotacaoAtividade">
                                             <option value="">Nenhuma</option> {% for tarefa in tarefas_dashboard %}
                                                 <option value="{{ tarefa.id }}">{{ tarefa.titulo }}</option>
                                             {% endfor %}
@@ -475,7 +570,7 @@
     <script src="{{ url_for('static', filename='js/principal.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/modal-configuracoes.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/modals/disciplinaModal.js') }}" defer></script> 
-    <script src="{{ url_for('static', filename='js/anotacao.js') }}" defer></script>
+    <!-- <script src="{{ url_for('static', filename='js/anotacao.js') }}" defer></script> -->
     <script src="{{ url_for('static', filename='js/modals/geral.js') }}" defer></script> 
     <script src="{{ url_for('static', filename='js/modals/anotacaoModal.js') }}" defer></script>
 

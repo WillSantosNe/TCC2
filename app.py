@@ -1,6 +1,6 @@
 import os
 from datetime import datetime # <-- ADICIONE ESTA LINHA
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 from dotenv import load_dotenv
 from extensions import db
 from models import Usuario, Disciplina, Tarefa, Anotacao, StatusDisciplina, StatusTarefa
@@ -202,10 +202,7 @@ def create_app():
             session.clear()
             return redirect(url_for('rota_login'))
 
-        # Pega os IDs de todas as disciplinas do usuário
         ids_disciplinas_usuario = [d.id for d in usuario.disciplinas]
-
-        # Busca todas as tarefas cujo disciplina_id está na lista de IDs do usuário
         tarefas_do_usuario = Tarefa.query.filter(Tarefa.disciplina_id.in_(ids_disciplinas_usuario)).order_by(Tarefa.data_entrega).all()
 
         return render_template('tarefas.html', tarefas=tarefas_do_usuario, usuario=usuario)
@@ -258,9 +255,64 @@ def create_app():
         return redirect(request.referrer or url_for('rota_dashboard'))
 
 
+    @app.route('/api/atividade/<int:atividade_id>')
+    def api_get_atividade(atividade_id):
+        # Garante que o usuário está logado
+        if 'user_id' not in session:
+            return jsonify({"error": "Não autorizado"}), 401
+
+        # Busca a atividade, garantindo que ela pertence a uma disciplina do usuário logado.
+        # Esta é uma verificação de segurança crucial.
+        atividade = db.session.query(Tarefa).join(Disciplina).filter(
+            Tarefa.id == atividade_id,
+            Disciplina.usuario_id == session['user_id']
+        ).first()
+
+        if atividade:
+            return jsonify({
+                "id": atividade.id,
+                "titulo": atividade.titulo,
+                "descricao": atividade.descricao,
+                "data_entrega": atividade.data_entrega.strftime('%d/%m/%Y'),
+                "status": atividade.status.name,  # <-- ALTERADO AQUI
+                "tipo": atividade.tipo.name,      # <-- ALTERADO AQUI
+                "disciplina_nome": atividade.disciplina.nome
+            })
+        else:
+            # Se não encontrou ou não pertence ao usuário, retorna um erro
+            return jsonify({"error": "Atividade não encontrada"}), 404
+
+
+
+
     @app.route('/disciplinas')
     def rota_disciplinas():
         return render_template('disciplinas.html')
+    
+
+    # --- ROTAS DE API ---
+    @app.route('/api/disciplina/<int:disciplina_id>')
+    def api_get_disciplina(disciplina_id):
+        # Garante que o usuário está logado
+        if 'user_id' not in session:
+            return jsonify({"error": "Não autorizado"}), 401
+
+        # Busca a disciplina no banco, garantindo que ela pertence ao usuário logado
+        disciplina = Disciplina.query.filter_by(id=disciplina_id, usuario_id=session['user_id']).first()
+
+        if disciplina:
+            # Se encontrou, retorna os dados da disciplina em formato JSON
+            return jsonify({
+                "id": disciplina.id,
+                "nome": disciplina.nome,
+                "descricao": disciplina.descricao,
+                "professor": disciplina.professor,
+                "periodo": disciplina.periodo,
+                "status": disciplina.status.value # Retorna o valor do Enum (ex: "EM ANDAMENTO")
+            })
+        else:
+            # Se não encontrou ou não pertence ao usuário, retorna um erro
+            return jsonify({"error": "Disciplina não encontrada"}), 404
 
     @app.route('/calendario')
     def rota_calendario():

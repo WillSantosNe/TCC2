@@ -1,4 +1,3 @@
-// static/js/principal.js (CORRIGIDO)
 document.addEventListener('DOMContentLoaded', () => {
     // --- SELETORES DE ELEMENTOS ---
     const btnNextCarousel = document.getElementById('nextCoursesBtn');
@@ -22,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const carouselGap = parseFloat(window.getComputedStyle(coursesContainer).gap) || 16;
                     carouselScrollAmount = firstCard.offsetWidth + (carouselGap > 0 ? carouselGap : cardMarginRight);
                 } else {
-                    carouselScrollAmount = 236; // Um valor padrão
+                    carouselScrollAmount = 236; // Um valor padrão caso o cálculo falhe
                 }
             } else {
                 carouselScrollAmount = 0;
@@ -75,13 +74,109 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.course-card').forEach(card => {
         card.addEventListener('click', () => {
             const disciplinaId = card.dataset.disciplinaId;
-            // A lógica para buscar dados via API e preencher este modal será o próximo passo.
-            console.log(`Clicou na disciplina com ID: ${disciplinaId}. A implementação do modal de detalhes virá a seguir.`);
+
+            // Faz uma chamada para a nossa nova API no back-end
+            fetch(`/api/disciplina/${disciplinaId}`)
+                .then(response => {
+                    // Se a resposta não for OK (ex: 404 ou 401), lança um erro
+                    if (!response.ok) {
+                        throw new Error('Falha ao buscar dados da disciplina. Status: ' + response.status);
+                    }
+                    return response.json(); // Converte a resposta em JSON
+                })
+                .then(data => {
+                    // Pega os elementos do modal de detalhes
+                    const modalEl = document.getElementById('modalDetalhesDisciplina');
+                    const nomeEl = modalEl.querySelector('#detalhe-disciplina-nome');
+                    const descEl = modalEl.querySelector('#detalhe-disciplina-descricao');
+                    const profEl = modalEl.querySelector('#detalhe-disciplina-professor');
+                    const periodoEl = modalEl.querySelector('#detalhe-disciplina-periodo');
+                    const statusEl = modalEl.querySelector('#detalhe-disciplina-status');
+
+                    // Preenche o modal com os dados recebidos da API
+                    nomeEl.textContent = data.nome;
+                    descEl.textContent = data.descricao || 'Nenhuma descrição fornecida.';
+                    profEl.textContent = data.professor || '-';
+                    periodoEl.textContent = data.periodo || '-';
+
+                    // Lógica para aplicar a classe de cor correta ao status
+                    const statusClassMap = {
+                        "ATIVA": "bg-success-subtle text-success",
+                        "EM ANDAMENTO": "bg-info-subtle text-info",
+                        "CONCLUÍDA": "bg-secondary-subtle text-secondary"
+                    };
+                    const statusClass = statusClassMap[data.status] || "bg-light";
+                    statusEl.innerHTML = `<span class="badge ${statusClass}">${data.status}</span>`;
+
+                    // Abre o modal
+                    const bsModal = new bootstrap.Modal(modalEl);
+                    bsModal.show();
+                })
+                .catch(error => {
+                    console.error('Erro ao buscar detalhes da disciplina:', error);
+                    alert('Não foi possível carregar os detalhes da disciplina.');
+                });
         });
     });
 
-    // *** A LÓGICA QUE IMPEDIA O ENVIO DOS FORMULÁRIOS DOS MODAIS FOI REMOVIDA ***
-    // Agora, os formulários usarão a ação padrão definida no HTML:
-    // <form method="POST" action="{{ url_for('criar_disciplina') }}">
-    // Isso garante que os dados sejam enviados para o Flask.
+    // --- LÓGICA PARA ABRIR MODAL DE DETALHES DA ATIVIDADE (TAREFA/PROVA) ---
+    // (CONFIRME QUE SEU CÓDIGO ESTÁ AQUI DENTRO)
+    document.querySelectorAll('.atividade-clicavel').forEach(item => {
+        item.addEventListener('click', () => {
+            const atividadeId = item.dataset.atividadeId;
+
+            fetch(`/api/atividade/${atividadeId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Falha ao buscar dados da atividade. Status: ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Pega os elementos do modal de detalhes da atividade
+                    const modalEl = document.getElementById('modalDetalhesAtividade');
+                    const nomeEl = modalEl.querySelector('#detalhe-atividade-nome');
+                    const disciplinaEl = modalEl.querySelector('#detalhe-atividade-disciplina');
+                    const tipoEl = modalEl.querySelector('#detalhe-atividade-tipo .badge');
+                    const dataEl = modalEl.querySelector('#detalhe-atividade-data');
+                    const statusEl = modalEl.querySelector('#detalhe-atividade-status .badge');
+                    const descEl = modalEl.querySelector('#detalhe-atividade-descricao');
+
+                    // Preenche o modal com os dados recebidos da API
+                    nomeEl.textContent = data.titulo;
+                    disciplinaEl.textContent = data.disciplina_nome;
+                    dataEl.textContent = data.data_entrega;
+                    descEl.textContent = data.descricao || 'Nenhuma descrição fornecida.';
+
+                    // Lógica para o TIPO (Tarefa ou Prova)
+                    tipoEl.textContent = data.tipo;
+                    tipoEl.className = 'badge'; 
+                    if (data.tipo === 'PROVA') {
+                        tipoEl.classList.add('bg-danger-subtle', 'text-danger');
+                    } else {
+                        tipoEl.classList.add('bg-primary-subtle', 'text-primary');
+                    }
+
+                    // Lógica para o STATUS
+                    statusEl.textContent = data.status.replace('_', ' ');
+                    statusEl.className = 'badge'; 
+                    const statusKey = data.status.replace('_', ' ');
+                    const statusClassMap = {
+                        "A FAZER": "bg-warning-subtle text-warning",
+                        "EM ANDAMENTO": "bg-info-subtle text-info",
+                        "CONCLUIDA": "bg-success-subtle text-success"
+                    };
+                    const statusClass = statusClassMap[statusKey] || "bg-secondary-subtle text-secondary";
+                    statusClass.split(' ').forEach(cls => statusEl.classList.add(cls));
+
+                    // Abre o modal
+                    const bsModal = new bootstrap.Modal(modalEl);
+                    bsModal.show();
+                })
+                .catch(error => {
+                    console.error('Erro ao buscar detalhes da atividade:', error);
+                    alert('Não foi possível carregar os detalhes da atividade.');
+                });
+        });
+    });
 });
