@@ -1,4 +1,3 @@
-// anotacaoModal.js
 document.addEventListener('DOMContentLoaded', function() {
     console.log("anotacaoModal.js: DOMContentLoaded - Início");
 
@@ -73,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
         formAnotacaoPrincipal.classList.remove('was-validated');
         tituloInput?.classList.remove('is-invalid');
 
-        const listaDisciplinasGlobal = getGlobalData('disciplinasFixasParaSelects');
+        const listaDisciplinasGlobal = getGlobalData('listaDisciplinas'); // Alterado para 'listaDisciplinas'
         const popularSelectGlobal = getGlobalData('popularSelect');
 
         if (listaDisciplinasGlobal && popularSelectGlobal) {
@@ -81,13 +80,12 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log("anotacaoModal.js: Disciplina select populado.");
         } else {
             console.error("anotacaoModal.js: Variáveis globais de disciplina ou popularSelect NÃO encontradas ao abrir o modal. Verifique a ordem dos scripts.");
-            // Pode adicionar um alert ou feedback visual aqui para o usuário se necessário
-            alert("Erro ao carregar disciplinas para anotação. Por favor, recarregue a página.");
+            
         }
         
         atualizarAtividadesAnotacaoPrincipal(disciplinaSelect?.value || "");
 
-        // *** AQUI É A MUDANÇA PRINCIPAL: ADICIONAR UM PEQUENO ATRASO ***
+        // AQUI É A MUDANÇA PRINCIPAL: ADICIONAR UM PEQUENO ATRASO
         setTimeout(() => {
             if (typeof tinymce !== 'undefined' && conteudoTextarea) {
                 const editorId = conteudoTextarea.id;
@@ -164,33 +162,36 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (formAnotacaoPrincipal) {
         formAnotacaoPrincipal.addEventListener('submit', (e) => {
-            e.preventDefault();
-            formAnotacaoPrincipal.classList.add('was-validated');
+            // AQUI É A MUDANÇA CRÍTICA!
+            // Não chame e.preventDefault() incondicionalmente se você quer o submit padrão.
+            // Apenas o chame se a validação do Bootstrap falhar.
 
-            if (!formAnotacaoPrincipal.checkValidity()) {
-                e.stopPropagation();
-                console.warn("anotacaoModal.js: Formulário de anotação inválido.");
-                return;
+            formAnotacaoPrincipal.classList.add('was-validated'); // Adiciona a classe para mostrar feedback de validação
+
+            // Certifique-se de que o TinyMCE salva seu conteúdo no textarea original
+            if (tinyMceEditorInstance) {
+                tinyMceEditorInstance.save();
             }
             
-            const conteudoAnotacao = tinyMceEditorInstance ? tinyMceEditorInstance.getContent() : conteudoTextarea.value;
-
-            const novaAnotacao = {
-                id: 'A-' + new Date().getTime(),
-                titulo: tituloInput.value.trim(),
-                disciplinaId: disciplinaSelect.value, 
-                atividadeId: atividadeSelect.value,   
-                conteudo: conteudoAnotacao,
-                dataCriacao: new Date().toISOString().split('T')[0]
-            };
-
-            console.log('anotacaoModal.js: Nova Anotação Adicionada:', novaAnotacao);
-            alert(`Anotação "${novaAnotacao.titulo}" salva com sucesso!`);
-            
-            // Aqui você adicionaria a lógica para salvar a anotação
-            // Exemplo: if (window.adicionarAnotacaoGlobal) window.adicionarAnotacaoGlobal(novaAnotacao);
-
-            bsModalAnotacao.hide();
+            // Verifica a validade do formulário antes de permitir o envio
+            if (!formAnotacaoPrincipal.checkValidity()) {
+                e.preventDefault(); // IMPEDE O ENVIO se o formulário NÃO for válido.
+                e.stopPropagation(); // Impede a propagação do evento
+                console.warn("anotacaoModal.js: Formulário de anotação inválido. Impede o submit padrão.");
+            } else {
+                // Se o formulário é válido, permite o submit padrão.
+                // O Flask receberá os dados de `request.form` e fará o redirect.
+                console.log("anotacaoModal.js: Formulário válido. Permitindo o submit padrão ao Flask.");
+                // Remova o alert local e o hide do modal aqui, pois o Flask fará o redirect.
+                // alert(`Anotação "${tituloInput.value.trim()}" salva com sucesso!`); 
+                // bsModalAnotacao.hide();
+            }
+            // Remova toda a lógica de construção de 'novaAnotacao' e o alert de sucesso local,
+            // pois o servidor Flask irá lidar com isso e redirecionar.
+            // Ex: const novaAnotacao = { ... };
+            // console.log('anotacaoModal.js: Nova Anotação Adicionada:', novaAnotacao);
+            // alert(`Anotação "${novaAnotacao.titulo}" salva com sucesso!`); 
+            // bsModalAnotacao.hide(); 
         });
     }
 

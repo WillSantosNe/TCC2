@@ -176,3 +176,46 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Elemento do Modal "modalAnotacao" não encontrado.');
     }
 });
+
+
+// static/js/geral.js
+
+/**
+ * Cria e exibe uma notificação toast no canto da tela.
+ * @param {string} message A mensagem a ser exibida.
+ * @param {string} category 'success' (verde) ou 'danger' (vermelho) para a cor.
+ */
+function showToast(message, category = 'success') {
+    const toastContainer = document.getElementById('toastContainer');
+    if (!toastContainer) return;
+
+    // Cria o elemento HTML do toast
+    const toastEl = document.createElement('div');
+    toastEl.className = `toast align-items-center text-bg-${category} border-0`;
+    toastEl.setAttribute('role', 'alert');
+    toastEl.setAttribute('aria-live', 'assertive');
+    toastEl.setAttribute('aria-atomic', 'true');
+
+    toastEl.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body">
+                ${message}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    `;
+
+    // Adiciona o toast ao container
+    toastContainer.appendChild(toastEl);
+
+    // Inicializa e mostra o toast usando a API do Bootstrap
+    const toast = new bootstrap.Toast(toastEl, {
+        delay: 5000 // O toast desaparecerá após 5 segundos
+    });
+    toast.show();
+
+    // Remove o elemento do HTML depois que ele desaparecer
+    toastEl.addEventListener('hidden.bs.toast', () => {
+        toastEl.remove();
+    });
+}
