@@ -1,5 +1,5 @@
 import os
-from datetime import datetime # <-- ADICIONE ESTA LINHA
+from datetime import datetime, date
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 from dotenv import load_dotenv
 from extensions import db
@@ -134,18 +134,39 @@ def create_app():
             session.clear()
             return redirect(url_for('rota_login'))
 
-        # --- LÓGICA ATUALIZADA ---
-        # 1. Pega os IDs de todas as disciplinas do usuário
         ids_disciplinas_usuario = [d.id for d in usuario.disciplinas]
-
-        # 2. Busca todas as tarefas e provas associadas a essas disciplinas
+        
+        # 1. Busca todas as atividades, a ordenação inicial por data ainda é útil
         atividades = Tarefa.query.filter(Tarefa.disciplina_id.in_(ids_disciplinas_usuario)).order_by(Tarefa.data_entrega).all()
 
-        # 3. Separa a lista entre tarefas e provas
-        tarefas_dashboard = [t for t in atividades if t.tipo.name == 'TAREFA'][:5] # Pega as 5 primeiras
-        provas_dashboard = [p for p in atividades if p.tipo.name == 'PROVA'][:5] # Pega as 5 primeiras
+        # 2. Lógica para identificar tarefas atrasadas (já implementada)
+        hoje = date.today()
+        for atividade in atividades:
+            if atividade.data_entrega < hoje and atividade.status != StatusTarefa.CONCLUIDA:
+                atividade.status = StatusTarefa.ATRASADA
+                
+        # --- NOVA LÓGICA DE ORDENAÇÃO COM PRIORIDADE ---
 
-        # 4. Envia todas as listas para o template
+        # 3. Define a ordem de prioridade para cada status (números menores são mais importantes)
+        prioridade_status = {
+            StatusTarefa.ATRASADA: 0,
+            StatusTarefa.A_FAZER: 2,
+            StatusTarefa.ANDAMENTO: 1,
+            StatusTarefa.CONCLUIDA: 3
+        }
+
+        # 4. Ordena a lista 'atividades' usando a prioridade do status primeiro, e a data de entrega como critério de desempate
+        atividades_ordenadas = sorted(
+            atividades, 
+            key=lambda x: (prioridade_status.get(x.status, 99), x.data_entrega)
+        )
+        
+        # --- FIM DA NOVA LÓGICA ---
+
+        # 5. Filtra e fatia a lista JÁ ORDENADA para pegar as 4 principais tarefas e provas
+        tarefas_dashboard = [t for t in atividades_ordenadas if t.tipo.name == 'TAREFA'][:4]
+        provas_dashboard = [p for p in atividades_ordenadas if p.tipo.name == 'PROVA'][:4]
+
         return render_template(
             'principal.html', 
             usuario=usuario, 
@@ -235,7 +256,20 @@ def create_app():
         # Converte as strings de tipo e status para os Enums
         from models import TipoTarefa, StatusTarefa
         tipo_enum = TipoTarefa[tipo_str.upper()]
-        status_enum = StatusTarefa[status_str.upper().replace(" ", "_")]
+
+        # Mapeamento explícito e seguro dos status
+        status_map = {
+            "A FAZER": StatusTarefa.A_FAZER,
+            "EM ANDAMENTO": StatusTarefa.ANDAMENTO,
+            "CONCLUIDA": StatusTarefa.CONCLUIDA
+        }
+        # Usamos .get() para buscar no mapa. Retorna None se a chave não existir.
+        status_enum = status_map.get(status_str.upper())
+
+        # Verificação de segurança: se um status inválido for enviado
+        if status_enum is None:
+            flash(f"Status inválido recebido: {status_str}", 'danger')
+            return redirect(request.referrer or url_for('rota_dashboard'))
 
         # Cria a nova tarefa
         nova_tarefa = Tarefa(

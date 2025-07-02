@@ -120,7 +120,9 @@
                                             <td>{{ prova.data_entrega.strftime('%d/%m/%Y') }}</td>
                                             <td>
                                                 <span class="badge 
-                                                    {% if prova.status.name == 'CONCLUIDA' %} 
+                                                    {% if prova.status.name == 'ATRASADA' %}
+                                                        bg-danger-subtle text-danger
+                                                    {% elif prova.status.name == 'CONCLUIDA' %} 
                                                         bg-success-subtle text-success
                                                     {% elif prova.status.name == 'A_FAZER' %} 
                                                         bg-warning-subtle text-warning
@@ -147,7 +149,8 @@
                     <div class="vstack gap-3" id="listaTarefasDashboard">
                         {% for tarefa in tarefas_dashboard %}
                             <div class="task-item atividade-clicavel border-start 
-                                {% if tarefa.status.name == 'CONCLUIDA' %} border-success 
+                                {% if tarefa.status.name == 'ATRASADA' %} border-danger
+                                {% elif tarefa.status.name == 'CONCLUIDA' %} border-success 
                                 {% elif tarefa.status.name == 'A_FAZER' %} border-warning 
                                 {% elif tarefa.status.name == 'ANDAMENTO' %} border-info 
                                 {% else %} border-secondary 
@@ -156,7 +159,8 @@
                                 <div class="d-flex justify-content-between">
                                     <strong class="text-sm">{{ tarefa.disciplina.nome }}</strong>
                                     <span class="badge 
-                                        {% if tarefa.status.name == 'CONCLUIDA' %} bg-success-subtle text-success 
+                                        {% if tarefa.status.name == 'ATRASADA' %} bg-danger-subtle text-danger
+                                        {% elif tarefa.status.name == 'CONCLUIDA' %} bg-success-subtle text-success 
                                         {% elif tarefa.status.name == 'A_FAZER' %} bg-warning-subtle text-warning 
                                         {% elif tarefa.status.name == 'ANDAMENTO' %} bg-info-subtle text-info 
                                         {% else %} bg-secondary-subtle text-secondary 

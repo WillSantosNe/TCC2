@@ -13,6 +13,7 @@ class StatusTarefa(enum.Enum):
     A_FAZER = "A FAZER"
     ANDAMENTO = "EM ANDAMENTO"
     CONCLUIDA = "CONCLUÍDA"
+    ATRASADA = "Atrasada"
 
 class TipoTarefa(enum.Enum):
     TAREFA = "TAREFA"

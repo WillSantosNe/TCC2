@@ -101,11 +101,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     // Lógica para aplicar a classe de cor correta ao status
                     const statusClassMap = {
-                        "ATIVA": "bg-success-subtle text-success",
+                        "A FAZER": "bg-warning-subtle text-warning",
                         "EM ANDAMENTO": "bg-info-subtle text-info",
-                        "CONCLUÍDA": "bg-secondary-subtle text-secondary"
+                        "CONCLUIDA": "bg-success-subtle text-success",
+                        "ATRASADA": "bg-danger-subtle text-danger"
                     };
-                    const statusClass = statusClassMap[data.status] || "bg-light";
+                    // Opcional: use .name se a API enviar o nome do Enum, ou .value se enviar o valor.
+                    // Baseado no seu código, a API de disciplina envia o .value.
+                    const statusKey = data.status.toUpperCase().replace(' ', '_').replace('Í', 'I'); // Normaliza a chave para corresponder
+                    
+                    // Mapeamento das chaves normalizadas para as classes de cor
+                    const statusKeyMap = {
+                        "ATIVA": "bg-warning-subtle text-warning",
+                        "EM_ANDAMENTO": "bg-info-subtle text-info",
+                        "CONCLUIDA": "bg-success-subtle text-success"
+                    };
+
+                    const statusClass = statusKeyMap[statusKey] || "bg-light"; // Busca no novo mapa
                     statusEl.innerHTML = `<span class="badge ${statusClass}">${data.status}</span>`;
 
                     // Abre o modal
