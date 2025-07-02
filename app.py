@@ -223,10 +223,45 @@ def create_app():
             session.clear()
             return redirect(url_for('rota_login'))
 
+        # --- LÓGICA DE BUSCA E ORDENAÇÃO (sem alterações) ---
         ids_disciplinas_usuario = [d.id for d in usuario.disciplinas]
         tarefas_do_usuario = Tarefa.query.filter(Tarefa.disciplina_id.in_(ids_disciplinas_usuario)).order_by(Tarefa.data_entrega).all()
 
-        return render_template('tarefas.html', tarefas=tarefas_do_usuario, usuario=usuario)
+        hoje = date.today()
+        for tarefa in tarefas_do_usuario:
+            if tarefa.data_entrega < hoje and tarefa.status != StatusTarefa.CONCLUIDA:
+                tarefa.status = StatusTarefa.ATRASADA
+
+        prioridade_status = {
+            StatusTarefa.ATRASADA: 0,
+            StatusTarefa.ANDAMENTO: 1,
+            StatusTarefa.A_FAZER: 2,
+            StatusTarefa.CONCLUIDA: 3
+        }
+        tarefas_ordenadas = sorted(
+            tarefas_do_usuario, 
+            key=lambda x: (prioridade_status.get(x.status, 99), x.data_entrega)
+        )
+
+        # --- FORMATAÇÃO DOS DADOS PARA JSON ---
+
+        # Formata a lista de TAREFAS para JSON
+        tarefas_para_json = [{
+            "id": t.id, "titulo": t.titulo, "descricao": t.descricao,
+            "data_entrega": t.data_entrega.isoformat(),
+            "status": t.status.name, "tipo": t.tipo.name,
+            "disciplina": {"id": t.disciplina.id, "nome": t.disciplina.nome}
+        } for t in tarefas_ordenadas]
+
+        # Formata a lista de DISCIPLINAS para JSON (necessário para os filtros)
+        disciplinas_para_json = [{"id": d.id, "nome": d.nome} for d in usuario.disciplinas]
+
+        # --- FIM DA FORMATAÇÃO ---
+
+        return render_template('tarefas.html', 
+                            tarefas=tarefas_para_json, 
+                            disciplinas=disciplinas_para_json, # Passa a lista formatada
+                            usuario=usuario)
     
 
     

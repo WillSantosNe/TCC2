@@ -1,393 +1,132 @@
-// tarefas.js
+// static/js/tarefas.js (VERSÃO FINAL COM DATATABLE COMPLETA)
+
 document.addEventListener("DOMContentLoaded", function () {
-    // --- SELETORES DE ELEMENTOS ---
-    const modalTarefaEl = document.getElementById('modalTarefa');
-    const formTarefa = document.getElementById('formTarefa');
-    const modalTarefaLabel = document.getElementById('modalTarefaLabel');
-    const tarefaIdInput = document.getElementById('tarefaId');
-    const tarefaTituloInput = document.getElementById('tarefaTitulo');
-    const tarefaDescricaoInput = document.getElementById('tarefaDescricao');
-    const tarefaDisciplinaSelect = document.getElementById('tarefaDisciplina');
-    const tarefaDataEntregaInput = document.getElementById('tarefaDataEntrega');
-    const tarefaTipoSelect = document.getElementById('tarefaTipo');
-    const tarefaStatusSelect = document.getElementById('tarefaStatus');
-    const tarefaHorarioEntregaInput = document.getElementById('tarefaHorarioEntrega');
-
-    // Modal de Detalhes da Atividade
-    const modalDetalhesAtividadeEl = document.getElementById('modalDetalhesAtividade');
-    const detalheAtividadeNome = document.getElementById('detalhe-atividade-nome');
-    const detalheAtividadeDisciplina = document.getElementById('detalhe-atividade-disciplina');
-    const detalheAtividadeTipo = document.getElementById('detalhe-atividade-tipo');
-    const detalheAtividadeData = document.getElementById('detalhe-atividade-data');
-    const detalheAtividadeStatus = document.getElementById('detalhe-atividade-status');
-    const detalheAtividadeDescricao = document.getElementById('detalhe-atividade-descricao');
-
-    // Instâncias de modais Bootstrap
-    const bsModalTarefa = new bootstrap.Modal(modalTarefaEl);
-    const bsModalDetalhesAtividade = new bootstrap.Modal(modalDetalhesAtividadeEl, {
-        keyboard: false
-    });
-
     let tabelaTarefasDt;
 
-    // --- DADOS MOCADOS ---
-    const listaDisciplinas = [{
-        id: "CS101",
-        nome: "Algoritmos e Estrutura de Dados"
-    }, {
-        id: "CS102",
-        nome: "Redes de Computadores"
-    }, {
-        id: "CS103",
-        nome: "Banco de Dados"
-    }, {
-        id: "CS104",
-        nome: "Inteligência Artificial"
-    }, {
-        id: "CS105",
-        nome: "Compiladores"
-    }];
-    let listaTarefas = [{
-        id: "T001",
-        titulo: "Complexidade e Estruturas Lineares",
-        disciplinaId: "CS101",
-        tipo: "Prova",
-        dataEntrega: "2025-06-23",
-        status: "Agendada",
-        descricao: "Estudar capítulos 1 a 3 do livro Cormen. Foco em complexidade Big-O."
-    }, {
-        id: "T006",
-        titulo: "Camadas de Transporte e Aplicação",
-        disciplinaId: "CS102",
-        tipo: "Prova",
-        dataEntrega: "2025-06-24",
-        status: "Agendada",
-        descricao: "Foco em protocolos TCP, UDP e HTTP."
-    }, {
-        id: "T010",
-        titulo: "SQL e Normalização",
-        disciplinaId: "CS103",
-        tipo: "Prova",
-        dataEntrega: "2025-06-25",
-        status: "Agendada",
-        descricao: "Praticar joins e entender as formas normais (1FN, 2FN, 3FN)."
-    }, {
-        id: "T013",
-        titulo: "Machine Learning e Redes Neurais",
-        disciplinaId: "CS104",
-        tipo: "Prova",
-        dataEntrega: "2025-06-26",
-        status: "Agendada",
-        descricao: "Revisar conceitos de regressão linear e redes neurais convolucionais."
-    }, {
-        id: "T017",
-        titulo: "Análise Léxica e Sintática",
-        disciplinaId: "CS105",
-        tipo: "Prova",
-        dataEntrega: "2025-06-29",
-        status: "Agendada",
-        descricao: "Implementar um analisador léxico simples em Python."
-    }, ];
+    // --- FUNÇÕES GLOBAIS DE FORMATAÇÃO ---
+    const formatarData = (dataStr) => {
+        if (!dataStr) return '-';
+        const d = new Date(dataStr + 'T00:00:00');
+        return new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(d);
+    };
 
-    // --- GLOBALIZAÇÃO DOS DADOS PARA ANOTAÇÕES ---
-    window.listaDisciplinas = listaDisciplinas;
-    window.listaTarefas = listaTarefas;
+    const getStatusBadgeClass = (status) => ({
+        'ATRASADA': 'bg-danger-subtle text-danger',
+        'CONCLUIDA': 'bg-success-subtle text-success',
+        'ANDAMENTO': 'bg-info-subtle text-info',
+        'A_FAZER': 'bg-warning-subtle text-warning'
+    }[status] || 'bg-secondary-subtle text-secondary');
 
-    // A função `popularSelect` agora cuida da opção padrão
-    window.disciplinasFixasParaSelects = listaDisciplinas.map(d => ({
-        id: d.id,
-        nome: d.nome
-    }));
+    const getTipoBadgeClass = (tipo) => tipo === 'PROVA' ? 'bg-danger-subtle text-danger' : 'bg-primary-subtle text-primary';
 
-    // A opção "Nenhuma" foi removida daqui também
-    window.atividadesPorDisciplinaParaSelects = Object.fromEntries(
-        listaDisciplinas.map(d => [
-            d.id,
-            listaTarefas.filter(t => t.disciplinaId === d.id).map(t => ({
-                id: t.id,
-                nome: t.titulo
-            }))
-        ])
-    );
-    
-    // A opção "Nenhuma" foi removida daqui também
-    window.atividadesPadraoParaSelects = listaTarefas.map(t => ({id: t.id, nome: t.titulo}));
-
-
-    // --- FUNÇÕES DOS MODAIS DE TAREFA (PRINCIPAL) ---
-    function abrirModalTarefa(isEditMode = false, dadosTarefa = null, targetTr = null) {
-        formTarefa.reset();
-        formTarefa.classList.remove('was-validated');
-
-        popularSelect(tarefaDisciplinaSelect, listaDisciplinas.map(d => ({
-            id: d.id,
-            nome: d.nome
-        })), dadosTarefa ? dadosTarefa.disciplinaId : '', 'Selecione a Disciplina');
-        popularSelect(tarefaStatusSelect, ["A fazer", "Em andamento", "Concluída", "Agendada"], dadosTarefa ? dadosTarefa.status : "A fazer", 'Selecione o Status');
-
-        modalTarefaLabel.textContent = isEditMode ? "Editar Tarefa/Prova" : "Adicionar Tarefa/Prova";
-
-        if (isEditMode && dadosTarefa) {
-            tarefaIdInput.value = dadosTarefa.id;
-            tarefaTituloInput.value = dadosTarefa.titulo || '';
-            tarefaDescricaoInput.value = dadosTarefa.descricao || '';
-            tarefaDataEntregaInput.value = dadosTarefa.dataEntrega || '';
-            tarefaTipoSelect.value = dadosTarefa.tipo || '';
-            tarefaHorarioEntregaInput.value = dadosTarefa.tarefaHorarioEntrega || '';
-
-            if (tabelaTarefasDt && targetTr) {
-                formTarefa.dataset.rowIndex = tabelaTarefasDt.row(targetTr).index();
-            }
-        } else {
-            tarefaIdInput.value = '';
-            delete formTarefa.dataset.rowIndex;
-        }
-        bsModalTarefa.show();
-    }
-
-    function fecharModalTarefa() {
-        bsModalTarefa.hide();
-        formTarefa.reset();
-        formTarefa.classList.remove('was-validated');
-    }
-
-    function abrirModalDetalhesAtividade(tarefaData) {
-        const disciplina = listaDisciplinas.find(d => d.id === tarefaData.disciplinaId);
-        const dataFormatada = formatarData(tarefaData.dataEntrega);
-
-        detalheAtividadeNome.textContent = tarefaData.titulo || "Detalhes da Atividade";
-        detalheAtividadeDisciplina.textContent = disciplina ? disciplina.nome : 'Não especificada';
-        detalheAtividadeTipo.innerHTML = `<span class="badge ${getTipoBadgeClass(tarefaData.tipo)}">${tarefaData.tipo || '-'}</span>`;
-        detalheAtividadeData.textContent = dataFormatada;
-        detalheAtividadeStatus.innerHTML = `<span class="badge ${getStatusBadgeClass(tarefaData.status)}">${tarefaData.status || '-'}</span>`;
-        detalheAtividadeDescricao.textContent = tarefaData.descricao || 'Nenhuma descrição fornecida.';
-
-        bsModalDetalhesAtividade.show();
-    }
-
-    // --- LISTENERS DOS MODAIS DE TAREFA (PRINCIPAL) ---
-    if (formTarefa) {
-        formTarefa.addEventListener("submit", function (e) {
-            e.preventDefault();
-            formTarefa.classList.add('was-validated');
-            if (!formTarefa.checkValidity()) {
-                e.stopPropagation();
-                return;
-            }
-            const isEditMode = !!tarefaIdInput.value;
-            const tarefaId = isEditMode ? tarefaIdInput.value : 'T-' + new Date().getTime();
-            const rowIndex = formTarefa.dataset.rowIndex;
-            const dadosCompletosTarefa = {
-                id: tarefaId,
-                titulo: tarefaTituloInput.value.trim(),
-                descricao: tarefaDescricaoInput.value.trim(),
-                disciplinaId: tarefaDisciplinaSelect.value,
-                dataEntrega: tarefaDataEntregaInput.value,
-                tipo: tarefaTipoSelect.value,
-                status: tarefaStatusSelect.value,
-                tarefaHorarioEntrega: tarefaHorarioEntregaInput.value
-            };
-            salvarOuAtualizarTarefaNaTabela(dadosCompletosTarefa, isEditMode, rowIndex);
-            fecharModalTarefa();
-        });
-    }
-
-    // --- FUNÇÕES DA TABELA ---
-    window.salvarOuAtualizarTarefaNaTabela = function (dadosTarefa, isEditMode, rowIndex) {
-        const dadosLinhaTabela = formatarDadosParaLinha(dadosTarefa);
-        if (isEditMode && rowIndex !== undefined) {
-            tabelaTarefasDt.row(rowIndex).data(dadosLinhaTabela).draw(false);
-            const indexLista = listaTarefas.findIndex(t => t.id === dadosTarefa.id);
-            if (indexLista !== -1) {
-                listaTarefas[indexLista] = { ...listaTarefas[indexLista], ...dadosTarefa };
-            }
-        } else {
-            tabelaTarefasDt.row.add(dadosLinhaTabela).draw();
-            listaTarefas.push(dadosTarefa);
-        }
-    }
-
-    function formatarDadosParaLinha(tarefa) {
-        const disciplinaObj = listaDisciplinas.find(d => d.id === tarefa.disciplinaId);
-        const disciplinaNome = disciplinaObj ? disciplinaObj.nome : '-';
-        const dataFormatada = formatarData(tarefa.dataEntrega);
-        const statusBadgeHtml = `<span class="badge ${getStatusBadgeClass(tarefa.status)}">${tarefa.status}</span>`;
-        const tipoBadgeHtml = `<span class="badge ${getTipoBadgeClass(tarefa.tipo)}">${tarefa.tipo}</span>`;
-        const dropdownHtml = `
-                <div class="dropdown">
-                    <button class="btn btn-sm btn-icon btn-actions" type="button" aria-expanded="false" aria-label="Ações da tarefa">
-                        <i class="bi bi-three-dots-vertical"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item btn-detalhar-tarefa" href="#" data-tarefa-id="${tarefa.id}"><i class="bi bi-eye me-2"></i>Detalhar</a></li>
-                        <li><a class="dropdown-item btn-edit-tarefa" href="#" data-tarefa-id="${tarefa.id}"><i class="bi bi-pencil-square me-2"></i>Editar</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item btn-remover-tarefa" href="#" data-tarefa-id="${tarefa.id}"><i class="bi bi-trash me-2"></i>Remover</a></li>
-                    </ul>
-                </div>`;
-        return ['', tarefa.titulo, disciplinaNome, tipoBadgeHtml, dataFormatada, statusBadgeHtml, dropdownHtml];
-    }
-
-    function inicializarDataTable() {
+    // --- LÓGICA DA DATATABLE ---
+    function inicializarDataTable(dadosTarefas, dadosDisciplinas) {
         if ($.fn.DataTable.isDataTable('#tabelaTarefas')) {
             $('#tabelaTarefas').DataTable().destroy();
         }
+
         tabelaTarefasDt = $('#tabelaTarefas').DataTable({
             responsive: { details: { type: 'column', target: 0 } },
             dom: '<"row dt-custom-header align-items-center mb-3"<"col-12 col-md-auto"f><"col-12 col-md-auto ms-md-auto dt-buttons-container">>t<"row dt-footer-controls mt-3 align-items-center"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-            paging: false,
-            scrollY: '450px',
+            paging: false, 
+            scrollY: '450px', // Mantenha a barra de rolagem
             scrollCollapse: true,
+            scrollCollapse: true,
+            lengthChange: false,
             language: { url: 'https://cdn.datatables.net/plug-ins/2.0.7/i18n/pt-BR.json', search: "", searchPlaceholder: "Buscar tarefas/provas..." },
             columnDefs: [
                 { orderable: false, targets: [0, 6] },
-                { responsivePriority: 1, targets: 0 },
+                { responsivePriority: 1, targets: 0, className: 'dtr-control' },
                 { responsivePriority: 2, targets: 1 },
                 { responsivePriority: 3, targets: 6 },
-                { responsivePriority: 4, targets: 4 },
-                { responsivePriority: 5, targets: 5 },
-                { responsivePriority: 6, targets: 2 },
-                { responsivePriority: 7, targets: 3 }
             ],
-            data: listaTarefas.map(formatarDadosParaLinha),
+            // Usa os dados vindos do Flask
+            data: dadosTarefas,
+            columns: [
+                { data: null, defaultContent: '' },
+                { data: 'titulo' },
+                { data: 'disciplina.nome' },
+                { 
+                    data: 'tipo',
+                    render: (data) => `<span class="badge ${getTipoBadgeClass(data)}">${data}</span>`
+                },
+                { 
+                    data: 'data_entrega',
+                    render: (data) => formatarData(data)
+                },
+                { 
+                    data: 'status',
+                    render: (data) => `<span class="badge ${getStatusBadgeClass(data)}">${data.replace('_', ' ')}</span>`
+                },
+                {
+                    data: 'id',
+                    render: (data) => `
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-icon btn-actions" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Ações">
+                                <i class="bi bi-three-dots-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item btn-detalhar-tarefa" href="#" data-tarefa-id="${data}"><i class="bi bi-eye me-2"></i>Detalhar</a></li>
+                                <li><a class="dropdown-item btn-editar-tarefa" href="#" data-tarefa-id="${data}"><i class="bi bi-pencil-square me-2"></i>Editar</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item btn-remover-tarefa text-danger" href="#" data-tarefa-id="${data}"><i class="bi bi-trash me-2"></i>Remover</a></li>
+                            </ul>
+                        </div>`
+                }
+            ],
+            // Restaura sua lógica de filtros e botões
             initComplete: function () {
                 const api = this.api();
                 const buttonsContainer = $('.dt-buttons-container');
                 if ($('#abrirModalNovaTarefaDt').length === 0) {
-                    // A classe .btn-sm foi removida para o botão ficar maior
-                    const btnAddTask = $('<button class="btn btn-primary btn-add-task" id="abrirModalNovaTarefaDt" data-bs-toggle="modal" data-bs-target="#modalTarefa"> <i class="bi bi-plus-lg me-2"></i> <span>Adicionar Tarefa/Prova</span> </button>');
+                    const btnAddTask = $('<button class="btn btn-primary" id="abrirModalNovaTarefaDt" data-bs-toggle="modal" data-bs-target="#modalTarefaPrincipalQuickAdd"><i class="bi bi-plus-lg me-2"></i>Adicionar Tarefa/Prova</button>');
                     buttonsContainer.append(btnAddTask);
-                    btnAddTask.on('click', function () { abrirModalTarefa(false); });
                 }
-                const filterHtml = `<select id="filterTipoTarefa" class="form-select dt-filter-select ms-2"><option value="">Todos os Tipos</option><option value="Tarefa">Tarefa</option><option value="Prova">Prova</option></select><select id="filterDisciplina" class="form-select dt-filter-select ms-2"><option value="">Todas as Disciplinas</option></select>`;
+                const filterHtml = `<select id="filterTipoTarefa" class="form-select dt-filter-select ms-2"><option value="">Todos os Tipos</option><option value="TAREFA">Tarefa</option><option value="PROVA">Prova</option></select><select id="filterDisciplina" class="form-select dt-filter-select ms-2"><option value="">Todas as Disciplinas</option></select>`;
                 buttonsContainer.prepend(filterHtml);
-                listaDisciplinas.forEach(d => $('#filterDisciplina').append(new Option(d.nome, d.nome)));
-                $('#filterTipoTarefa').on('change', function () { api.column(3).search(this.value ? '^' + $.fn.dataTable.util.escapeRegex(this.value) + '$' : '', true, false).draw(); });
-                $('#filterDisciplina').on('change', function () { api.column(2).search(this.value ? '^' + $.fn.dataTable.util.escapeRegex(this.value) + '$' : '', true, false).draw(); });
+                
+                // Popula o filtro de disciplinas com os dados do banco
+                dadosDisciplinas.forEach(d => $('#filterDisciplina').append(new Option(d.nome, d.nome)));
+
+                // Funcionalidade dos filtros
+                $('#filterTipoTarefa').on('change', function () { api.column(3).search(this.value ? `^${this.value}$` : '', true, false).draw(); });
+                $('#filterDisciplina').on('change', function () { api.column(2).search(this.value ? `^${this.value}$` : '', true, false).draw(); });
             }
         });
     }
 
-    // --- FUNÇÕES UTILITÁRIAS (GLOBALIZADAS) ---
-    /**
-     * Popula um elemento <select> com opções.
-     * A primeira opção é sempre um placeholder clicável com valor vazio.
-     * @param {HTMLElement} element - O elemento <select>.
-     * @param {Array<object|string>} options - Array de opções. Cada item pode ser uma string ou um objeto com {id, nome/titulo}.
-     * @param {string|null} selectedValue - O valor que deve ser selecionado inicialmente.
-     * @param {string} placeholderText - O texto para a primeira opção (ex: "Selecione...").
-     */
-    window.popularSelect = function (element, options, selectedValue = null, placeholderText = 'Selecione...') {
-        if (!element) {
-            console.warn("Elemento select não encontrado para popular:", element);
-            return;
-        }
-        element.innerHTML = '';
-
-        // Cria a opção padrão (placeholder), que agora é clicável.
-        const defaultOption = document.createElement('option');
-        defaultOption.value = "";
-        defaultOption.textContent = placeholderText;
-        element.appendChild(defaultOption);
-
-        // Popula as outras opções
-        options.forEach(option => {
-            const optElement = document.createElement('option');
-            const value = (typeof option === 'object' && option !== null) ? option.id : option;
-            const textContent = (typeof option === 'object' && option !== null) ? (option.nome || option.titulo) : option;
-            optElement.value = value;
-            optElement.textContent = textContent;
-            element.appendChild(optElement);
-        });
-
-        // Define o valor inicial selecionado para todo o <select>
-        if (selectedValue) {
-            element.value = selectedValue;
-        } else {
-            defaultOption.selected = true;
-        }
-    };
-
-    window.formatarData = (data) => {
-        if (!data) return '-';
-        const d = new Date(data + 'T00:00:00');
-        return new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(d);
-    };
-
-    window.getStatusBadgeClass = status => ({ 'Concluída': 'bg-success-subtle text-success', 'Em Andamento': 'bg-info-subtle text-info', 'Agendada': 'bg-primary-subtle text-primary', 'A Fazer': 'bg-warning-subtle text-warning', 'Atrasada': 'bg-danger-subtle text-danger' }[status] || 'bg-secondary-subtle text-secondary');
-    window.getTipoBadgeClass = tipo => tipo === 'Prova' ? 'bg-danger-subtle text-danger' : 'bg-primary-subtle text-primary';
-
-    // --- BLOCO PRINCIPAL DE EXECUÇÃO ---
-    inicializarDataTable();
-
-    // -- LÓGICA DE CONTROLE DE DROPDOWN (JQUERY) --
-    function closeAndResetDropdown(menuElement) {
-        if (!menuElement || menuElement.length === 0) return;
-        const originalParent = menuElement.data('originalParent');
-        if (originalParent) {
-            menuElement.removeClass('show').appendTo(originalParent);
-        }
-    }
-
-    $(document).on('click', '.btn-edit-tarefa', function (e) {
+    // --- LÓGICA DOS MODAIS (igual à anterior) ---
+    $('#tabelaTarefas tbody').on('click', '.btn-detalhar-tarefa', function (e) {
         e.preventDefault();
-        const menu = $(this).closest('.dropdown-menu');
-        const rowIndex = menu.data('rowIndex');
         const tarefaId = $(this).data('tarefa-id');
-        const tarefaData = listaTarefas.find(t => t.id === tarefaId);
-        const linhaNode = tabelaTarefasDt.row(rowIndex).node();
-        if (tarefaData) {
-            abrirModalTarefa(true, tarefaData, linhaNode);
-        }
-        closeAndResetDropdown(menu);
-    });
+        
+        fetch(`/api/atividade/${tarefaId}`)
+            .then(response => response.json())
+            .then(data => {
+                const modalEl = document.getElementById('modalDetalhesAtividade');
+                modalEl.querySelector('#detalhe-atividade-nome').textContent = data.titulo;
+                modalEl.querySelector('#detalhe-atividade-disciplina').textContent = data.disciplina_nome;
+                modalEl.querySelector('#detalhe-atividade-data').textContent = data.data_entrega;
+                modalEl.querySelector('#detalhe-atividade-descricao').textContent = data.descricao || 'Nenhuma descrição fornecida.';
+                
+                const tipoBadge = modalEl.querySelector('#detalhe-atividade-tipo .badge');
+                tipoBadge.className = `badge ${getTipoBadgeClass(data.tipo)}`;
+                tipoBadge.textContent = data.tipo;
 
-    $(document).on('click', '.btn-detalhar-tarefa', function (e) {
-        e.preventDefault();
-        const menu = $(this).closest('.dropdown-menu');
-        const tarefaId = $(this).data('tarefa-id');
-        const tarefaData = listaTarefas.find(t => t.id === tarefaId);
-        if (tarefaData) {
-            abrirModalDetalhesAtividade(tarefaData);
-        }
-        closeAndResetDropdown(menu);
-    });
+                const statusBadge = modalEl.querySelector('#detalhe-atividade-status .badge');
+                statusBadge.className = `badge ${getStatusBadgeClass(data.status)}`;
+                statusBadge.textContent = data.status.replace('_', ' ');
 
-    $(document).on('click', '.btn-remover-tarefa', function (e) {
-        e.preventDefault();
-        const menu = $(this).closest('.dropdown-menu');
-        const rowIndex = menu.data('rowIndex');
-        const tarefaId = $(this).data('tarefa-id');
-        const tarefa = listaTarefas.find(t => t.id === tarefaId);
-        if (tarefa && confirm(`Tem certeza que deseja remover a tarefa "${tarefa.titulo}"?`)) {
-            listaTarefas = listaTarefas.filter(t => t.id !== tarefaId);
-            tabelaTarefasDt.row(rowIndex).remove().draw();
-        }
-        closeAndResetDropdown(menu);
-    });
-
-    $('#tabelaTarefas tbody').on('click', '.btn-actions', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        const triggerButton = this;
-        const dropdownMenu = $(triggerButton).next('.dropdown-menu');
-        const isAlreadyOpen = dropdownMenu.hasClass('show');
-        closeAndResetDropdown($('.dropdown-menu.show'));
-        if (isAlreadyOpen) return;
-        const triggerRow = $(triggerButton).closest('tr');
-        const rowIndex = tabelaTarefasDt.row(triggerRow).index();
-        dropdownMenu.data('originalParent', dropdownMenu.parent());
-        dropdownMenu.data('rowIndex', rowIndex);
-        dropdownMenu.appendTo('body');
-        const rect = triggerButton.getBoundingClientRect();
-        dropdownMenu.css({ position: 'fixed', top: rect.bottom + 'px', left: 'auto', right: (window.innerWidth - rect.right) + 'px', zIndex: 1060 });
-        dropdownMenu.addClass('show');
-        setTimeout(() => {
-            $(document).one('click.closeDropdown', function (clickEvent) {
-                if (!$(clickEvent.target).closest(dropdownMenu).length) {
-                    closeAndResetDropdown(dropdownMenu);
-                }
+                new bootstrap.Modal(modalEl).show();
             });
-        }, 0);
     });
+
+    // --- INICIALIZAÇÃO DA PÁGINA ---
+    // Verifica se as variáveis injetadas existem antes de inicializar a tabela
+    if (typeof tarefas_json !== 'undefined' && typeof disciplinas_json !== 'undefined') {
+        inicializarDataTable(tarefas_json, disciplinas_json);
+    } else {
+        console.error("Variáveis 'tarefas_json' ou 'disciplinas_json' não encontradas. Verifique o template 'tarefas.html'.");
+        inicializarDataTable([], []); 
+    }
 });
