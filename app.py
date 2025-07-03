@@ -122,8 +122,6 @@ def create_app():
         return render_template('cadastro.html')
     
 
-
-
     @app.route('/dashboard')
     def rota_dashboard():
         if 'user_id' not in session:
@@ -134,45 +132,49 @@ def create_app():
             session.clear()
             return redirect(url_for('rota_login'))
 
+        # Busca e ordena as atividades
         ids_disciplinas_usuario = [d.id for d in usuario.disciplinas]
-        
-        # 1. Busca todas as atividades, a ordenação inicial por data ainda é útil
-        atividades = Tarefa.query.filter(Tarefa.disciplina_id.in_(ids_disciplinas_usuario)).order_by(Tarefa.data_entrega).all()
+        atividades = Tarefa.query.filter(Tarefa.disciplina_id.in_(ids_disciplinas_usuario)).all()
 
-        # 2. Lógica para identificar tarefas atrasadas (já implementada)
         hoje = date.today()
         for atividade in atividades:
             if atividade.data_entrega < hoje and atividade.status != StatusTarefa.CONCLUIDA:
                 atividade.status = StatusTarefa.ATRASADA
                 
-        # --- NOVA LÓGICA DE ORDENAÇÃO COM PRIORIDADE ---
-
-        # 3. Define a ordem de prioridade para cada status (números menores são mais importantes)
         prioridade_status = {
             StatusTarefa.ATRASADA: 0,
-            StatusTarefa.A_FAZER: 2,
             StatusTarefa.ANDAMENTO: 1,
+            StatusTarefa.A_FAZER: 2,
             StatusTarefa.CONCLUIDA: 3
         }
-
-        # 4. Ordena a lista 'atividades' usando a prioridade do status primeiro, e a data de entrega como critério de desempate
         atividades_ordenadas = sorted(
             atividades, 
             key=lambda x: (prioridade_status.get(x.status, 99), x.data_entrega)
         )
         
-        # --- FIM DA NOVA LÓGICA ---
-
-        # 5. Filtra e fatia a lista JÁ ORDENADA para pegar as 4 principais tarefas e provas
+        # Prepara os dados para a exibição no dashboard (limitado a 4)
         tarefas_dashboard = [t for t in atividades_ordenadas if t.tipo.name == 'TAREFA'][:4]
         provas_dashboard = [p for p in atividades_ordenadas if p.tipo.name == 'PROVA'][:4]
+
+        # --- PREPARA OS DADOS PARA O JAVASCRIPT DOS MODAIS ---
+        # Formata TODAS as atividades e disciplinas para JSON
+        todas_tarefas_json = [{
+            "id": t.id, "titulo": t.titulo,
+            "disciplina": {"id": t.disciplina.id, "nome": t.disciplina.nome}
+        } for t in atividades] # Usa a lista completa
+
+        disciplinas_json = [{"id": d.id, "nome": d.nome} for d in usuario.disciplinas]
+        # --- FIM DA PREPARAÇÃO ---
 
         return render_template(
             'principal.html', 
             usuario=usuario, 
             disciplinas=usuario.disciplinas,
             tarefas_dashboard=tarefas_dashboard,
-            provas_dashboard=provas_dashboard
+            provas_dashboard=provas_dashboard,
+            # Envia as listas formatadas para o template
+            todas_tarefas_json=todas_tarefas_json,
+            disciplinas_json=disciplinas_json
         )
     
     @app.route('/disciplinas/criar', methods=['POST'])

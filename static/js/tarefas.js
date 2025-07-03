@@ -28,19 +28,28 @@ document.addEventListener("DOMContentLoaded", function () {
         tabelaTarefasDt = $('#tabelaTarefas').DataTable({
             responsive: { details: { type: 'column', target: 0 } },
             dom: '<"row dt-custom-header align-items-center mb-3"<"col-12 col-md-auto"f><"col-12 col-md-auto ms-md-auto dt-buttons-container">>t<"row dt-footer-controls mt-3 align-items-center"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-            paging: false, 
-            scrollY: '450px', // Mantenha a barra de rolagem
-            scrollCollapse: true,
+            paging: false,
+            scrollY: '450px',
             scrollCollapse: true,
             lengthChange: false,
             language: { url: 'https://cdn.datatables.net/plug-ins/2.0.7/i18n/pt-BR.json', search: "", searchPlaceholder: "Buscar tarefas/provas..." },
+            
+            // --- LÓGICA DE RESPONSIVIDADE DAS COLUNAS RESTAURADA ---
             columnDefs: [
-                { orderable: false, targets: [0, 6] },
-                { responsivePriority: 1, targets: 0, className: 'dtr-control' },
-                { responsivePriority: 2, targets: 1 },
-                { responsivePriority: 3, targets: 6 },
+                { orderable: false, targets: [0, 6] }, // Coluna de controle e ações não são ordenáveis
+                
+                // --- PRIORIDADES DE RESPONSIVIDADE ---
+                // Quanto menor o número, mais importante é a coluna (demora mais para sumir)
+                { responsivePriority: 1, targets: 0 }, // 1º: O botão '+'
+                { responsivePriority: 2, targets: 1 }, // 2º: O Título da Tarefa
+                { responsivePriority: 3, targets: 6 }, // 3º: O menu de Ações
+                { responsivePriority: 4, targets: 4 }, // 4º: A Data de Entrega
+                { responsivePriority: 5, targets: 5 }, // 5º: O Status
+                { responsivePriority: 6, targets: 2 }, // 6º: A Disciplina
+                { responsivePriority: 7, targets: 3 }  // 7º: O Tipo (some primeiro)
             ],
-            // Usa os dados vindos do Flask
+            // -----------------------------------------------------------
+
             data: dadosTarefas,
             columns: [
                 { data: null, defaultContent: '' },
@@ -60,6 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 },
                 {
                     data: 'id',
+                    className: 'dt-actions-column', // Adiciona uma classe para controle de estilo se necessário
                     render: (data) => `
                         <div class="dropdown">
                             <button class="btn btn-sm btn-icon btn-actions" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Ações">
@@ -74,23 +84,33 @@ document.addEventListener("DOMContentLoaded", function () {
                         </div>`
                 }
             ],
-            // Restaura sua lógica de filtros e botões
             initComplete: function () {
                 const api = this.api();
                 const buttonsContainer = $('.dt-buttons-container');
+
+                // --- LÓGICA DE RESPONSIVIDADE DOS FILTROS RESTAURADA ---
+                buttonsContainer.addClass('d-flex flex-wrap gap-2 justify-content-md-end');
+                // ------------------------------------------------------
+                
                 if ($('#abrirModalNovaTarefaDt').length === 0) {
                     const btnAddTask = $('<button class="btn btn-primary" id="abrirModalNovaTarefaDt" data-bs-toggle="modal" data-bs-target="#modalTarefaPrincipalQuickAdd"><i class="bi bi-plus-lg me-2"></i>Adicionar Tarefa/Prova</button>');
                     buttonsContainer.append(btnAddTask);
                 }
+                
                 const filterHtml = `<select id="filterTipoTarefa" class="form-select dt-filter-select ms-2"><option value="">Todos os Tipos</option><option value="TAREFA">Tarefa</option><option value="PROVA">Prova</option></select><select id="filterDisciplina" class="form-select dt-filter-select ms-2"><option value="">Todas as Disciplinas</option></select>`;
                 buttonsContainer.prepend(filterHtml);
                 
-                // Popula o filtro de disciplinas com os dados do banco
                 dadosDisciplinas.forEach(d => $('#filterDisciplina').append(new Option(d.nome, d.nome)));
 
-                // Funcionalidade dos filtros
                 $('#filterTipoTarefa').on('change', function () { api.column(3).search(this.value ? `^${this.value}$` : '', true, false).draw(); });
                 $('#filterDisciplina').on('change', function () { api.column(2).search(this.value ? `^${this.value}$` : '', true, false).draw(); });
+            
+                // Adiciona um listener para redimensionar a tabela ao mudar o tamanho da janela
+                $(window).off('resize.dtTarefas').on('resize.dtTarefas', function() {
+                    setTimeout(() => {
+                        api.columns.adjust().responsive.recalc();
+                    }, 200);
+                });
             }
         });
     }

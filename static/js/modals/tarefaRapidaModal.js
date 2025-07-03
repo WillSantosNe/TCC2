@@ -1,34 +1,36 @@
-// static/js/modals/tarefaRapidaModal.js (CORRIGIDO)
+// static/js/modals/tarefaRapidaModal.js (VERSÃO FINAL DINÂMICA)
 document.addEventListener('DOMContentLoaded', function() {
     const modalEl = document.getElementById('modalTarefaPrincipalQuickAdd');
-    const form = document.getElementById('formTarefaPrincipalQuickAdd');
+    if (!modalEl) return;
 
-    // Sai da função se os elementos do modal não existirem nesta página
-    if (!modalEl || !form) {
-        return; 
-    }
+    const form = modalEl.querySelector('#formTarefaPrincipalQuickAdd');
+    const disciplinaSelect = modalEl.querySelector('#principalTarefaDisciplinaQuickAdd');
 
-    // Evento para quando o modal é aberto: limpa o formulário e as classes de validação.
-    // A população dos selects agora é feita pelo Flask/Jinja2 diretamente no HTML.
+    const popularSelect = (selectElement, options, placeholder) => {
+        if (!selectElement) return;
+        selectElement.innerHTML = `<option value="" selected disabled>${placeholder}</option>`;
+        options.forEach(option => {
+            selectElement.add(new Option(option.nome, option.id));
+        });
+    };
+
     modalEl.addEventListener('show.bs.modal', function () {
         form.reset();
         form.classList.remove('was-validated');
+
+        // Popula o dropdown com os dados globais quando o modal abre
+        if (window.disciplinas_json) {
+            popularSelect(disciplinaSelect, window.disciplinas_json, "Selecione uma disciplina...");
+        } else {
+            console.error("tarefaRapidaModal.js: 'disciplinas_json' não encontrado na window.");
+        }
     });
 
-    // Listener para o submit do formulário
     form.addEventListener('submit', function(event) {
-        // Usa a validação nativa do Bootstrap.
-        // Se o formulário NÃO for válido...
         if (!form.checkValidity()) {
-            // ...impede o envio para que o usuário possa corrigir os campos.
             event.preventDefault();
             event.stopPropagation();
         }
-
-        // Adiciona a classe para que o Bootstrap mostre os feedbacks de validação (mensagens de erro/sucesso).
         form.classList.add('was-validated');
-
-        // Se o formulário for válido, o script NÃO chama preventDefault() e permite
-        // que o formulário seja enviado para a rota '/tarefas/criar' no Flask.
     });
 });

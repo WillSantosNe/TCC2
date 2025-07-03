@@ -375,10 +375,6 @@
                             <label for="principalTarefaDisciplinaQuickAdd" class="modal-property-label">Disciplina</label>
                             <div class="input-wrapper">
                                 <select class="form-select modal-property-input" id="principalTarefaDisciplinaQuickAdd" name="principalTarefaDisciplinaQuickAdd" required>
-                                    <option value="" selected disabled>Selecione...</option>
-                                    {% for disciplina in disciplinas %}
-                                        <option value="{{ disciplina.id }}">{{ disciplina.nome }}</option>
-                                    {% endfor %}
                                 </select>
                                 <div class="invalid-feedback">Disciplina é obrigatória.</div>
                             </div>
@@ -447,28 +443,17 @@
                             </div>
                             <div class="modal-anotacao-properties-section">
                                 <div class="modal-property-item">
-                                    <span class="modal-property-icon"><i class="bi bi-journal-bookmark-fill"></i></span>
                                     <label for="principalAnotacaoDisciplinaSelect" class="modal-property-label">Disciplina</label>
                                     <div class="input-wrapper">
                                         <select class="form-select modal-property-input" id="principalAnotacaoDisciplinaSelect" name="principalAnotacaoDisciplina">
-                                            <option value="">Nenhuma</option> {% for disciplina in disciplinas %}
-                                                <option value="{{ disciplina.id }}">{{ disciplina.nome }}</option>
-                                            {% endfor %}
-                                        </select>
+                                            </select>
                                     </div>
                                 </div>
                                 <div class="modal-property-item">
-                                    <span class="modal-property-icon"><i class="bi bi-card-checklist"></i></span>
                                     <label for="principalAnotacaoAtividadeSelect" class="modal-property-label">Atividade</label>
                                     <div class="input-wrapper">
                                         <select class="form-select modal-property-input" id="principalAnotacaoAtividadeSelect" name="principalAnotacaoAtividade">
-                                            <option value="">Nenhuma</option> {% for tarefa in tarefas_dashboard %}
-                                                <option value="{{ tarefa.id }}">{{ tarefa.titulo }}</option>
-                                            {% endfor %}
-                                            {% for prova in provas_dashboard %}
-                                                <option value="{{ prova.id }}">{{ prova.titulo }}</option>
-                                            {% endfor %}
-                                        </select>
+                                            </select>
                                     </div>
                                 </div>
                             </div>
@@ -569,14 +554,18 @@
         </div>
     </div>
 
+    <script>
+        // Injeta os dados do Flask em variáveis JavaScript globais
+        window.tarefas_json = {{ todas_tarefas_json | tojson | safe }};
+        window.disciplinas_json = {{ disciplinas_json | tojson | safe }};
+    </script>
+
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ url_for('static', filename='js/principal.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/modal-configuracoes.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/modals/disciplinaModal.js') }}" defer></script> 
-    <!-- <script src="{{ url_for('static', filename='js/anotacao.js') }}" defer></script> -->
-    <script src="{{ url_for('static', filename='js/modals/geral.js') }}" defer></script> 
+    <script src="{{ url_for('static', filename='js/modals/tarefaRapidaModal.js') }}" defer></script> <script src="{{ url_for('static', filename='js/modals/geral.js') }}" defer></script> 
     <script src="{{ url_for('static', filename='js/modals/anotacaoModal.js') }}" defer></script>
-
 </body>
 </html>
