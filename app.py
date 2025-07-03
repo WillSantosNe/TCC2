@@ -3,7 +3,7 @@ from datetime import datetime, date
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 from dotenv import load_dotenv
 from extensions import db
-from models import Usuario, Disciplina, Tarefa, Anotacao, StatusDisciplina, StatusTarefa
+from models import Usuario, Disciplina, Tarefa, Anotacao, StatusDisciplina, StatusTarefa, TipoTarefa
 
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, JWTManager
 from flask import jsonify # Para retornar respostas em JSON
@@ -296,8 +296,8 @@ def create_app():
 
         # Mapeamento explícito e seguro dos status
         status_map = {
-            "A FAZER": StatusTarefa.A_FAZER,
-            "EM ANDAMENTO": StatusTarefa.ANDAMENTO,
+            "A_FAZER": StatusTarefa.A_FAZER,
+            "ANDAMENTO": StatusTarefa.ANDAMENTO,
             "CONCLUIDA": StatusTarefa.CONCLUIDA
         }
         # Usamos .get() para buscar no mapa. Retorna None se a chave não existir.
@@ -344,15 +344,46 @@ def create_app():
                 "id": atividade.id,
                 "titulo": atividade.titulo,
                 "descricao": atividade.descricao,
-                "data_entrega": atividade.data_entrega.strftime('%d/%m/%Y'),
-                "status": atividade.status.name,  # <-- ALTERADO AQUI
-                "tipo": atividade.tipo.name,      # <-- ALTERADO AQUI
+                # ALTERADO: Retorna a data no formato YYYY-MM-DD
+                "data_entrega": atividade.data_entrega.isoformat(),
+                "status": atividade.status.name,
+                "tipo": atividade.tipo.name,
+                "disciplina_id": atividade.disciplina.id, # Adicionado para preencher o select
                 "disciplina_nome": atividade.disciplina.nome
             })
         else:
-            # Se não encontrou ou não pertence ao usuário, retorna um erro
             return jsonify({"error": "Atividade não encontrada"}), 404
 
+    @app.route('/tarefas/atualizar/<int:tarefa_id>', methods=['POST'])
+    def atualizar_tarefa(tarefa_id):
+        if 'user_id' not in session:
+            flash('Você precisa estar logado para editar uma tarefa.', 'warning')
+            return redirect(url_for('rota_login'))
+
+        # Busca a tarefa no banco, garantindo que pertence ao usuário logado
+        tarefa = db.session.query(Tarefa).join(Disciplina).filter(
+            Tarefa.id == tarefa_id,
+            Disciplina.usuario_id == session['user_id']
+        ).first_or_404()
+
+        # Pega os dados do formulário (os mesmos nomes do modal de criação)
+        tarefa.titulo = request.form.get('principalTarefaTituloQuickAdd')
+        tarefa.disciplina_id = int(request.form.get('principalTarefaDisciplinaQuickAdd'))
+        tarefa.data_entrega = datetime.strptime(request.form.get('principalTarefaDataEntregaQuickAdd'), '%Y-%m-%d').date()
+        tarefa.tipo = TipoTarefa[request.form.get('principalTarefaTipoQuickAdd').upper()]
+        tarefa.descricao = request.form.get('principalTarefaDescricaoQuickAdd')
+
+        # Mapeamento seguro de status
+        status_map = {
+            "A_FAZER": StatusTarefa.A_FAZER,
+            "ANDAMENTO": StatusTarefa.ANDAMENTO,
+            "CONCLUIDA": StatusTarefa.CONCLUIDA
+        }
+        tarefa.status = status_map.get(request.form.get('principalTarefaStatusQuickAdd').upper(), tarefa.status)
+        
+        db.session.commit()
+        # flash('Tarefa atualizada com sucesso!', 'success')
+        return redirect(url_for('rota_tarefas'))
 
 
 

@@ -210,6 +210,12 @@ dialog#modalTarefa {
     box-shadow: 0 0 0 0.2rem rgba(85, 104, 254, 0.25);
 }
 
+/* Garante que o contêiner de rolagem da DataTables
+   tenha um z-index menor que os dropdowns do Bootstrap (padrão z-index: 1000) */
+.dataTables_scrollBody {
+    position: relative;
+    z-index: 2;
+}
 
 /* Layout Responsivo para Telas Pequenas (Celular) */
 @media (max-width: 991.98px) {

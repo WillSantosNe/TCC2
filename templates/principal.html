@@ -33,7 +33,9 @@
         <nav class="nav flex-column">
             <div class="sf-sidebar-section">Botões Rápidos</div>
             <a href="#" class="sf-nav-link sf-quick-add-link" data-bs-toggle="modal" data-bs-target="#modalDisciplinaAdicaoPrincipal"> <span class="quick-add-icon"><i class="bi bi-plus-lg"></i></span> Adicionar Disciplina </a>
-            <a href="#" class="sf-nav-link sf-quick-add-link" data-bs-toggle="modal" data-bs-target="#modalTarefaPrincipalQuickAdd"> <span class="quick-add-icon"><i class="bi bi-plus-lg"></i></span> Adicionar Tarefa/Prova </a>
+            <a href="#" class="sf-nav-link sf-quick-add-link" id="quickAddTarefaBtnSidebar">
+                <span class="quick-add-icon"><i class="bi bi-plus-lg"></i></span> Adicionar Tarefa/Prova
+            </a>
             <a href="#" class="sf-nav-link sf-quick-add-link" data-bs-toggle="modal" data-bs-target="#modalAnotacaoPrincipal"> <span class="quick-add-icon"><i class="bi bi-plus-lg"></i></span> Adicionar Anotação </a>
             <div class="sf-sidebar-section">Acadêmico</div>
             <a href="{{ url_for('rota_dashboard') }}" class="sf-nav-link active">Dashboard</a>
@@ -207,7 +209,9 @@
                                 <div class="card-body text-center">
                                     <h6 class="card-title"><i class="bi bi-card-checklist me-2"></i>Tarefas e Provas</h6>
                                     <p class="card-text text-muted small">Visualize todas as atividades associadas.</p>
-                                    <button class="btn btn-outline-primary btn-sm">Ver Tarefas</button>
+                                    
+                                    <a href="#" id="btnVerTarefasDisciplina" class="btn btn-outline-primary btn-sm">Ver Tarefas</a>
+
                                 </div>
                             </div>
                         </div>
@@ -347,6 +351,9 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <form id="formTarefaPrincipalQuickAdd" method="POST" action="{{ url_for('criar_tarefa') }}" novalidate>
+                    
+                    <input type="hidden" id="principalTarefaIdQuickAdd" name="principalTarefaIdQuickAdd">
+
                     <div class="modal-header-custom modal-header-studyflow">
                         <div class="modal-title-wrapper">
                             <img src="{{ url_for('static', filename='img/logo.png') }}" class="modal-logo-icon" alt="StudyFlow Logo">

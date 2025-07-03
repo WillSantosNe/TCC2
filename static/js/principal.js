@@ -120,6 +120,24 @@ document.addEventListener('DOMContentLoaded', () => {
                     const statusClass = statusKeyMap[statusKey] || "bg-light"; // Busca no novo mapa
                     statusEl.innerHTML = `<span class="badge ${statusClass}">${data.status}</span>`;
 
+                    // --- INÍCIO DA NOVA LÓGICA ---
+                    // Pega o botão "Ver Tarefas" pelo ID que criamos no HTML.
+                    const btnVerTarefas = modalEl.querySelector('#btnVerTarefasDisciplina');
+
+                    if (btnVerTarefas) {
+                        // Codifica o nome da disciplina para ser usado de forma segura na URL.
+                        // Isso converte "Cálculo I" em "C%C3%A1lculo%20I", por exemplo.
+                        const nomeDisciplinaCodificado = encodeURIComponent(data.nome);
+                        
+                        // Cria a URL para a página de tarefas, passando o nome da disciplina como parâmetro.
+                        const urlDestino = `/tarefas?disciplina=${nomeDisciplinaCodificado}`;
+                        
+                        // Define o atributo 'href' do nosso link com a URL criada.
+                        btnVerTarefas.setAttribute('href', urlDestino);
+                    }
+                    // --- FIM DA NOVA LÓGICA ---
+
+
                     // Abre o modal
                     const bsModal = new bootstrap.Modal(modalEl);
                     bsModal.show();
