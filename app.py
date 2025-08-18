@@ -4,11 +4,9 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from dotenv import load_dotenv
 from extensions import db
 from models import Usuario, Disciplina, Tarefa, Anotacao, StatusDisciplina, StatusTarefa, TipoTarefa
+from flask_jwt_extended import JWTManager
+from authlib.integrations.flask_client import OAuth 
 
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, JWTManager
-from flask import jsonify # Para retornar respostas em JSON
-
-# Carrega as variáveis de ambiente do arquivo .env
 load_dotenv()
 
 def create_app():
@@ -16,20 +14,24 @@ def create_app():
     Cria e configura uma instância da aplicação Flask.
     """
     app = Flask(__name__)
-
-    # Configuração do banco de dados a partir do .env
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
-    # Configuracao do JWT
-    jwt = JWTManager(app)
-
-    # Inicializa o db com a aplicação
     db.init_app(app)
+    oauth = OAuth(app)
+    jwt = JWTManager(app) # Descomente se for usar JWT no futuro
 
-    # --- REGISTRO DO COMANDO CUSTOMIZADO ---
+    oauth.register(
+        name='google',
+        client_id=os.getenv("GOOGLE_CLIENT_ID"),
+        client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
+        server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
+        client_kwargs={
+            'scope': 'openid email profile'
+        }
+    )
+
     @app.cli.command("create-db")
     def create_db_command():
         """Cria as tabelas do banco de dados a partir dos modelos."""
@@ -37,61 +39,37 @@ def create_app():
             db.create_all()
         print("Tabelas criadas com sucesso!")
 
-
-    # --- ADICIONAR USUÁRIO ADMIN ---
     @app.cli.command("seed-admin")
     def seed_admin_command():
         """Cria um usuário administrador padrão."""
         with app.app_context():
-            # Verifica se o admin já existe
             admin_user = Usuario.query.filter_by(email="admin@admin.com").first()
             if admin_user:
                 print("Usuário admin já existe.")
                 return
-
-            # Cria o novo usuário admin
             new_admin = Usuario(nome="Admin", email="admin@admin.com")
-            new_admin.set_senha("1234") # A senha será criptografada pelo método set_senha
-
+            new_admin.set_senha("1234")
             db.session.add(new_admin)
             db.session.commit()
             print("Usuário admin criado com sucesso!")
-    # ----------------------------------------
-
-
-
-
-    # --- ROTAS DA APLICAÇÃO ---
+    
     @app.route('/', methods=['GET', 'POST'])
     def rota_login():
         if request.method == 'POST':
             email = request.form.get('email')
             senha = request.form.get('senha')
-
-            # Busca o usuário no banco de dados pelo email fornecido
             user = Usuario.query.filter_by(email=email).first()
-
-            # Verifica se o usuário existe E se a senha fornecida corresponde à senha no banco
             if user and user.check_senha(senha):
-                # Se as credenciais estiverem corretas, armazena o ID do usuário na sessão
                 session['user_id'] = user.id
-                # Redireciona para o dashboard
                 return redirect(url_for('rota_dashboard'))
             else:
-                # Se as credenciais estiverem erradas, envia uma mensagem de erro para o front-end
-                flash('Email ou senha inválidos. Tente novamente.')
-
+                flash('Email ou senha inválidos. Tente novamente.', 'danger')
         return render_template('login.html')
-    
     
     @app.route('/logout')
     def rota_logout():
-        # Limpa a sessão, removendo o user_id
         session.clear()
-        # Redireciona para a página de login
         return redirect(url_for('rota_login'))
-
-
 
     @app.route('/cadastro', methods=['GET', 'POST'])
     def rota_cadastro():
@@ -100,7 +78,6 @@ def create_app():
             email = request.form.get('email')
             senha = request.form.get('senha')
 
-            # Validação básica no servidor
             if not nome or not email or not senha:
                 flash('Todos os campos são obrigatórios!', 'danger')
                 return redirect(url_for('rota_cadastro'))
@@ -112,16 +89,44 @@ def create_app():
 
             novo_usuario = Usuario(nome=nome, email=email)
             novo_usuario.set_senha(senha)
-
             db.session.add(novo_usuario)
             db.session.commit()
 
             flash('Conta criada com sucesso! Por favor, faça o login.', 'success')
             return redirect(url_for('rota_login'))
-
         return render_template('cadastro.html')
     
+    @app.route('/login/google')
+    def login_google():
+        redirect_uri = url_for('authorize_google', _external=True)
+        return oauth.google.authorize_redirect(redirect_uri)
 
+    @app.route('/login/google/callback')
+    def authorize_google():
+        try:
+            token = oauth.google.authorize_access_token()
+            user_info = token.get('userinfo')
+            if not user_info:
+                 user_info = oauth.google.parse_id_token(token)
+
+        except Exception as e:
+            flash(f"Ocorreu um erro durante a autenticação com o Google: {e}", "danger")
+            return redirect(url_for('rota_login'))
+
+        user = Usuario.query.filter_by(email=user_info['email']).first()
+
+        if user is None:
+            user = Usuario(
+                email=user_info['email'],
+                nome=user_info.get('given_name', user_info.get('name', 'Usuário')),
+            )
+            user.senha_hash = 'google_user_no_password' 
+            db.session.add(user)
+            db.session.commit()
+            flash('Conta criada com sucesso através do Google!', 'success')
+        
+        session['user_id'] = user.id
+        return redirect(url_for('rota_dashboard'))
     @app.route('/dashboard')
     def rota_dashboard():
         if 'user_id' not in session:
@@ -132,7 +137,6 @@ def create_app():
             session.clear()
             return redirect(url_for('rota_login'))
 
-        # Busca e ordena as atividades
         ids_disciplinas_usuario = [d.id for d in usuario.disciplinas]
         atividades = Tarefa.query.filter(Tarefa.disciplina_id.in_(ids_disciplinas_usuario)).all()
 
@@ -152,19 +156,15 @@ def create_app():
             key=lambda x: (prioridade_status.get(x.status, 99), x.data_entrega)
         )
         
-        # Prepara os dados para a exibição no dashboard (limitado a 4)
         tarefas_dashboard = [t for t in atividades_ordenadas if t.tipo.name == 'TAREFA'][:4]
         provas_dashboard = [p for p in atividades_ordenadas if p.tipo.name == 'PROVA'][:4]
 
-        # --- PREPARA OS DADOS PARA O JAVASCRIPT DOS MODAIS ---
-        # Formata TODAS as atividades e disciplinas para JSON
         todas_tarefas_json = [{
             "id": t.id, "titulo": t.titulo,
             "disciplina": {"id": t.disciplina.id, "nome": t.disciplina.nome}
-        } for t in atividades] # Usa a lista completa
+        } for t in atividades]
 
         disciplinas_json = [{"id": d.id, "nome": d.nome} for d in usuario.disciplinas]
-        # --- FIM DA PREPARAÇÃO ---
 
         return render_template(
             'principal.html', 
@@ -183,35 +183,29 @@ def create_app():
             flash('Você precisa estar logado para criar uma disciplina.', 'warning')
             return redirect(url_for('rota_login'))
 
-        # Pega os dados enviados pelo formulário do modal
         nome = request.form.get('principalDisciplinaNome')
         professor = request.form.get('principalDisciplinaProfessor')
         periodo = request.form.get('principalDisciplinaPeriodo')
         status_str = request.form.get('principalDisciplinaStatus')
 
-        # Mapeia o texto do formulário para o membro do Enum correto
         status_map = {
             "Ativa": StatusDisciplina.ATIVA,
             "Em Andamento": StatusDisciplina.ANDAMENTO,
             "Concluída": StatusDisciplina.CONCLUIDA
         }
-        # Pega o Enum do mapa, usando 'ATIVA' como padrão se algo der errado
         status_enum = status_map.get(status_str, StatusDisciplina.ATIVA)
 
-        # Cria uma nova instância da classe Disciplina
         nova_disciplina = Disciplina(
             nome=nome,
             professor=professor,
             periodo=periodo,
             status=status_enum,
-            usuario_id=session['user_id'] # MUITO IMPORTANTE: Associa a disciplina ao usuário logado
+            usuario_id=session['user_id']
         )
 
-        # Salva no banco de dados
         db.session.add(nova_disciplina)
         db.session.commit()
 
-        # flash('Disciplina adicionada com sucesso!', 'success')
         return redirect(request.referrer or url_for('rota_dashboard'))
 
 
