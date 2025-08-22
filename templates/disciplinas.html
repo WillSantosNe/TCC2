@@ -370,5 +370,12 @@
 
     <script src="{{ url_for('static', filename='js/modal-configuracoes.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/tarefaRapidaModal.js') }}" defer></script> 
+    
+    <!-- Script para passar dados do back-end para o front-end -->
+    <script>
+        // Dados das disciplinas vindos do back-end
+        window.disciplinasData = {{ disciplinas | tojson | safe }};
+        window.usuarioData = {{ usuario | tojson | safe }};
+    </script>
 </body>
 </html>

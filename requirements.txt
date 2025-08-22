@@ -4,3 +4,7 @@ python-dotenv
 PyMySQL
 Flask-JWT-Extended
 Werkzeug
+
+
+pip install Authlib
+pip install requests
