@@ -168,8 +168,8 @@ def create_app():
 
         return render_template(
             'principal.html', 
-            usuario=usuario, 
-            disciplinas=usuario.disciplinas,
+            usuario=formatar_usuario_json(usuario), 
+            disciplinas=disciplinas_json,
             tarefas_dashboard=tarefas_dashboard,
             provas_dashboard=provas_dashboard,
             # Envia as listas formatadas para o template
@@ -257,7 +257,7 @@ def create_app():
         return render_template('tarefas.html', 
                             tarefas=tarefas_para_json, 
                             disciplinas=disciplinas_para_json, # Passa a lista formatada
-                            usuario=usuario)
+                            usuario=formatar_usuario_json(usuario))
     
 
     
@@ -381,33 +381,209 @@ def create_app():
 
 
 
+    def formatar_usuario_json(usuario):
+        return {
+            "id": usuario.id,
+            "nome": usuario.nome,
+            "email": usuario.email
+        }
+
     @app.route('/disciplinas')
     def rota_disciplinas():
-        return render_template('disciplinas.html')
-    
+        if 'user_id' not in session:
+            return redirect(url_for('rota_login'))
 
-    # --- ROTAS DE API ---
+        usuario = Usuario.query.get(session['user_id'])
+        if not usuario:
+            session.clear()
+            return redirect(url_for('rota_login'))
+
+        disciplinas = Disciplina.query.filter_by(usuario_id=session['user_id']).all()
+        
+        disciplinas_json = [{
+            "id": d.id,
+            "nome": d.nome,
+            "descricao": d.descricao or "",
+            "professor": d.professor or "-",
+            "periodo": d.periodo or "",
+            "status": d.status.value
+        } for d in disciplinas]
+
+        return render_template('disciplinas.html', disciplinas=disciplinas_json, usuario=formatar_usuario_json(usuario))
+
+    # --- ROTAS DE API PARA DISCIPLINAS ---
+    
+    @app.route('/api/disciplinas', methods=['GET'])
+    def api_get_disciplinas():
+        """Retorna todas as disciplinas do usuário logado"""
+        if 'user_id' not in session:
+            return jsonify({"error": "Não autorizado"}), 401
+
+        disciplinas = Disciplina.query.filter_by(usuario_id=session['user_id']).all()
+        
+        disciplinas_json = [{
+            "id": d.id,
+            "nome": d.nome,
+            "descricao": d.descricao or "",
+            "professor": d.professor or "-",
+            "periodo": d.periodo or "",
+            "status": d.status.value
+        } for d in disciplinas]
+        
+        return jsonify(disciplinas_json)
+
+    @app.route('/api/disciplinas', methods=['POST'])
+    def api_criar_disciplina():
+        """Cria uma nova disciplina"""
+        if 'user_id' not in session:
+            return jsonify({"error": "Não autorizado"}), 401
+
+        try:
+            data = request.get_json()
+            
+            if not data.get('nome'):
+                return jsonify({"error": "Nome da disciplina é obrigatório"}), 400
+            
+            if not data.get('periodo'):
+                return jsonify({"error": "Período é obrigatório"}), 400
+            
+            if not data.get('status'):
+                return jsonify({"error": "Status é obrigatório"}), 400
+
+            status_map = {
+                "Ativa": StatusDisciplina.ATIVA,
+                "Em Andamento": StatusDisciplina.ANDAMENTO,
+                "Concluída": StatusDisciplina.CONCLUIDA,
+                "Agendada": StatusDisciplina.ATIVA 
+            }
+            
+            status_enum = status_map.get(data.get('status'), StatusDisciplina.ATIVA)
+
+            nova_disciplina = Disciplina(
+                nome=data.get('nome'),
+                descricao=data.get('descricao', ''),
+                professor=data.get('professor', ''),
+                periodo=data.get('periodo'),
+                status=status_enum,
+                usuario_id=session['user_id']
+            )
+
+            db.session.add(nova_disciplina)
+            db.session.commit()
+
+            return jsonify({
+                "id": nova_disciplina.id,
+                "nome": nova_disciplina.nome,
+                "descricao": nova_disciplina.descricao or "",
+                "professor": nova_disciplina.professor or "-",
+                "periodo": nova_disciplina.periodo or "",
+                "status": nova_disciplina.status.value,
+                "message": "Disciplina criada com sucesso!"
+            }), 201
+
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"error": f"Erro ao criar disciplina: {str(e)}"}), 500
+
+    @app.route('/api/disciplinas/<int:disciplina_id>', methods=['PUT'])
+    def api_atualizar_disciplina(disciplina_id):
+        """Atualiza uma disciplina existente"""
+        if 'user_id' not in session:
+            return jsonify({"error": "Não autorizado"}), 401
+
+        try:
+            disciplina = Disciplina.query.filter_by(
+                id=disciplina_id, 
+                usuario_id=session['user_id']
+            ).first()
+
+            if not disciplina:
+                return jsonify({"error": "Disciplina não encontrada"}), 404
+
+            data = request.get_json()
+            
+            if not data.get('nome'):
+                return jsonify({"error": "Nome da disciplina é obrigatório"}), 400
+            
+            if not data.get('periodo'):
+                return jsonify({"error": "Período é obrigatório"}), 400
+            
+            if not data.get('status'):
+                return jsonify({"error": "Status é obrigatório"}), 400
+
+            status_map = {
+                "Ativa": StatusDisciplina.ATIVA,
+                "Em Andamento": StatusDisciplina.ANDAMENTO,
+                "Concluída": StatusDisciplina.CONCLUIDA,
+                "Agendada": StatusDisciplina.ATIVA 
+            }
+            
+            status_enum = status_map.get(data.get('status'), StatusDisciplina.ATIVA)
+
+            disciplina.nome = data.get('nome')
+            disciplina.descricao = data.get('descricao', '')
+            disciplina.professor = data.get('professor', '')
+            disciplina.periodo = data.get('periodo')
+            disciplina.status = status_enum
+
+            db.session.commit()
+
+            return jsonify({
+                "id": disciplina.id,
+                "nome": disciplina.nome,
+                "descricao": disciplina.descricao or "",
+                "professor": disciplina.professor or "-",
+                "periodo": disciplina.periodo or "",
+                "status": disciplina.status.value,
+                "message": "Disciplina atualizada com sucesso!"
+            })
+
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"error": f"Erro ao atualizar disciplina: {str(e)}"}), 500
+
+    @app.route('/api/disciplinas/<int:disciplina_id>', methods=['DELETE'])
+    def api_deletar_disciplina(disciplina_id):
+        """Deleta uma disciplina"""
+        if 'user_id' not in session:
+            return jsonify({"error": "Não autorizado"}), 401
+
+        try:
+            disciplina = Disciplina.query.filter_by(
+                id=disciplina_id, 
+                usuario_id=session['user_id']
+            ).first()
+
+            if not disciplina:
+                return jsonify({"error": "Disciplina não encontrada"}), 404
+
+            db.session.delete(disciplina)
+            db.session.commit()
+
+            return jsonify({"message": "Disciplina removida com sucesso!"})
+
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"error": f"Erro ao remover disciplina: {str(e)}"}), 500
+
     @app.route('/api/disciplina/<int:disciplina_id>')
     def api_get_disciplina(disciplina_id):
         # Garante que o usuário está logado
         if 'user_id' not in session:
             return jsonify({"error": "Não autorizado"}), 401
 
-        # Busca a disciplina no banco, garantindo que ela pertence ao usuário logado
         disciplina = Disciplina.query.filter_by(id=disciplina_id, usuario_id=session['user_id']).first()
 
         if disciplina:
-            # Se encontrou, retorna os dados da disciplina em formato JSON
             return jsonify({
                 "id": disciplina.id,
                 "nome": disciplina.nome,
                 "descricao": disciplina.descricao,
                 "professor": disciplina.professor,
                 "periodo": disciplina.periodo,
-                "status": disciplina.status.value # Retorna o valor do Enum (ex: "EM ANDAMENTO")
+                "status": disciplina.status.value 
             })
         else:
-            # Se não encontrou ou não pertence ao usuário, retorna um erro
             return jsonify({"error": "Disciplina não encontrada"}), 404
 
     @app.route('/calendario')
@@ -423,13 +599,9 @@ def create_app():
 
         # Pega os IDs de todas as disciplinas do usuário
         ids_disciplinas_usuario = [d.id for d in usuario.disciplinas]
-
-        # Busca todas as anotações que estão ligadas diretamente a uma disciplina do usuário
-        # OU que não estão ligadas a nenhuma disciplina (anotações gerais)
-        # (Uma consulta mais complexa pode ser necessária para anotações de tarefas)
         anotacoes = Anotacao.query.join(Disciplina).filter(Disciplina.usuario_id == session['user_id']).all()
 
-        return render_template('anotacao.html', anotacoes=anotacoes, usuario=usuario)
+        return render_template('anotacao.html', anotacoes=anotacoes, usuario=formatar_usuario_json(usuario))
     
     @app.route('/anotacoes/criar', methods=['POST'])
     def criar_anotacao():
