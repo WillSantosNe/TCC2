@@ -223,6 +223,16 @@ def create_app():
         ids_disciplinas_usuario = [d.id for d in usuario.disciplinas]
         tarefas_do_usuario = Tarefa.query.filter(Tarefa.disciplina_id.in_(ids_disciplinas_usuario)).order_by(Tarefa.data_entrega).all()
 
+        # Filtro por disciplina se especificado
+        disciplina_id_filtro = request.args.get('disciplina_id', type=int)
+        if disciplina_id_filtro:
+            # Verifica se a disciplina pertence ao usuário
+            if disciplina_id_filtro in ids_disciplinas_usuario:
+                tarefas_do_usuario = [t for t in tarefas_do_usuario if t.disciplina_id == disciplina_id_filtro]
+            else:
+                # Se a disciplina não pertence ao usuário, limpa o filtro
+                disciplina_id_filtro = None
+
         hoje = date.today()
         for tarefa in tarefas_do_usuario:
             if tarefa.data_entrega < hoje and tarefa.status != StatusTarefa.CONCLUIDA:
@@ -257,7 +267,8 @@ def create_app():
         return render_template('tarefas.html', 
                             tarefas=tarefas_para_json, 
                             disciplinas=disciplinas_para_json, # Passa a lista formatada
-                            usuario=formatar_usuario_json(usuario))
+                            usuario=formatar_usuario_json(usuario),
+                            disciplina_filtro_id=disciplina_id_filtro) # Passa o ID da disciplina filtrada
     
 
     
@@ -599,9 +610,27 @@ def create_app():
 
         # Pega os IDs de todas as disciplinas do usuário
         ids_disciplinas_usuario = [d.id for d in usuario.disciplinas]
-        anotacoes = Anotacao.query.join(Disciplina).filter(Disciplina.usuario_id == session['user_id']).all()
+        
+        # Filtro por disciplina se especificado
+        disciplina_id_filtro = request.args.get('disciplina_id', type=int)
+        if disciplina_id_filtro:
+            # Verifica se a disciplina pertence ao usuário
+            if disciplina_id_filtro in ids_disciplinas_usuario:
+                anotacoes = Anotacao.query.filter(
+                    Anotacao.usuario_id == session['user_id'],
+                    Anotacao.disciplina_id == disciplina_id_filtro
+                ).all()
+            else:
+                # Se a disciplina não pertence ao usuário, limpa o filtro
+                disciplina_id_filtro = None
+                anotacoes = Anotacao.query.filter(Anotacao.usuario_id == session['user_id']).all()
+        else:
+            anotacoes = Anotacao.query.filter(Anotacao.usuario_id == session['user_id']).all()
 
-        return render_template('anotacao.html', anotacoes=anotacoes, usuario=formatar_usuario_json(usuario))
+        return render_template('anotacao.html', 
+                            anotacoes=anotacoes, 
+                            usuario=formatar_usuario_json(usuario),
+                            disciplina_filtro_id=disciplina_id_filtro) # Passa o ID da disciplina filtrada
     
     @app.route('/anotacoes/criar', methods=['POST'])
     def criar_anotacao():
@@ -625,6 +654,7 @@ def create_app():
         nova_anotacao = Anotacao(
             titulo=titulo,
             conteudo=conteudo,
+            usuario_id=session['user_id'],
             disciplina_id=disciplina_id,
             tarefa_id=tarefa_id
         )

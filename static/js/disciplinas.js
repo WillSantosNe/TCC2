@@ -376,10 +376,36 @@ document.addEventListener("DOMContentLoaded", function () {
             detalheDisciplinaPeriodo.textContent = dadosCompletos.periodo || '-';
             detalheDisciplinaStatus.innerHTML = `<span class="badge ${getStatusBadgeClass(dadosCompletos.status)}">${dadosCompletos.status}</span>`;
 
+            // Adiciona event listeners para os botões de ação
+            adicionarEventListenersBotoesAcao(dadosCompletos.id);
+
             const bsModal = new bootstrap.Modal(modalDetalhesDisciplina);
             bsModal.show();
         }
     });
+
+    // --- FUNÇÃO PARA ADICIONAR EVENT LISTENERS AOS BOTÕES DE AÇÃO ---
+    function adicionarEventListenersBotoesAcao(disciplinaId) {
+        // Remove event listeners anteriores para evitar duplicação
+        const btnVerTarefas = modalDetalhesDisciplina.querySelector('.btn-ver-tarefas');
+        const btnVerAnotacoes = modalDetalhesDisciplina.querySelector('.btn-ver-anotacoes');
+        
+        if (btnVerTarefas) {
+            btnVerTarefas.onclick = null; // Remove listener anterior
+            btnVerTarefas.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = `/tarefas?disciplina_id=${disciplinaId}`;
+            });
+        }
+        
+        if (btnVerAnotacoes) {
+            btnVerAnotacoes.onclick = null; // Remove listener anterior
+            btnVerAnotacoes.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = `/anotacao?disciplina_id=${disciplinaId}`;
+            });
+        }
+    }
 
     // --- FUNÇÕES PARA MANIPULAR DISCIPLINAS ---
     async function deletarDisciplinaDaTabela(disciplinaId, tr) {
@@ -523,6 +549,20 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
             console.error("TinyMCE não foi carregado.");
         }
+    }
+
+    // =======================================================================
+    // == QUICK ADD: TAREFA/PROVA - POPULAR DISCIPLINAS DINAMICAMENTE ========
+    // =======================================================================
+    const modalTarefaQuickAdd = document.getElementById('modalTarefaPrincipalQuickAdd');
+    if (modalTarefaQuickAdd) {
+        const tarefaDisciplinaSelect = document.getElementById('principalTarefaDisciplinaQuickAdd');
+
+        modalTarefaQuickAdd.addEventListener('show.bs.modal', function () {
+            // Garante que a lista está atualizada (usa cache já carregado nesta página)
+            // Se quiser forçar atualização: chamar buscarDisciplinas() aqui de forma assíncrona
+            popularSelect(tarefaDisciplinaSelect, disciplinasParaSelect(), null, "Selecione...");
+        });
     }
 
     const modalAnotacao = document.getElementById('modalNovaAnotacao');

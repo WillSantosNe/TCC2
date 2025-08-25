@@ -112,11 +112,21 @@ document.addEventListener("DOMContentLoaded", function () {
                 // O restante da lógica para popular os filtros e adicionar eventos
                 dadosDisciplinas.forEach(d => $('#filterDisciplina').append(new Option(d.nome, d.nome)));
                 
-                const params = new URLSearchParams(window.location.search);
-                const disciplinaParaFiltrar = params.get('disciplina');
-                if (disciplinaParaFiltrar) {
-                    $('#filterDisciplina').val(disciplinaParaFiltrar);
-                    api.column(2).search('^' + disciplinaParaFiltrar + '$', true, false).draw();
+                // Aplica filtro automático se disciplina_id estiver presente
+                if (window.disciplina_filtro_id) {
+                    const disciplinaParaFiltrar = dadosDisciplinas.find(d => d.id === window.disciplina_filtro_id);
+                    if (disciplinaParaFiltrar) {
+                        $('#filterDisciplina').val(disciplinaParaFiltrar.nome);
+                        api.column(2).search('^' + disciplinaParaFiltrar.nome + '$', true, false).draw();
+                    }
+                } else {
+                    // Mantém a lógica anterior para compatibilidade
+                    const params = new URLSearchParams(window.location.search);
+                    const disciplinaParaFiltrar = params.get('disciplina');
+                    if (disciplinaParaFiltrar) {
+                        $('#filterDisciplina').val(disciplinaParaFiltrar);
+                        api.column(2).search('^' + disciplinaParaFiltrar + '$', true, false).draw();
+                    }
                 }
                 
                 $('#filterTipoTarefa, #filterDisciplina').on('change', function() {

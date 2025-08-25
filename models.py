@@ -26,6 +26,7 @@ class Usuario(db.Model):
     senha_hash = db.Column(db.String(256), nullable=False)
     
     disciplinas = db.relationship('Disciplina', backref='usuario', lazy=True, cascade="all, delete-orphan")
+    anotacoes = db.relationship('Anotacao', backref='usuario', lazy=True, cascade="all, delete-orphan")
 
     def set_senha(self, senha):
         self.senha_hash = generate_password_hash(senha, method='pbkdf2:sha256')
@@ -64,5 +65,6 @@ class Anotacao(db.Model):
     conteudo = db.Column(db.Text, nullable=True)
     data_criacao = db.Column(db.DateTime, server_default=db.func.now())
     
+    usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'), nullable=False)
     disciplina_id = db.Column(db.Integer, db.ForeignKey('disciplina.id'), nullable=True)
     tarefa_id = db.Column(db.Integer, db.ForeignKey('tarefa.id'), nullable=True)
