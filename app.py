@@ -1,11 +1,13 @@
 import os
 from datetime import datetime, date
-from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify, send_from_directory
 from dotenv import load_dotenv
 from extensions import db
 from models import Usuario, Disciplina, Tarefa, Anotacao, StatusDisciplina, StatusTarefa, TipoTarefa
 from flask_jwt_extended import JWTManager
 from authlib.integrations.flask_client import OAuth 
+import secrets
+import datetime
 
 load_dotenv()
 
@@ -17,6 +19,13 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+    
+    # Configuração para upload de arquivos
+    app.config['UPLOAD_FOLDER'] = 'static/uploads'
+    app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
+    
+    # Cria o diretório de uploads se não existir
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
     db.init_app(app)
     oauth = OAuth(app)
@@ -52,6 +61,48 @@ def create_app():
             db.session.add(new_admin)
             db.session.commit()
             print("Usuário admin criado com sucesso!")
+
+    @app.cli.command("update-db")
+    def update_db_command():
+        """Atualiza o banco de dados com as novas colunas."""
+        with app.app_context():
+            try:
+                # Adiciona as novas colunas se não existirem
+                with db.engine.connect() as conn:
+                    # Verifica se as colunas já existem
+                    inspector = db.inspect(db.engine)
+                    existing_columns = [col['name'] for col in inspector.get_columns('usuario')]
+                    
+                    if 'foto_perfil' not in existing_columns:
+                        conn.execute(db.text("ALTER TABLE usuario ADD COLUMN foto_perfil VARCHAR(255)"))
+                        print("Coluna 'foto_perfil' adicionada.")
+                    
+                    if 'email_notificacoes' not in existing_columns:
+                        conn.execute(db.text("ALTER TABLE usuario ADD COLUMN email_notificacoes BOOLEAN DEFAULT TRUE"))
+                        print("Coluna 'email_notificacoes' adicionada.")
+                    
+                    if 'app_notificacoes' not in existing_columns:
+                        conn.execute(db.text("ALTER TABLE usuario ADD COLUMN app_notificacoes BOOLEAN DEFAULT TRUE"))
+                        print("Coluna 'app_notificacoes' adicionada.")
+                    
+                    if 'frequencia_notificacoes' not in existing_columns:
+                        conn.execute(db.text("ALTER TABLE usuario ADD COLUMN frequencia_notificacoes VARCHAR(20) DEFAULT 'instant'"))
+                        print("Coluna 'frequencia_notificacoes' adicionada.")
+                    
+                    if 'token_confirmacao' not in existing_columns:
+                        conn.execute(db.text("ALTER TABLE usuario ADD COLUMN token_confirmacao VARCHAR(255)"))
+                        print("Coluna 'token_confirmacao' adicionada.")
+                    
+                    if 'token_expiracao' not in existing_columns:
+                        conn.execute(db.text("ALTER TABLE usuario ADD COLUMN token_expiracao DATETIME"))
+                        print("Coluna 'token_expiracao' adicionada.")
+                    
+                    conn.commit()
+                    print("Banco de dados atualizado com sucesso!")
+                    
+            except Exception as e:
+                print(f"Erro ao atualizar banco de dados: {e}")
+                db.session.rollback()
     
     @app.route('/', methods=['GET', 'POST'])
     def rota_login():
@@ -672,6 +723,168 @@ def create_app():
     @app.route('/codigo')
     def rota_codigo():
         return render_template('codigo.html')
+
+    @app.route('/api/configuracoes/trocar-senha', methods=['POST'])
+    def api_trocar_senha():
+        """Inicia o processo de troca de senha enviando email de confirmação"""
+        if 'user_id' not in session:
+            return jsonify({"error": "Não autorizado"}), 401
+
+        try:
+            usuario = Usuario.query.get(session['user_id'])
+            if not usuario:
+                return jsonify({"error": "Usuário não encontrado"}), 404
+
+            senha_atual = request.json.get('senha_atual')
+            nova_senha = request.json.get('nova_senha')
+            
+            if not usuario.check_senha(senha_atual):
+                return jsonify({"error": "Senha atual incorreta"}), 400
+
+            # Gera token de confirmação
+            token = usuario.gerar_token_confirmacao()
+            db.session.commit()
+
+            # Aqui você implementaria o envio do email
+            # Por enquanto, vamos simular retornando o token
+            # Em produção, envie o email com o link de confirmação
+            
+            return jsonify({
+                "message": "Email de confirmação enviado!",
+                "token": token  # Em produção, não retorne o token
+            })
+
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"error": f"Erro ao processar solicitação: {str(e)}"}), 500
+
+    @app.route('/api/configuracoes/confirmar-senha/<token>', methods=['POST'])
+    def api_confirmar_senha(token):
+        """Confirma a troca de senha usando o token"""
+        if 'user_id' not in session:
+            return jsonify({"error": "Não autorizado"}), 401
+
+        try:
+            usuario = Usuario.query.get(session['user_id'])
+            if not usuario:
+                return jsonify({"error": "Usuário não encontrado"}), 404
+
+            if not usuario.verificar_token(token):
+                return jsonify({"error": "Token inválido ou expirado"}), 400
+
+            nova_senha = request.json.get('nova_senha')
+            if not nova_senha:
+                return jsonify({"error": "Nova senha é obrigatória"}), 400
+
+            # Atualiza a senha
+            usuario.set_senha(nova_senha)
+            usuario.limpar_token()
+            db.session.commit()
+
+            return jsonify({"message": "Senha alterada com sucesso!"})
+
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"error": f"Erro ao alterar senha: {str(e)}"}), 500
+
+    @app.route('/api/configuracoes/foto-perfil', methods=['POST'])
+    def api_foto_perfil():
+        """Atualiza a foto de perfil do usuário"""
+        if 'user_id' not in session:
+            return jsonify({"error": "Não autorizado"}), 401
+
+        try:
+            if 'foto' not in request.files:
+                return jsonify({"error": "Nenhum arquivo enviado"}), 400
+
+            arquivo = request.files['foto']
+            if arquivo.filename == '':
+                return jsonify({"error": "Nenhum arquivo selecionado"}), 400
+
+            if arquivo:
+                # Verifica extensão
+                extensoes_permitidas = {'png', 'jpg', 'jpeg', 'gif'}
+                if '.' not in arquivo.filename or \
+                   arquivo.filename.rsplit('.', 1)[1].lower() not in extensoes_permitidas:
+                    return jsonify({"error": "Tipo de arquivo não permitido"}), 400
+
+                # Gera nome único para o arquivo
+                nome_arquivo = f"perfil_{session['user_id']}_{secrets.token_hex(8)}.{arquivo.filename.rsplit('.', 1)[1].lower()}"
+                caminho_arquivo = os.path.join(app.config['UPLOAD_FOLDER'], nome_arquivo)
+                
+                # Salva o arquivo
+                arquivo.save(caminho_arquivo)
+
+                # Atualiza o usuário
+                usuario = Usuario.query.get(session['user_id'])
+                if usuario.foto_perfil and os.path.exists(os.path.join('static', usuario.foto_perfil)):
+                    # Remove foto antiga
+                    os.remove(os.path.join('static', usuario.foto_perfil))
+
+                usuario.foto_perfil = f"uploads/{nome_arquivo}"
+                db.session.commit()
+
+                return jsonify({
+                    "message": "Foto atualizada com sucesso!",
+                    "foto_url": f"/static/{usuario.foto_perfil}"
+                })
+
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"error": f"Erro ao atualizar foto: {str(e)}"}), 500
+
+    @app.route('/api/configuracoes/notificacoes', methods=['POST'])
+    def api_configurar_notificacoes():
+        """Atualiza as configurações de notificações"""
+        if 'user_id' not in session:
+            return jsonify({"error": "Não autorizado"}), 401
+
+        try:
+            usuario = Usuario.query.get(session['user_id'])
+            if not usuario:
+                return jsonify({"error": "Usuário não encontrado"}), 404
+
+            data = request.get_json()
+            
+            usuario.email_notificacoes = data.get('email_notificacoes', True)
+            usuario.app_notificacoes = data.get('app_notificacoes', True)
+            usuario.frequencia_notificacoes = data.get('frequencia_notificacoes', 'instant')
+            
+            db.session.commit()
+
+            return jsonify({
+                "message": "Configurações atualizadas com sucesso!",
+                "configuracoes": {
+                    "email_notificacoes": usuario.email_notificacoes,
+                    "app_notificacoes": usuario.app_notificacoes,
+                    "frequencia_notificacoes": usuario.frequencia_notificacoes
+                }
+            })
+
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"error": f"Erro ao atualizar configurações: {str(e)}"}), 500
+
+    @app.route('/api/configuracoes/perfil', methods=['GET'])
+    def api_get_configuracoes():
+        """Retorna as configurações atuais do usuário"""
+        if 'user_id' not in session:
+            return jsonify({"error": "Não autorizado"}), 401
+
+        try:
+            usuario = Usuario.query.get(session['user_id'])
+            if not usuario:
+                return jsonify({"error": "Usuário não encontrado"}), 404
+
+            return jsonify({
+                "foto_perfil": usuario.foto_perfil,
+                "email_notificacoes": usuario.email_notificacoes,
+                "app_notificacoes": usuario.app_notificacoes,
+                "frequencia_notificacoes": usuario.frequencia_notificacoes
+            })
+
+        except Exception as e:
+            return jsonify({"error": f"Erro ao buscar configurações: {str(e)}"}), 500
 
     # -------------------------
 
