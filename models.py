@@ -19,6 +19,12 @@ class TipoTarefa(enum.Enum):
     TAREFA = "TAREFA"
     PROVA = "PROVA"
 
+class TipoNotificacao(enum.Enum):
+    TAREFA = "TAREFA"
+    PROVA = "PROVA"
+    DISCIPLINA = "DISCIPLINA"
+    SISTEMA = "SISTEMA"
+
 class Usuario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(150), nullable=False)
@@ -33,6 +39,7 @@ class Usuario(db.Model):
     
     disciplinas = db.relationship('Disciplina', backref='usuario', lazy=True, cascade="all, delete-orphan")
     anotacoes = db.relationship('Anotacao', backref='usuario', lazy=True, cascade="all, delete-orphan")
+    notificacoes = db.relationship('Notificacao', backref='usuario', lazy=True, cascade="all, delete-orphan")
 
     def set_senha(self, senha):
         self.senha_hash = generate_password_hash(senha, method='pbkdf2:sha256')
@@ -62,6 +69,19 @@ class Usuario(db.Model):
         """Limpa o token após uso"""
         self.token_confirmacao = None
         self.token_expiracao = None
+
+    def criar_notificacao(self, titulo, mensagem, tipo=TipoNotificacao.SISTEMA, lida=False):
+        """Cria uma nova notificação para o usuário"""
+        from datetime import datetime
+        notificacao = Notificacao(
+            titulo=titulo,
+            mensagem=mensagem,
+            tipo=tipo,
+            lida=lida,
+            usuario_id=self.id
+        )
+        db.session.add(notificacao)
+        return notificacao
 
 class Disciplina(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -97,3 +117,13 @@ class Anotacao(db.Model):
     usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'), nullable=False)
     disciplina_id = db.Column(db.Integer, db.ForeignKey('disciplina.id'), nullable=True)
     tarefa_id = db.Column(db.Integer, db.ForeignKey('tarefa.id'), nullable=True)
+
+class Notificacao(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    titulo = db.Column(db.String(200), nullable=False)
+    mensagem = db.Column(db.Text, nullable=False)
+    tipo = db.Column(db.Enum(TipoNotificacao), default=TipoNotificacao.SISTEMA, nullable=False)
+    lida = db.Column(db.Boolean, default=False, nullable=False)
+    data_criacao = db.Column(db.DateTime, server_default=db.func.now())
+    
+    usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'), nullable=False)

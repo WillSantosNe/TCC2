@@ -3,7 +3,7 @@ from datetime import datetime, date
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify, send_from_directory
 from dotenv import load_dotenv
 from extensions import db
-from models import Usuario, Disciplina, Tarefa, Anotacao, StatusDisciplina, StatusTarefa, TipoTarefa
+from models import Usuario, Disciplina, Tarefa, Anotacao, StatusDisciplina, StatusTarefa, TipoTarefa, Notificacao, TipoNotificacao
 from flask_jwt_extended import JWTManager
 from authlib.integrations.flask_client import OAuth 
 import secrets
@@ -688,33 +688,68 @@ def create_app():
         if 'user_id' not in session:
             return redirect(url_for('rota_login'))
 
-        # Pega os dados do formulário
-        titulo = request.form.get('principalAnotacaoTitulo')
-        conteudo = request.form.get('principalAnotacaoConteudo') # O TinyMCE atualiza o textarea com este name
-        disciplina_id = request.form.get('principalAnotacaoDisciplina')
-        tarefa_id = request.form.get('principalAnotacaoAtividade')
+        try:
+            # Pega os dados do formulário
+            titulo = request.form.get('principalAnotacaoTitulo')
+            conteudo = request.form.get('principalAnotacaoConteudo') # O TinyMCE atualiza o textarea com este name
+            disciplina_id = request.form.get('principalAnotacaoDisciplina')
+            tarefa_id = request.form.get('principalAnotacaoAtividade')
 
-        if not titulo:
-            # Em uma implementação real, trataríamos o erro de forma mais elegante
-            return "O título é obrigatório.", 400
+            if not titulo:
+                flash('O título é obrigatório.', 'danger')
+                return redirect(request.referrer or url_for('rota_dashboard'))
 
-        # Converte para int ou None se estiver vazio
-        disciplina_id = int(disciplina_id) if disciplina_id else None
-        tarefa_id = int(tarefa_id) if tarefa_id else None
+            # Converte para int ou None se estiver vazio
+            disciplina_id = int(disciplina_id) if disciplina_id else None
+            tarefa_id = int(tarefa_id) if tarefa_id else None
 
-        nova_anotacao = Anotacao(
-            titulo=titulo,
-            conteudo=conteudo,
-            usuario_id=session['user_id'],
-            disciplina_id=disciplina_id,
-            tarefa_id=tarefa_id
-        )
+            # Verifica se a disciplina pertence ao usuário (segurança)
+            if disciplina_id:
+                disciplina = Disciplina.query.filter_by(
+                    id=disciplina_id, 
+                    usuario_id=session['user_id']
+                ).first()
+                if not disciplina:
+                    flash('Disciplina inválida.', 'danger')
+                    return redirect(request.referrer or url_for('rota_dashboard'))
 
-        db.session.add(nova_anotacao)
-        db.session.commit()
+            # Verifica se a tarefa pertence ao usuário (segurança)
+            if tarefa_id:
+                tarefa = Tarefa.query.join(Disciplina).filter(
+                    Tarefa.id == tarefa_id,
+                    Disciplina.usuario_id == session['user_id']
+                ).first()
+                if not tarefa:
+                    flash('Tarefa inválida.', 'danger')
+                    return redirect(request.referrer or url_for('rota_dashboard'))
 
-        # Redireciona para a página de anotações para ver o resultado
-        return redirect(request.referrer or url_for('rota_dashboard'))
+            nova_anotacao = Anotacao(
+                titulo=titulo,
+                conteudo=conteudo,
+                usuario_id=session['user_id'],
+                disciplina_id=disciplina_id,
+                tarefa_id=tarefa_id
+            )
+
+            db.session.add(nova_anotacao)
+            db.session.commit()
+
+            # Cria notificação de sucesso
+            usuario = Usuario.query.get(session['user_id'])
+            usuario.criar_notificacao(
+                titulo="Anotação Criada",
+                mensagem=f"Anotação '{titulo}' foi criada com sucesso!",
+                tipo=TipoNotificacao.SISTEMA
+            )
+            db.session.commit()
+
+            flash('Anotação criada com sucesso!', 'success')
+            return redirect(request.referrer or url_for('rota_dashboard'))
+
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Erro ao criar anotação: {str(e)}', 'danger')
+            return redirect(request.referrer or url_for('rota_dashboard'))
 
     @app.route('/esqueceu_senha')
     def rota_esqueceu_senha():
@@ -885,6 +920,88 @@ def create_app():
 
         except Exception as e:
             return jsonify({"error": f"Erro ao buscar configurações: {str(e)}"}), 500
+
+    # --- ROTAS DE API PARA NOTIFICAÇÕES ---
+    
+    @app.route('/api/notificacoes', methods=['GET'])
+    def api_get_notificacoes():
+        """Retorna todas as notificações do usuário logado"""
+        if 'user_id' not in session:
+            return jsonify({"error": "Não autorizado"}), 401
+
+        try:
+            usuario = Usuario.query.get(session['user_id'])
+            if not usuario:
+                return jsonify({"error": "Usuário não encontrado"}), 404
+
+            notificacoes = Notificacao.query.filter_by(usuario_id=session['user_id']).order_by(Notificacao.data_criacao.desc()).all()
+            
+            notificacoes_json = [{
+                "id": n.id,
+                "titulo": n.titulo,
+                "mensagem": n.mensagem,
+                "tipo": n.tipo.name,
+                "lida": n.lida,
+                "data_criacao": n.data_criacao.isoformat() if n.data_criacao else None
+            } for n in notificacoes]
+            
+            return jsonify(notificacoes_json)
+
+        except Exception as e:
+            return jsonify({"error": f"Erro ao buscar notificações: {str(e)}"}), 500
+
+    @app.route('/api/notificacoes/<int:notificacao_id>/marcar-lida', methods=['PUT'])
+    def api_marcar_notificacao_lida(notificacao_id):
+        """Marca uma notificação como lida"""
+        if 'user_id' not in session:
+            return jsonify({"error": "Não autorizado"}), 401
+
+        try:
+            notificacao = Notificacao.query.filter_by(
+                id=notificacao_id, 
+                usuario_id=session['user_id']
+            ).first()
+
+            if not notificacao:
+                return jsonify({"error": "Notificação não encontrada"}), 404
+
+            notificacao.lida = True
+            db.session.commit()
+
+            return jsonify({"message": "Notificação marcada como lida!"})
+
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"error": f"Erro ao marcar notificação: {str(e)}"}), 500
+
+    @app.route('/api/notificacoes/marcar-todas-lidas', methods=['PUT'])
+    def api_marcar_todas_notificacoes_lidas():
+        """Marca todas as notificações do usuário como lidas"""
+        if 'user_id' not in session:
+            return jsonify({"error": "Não autorizado"}), 401
+
+        try:
+            Notificacao.query.filter_by(usuario_id=session['user_id'], lida=False).update({"lida": True})
+            db.session.commit()
+
+            return jsonify({"message": "Todas as notificações foram marcadas como lidas!"})
+
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"error": f"Erro ao marcar notificações: {str(e)}"}), 500
+
+    @app.route('/api/notificacoes/contador', methods=['GET'])
+    def api_get_contador_notificacoes():
+        """Retorna o contador de notificações não lidas"""
+        if 'user_id' not in session:
+            return jsonify({"error": "Não autorizado"}), 401
+
+        try:
+            contador = Notificacao.query.filter_by(usuario_id=session['user_id'], lida=False).count()
+            return jsonify({"contador": contador})
+
+        except Exception as e:
+            return jsonify({"error": f"Erro ao buscar contador: {str(e)}"}), 500
 
     # -------------------------
 
