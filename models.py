@@ -1,7 +1,7 @@
 # models.py
 from datetime import datetime
 import enum
-from extensions import db # CORREÇÃO APLICADA AQUI
+from .extensions import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # Definição dos Enums para Status e Tipos

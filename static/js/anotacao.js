@@ -1,55 +1,15 @@
-<<<<<<< HEAD
-// static/js/anotacao.js
-
-// ================= INÍCIO DA ALTERAÇÃO =================
-// Os dados mocados que estavam aqui foram REMOVIDOS.
-// O script agora vai pegar os dados da variável 'initialData' criada no HTML.
-// =================== FIM DA ALTERAÇÃO ==================
-=======
-// --- DADOS MOCADOS (AGORA GLOBALIZADOS DE FORMA CONSISTENTE) ---
-// Se houver dados do back-end, usa eles; senão, usa os dados mockados
-let listaDisciplinas = (window.disciplinasData || window.disciplinas_json) || [
-    { id: "CS101", nome: "Algoritmos e Estrutura de Dados" },
-    { id: "CS102", nome: "Redes de Computadores" },
-    { id: "CS103", nome: "Banco de Dados" },
-    { id: "CS104", nome: "Inteligência Artificial" },
-    { id: "CS105", nome: "Compiladores" }
-];
-
-let listaTarefas = (window.tarefas_json) || [
-    { id: "T001", titulo: "Complexidade e Estruturas Lineares", disciplinaId: "CS101", tipo: "Prova", dataEntrega: "2025-06-23", status: "Agendada", descricao: "Estudar capítulos 1 a 3 do livro Cormen. Foco em complexidade Big-O." },
-    { id: "T006", titulo: "Camadas de Transporte e Aplicação", disciplinaId: "CS102", tipo: "Prova", dataEntrega: "2025-06-24", status: "Agendada", descricao: "Foco em protocolos TCP, UDP e HTTP." },
-    { id: "T010", titulo: "SQL e Normalização", disciplinaId: "CS103", tipo: "Prova", dataEntrega: "2025-06-25", status: "Agendada", descricao: "Praticar joins e entender as formas normais (1FN, 2FN, 3FN)." },
-    { id: "T013", titulo: "Machine Learning e Redes Neurais", disciplinaId: "CS104", tipo: "Prova", dataEntrega: "2025-06-26", status: "Agendada", descricao: "Revisar conceitos de regressão linear e redes neurais convolucionais." },
-    { id: "T017", titulo: "Análise Léxica e Sintática", disciplinaId: "CS105", tipo: "Prova", dataEntrega: "2025-06-29", status: "Agendada", descricao: "Implementar um analisador léxico simples em Python." },
-];
-
-// Se houver dados de anotações do back-end, usa eles; senão, usa os dados mockados
-let listaAnotacoes = window.anotacoes_backend || [
-    { id: "ANOT_EXEMPLO_1", titulo: "Reunião de Projeto Semanal", disciplinaId: "CS101", atividadeVinculadaId: "T001", conteudo: "<h2>Pauta da Reunião</h2><p>Discutir os seguintes pontos:</p><ul><li>Progresso da semana</li><li>Bloqueios identificados</li><li>Próximos passos para a Sprint 4</li></ul><p><strong>Decisões:</strong> Focar na integração do módulo de pagamentos.</p>", dataCriacao: new Date(new Date().setDate(new Date().getDate()-3)).toISOString(), ultimaModificacao: new Date().toISOString() },
-    { id: "ANOT_EXEMPLO_2", titulo: "Estudo de Algoritmos", disciplinaId: "CS101", atividadeVinculadaId: "T001", conteudo: "<h3>Conceitos Importantes sobre Grafos</h3><p>Revisar:</p><ol><li>Busca em Largura (BFS)</li><li>Busca em Profundidade (DFS)</li><li>Algoritmo de Dijkstra</li></ol><p><em>Praticar com exercícios do livro.</em></p>", dataCriacao: new Date(new Date().setDate(new Date().getDate()-5)).toISOString(), ultimaModificacao: new Date().toISOString() },
-    { id: "ANOT_EXEMPLO_3", titulo: "Definição do Tema do TCC", disciplinaId: "CS105", atividadeVinculadaId: "T017", conteudo: "<p>Primeiras ideias e esboço do tema para o TCC 1.</p>", dataCriacao: new Date(new Date().setDate(new Date().getDate()-7)).toISOString(), ultimaModificacao: new Date().toISOString() }
-];
-
->>>>>>> 2644b5b9555fa1e032a51266b9f52308b51deb78
-
 document.addEventListener("DOMContentLoaded", function () {
     console.log("DOM carregado. Iniciando anotacao.js.");
 
-    // ================= INÍCIO DA ALTERAÇÃO =================
-    // PASSO 1: VERIFICAR SE OS DADOS DO BACKEND FORAM RECEBIDOS
     if (typeof initialData === 'undefined') {
         console.error("ERRO CRÍTICO: a variável 'initialData' não foi encontrada. Verifique se os dados estão sendo passados corretamente do Flask para o template HTML.");
         alert("Não foi possível carregar os dados da página. Por favor, tente recarregar.");
-        return; // Interrompe a execução para evitar mais erros
+        return;
     }
 
-    // PASSO 2: USAR OS DADOS REAIS EM VEZ DOS DADOS MOCADOS
-    // Estas variáveis agora contêm os dados vindos diretamente do seu banco de dados.
     let listaAnotacoes = initialData.anotacoes || [];
     const listaDisciplinas = initialData.disciplinas || [];
     let listaTarefas = initialData.tarefas || [];
-    // =================== FIM DA ALTERAÇÃO ==================
 
 
     // --- SELETORES DE ELEMENTOS DO MODAL DE ANOTAÇÃO ---
@@ -96,12 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // --- DADOS E ESTADO ---
     let tabelaAnotacoesDt;
     let resizeDebounceTimer;
-<<<<<<< HEAD
-    // A variável 'listaAnotacoes' agora é inicializada no topo com os dados do backend.
-
-=======
     
->>>>>>> 2644b5b9555fa1e032a51266b9f52308b51deb78
     // --- TINYMCE FUNÇÕES ---
     function inicializarTinyMCE(initialContent = '') {
         if (typeof tinymce === 'undefined') {
@@ -134,24 +89,14 @@ document.addEventListener("DOMContentLoaded", function () {
     
     // Funções para buscar nome da disciplina/atividade pelo ID
     function getNomeDisciplinaById(id) {
-<<<<<<< HEAD
-        // Agora busca na lista de disciplinas vinda do backend
-        const disciplina = listaDisciplinas.find(d => d.id == id); // Usar '==' para comparar tipos diferentes (ex: string e int)
-=======
         if (!id) return '-';
         const disciplina = listaDisciplinas.find(d => String(d.id) === String(id));
->>>>>>> 2644b5b9555fa1e032a51266b9f52308b51deb78
         return disciplina ? disciplina.nome : '-';
     }
 
     function getTituloTarefaById(id) {
-<<<<<<< HEAD
-        // Agora busca na lista de tarefas vinda do backend
-        const tarefa = listaTarefas.find(t => t.id == id);
-=======
         if (!id) return '-';
         const tarefa = listaTarefas.find(t => String(t.id) === String(id));
->>>>>>> 2644b5b9555fa1e032a51266b9f52308b51deb78
         return tarefa ? tarefa.titulo : '-';
     }
 
@@ -169,22 +114,12 @@ document.addEventListener("DOMContentLoaded", function () {
             const o = document.createElement('option');
             o.value = item.id;
             o.textContent = item.nome || item.titulo; // Usa 'nome' para disciplina, 'titulo' para tarefa
-<<<<<<< HEAD
-            if (selectedId && item.id == selectedId) {
-=======
             if (selectedId && String(item.id) === String(selectedId)) {
->>>>>>> 2644b5b9555fa1e032a51266b9f52308b51deb78
                 o.selected = true;
             }
             selectEl.appendChild(o);
         });
-<<<<<<< HEAD
-        if (selectedId && !dataArr.some(item => item.id == selectedId)) {
-=======
-        // Se um ID foi selecionado mas não foi encontrado na lista, garante que a opção "Nenhum(a)" esteja selecionada.
-        // Isso evita que um valor inválido persista no select.
         if (selectedId && !dataArr.some(item => String(item.id) === String(selectedId))) {
->>>>>>> 2644b5b9555fa1e032a51266b9f52308b51deb78
              defaultOption.selected = true;
         }
         if (!selectedId && !selectEl.value) {
@@ -197,22 +132,15 @@ document.addEventListener("DOMContentLoaded", function () {
     // Modal de Anotações
     function atualizarOpcoesAtividadeAnotacao(disciplinaIdSelecionada, atividadeSalvaId = null) {
         if (!anotacaoAtividadeSelectElem) return;
-
         let atividadesFiltradas = [];
         if (disciplinaIdSelecionada) {
-<<<<<<< HEAD
-            atividadesFiltradas = listaTarefas.filter(tarefa => tarefa.disciplinaId == disciplinaIdSelecionada);
-=======
-            // Se uma disciplina está selecionada, filtra as tarefas por ela
             atividadesFiltradas = listaTarefas.filter(tarefa => {
                 const tarefaDisciplinaId = tarefa.disciplinaId || tarefa.disciplina_id;
                 return String(tarefaDisciplinaId) === String(disciplinaIdSelecionada);
             });
->>>>>>> 2644b5b9555fa1e032a51266b9f52308b51deb78
         } else {
             atividadesFiltradas = listaTarefas;
         }
-        
         popularSelect(anotacaoAtividadeSelectElem, atividadesFiltradas, atividadeSalvaId, "Selecione...");
     }
 
@@ -230,32 +158,24 @@ document.addEventListener("DOMContentLoaded", function () {
             if (modalAnotacaoLabelTituloElem) modalAnotacaoLabelTituloElem.textContent = "Editar Anotação";
             if (modalAnotacaoEditInfoElem) modalAnotacaoEditInfoElem.textContent = `Editando: ${dadosAnotacao.titulo.substring(0, 30)}${dadosAnotacao.titulo.length > 30 ? '...' : ''}`;
             if (anotacaoIdInput) anotacaoIdInput.value = dadosAnotacao.id;
-            // ATUALIZA A ACTION DO FORMULÁRIO PARA A ROTA DE UPDATE
             formAnotacao.action = `/api/anotacoes/${dadosAnotacao.id}`;
-
         } else {
             if (modalAnotacaoLabelTituloElem) modalAnotacaoLabelTituloElem.textContent = "Nova Anotação";
             if (modalAnotacaoEditInfoElem) modalAnotacaoEditInfoElem.textContent = 'Nova anotação';
-            // GARANTE QUE A ACTION DO FORMULÁRIO É A DE CRIAÇÃO
             formAnotacao.action = `/anotacoes/criar`;
         }
 
         $(modalAnotacaoBootstrapEl).one('shown.bs.modal', function () {
             console.log("Modal de anotação visível. Preenchendo todos os campos...");
-
             const disciplinaSalvaId = (isEditMode && dadosAnotacao) ? (dadosAnotacao.disciplinaId || dadosAnotacao.disciplina_id) : null;
             const atividadeSalvaId = (isEditMode && dadosAnotacao) ? (dadosAnotacao.atividadeVinculadaId || dadosAnotacao.tarefa_id) : null;
-
             if (anotacaoTituloInputElem) {
                 anotacaoTituloInputElem.value = (isEditMode && dadosAnotacao) ? dadosAnotacao.titulo || '' : '';
             }
-            
             popularSelect(anotacaoDisciplinaSelectElem, listaDisciplinas, disciplinaSalvaId, "Selecione...");
             atualizarOpcoesAtividadeAnotacao(anotacaoDisciplinaSelectElem.value, atividadeSalvaId);
-            
             const initialEditorContent = (isEditMode && dadosAnotacao) ? dadosAnotacao.conteudo || '' : '';
             inicializarTinyMCE(initialEditorContent);
-
             if (anotacaoTituloInputElem) anotacaoTituloInputElem.focus();
         });
 
@@ -291,9 +211,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // Modal Adicionar Tarefa/Prova Rápida
     if (modalTarefaPrincipalQuickAddEl && principalTarefaDisciplinaQuickAddSelect) {
         modalTarefaPrincipalQuickAddEl.addEventListener('show.bs.modal', function () {
-            // Atualiza a fonte de dados priorizando dados reais da página atual
-            listaDisciplinas = (window.disciplinasData || window.disciplinas_json || listaDisciplinas);
-            // Evita sobrescrever opções já corretas; só popula se vazio/placeholder
             if (principalTarefaDisciplinaQuickAddSelect.options.length <= 1) {
                 popularSelect(principalTarefaDisciplinaQuickAddSelect, listaDisciplinas, null, "Selecione a Disciplina");
             }
@@ -304,11 +221,10 @@ document.addEventListener("DOMContentLoaded", function () {
     // --- DATATABLE ---
     function mapAnotacoesParaDataTable(lista) { 
         return lista.map(a => {
-            // Adapta para diferentes estruturas de dados (back-end vs mock)
             const disciplinaId = a.disciplinaId || a.disciplina_id;
             const atividadeId = a.atividadeVinculadaId || a.tarefa_id;
             const dataCriacao = a.dataCriacao || a.data_criacao;
-            const ultimaModificacao = a.ultimaModificacao || a.ultima_modificacao;
+            const ultimaModificacao = a.ultimaModificacao || a.data_modificacao; // Corrigido
             
             const disciplinaNome = getNomeDisciplinaById(disciplinaId);
             const atividadeNome = getTituloTarefaById(atividadeId);
@@ -328,9 +244,23 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function inicializarTabelaAnotacoes() {
-<<<<<<< HEAD
         if (!window.jQuery || !$.fn.DataTable) { console.error("jQuery ou DataTables não carregado!"); return; }
-        listaAnotacoes.sort((a, b) => new Date(b.ultimaModificacao) - new Date(a.ultimaModificacao));
+        
+        let anotacoesParaExibir = [...listaAnotacoes];
+        if (window.disciplina_filtro_id) {
+            anotacoesParaExibir = listaAnotacoes.filter(a => {
+                const disciplinaId = a.disciplinaId || a.disciplina_id;
+                return String(disciplinaId) === String(window.disciplina_filtro_id);
+            });
+            console.log(`Filtrando anotações para disciplina ID: ${window.disciplina_filtro_id}`);
+        }
+        
+        anotacoesParaExibir.sort((a, b) => {
+            const dataA = a.ultimaModificacao || a.data_modificacao;
+            const dataB = b.ultimaModificacao || b.data_modificacao;
+            return new Date(dataB) - new Date(dataA);
+        });
+        
         if ($.fn.DataTable.isDataTable('#tabelaAnotacoes')) { $('#tabelaAnotacoes').DataTable().clear().destroy(); $('#tabelaAnotacoes tbody').empty(); }
         tabelaAnotacoesDt = $('#tabelaAnotacoes').DataTable({
             responsive: { details: { type: 'column', target: 0 }},
@@ -349,8 +279,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 { responsivePriority: 7, targets: 4 }
             ],
 
-            data: mapAnotacoesParaDataTable(listaAnotacoes),
-            createdRow: function(row, data, dataIndex) { const o=listaAnotacoes[dataIndex]; if(o)$(row).data('anotacao-id-interno', o.id);},
+            data: mapAnotacoesParaDataTable(anotacoesParaExibir),
+            createdRow: function(row, data, dataIndex) { const o=anotacoesParaExibir[dataIndex]; if(o)$(row).data('anotacao-id-interno', o.id);},
             initComplete: function () {
                 $('#tabelaAnotacoes_filter input').addClass('form-control-sm').attr('aria-label', 'Buscar');
                 $('#tabelaAnotacoes_filter label').contents().filter(function() { return this.nodeType===3;}).remove();
@@ -364,65 +294,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (anotacoesHeaderOriginalEl && anotacoesHeaderOriginalEl.querySelector('#abrirModalNovaAnotacaoPrincipal')) { 
                         $(anotacoesHeaderOriginalEl.querySelector('#abrirModalNovaAnotacaoPrincipal')).hide(); 
                     }
-=======
-    if (!window.jQuery || !$.fn.DataTable) { console.error("jQuery ou DataTables não carregado!"); return; }
-    
-    // Aplica filtro por disciplina se disciplina_id estiver presente
-    let anotacoesParaExibir = [...listaAnotacoes];
-    if (window.disciplina_filtro_id) {
-        anotacoesParaExibir = listaAnotacoes.filter(a => {
-            const disciplinaId = a.disciplinaId || a.disciplina_id;
-            return String(disciplinaId) === String(window.disciplina_filtro_id);
-        });
-        console.log(`Filtrando anotações para disciplina ID: ${window.disciplina_filtro_id}`);
-    }
-    
-    anotacoesParaExibir.sort((a, b) => {
-        const dataA = a.ultimaModificacao || a.ultima_modificacao;
-        const dataB = b.ultimaModificacao || b.ultima_modificacao;
-        return new Date(dataB) - new Date(dataA);
-    });
-    
-    if ($.fn.DataTable.isDataTable('#tabelaAnotacoes')) { $('#tabelaAnotacoes').DataTable().clear().destroy(); $('#tabelaAnotacoes tbody').empty(); }
-    tabelaAnotacoesDt = $('#tabelaAnotacoes').DataTable({
-        responsive: { details: { type: 'column', target: 0 }},
-        dom: '<"row dt-custom-header align-items-center mb-3"<"col-12 col-md-auto"f><"col-12 col-md-auto ms-auto dt-buttons-anotacoes-container">>t<"row dt-table-footer align-items-center mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-        paging: false, lengthChange: false, scrollY: '450px', scrollCollapse: true,
-        language: { url: 'https://cdn.datatables.net/plug-ins/2.0.7/i18n/pt-BR.json', search: "", searchPlaceholder: "Buscar...", info: "Total de _TOTAL_ anotações", infoEmpty: "Nenhuma anotação", infoFiltered: "(de _MAX_)" },
-        
-        // --- BLOCO ATUALIZADO ---
-        columnDefs: [
-            // Desativa a ordenação para a primeira e última coluna
-            { orderable: false, targets: [0, 6] },
-
-            // Define a prioridade de exibição para cada coluna
-            { responsivePriority: 1, targets: 0, className: 'dtr-control' },         // 1º: Controle '+'
-            { responsivePriority: 2, targets: 1 },                                     // 2º: Título da Anotação
-            { responsivePriority: 3, targets: 6, className: "text-center dt-actions-column" }, // 3º: Ações
-            { responsivePriority: 4, targets: 5 },                                     // 4º: Última Modificação
-            { responsivePriority: 5, targets: 2 },                                     // 5º: Disciplina
-            { responsivePriority: 6, targets: 3 },                                     // 6º: Atividade
-            { responsivePriority: 7, targets: 4 }                                      // 7º: Data de Criação
-        ],
-        // --- FIM DO BLOCO ATUALIZADO ---
-
-        data: mapAnotacoesParaDataTable(anotacoesParaExibir),
-        createdRow: function(row, data, dataIndex) { const o=anotacoesParaExibir[dataIndex]; if(o)$(row).data('anotacao-id-interno', o.id);},
-        initComplete: function () {
-            $('#tabelaAnotacoes_filter input').addClass('form-control-sm').attr('aria-label', 'Buscar');
-            $('#tabelaAnotacoes_filter label').contents().filter(function() { return this.nodeType===3;}).remove();
-            const btnContainer = $('.dt-buttons-anotacoes-container');
-            if (abrirModalNovaAnotacaoPrincipalBtn && btnContainer.length && $('#abrirModalNovaAnotacaoDt').length === 0) {
-                const clone = abrirModalNovaAnotacaoPrincipalBtn.cloneNode(true); 
-                clone.id = 'abrirModalNovaAnotacaoDt'; 
-                clone.style.display = 'inline-flex'; 
-                $(clone).removeClass('d-none').off('click').on('click', (e)=>{e.preventDefault();abrirModalFormAnotacao(false);}); 
-                btnContainer.append(clone);
-                if (anotacoesHeaderOriginalEl && anotacoesHeaderOriginalEl.querySelector('#abrirModalNovaAnotacaoPrincipal')) { 
-                    $(anotacoesHeaderOriginalEl.querySelector('#abrirModalNovaAnotacaoPrincipal')).hide(); 
->>>>>>> 2644b5b9555fa1e032a51266b9f52308b51deb78
+                    if (tabelaAnotacoesDt) tabelaAnotacoesDt.columns.adjust().responsive.recalc();
                 }
-                if (tabelaAnotacoesDt) tabelaAnotacoesDt.columns.adjust().responsive.recalc();
             }
         });
         if ($.fn.dataTable.ext) {$.extend($.fn.dataTable.ext.type.order,{"date-br-pre":function(d){if(!d||typeof d!=='string')return 0;const p=d.match(/(\d{2})\/(\d{2})\/(\d{4}), (\d{2}):(\d{2})/);return p?parseInt(p[3]+p[2]+p[1]+p[4]+p[5]):0;},"date-br-asc":function(a,b){return a<b?-1:(a>b?1:0);},"date-br-desc":function(a,b){return a<b?1:(a>b?-1:0);}}); }
@@ -451,19 +324,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 
                 fetch(`/api/anotacoes/${aC.id}`, {
                     method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
+                    headers: { 'Content-Type': 'application/json' }
                 })
                 .then(response => response.json())
                 .then(result => {
                     if (result.success) {
-                        // Apenas se o backend confirmar, removemos da tela
                         listaAnotacoes = listaAnotacoes.filter(a => String(a.id) !== String(aC.id));
                         inicializarTabelaAnotacoes();
-                        alert(result.message); // "Anotação removida com sucesso!"
+                        alert(result.message);
                     } else {
-                        // Se der erro no backend, avisamos o usuário
                         throw new Error(result.error || "Não foi possível remover a anotação.");
                     }
                 })
@@ -477,7 +346,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (salvarAnotacaoBtnElem) {
         const formAnotacao = document.getElementById('formAnotacaoPrincipal');
-
         formAnotacao.addEventListener("submit", async function(e) {
             e.preventDefault(); 
             if (!validateFormAnotacao()) {
@@ -493,23 +361,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 formData.set('principalAnotacaoConteudo', tinymce.get('anotacaoConteudoInput').getContent());
             }
 
-<<<<<<< HEAD
             try {
                 const response = await fetch(url, {
-                    method: 'POST', // Usamos POST tanto para criar quanto para atualizar
+                    method: 'POST',
                     body: formData
                 });
-=======
-            const dados = {
-                id: isEdit ? id : ('ANOT_' + new Date().getTime()),
-                titulo: anotacaoTituloInputElem ? anotacaoTituloInputElem.value.trim() : 'S/ Título',
-                disciplinaId: disciplinaIdVal,
-                atividadeVinculadaId: atividadeIdVal,
-                conteudo: cE,
-                ultimaModificacao: agora,
-                dataCriacao: isEdit ? (listaAnotacoes.find(a => String(a.id) === String(id))?.dataCriacao || (listaAnotacoes.find(a => String(a.id) === String(id))?.data_criacao) || agora) : agora
-            };
->>>>>>> 2644b5b9555fa1e032a51266b9f52308b51deb78
 
                 const result = await response.json();
 
@@ -520,15 +376,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 alert(result.message);
 
                 if (isEditMode) {
-                    // Se estava editando, encontre a anotação na lista e a substitua
                     const index = listaAnotacoes.findIndex(a => a.id == result.anotacao.id);
                     if (index !== -1) {
                         listaAnotacoes[index] = result.anotacao;
                     } else {
-                        listaAnotacoes.unshift(result.anotacao); // Adiciona se não encontrar, como fallback
+                        listaAnotacoes.unshift(result.anotacao);
                     }
                 } else {
-                    // Se era novo, apenas adiciona no início
                     listaAnotacoes.unshift(result.anotacao);
                 }
 
@@ -536,7 +390,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 const modal = bootstrap.Modal.getInstance(modalAnotacaoBootstrapEl);
                 modal.hide();
-
             } catch (error) {
                 console.error('Erro ao salvar anotação:', error);
                 alert('Erro: ' + error.message);
@@ -562,7 +415,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // --- INICIALIZAÇÃO DA PÁGINA ---
     inicializarTabelaAnotacoes(); 
     console.log("anotacao.js carregado e inicializado com dados do backend.");
 });

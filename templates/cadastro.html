@@ -28,7 +28,6 @@
         <h2 class="mb-1">Cadastro</h2>
         <p class="subtitle mb-4">Crie sua conta e personalize sua jornada de estudos!</p>
 
-        <!-- Bloco para exibir mensagens de erro/sucesso do Flask -->
         {% with messages = get_flashed_messages(with_categories=true) %}
           {% if messages %}
             {% for category, message in messages %}
@@ -39,25 +38,25 @@
           {% endif %}
         {% endwith %}
 
-        <form id="cadastroForm" method="POST" action="{{ url_for('rota_cadastro') }}" novalidate>
+        <form id="cadastroForm" method="POST" action="{{ url_for('auth.rota_cadastro') }}" novalidate>
           <div class="row">
             <div class="col-sm-6 mb-3">
               <label for="nome" class="form-label">Nome</label>
               <!-- Adicionado o atributo name="nome" -->
               <input type="text" id="nome" name="nome" class="form-control" placeholder="Seu nome" >
-              </div>
+            </div>
             <div class="col-sm-6 mb-3">
               <label for="sobrenome" class="form-label">Sobrenome</label>
               <!-- O sobrenome não precisa de 'name' pois não estamos salvando no DB ainda -->
               <input type="text" id="sobrenome" class="form-control" placeholder="Seu sobrenome" >
-              </div>
+            </div>
           </div>
 
           <div class="mb-3">
             <label for="email" class="form-label">Email</label>
             <!-- Adicionado o atributo name="email" -->
             <input type="email" id="email" name="email" class="form-control" placeholder="seu@email.com" >
-            </div>
+          </div>
 
           <div class="mb-3">
             <label for="senha" class="form-label">Senha</label>
@@ -68,7 +67,7 @@
                 <i class="bi bi-eye-slash"></i>
               </span>
             </div>
-            </div>
+          </div>
 
           <div class="mb-3">
             <label for="confirmarSenha" class="form-label">Confirmar Senha</label>
@@ -78,22 +77,21 @@
                 <i class="bi bi-eye-slash"></i>
               </span>
             </div>
-            </div>
+          </div>
 
           <div class="form-check mb-3">
             <input type="checkbox" class="form-check-input" id="termos" >
             <label class="form-check-label" for="termos">
               Eu concordo com os <a href="#" class="text-primary">termos</a> e a <a href="#" class="text-primary">política de privacidade</a>.
             </label>
-            </div>
+          </div>
 
           <button type="submit" class="btn btn-primary w-100 mb-3">Criar Conta</button>
         </form>
 
         <div class="text-center mb-3 text-sm">
           Já tem uma conta?
-          <!-- Corrigido o link para apontar para a rota de login -->
-          <a href="{{ url_for('rota_login') }}" class="fw-semibold text-primary ms-1">Faça login</a>
+          <a href="{{ url_for('auth.rota_login') }}" class="fw-semibold text-primary ms-1">Faça login</a>
         </div>
 
         <div class="divider d-flex align-items-center my-3">

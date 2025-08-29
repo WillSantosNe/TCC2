@@ -12,24 +12,30 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/geral.css') }}" />
   <script src="{{ url_for('static', filename='js/esqueceu_senha.js') }}" defer></script>
 </head>
-<body class="auth-body"> <div class="main-auth-card container-xl d-flex flex-column flex-md-row-reverse bg-white rounded overflow-hidden">
+<body class="auth-body">
+  <div class="main-auth-card container-xl d-flex flex-column flex-md-row-reverse bg-white rounded overflow-hidden">
     
     <div class="image-panel col-md-6 p-0 d-none d-md-block">
       <img src="{{ url_for('static', filename='img/esqueceu.jpeg') }}" 
            alt="Ilustração Esqueci Senha" 
-           class="auth-image"> </div>
+           class="auth-image">
+    </div>
 
-    <div class="form-panel col-md-6 p-4 p-md-5"> <div class="form-content-wrapper">
+    <div class="form-panel col-md-6 p-4 p-md-5">
+      <div class="form-content-wrapper">
         <div class="logo d-flex align-items-center mb-4">
           <img class="logo-icon me-2" src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo StudyFlow">
           <span class="fw-bold fs-4 text-dark">StudyFlow</span>
         </div>
 
-        <h2>Esqueci minha senha</h2> <p class="subtitle mb-4">
+        <h2>Esqueci minha senha</h2>
+        <p class="subtitle mb-4">
           Sem problemas! Insira seu email e enviaremos um código de verificação.
         </p>
 
-        <form id="esqueceuSenhaForm"> <div class="form-group mb-3"> <label for="email" class="form-label">Email</label>
+        <form id="esqueceuSenhaForm">
+          <div class="form-group mb-3">
+            <label for="email" class="form-label">Email</label>
             <input type="email" 
                    id="email" 
                    name="email" class="form-control" 
@@ -44,13 +50,13 @@
 
         <div class="text-center mb-2 text-sm">
           Já recebeu o código?
-          <a href="{{ url_for('rota_codigo') }}"  class="fw-semibold text-primary ms-1"> Inserir código
+          <a href="{{ url_for('auth.rota_codigo') }}" class="fw-semibold text-primary ms-1"> Inserir código
           </a>
         </div>
 
         <div class="text-center text-sm">
           Lembrou sua senha?
-          <a href="{{ url_for('rota_logout') }}" 
+          <a href="{{ url_for('auth.rota_login') }}" 
              class="fw-semibold text-primary ms-1">
             Voltar ao login
           </a>

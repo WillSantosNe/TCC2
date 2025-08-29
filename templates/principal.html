@@ -38,11 +38,11 @@
             </a>
             <a href="#" class="sf-nav-link sf-quick-add-link" data-bs-toggle="modal" data-bs-target="#modalAnotacaoPrincipal"> <span class="quick-add-icon"><i class="bi bi-plus-lg"></i></span> Adicionar Anotação </a>
             <div class="sf-sidebar-section">Acadêmico</div>
-            <a href="{{ url_for('rota_dashboard') }}" class="sf-nav-link active">Dashboard</a>
-            <a class="sf-nav-link" href="{{ url_for('rota_tarefas') }}">Tarefas e Provas</a>
-            <a class="sf-nav-link" href="{{ url_for('rota_disciplinas') }}">Disciplinas Matriculadas</a>
-            <a class="sf-nav-link" href="{{ url_for('rota_calendario') }}">Calendário</a>
-            <a class="sf-nav-link" href="{{ url_for('rota_anotacao') }}">Anotações</a>
+            <a href="{{ url_for('dashboard.rota_dashboard') }}" class="sf-nav-link active">Dashboard</a>
+            <a class="sf-nav-link" href="{{ url_for('tarefas.rota_tarefas') }}">Tarefas e Provas</a>
+            <a class="sf-nav-link" href="{{ url_for('disciplinas.rota_disciplinas') }}">Disciplinas Matriculadas</a>
+            <a class="sf-nav-link" href="{{ url_for('outras_rotas.rota_calendario') }}">Calendário</a>
+            <a class="sf-nav-link" href="{{ url_for('anotacoes.rota_anotacao') }}">Anotações</a>
         </nav>
     </aside>
 
@@ -56,7 +56,7 @@
                     <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#cModalConfig" data-modal-section="configuracoes"><i class="bi bi-gear me-2"></i>Configurações</a></li>
                     <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#cModalConfig" data-modal-section="notificacoes"><i class="bi bi-bell me-2"></i>Notificações</a></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item text-danger" href="{{ url_for('rota_logout') }}"><i class="bi bi-box-arrow-right me-2"></i>Sair</a></li>
+                    <li><a class="dropdown-item text-danger" href="{{ url_for('auth.rota_logout') }}"><i class="bi bi-box-arrow-right me-2"></i>Sair</a></li>
                 </ul>
             </div>
         </header>
@@ -107,7 +107,7 @@
                     <section>
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <h6 class="fw-semibold m-0">Plataforma de Provas</h6>
-                            <a class="btn-link text-sm" href="{{ url_for('rota_tarefas') }}">Ver tudo</a>
+                            <a class="btn-link text-sm" href="{{ url_for('tarefas.rota_tarefas') }}">Ver tudo</a>
                         </div>
                         <div class="table-responsive shadow-sm exam-table">
                             <table class="table table-hover align-middle mb-0 bg-white border rounded-3">
@@ -146,7 +146,7 @@
                 <div class="col-lg-3">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <h6 class="fw-semibold m-0">Tarefas</h6>
-                        <a class="btn-link text-sm" href="{{ url_for('rota_tarefas') }}">Ver tudo</a>
+                        <a class="btn-link text-sm" href="{{ url_for('tarefas.rota_tarefas') }}">Ver tudo</a>
                     </div>
                     <div class="vstack gap-3" id="listaTarefasDashboard">
                         {% for tarefa in tarefas_dashboard %}
@@ -280,7 +280,7 @@
     <div class="modal fade" id="modalDisciplinaAdicaoPrincipal" tabindex="-1" aria-labelledby="modalDisciplinaAdicaoPrincipalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <form id="formDisciplinaPrincipal" method="POST" action="{{ url_for('criar_disciplina') }}" novalidate>
+                <form id="formDisciplinaPrincipal" method="POST" action="{{ url_for('dashboard.criar_disciplina') }}" novalidate>
                     <div class="modal-header-custom modal-header-studyflow">
                         <div class="modal-title-wrapper">
                             <img src="{{ url_for('static', filename='img/logo.png') }}" class="modal-logo-icon" alt="StudyFlow Logo">
@@ -350,7 +350,7 @@
     <div class="modal fade" id="modalTarefaPrincipalQuickAdd" tabindex="-1" aria-labelledby="modalTarefaPrincipalQuickAddLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <form id="formTarefaPrincipalQuickAdd" method="POST" action="{{ url_for('criar_tarefa') }}" novalidate>
+                <form id="formTarefaPrincipalQuickAdd" method="POST" action="{{ url_for('tarefas.criar_tarefa') }}" novalidate>
                     
                     <input type="hidden" id="principalTarefaIdQuickAdd" name="principalTarefaIdQuickAdd">
 
@@ -431,7 +431,7 @@
     <div class="modal fade" id="modalAnotacaoPrincipal" tabindex="-1" aria-labelledby="modalAnotacaoPrincipalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg"> 
             <div class="modal-content"> 
-                <form id="formAnotacaoPrincipal" method="POST" action="{{ url_for('criar_anotacao') }}" novalidate>
+                <form id="formAnotacaoPrincipal" method="POST" action="{{ url_for('anotacoes.criar_anotacao') }}" novalidate>
                     <div class="modal-header-custom modal-header-studyflow">
                         <div class="modal-title-wrapper">
                             <img src="{{ url_for('static', filename='img/logo.png') }}" class="modal-logo-icon" alt="StudyFlow Logo">
@@ -453,14 +453,14 @@
                                     <label for="principalAnotacaoDisciplinaSelect" class="modal-property-label">Disciplina</label>
                                     <div class="input-wrapper">
                                         <select class="form-select modal-property-input" id="principalAnotacaoDisciplinaSelect" name="principalAnotacaoDisciplina">
-                                            </select>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="modal-property-item">
                                     <label for="principalAnotacaoAtividadeSelect" class="modal-property-label">Atividade</label>
                                     <div class="input-wrapper">
                                         <select class="form-select modal-property-input" id="principalAnotacaoAtividadeSelect" name="principalAnotacaoAtividade">
-                                            </select>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -576,3 +576,4 @@
     <script src="{{ url_for('static', filename='js/modals/anotacaoModal.js') }}" defer></script>
 </body>
 </html>
+

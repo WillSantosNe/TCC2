@@ -27,11 +27,11 @@
             <a href="#" class="sf-nav-link sf-quick-add-link" id="quickAddTarefaBtn" data-bs-toggle="modal" data-bs-target="#modalTarefaPrincipalQuickAdd"> <span class="quick-add-icon"><i class="bi bi-plus-lg"></i></span> Adicionar Tarefa/Prova </a>
             <a href="#" class="sf-nav-link sf-quick-add-link" id="quickAddAnotacaoBtn" data-bs-toggle="modal" data-bs-target="#modalAnotacaoPrincipal"> <span class="quick-add-icon"><i class="bi bi-plus-lg"></i></span> Adicionar Anotação </a>
             <div class="sf-sidebar-section">Acadêmico</div>
-            <a href="{{ url_for('rota_dashboard') }}" class="sf-nav-link">Dashboard</a>
-            <a class="sf-nav-link" href="{{ url_for('rota_tarefas') }}">Tarefas e Provas</a>
-            <a class="sf-nav-link" href="{{ url_for('rota_disciplinas') }}">Disciplinas Matriculadas</a> 
-            <a class="sf-nav-link active" href="{{ url_for('rota_calendario') }}">Calendário</a>
-            <a class="sf-nav-link" href="{{ url_for('rota_anotacao') }}">Anotações</a>
+            <a href="{{ url_for('dashboard.rota_dashboard') }}" class="sf-nav-link">Dashboard</a>
+            <a class="sf-nav-link" href="{{ url_for('tarefas.rota_tarefas') }}">Tarefas e Provas</a>
+            <a class="sf-nav-link" href="{{ url_for('disciplinas.rota_disciplinas') }}">Disciplinas Matriculadas</a> 
+            <a class="sf-nav-link active" href="{{ url_for('outras_rotas.rota_calendario') }}">Calendário</a>
+            <a class="sf-nav-link" href="{{ url_for('anotacoes.rota_anotacao') }}">Anotações</a>
         </nav>
     </aside>
 
@@ -45,7 +45,7 @@
                     <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#cModalConfig" data-modal-section="configuracoes"><i class="bi bi-gear me-2"></i>Configurações</a></li>
                     <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#cModalConfig" data-modal-section="notificacoes"><i class="bi bi-bell me-2"></i>Notificações</a></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item text-danger" href="{{ url_for('rota_logout') }}"><i class="bi bi-box-arrow-right me-2"></i>Sair</a></li>
+                    <li><a class="dropdown-item text-danger" href="{{ url_for('auth.rota_logout') }}"><i class="bi bi-box-arrow-right me-2"></i>Sair</a></li>
                 </ul>
             </div>
         </header>
