@@ -1,9 +1,37 @@
+<<<<<<< HEAD
 // static/js/anotacao.js
 
 // ================= INÍCIO DA ALTERAÇÃO =================
 // Os dados mocados que estavam aqui foram REMOVIDOS.
 // O script agora vai pegar os dados da variável 'initialData' criada no HTML.
 // =================== FIM DA ALTERAÇÃO ==================
+=======
+// --- DADOS MOCADOS (AGORA GLOBALIZADOS DE FORMA CONSISTENTE) ---
+// Se houver dados do back-end, usa eles; senão, usa os dados mockados
+let listaDisciplinas = (window.disciplinasData || window.disciplinas_json) || [
+    { id: "CS101", nome: "Algoritmos e Estrutura de Dados" },
+    { id: "CS102", nome: "Redes de Computadores" },
+    { id: "CS103", nome: "Banco de Dados" },
+    { id: "CS104", nome: "Inteligência Artificial" },
+    { id: "CS105", nome: "Compiladores" }
+];
+
+let listaTarefas = (window.tarefas_json) || [
+    { id: "T001", titulo: "Complexidade e Estruturas Lineares", disciplinaId: "CS101", tipo: "Prova", dataEntrega: "2025-06-23", status: "Agendada", descricao: "Estudar capítulos 1 a 3 do livro Cormen. Foco em complexidade Big-O." },
+    { id: "T006", titulo: "Camadas de Transporte e Aplicação", disciplinaId: "CS102", tipo: "Prova", dataEntrega: "2025-06-24", status: "Agendada", descricao: "Foco em protocolos TCP, UDP e HTTP." },
+    { id: "T010", titulo: "SQL e Normalização", disciplinaId: "CS103", tipo: "Prova", dataEntrega: "2025-06-25", status: "Agendada", descricao: "Praticar joins e entender as formas normais (1FN, 2FN, 3FN)." },
+    { id: "T013", titulo: "Machine Learning e Redes Neurais", disciplinaId: "CS104", tipo: "Prova", dataEntrega: "2025-06-26", status: "Agendada", descricao: "Revisar conceitos de regressão linear e redes neurais convolucionais." },
+    { id: "T017", titulo: "Análise Léxica e Sintática", disciplinaId: "CS105", tipo: "Prova", dataEntrega: "2025-06-29", status: "Agendada", descricao: "Implementar um analisador léxico simples em Python." },
+];
+
+// Se houver dados de anotações do back-end, usa eles; senão, usa os dados mockados
+let listaAnotacoes = window.anotacoes_backend || [
+    { id: "ANOT_EXEMPLO_1", titulo: "Reunião de Projeto Semanal", disciplinaId: "CS101", atividadeVinculadaId: "T001", conteudo: "<h2>Pauta da Reunião</h2><p>Discutir os seguintes pontos:</p><ul><li>Progresso da semana</li><li>Bloqueios identificados</li><li>Próximos passos para a Sprint 4</li></ul><p><strong>Decisões:</strong> Focar na integração do módulo de pagamentos.</p>", dataCriacao: new Date(new Date().setDate(new Date().getDate()-3)).toISOString(), ultimaModificacao: new Date().toISOString() },
+    { id: "ANOT_EXEMPLO_2", titulo: "Estudo de Algoritmos", disciplinaId: "CS101", atividadeVinculadaId: "T001", conteudo: "<h3>Conceitos Importantes sobre Grafos</h3><p>Revisar:</p><ol><li>Busca em Largura (BFS)</li><li>Busca em Profundidade (DFS)</li><li>Algoritmo de Dijkstra</li></ol><p><em>Praticar com exercícios do livro.</em></p>", dataCriacao: new Date(new Date().setDate(new Date().getDate()-5)).toISOString(), ultimaModificacao: new Date().toISOString() },
+    { id: "ANOT_EXEMPLO_3", titulo: "Definição do Tema do TCC", disciplinaId: "CS105", atividadeVinculadaId: "T017", conteudo: "<p>Primeiras ideias e esboço do tema para o TCC 1.</p>", dataCriacao: new Date(new Date().setDate(new Date().getDate()-7)).toISOString(), ultimaModificacao: new Date().toISOString() }
+];
+
+>>>>>>> 2644b5b9555fa1e032a51266b9f52308b51deb78
 
 document.addEventListener("DOMContentLoaded", function () {
     console.log("DOM carregado. Iniciando anotacao.js.");
@@ -68,8 +96,12 @@ document.addEventListener("DOMContentLoaded", function () {
     // --- DADOS E ESTADO ---
     let tabelaAnotacoesDt;
     let resizeDebounceTimer;
+<<<<<<< HEAD
     // A variável 'listaAnotacoes' agora é inicializada no topo com os dados do backend.
 
+=======
+    
+>>>>>>> 2644b5b9555fa1e032a51266b9f52308b51deb78
     // --- TINYMCE FUNÇÕES ---
     function inicializarTinyMCE(initialContent = '') {
         if (typeof tinymce === 'undefined') {
@@ -102,14 +134,24 @@ document.addEventListener("DOMContentLoaded", function () {
     
     // Funções para buscar nome da disciplina/atividade pelo ID
     function getNomeDisciplinaById(id) {
+<<<<<<< HEAD
         // Agora busca na lista de disciplinas vinda do backend
         const disciplina = listaDisciplinas.find(d => d.id == id); // Usar '==' para comparar tipos diferentes (ex: string e int)
+=======
+        if (!id) return '-';
+        const disciplina = listaDisciplinas.find(d => String(d.id) === String(id));
+>>>>>>> 2644b5b9555fa1e032a51266b9f52308b51deb78
         return disciplina ? disciplina.nome : '-';
     }
 
     function getTituloTarefaById(id) {
+<<<<<<< HEAD
         // Agora busca na lista de tarefas vinda do backend
         const tarefa = listaTarefas.find(t => t.id == id);
+=======
+        if (!id) return '-';
+        const tarefa = listaTarefas.find(t => String(t.id) === String(id));
+>>>>>>> 2644b5b9555fa1e032a51266b9f52308b51deb78
         return tarefa ? tarefa.titulo : '-';
     }
 
@@ -127,12 +169,22 @@ document.addEventListener("DOMContentLoaded", function () {
             const o = document.createElement('option');
             o.value = item.id;
             o.textContent = item.nome || item.titulo; // Usa 'nome' para disciplina, 'titulo' para tarefa
+<<<<<<< HEAD
             if (selectedId && item.id == selectedId) {
+=======
+            if (selectedId && String(item.id) === String(selectedId)) {
+>>>>>>> 2644b5b9555fa1e032a51266b9f52308b51deb78
                 o.selected = true;
             }
             selectEl.appendChild(o);
         });
+<<<<<<< HEAD
         if (selectedId && !dataArr.some(item => item.id == selectedId)) {
+=======
+        // Se um ID foi selecionado mas não foi encontrado na lista, garante que a opção "Nenhum(a)" esteja selecionada.
+        // Isso evita que um valor inválido persista no select.
+        if (selectedId && !dataArr.some(item => String(item.id) === String(selectedId))) {
+>>>>>>> 2644b5b9555fa1e032a51266b9f52308b51deb78
              defaultOption.selected = true;
         }
         if (!selectedId && !selectEl.value) {
@@ -148,7 +200,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
         let atividadesFiltradas = [];
         if (disciplinaIdSelecionada) {
+<<<<<<< HEAD
             atividadesFiltradas = listaTarefas.filter(tarefa => tarefa.disciplinaId == disciplinaIdSelecionada);
+=======
+            // Se uma disciplina está selecionada, filtra as tarefas por ela
+            atividadesFiltradas = listaTarefas.filter(tarefa => {
+                const tarefaDisciplinaId = tarefa.disciplinaId || tarefa.disciplina_id;
+                return String(tarefaDisciplinaId) === String(disciplinaIdSelecionada);
+            });
+>>>>>>> 2644b5b9555fa1e032a51266b9f52308b51deb78
         } else {
             atividadesFiltradas = listaTarefas;
         }
@@ -183,8 +243,8 @@ document.addEventListener("DOMContentLoaded", function () {
         $(modalAnotacaoBootstrapEl).one('shown.bs.modal', function () {
             console.log("Modal de anotação visível. Preenchendo todos os campos...");
 
-            const disciplinaSalvaId = (isEditMode && dadosAnotacao) ? dadosAnotacao.disciplinaId : null;
-            const atividadeSalvaId = (isEditMode && dadosAnotacao) ? dadosAnotacao.atividadeVinculadaId : null;
+            const disciplinaSalvaId = (isEditMode && dadosAnotacao) ? (dadosAnotacao.disciplinaId || dadosAnotacao.disciplina_id) : null;
+            const atividadeSalvaId = (isEditMode && dadosAnotacao) ? (dadosAnotacao.atividadeVinculadaId || dadosAnotacao.tarefa_id) : null;
 
             if (anotacaoTituloInputElem) {
                 anotacaoTituloInputElem.value = (isEditMode && dadosAnotacao) ? dadosAnotacao.titulo || '' : '';
@@ -209,19 +269,21 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    function abrirModalVisualizarAnotacao(dados) { 
-        if (!dados) return; 
-        if (visualizarAnotacaoModalTituloElem) visualizarAnotacaoModalTituloElem.textContent = "Visualizar"; 
-        if (visualizarAnotacaoTituloElem) visualizarAnotacaoTituloElem.textContent = dados.titulo || 'S/ Título'; 
+    function abrirModalVisualizarAnotacao(dados) {
+        if (!dados) return;
         
-        let si = `Criado: ${formatarDataParaTabela(dados.dataCriacao)} | Modificado: ${formatarDataParaTabela(dados.ultimaModificacao)}`; 
-        if(visualizarAnotacaoSubInfoElem) visualizarAnotacaoSubInfoElem.innerHTML = si; 
+        if (visualizarAnotacaoModalTituloElem) visualizarAnotacaoModalTituloElem.textContent = dados.titulo || 'Visualizar Anotação';
+        if (visualizarAnotacaoTituloElem) visualizarAnotacaoTituloElem.textContent = dados.titulo || 'Sem título';
+        if (visualizarAnotacaoSubInfoElem) visualizarAnotacaoSubInfoElem.textContent = `Criada em ${formatarDataParaTabela(dados.dataCriacao || dados.data_criacao)}`;
         
-        const nomeDisciplina = getNomeDisciplinaById(dados.disciplinaId) || '-';
-        const tituloAtividade = getTituloTarefaById(dados.atividadeVinculadaId) || '-';
-
-        if (visualizarAnotacaoDisciplinaElem) visualizarAnotacaoDisciplinaElem.textContent = nomeDisciplina; 
-        if (visualizarAnotacaoAtividadeElem) visualizarAnotacaoAtividadeElem.textContent = tituloAtividade; 
+        const disciplinaId = dados.disciplinaId || dados.disciplina_id;
+        const nomeDisciplina = getNomeDisciplinaById(disciplinaId) || '-';
+        if (visualizarAnotacaoDisciplinaElem) visualizarAnotacaoDisciplinaElem.textContent = nomeDisciplina;
+        
+        const atividadeId = dados.atividadeVinculadaId || dados.tarefa_id;
+        const nomeAtividade = getTituloTarefaById(atividadeId) || '-';
+        if (visualizarAnotacaoAtividadeElem) visualizarAnotacaoAtividadeElem.textContent = nomeAtividade;
+        
         if (visualizarAnotacaoConteudoElem) visualizarAnotacaoConteudoElem.innerHTML = dados.conteudo || '<p><em>Nenhum conteúdo.</em></p>'; 
         if (modalVisualizarAnotacaoBootstrapEl) (bootstrap.Modal.getInstance(modalVisualizarAnotacaoBootstrapEl) || new bootstrap.Modal(modalVisualizarAnotacaoBootstrapEl)).show(); 
     }
@@ -229,7 +291,12 @@ document.addEventListener("DOMContentLoaded", function () {
     // Modal Adicionar Tarefa/Prova Rápida
     if (modalTarefaPrincipalQuickAddEl && principalTarefaDisciplinaQuickAddSelect) {
         modalTarefaPrincipalQuickAddEl.addEventListener('show.bs.modal', function () {
-            popularSelect(principalTarefaDisciplinaQuickAddSelect, listaDisciplinas, null, "Selecione a Disciplina");
+            // Atualiza a fonte de dados priorizando dados reais da página atual
+            listaDisciplinas = (window.disciplinasData || window.disciplinas_json || listaDisciplinas);
+            // Evita sobrescrever opções já corretas; só popula se vazio/placeholder
+            if (principalTarefaDisciplinaQuickAddSelect.options.length <= 1) {
+                popularSelect(principalTarefaDisciplinaQuickAddSelect, listaDisciplinas, null, "Selecione a Disciplina");
+            }
         });
     }
 
@@ -237,8 +304,14 @@ document.addEventListener("DOMContentLoaded", function () {
     // --- DATATABLE ---
     function mapAnotacoesParaDataTable(lista) { 
         return lista.map(a => {
-            const disciplinaNome = getNomeDisciplinaById(a.disciplinaId);
-            const atividadeNome = getTituloTarefaById(a.atividadeVinculadaId);
+            // Adapta para diferentes estruturas de dados (back-end vs mock)
+            const disciplinaId = a.disciplinaId || a.disciplina_id;
+            const atividadeId = a.atividadeVinculadaId || a.tarefa_id;
+            const dataCriacao = a.dataCriacao || a.data_criacao;
+            const ultimaModificacao = a.ultimaModificacao || a.ultima_modificacao;
+            
+            const disciplinaNome = getNomeDisciplinaById(disciplinaId);
+            const atividadeNome = getTituloTarefaById(atividadeId);
 
             const d = `<div class="dropdown">
                 <button class="btn btn-sm btn-icon-only btn-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-popper-config='{"strategy":"fixed"}'>
@@ -250,11 +323,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     <li><a class="dropdown-item btn-remover-anotacao text-danger" href="#" data-anotacao-id="${a.id}"><i class="bi bi-trash me-2"></i>Remover</a></li>
                 </ul>
             </div>`; 
-            return ['', a.titulo, disciplinaNome, atividadeNome, formatarDataParaTabela(a.dataCriacao), formatarDataParaTabela(a.ultimaModificacao), d];
+            return ['', a.titulo, disciplinaNome, atividadeNome, formatarDataParaTabela(dataCriacao), formatarDataParaTabela(ultimaModificacao), d];
         });
     }
 
     function inicializarTabelaAnotacoes() {
+<<<<<<< HEAD
         if (!window.jQuery || !$.fn.DataTable) { console.error("jQuery ou DataTables não carregado!"); return; }
         listaAnotacoes.sort((a, b) => new Date(b.ultimaModificacao) - new Date(a.ultimaModificacao));
         if ($.fn.DataTable.isDataTable('#tabelaAnotacoes')) { $('#tabelaAnotacoes').DataTable().clear().destroy(); $('#tabelaAnotacoes tbody').empty(); }
@@ -290,6 +364,63 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (anotacoesHeaderOriginalEl && anotacoesHeaderOriginalEl.querySelector('#abrirModalNovaAnotacaoPrincipal')) { 
                         $(anotacoesHeaderOriginalEl.querySelector('#abrirModalNovaAnotacaoPrincipal')).hide(); 
                     }
+=======
+    if (!window.jQuery || !$.fn.DataTable) { console.error("jQuery ou DataTables não carregado!"); return; }
+    
+    // Aplica filtro por disciplina se disciplina_id estiver presente
+    let anotacoesParaExibir = [...listaAnotacoes];
+    if (window.disciplina_filtro_id) {
+        anotacoesParaExibir = listaAnotacoes.filter(a => {
+            const disciplinaId = a.disciplinaId || a.disciplina_id;
+            return String(disciplinaId) === String(window.disciplina_filtro_id);
+        });
+        console.log(`Filtrando anotações para disciplina ID: ${window.disciplina_filtro_id}`);
+    }
+    
+    anotacoesParaExibir.sort((a, b) => {
+        const dataA = a.ultimaModificacao || a.ultima_modificacao;
+        const dataB = b.ultimaModificacao || b.ultima_modificacao;
+        return new Date(dataB) - new Date(dataA);
+    });
+    
+    if ($.fn.DataTable.isDataTable('#tabelaAnotacoes')) { $('#tabelaAnotacoes').DataTable().clear().destroy(); $('#tabelaAnotacoes tbody').empty(); }
+    tabelaAnotacoesDt = $('#tabelaAnotacoes').DataTable({
+        responsive: { details: { type: 'column', target: 0 }},
+        dom: '<"row dt-custom-header align-items-center mb-3"<"col-12 col-md-auto"f><"col-12 col-md-auto ms-auto dt-buttons-anotacoes-container">>t<"row dt-table-footer align-items-center mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+        paging: false, lengthChange: false, scrollY: '450px', scrollCollapse: true,
+        language: { url: 'https://cdn.datatables.net/plug-ins/2.0.7/i18n/pt-BR.json', search: "", searchPlaceholder: "Buscar...", info: "Total de _TOTAL_ anotações", infoEmpty: "Nenhuma anotação", infoFiltered: "(de _MAX_)" },
+        
+        // --- BLOCO ATUALIZADO ---
+        columnDefs: [
+            // Desativa a ordenação para a primeira e última coluna
+            { orderable: false, targets: [0, 6] },
+
+            // Define a prioridade de exibição para cada coluna
+            { responsivePriority: 1, targets: 0, className: 'dtr-control' },         // 1º: Controle '+'
+            { responsivePriority: 2, targets: 1 },                                     // 2º: Título da Anotação
+            { responsivePriority: 3, targets: 6, className: "text-center dt-actions-column" }, // 3º: Ações
+            { responsivePriority: 4, targets: 5 },                                     // 4º: Última Modificação
+            { responsivePriority: 5, targets: 2 },                                     // 5º: Disciplina
+            { responsivePriority: 6, targets: 3 },                                     // 6º: Atividade
+            { responsivePriority: 7, targets: 4 }                                      // 7º: Data de Criação
+        ],
+        // --- FIM DO BLOCO ATUALIZADO ---
+
+        data: mapAnotacoesParaDataTable(anotacoesParaExibir),
+        createdRow: function(row, data, dataIndex) { const o=anotacoesParaExibir[dataIndex]; if(o)$(row).data('anotacao-id-interno', o.id);},
+        initComplete: function () {
+            $('#tabelaAnotacoes_filter input').addClass('form-control-sm').attr('aria-label', 'Buscar');
+            $('#tabelaAnotacoes_filter label').contents().filter(function() { return this.nodeType===3;}).remove();
+            const btnContainer = $('.dt-buttons-anotacoes-container');
+            if (abrirModalNovaAnotacaoPrincipalBtn && btnContainer.length && $('#abrirModalNovaAnotacaoDt').length === 0) {
+                const clone = abrirModalNovaAnotacaoPrincipalBtn.cloneNode(true); 
+                clone.id = 'abrirModalNovaAnotacaoDt'; 
+                clone.style.display = 'inline-flex'; 
+                $(clone).removeClass('d-none').off('click').on('click', (e)=>{e.preventDefault();abrirModalFormAnotacao(false);}); 
+                btnContainer.append(clone);
+                if (anotacoesHeaderOriginalEl && anotacoesHeaderOriginalEl.querySelector('#abrirModalNovaAnotacaoPrincipal')) { 
+                    $(anotacoesHeaderOriginalEl.querySelector('#abrirModalNovaAnotacaoPrincipal')).hide(); 
+>>>>>>> 2644b5b9555fa1e032a51266b9f52308b51deb78
                 }
                 if (tabelaAnotacoesDt) tabelaAnotacoesDt.columns.adjust().responsive.recalc();
             }
@@ -362,11 +493,23 @@ document.addEventListener("DOMContentLoaded", function () {
                 formData.set('principalAnotacaoConteudo', tinymce.get('anotacaoConteudoInput').getContent());
             }
 
+<<<<<<< HEAD
             try {
                 const response = await fetch(url, {
                     method: 'POST', // Usamos POST tanto para criar quanto para atualizar
                     body: formData
                 });
+=======
+            const dados = {
+                id: isEdit ? id : ('ANOT_' + new Date().getTime()),
+                titulo: anotacaoTituloInputElem ? anotacaoTituloInputElem.value.trim() : 'S/ Título',
+                disciplinaId: disciplinaIdVal,
+                atividadeVinculadaId: atividadeIdVal,
+                conteudo: cE,
+                ultimaModificacao: agora,
+                dataCriacao: isEdit ? (listaAnotacoes.find(a => String(a.id) === String(id))?.dataCriacao || (listaAnotacoes.find(a => String(a.id) === String(id))?.data_criacao) || agora) : agora
+            };
+>>>>>>> 2644b5b9555fa1e032a51266b9f52308b51deb78
 
                 const result = await response.json();
 

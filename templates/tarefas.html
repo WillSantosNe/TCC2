@@ -554,6 +554,9 @@
         // Injeta os dados do Flask em variáveis GLOBAIS
         window.tarefas_json = {{ tarefas | tojson | safe }};
         window.disciplinas_json = {{ disciplinas | tojson | safe }};
+        {% if disciplina_filtro_id %}
+        window.disciplina_filtro_id = {{ disciplina_filtro_id }};
+        {% endif %}
     </script>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

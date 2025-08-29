@@ -226,6 +226,16 @@ def create_app():
         ids_disciplinas_usuario = [d.id for d in usuario.disciplinas]
         tarefas_do_usuario = Tarefa.query.filter(Tarefa.disciplina_id.in_(ids_disciplinas_usuario)).order_by(Tarefa.data_entrega).all()
 
+        # Filtro por disciplina se especificado
+        disciplina_id_filtro = request.args.get('disciplina_id', type=int)
+        if disciplina_id_filtro:
+            # Verifica se a disciplina pertence ao usuário
+            if disciplina_id_filtro in ids_disciplinas_usuario:
+                tarefas_do_usuario = [t for t in tarefas_do_usuario if t.disciplina_id == disciplina_id_filtro]
+            else:
+                # Se a disciplina não pertence ao usuário, limpa o filtro
+                disciplina_id_filtro = None
+
         hoje = date.today()
         for tarefa in tarefas_do_usuario:
             if tarefa.data_entrega < hoje and tarefa.status != StatusTarefa.CONCLUIDA:
@@ -260,7 +270,8 @@ def create_app():
         return render_template('tarefas.html', 
                             tarefas=tarefas_para_json, 
                             disciplinas=disciplinas_para_json, # Passa a lista formatada
-                            usuario=formatar_usuario_json(usuario))
+                            usuario=formatar_usuario_json(usuario),
+                            disciplina_filtro_id=disciplina_id_filtro) # Passa o ID da disciplina filtrada
     
 
     
@@ -609,6 +620,7 @@ def create_app():
         tarefas = Tarefa.query.filter(Tarefa.disciplina_id.in_(ids_disciplinas_usuario)).all()
         anotacoes = Anotacao.query.join(Disciplina).filter(Disciplina.usuario_id == session['user_id']).order_by(Anotacao.data_criacao.desc()).all()
 
+<<<<<<< HEAD
         # 2. Formata os dados para serem usados como JSON no frontend
         disciplinas_json = [{"id": d.id, "nome": d.nome} for d in disciplinas]
         tarefas_json = [{"id": t.id, "titulo": t.titulo, "disciplinaId": t.disciplina_id} for t in tarefas]
@@ -627,6 +639,31 @@ def create_app():
             initial_disciplinas=disciplinas_json,
             initial_tarefas=tarefas_json
         )
+=======
+        # Pega os IDs de todas as disciplinas do usuário
+        ids_disciplinas_usuario = [d.id for d in usuario.disciplinas]
+        
+        # Filtro por disciplina se especificado
+        disciplina_id_filtro = request.args.get('disciplina_id', type=int)
+        if disciplina_id_filtro:
+            # Verifica se a disciplina pertence ao usuário
+            if disciplina_id_filtro in ids_disciplinas_usuario:
+                anotacoes = Anotacao.query.filter(
+                    Anotacao.usuario_id == session['user_id'],
+                    Anotacao.disciplina_id == disciplina_id_filtro
+                ).all()
+            else:
+                # Se a disciplina não pertence ao usuário, limpa o filtro
+                disciplina_id_filtro = None
+                anotacoes = Anotacao.query.filter(Anotacao.usuario_id == session['user_id']).all()
+        else:
+            anotacoes = Anotacao.query.filter(Anotacao.usuario_id == session['user_id']).all()
+
+        return render_template('anotacao.html', 
+                            anotacoes=anotacoes, 
+                            usuario=formatar_usuario_json(usuario),
+                            disciplina_filtro_id=disciplina_id_filtro) # Passa o ID da disciplina filtrada
+>>>>>>> 2644b5b9555fa1e032a51266b9f52308b51deb78
     
     # Em app.py, modifique a rota /anotacoes/criar
 
@@ -653,8 +690,18 @@ def create_app():
                 # O model de Anotacao deve cuidar do usuario_id ou ser relacionado via disciplina
             )
 
+<<<<<<< HEAD
             # Assumindo que a relação Anotacao -> Disciplina -> Usuario existe
             # Se não, você pode precisar adicionar o usuario_id diretamente na Anotacao
+=======
+        nova_anotacao = Anotacao(
+            titulo=titulo,
+            conteudo=conteudo,
+            usuario_id=session['user_id'],
+            disciplina_id=disciplina_id,
+            tarefa_id=tarefa_id
+        )
+>>>>>>> 2644b5b9555fa1e032a51266b9f52308b51deb78
 
             db.session.add(nova_anotacao)
             db.session.commit()
