@@ -87,7 +87,7 @@
     <div class="modal fade" id="modalAnotacao" tabindex="-1" aria-labelledby="modalAnotacaoLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg"> 
             <div class="modal-content"> 
-                <form id="formAnotacaoPrincipal" novalidate>
+                <form id="formAnotacaoPrincipal" method="POST" action="{{ url_for('criar_anotacao') }}" novalidate>
                     <div class="modal-header-custom modal-header-studyflow">
                         <div class="modal-title-wrapper">
                             <img src="{{ url_for('static', filename='img/logo.png') }}" class="modal-logo-icon" alt="StudyFlow Logo">
@@ -98,8 +98,9 @@
                     <div class="modal-body modal-body-custom"> 
                         <div class="note-editor-modal-content-simplified w-100">
                             <p class="text-muted mb-3 modal-edit-info" id="modalAnotacaoEditInfo">Nova anotação</p>
-                            <input type="hidden" id="anotacaoIdInput"> <div class="mb-3"> 
-                                <input type="text" class="form-control" id="anotacaoTituloInput" placeholder="Título da Anotação" required>
+                            <input type="hidden" id="anotacaoIdInput">
+                            <div class="mb-3"> 
+                                <input type="text" class="form-control" id="anotacaoTituloInput" name="principalAnotacaoTitulo" placeholder="Título da Anotação" required>
                                 <div class="invalid-feedback">
                                     Título da anotação é obrigatório.
                                 </div>
@@ -109,21 +110,21 @@
                                     <span class="modal-property-icon"><i class="bi bi-journal-bookmark-fill"></i></span>
                                     <label for="anotacaoDisciplinaSelect" class="modal-property-label">Disciplina</label>
                                     <div class="input-wrapper">
-                                        <select class="form-select form-select-sm modal-property-input" id="anotacaoDisciplinaSelect"></select>
+                                        <select class="form-select form-select-sm modal-property-input" id="anotacaoDisciplinaSelect" name="principalAnotacaoDisciplina"></select>
                                     </div>
                                 </div>
                                 <div class="modal-property-item">
                                     <span class="modal-property-icon"><i class="bi bi-card-checklist"></i></span>
                                     <label for="anotacaoAtividadeSelect" class="modal-property-label">Atividade</label>
                                     <div class="input-wrapper">
-                                        <select class="form-select form-select-sm modal-property-input" id="anotacaoAtividadeSelect"></select>
+                                        <select class="form-select form-select-sm modal-property-input" id="anotacaoAtividadeSelect" name="principalAnotacaoAtividade"></select>
                                     </div>
                                 </div>
                             </div>
                             <hr class="my-3">
                             <div class="mb-3">
                                 <label for="anotacaoConteudoInput" class="form-label visually-hidden">Conteúdo da Anotação</label>
-                                <textarea id="anotacaoConteudoInput" rows="10"></textarea> 
+                                <textarea id="anotacaoConteudoInput" name="principalAnotacaoConteudo" rows="10"></textarea> 
                             </div>
                         </div>
                     </div>
@@ -137,7 +138,7 @@
     </div>
 
     <div class="modal fade" id="modalVisualizarAnotacao" tabindex="-1" aria-labelledby="modalVisualizarAnotacaoLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header-custom modal-header-studyflow">
                     <div class="modal-title-wrapper">
@@ -146,26 +147,103 @@
                     </div>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
                 </div>
-                <div class="modal-body modal-body-custom modal-anotacao-body">
-                    <h3 id="visualizarAnotacaoTitulo" class="mb-2 sf-page-title"></h3>
-                    <p class="text-muted mb-3" id="visualizarAnotacaoSubInfo" style="font-size: 0.9rem;"></p>
-                    <div class="modal-anotacao-properties-view mb-3">
-                        <div class="row gx-5">
-                            <div class="col-md-12">
-                                <p><strong><i class="bi bi-journal-bookmark-fill me-2"></i>Disciplina:</strong> <span id="visualizarAnotacaoDisciplina"></span></p>
-                                <p><strong><i class="bi bi-card-checklist me-2"></i>Atividade Vinculada:</strong> <span id="visualizarAnotacaoAtividade"></span></p>
+                <div class="modal-body modal-body-custom">
+                    <h3 id="visualizarAnotacaoTitulo" class="mb-1"></h3>
+                    <p id="visualizarAnotacaoSubInfo" class="text-muted small mb-3"></p>
+                    <div class="view-properties-grid mb-3">
+                        <div class="view-property-item">
+                            <span class="view-property-icon"><i class="bi bi-journal-bookmark-fill"></i></span>
+                            <div class="view-property-text">
+                                <span class="view-property-label">Disciplina</span>
+                                <span id="visualizarAnotacaoDisciplina" class="view-property-value"></span>
+                            </div>
+                        </div>
+                        <div class="view-property-item">
+                            <span class="view-property-icon"><i class="bi bi-card-checklist"></i></span>
+                            <div class="view-property-text">
+                                <span class="view-property-label">Atividade Vinculada</span>
+                                <span id="visualizarAnotacaoAtividade" class="view-property-value"></span>
                             </div>
                         </div>
                     </div>
                     <hr>
-                    <div id="visualizarAnotacaoConteudo" class="mt-2 anotacao-conteudo-display"></div>
+                    <div id="visualizarAnotacaoConteudo" class="anotacao-conteudo-renderizado">
+                        </div>
                 </div>
-                <div class="modal-footer-custom modal-footer-studyflow d-flex justify-content-between align-items-center">
-                    <button type="button" class="btn btn-outline-secondary" id="btnCompartilharAnotacao">
-                        <i class="bi bi-share-fill me-2"></i>Compartilhar
+                <div class="modal-footer-custom modal-footer-studyflow">
+                    <button type="button" class="btn btn-outline-secondary me-auto" id="btnCompartilharAnotacao">
+                        <i class="bi bi-share"></i> Compartilhar
                     </button>
-                    <button type="button" class="btn btn-modal-ok" data-bs-dismiss="modal">Fechar</button>
+
+                    <button type="button" class="btn btn-modal-cancel" data-bs-dismiss="modal">Fechar</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalDisciplinaAdicaoPrincipal" tabindex="-1" aria-labelledby="modalDisciplinaAdicaoPrincipalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form id="formDisciplinaPrincipal" method="POST" action="{{ url_for('criar_disciplina') }}" novalidate>
+                    <div class="modal-header-custom modal-header-studyflow">
+                        <div class="modal-title-wrapper">
+                            <img src="{{ url_for('static', filename='img/logo.png') }}" class="modal-logo-icon" alt="StudyFlow Logo">
+                            <h5 class="modal-title-custom" id="modalDisciplinaAdicaoPrincipalLabel">Adicionar Disciplina</h5>
+                        </div>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                    </div>
+                    <div class="modal-body modal-body-custom">
+                        <div class="modal-property-item mb-3">
+                            <span class="modal-property-icon"><i class="bi bi-journal-text"></i></span>
+                            <label for="principalDisciplinaNome" class="modal-property-label">Nome</label>
+                            <div class="input-wrapper">
+                                <input type="text" class="form-control modal-property-input" id="principalDisciplinaNome" name="principalDisciplinaNome" required placeholder="Nome da Disciplina">
+                            </div>
+                        </div>
+                        <div class="modal-property-item mb-3 align-items-start">
+                            <span class="modal-property-icon"><i class="bi bi-file-earmark-text"></i></span>
+                            <label for="principalDisciplinaDescricao" class="modal-property-label">Descrição</label>
+                            <div class="input-wrapper">
+                                <textarea class="form-control modal-property-input" id="principalDisciplinaDescricao" name="principalDisciplinaDescricao" rows="3" placeholder="Opcional: Ementa, objetivos..."></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-property-item mb-3">
+                            <span class="modal-property-icon"><i class="bi bi-person-fill"></i></span>
+                            <label for="principalDisciplinaProfessor" class="modal-property-label">Professor</label>
+                            <div class="input-wrapper">
+                                <input type="text" class="form-control modal-property-input" id="principalDisciplinaProfessor" name="principalDisciplinaProfessor" placeholder="Ex: Prof. Silva (Opcional)">
+                            </div>
+                        </div>
+                        <div class="modal-property-item mb-3">
+                            <span class="modal-property-icon"><i class="bi bi-calendar-event"></i></span>
+                            <label for="principalDisciplinaPeriodo" class="modal-property-label">Período</label>
+                            <div class="input-wrapper">
+                                <select class="form-select modal-property-input" id="principalDisciplinaPeriodo" name="principalDisciplinaPeriodo" required>
+                                    <option value="" disabled selected>Selecione...</option>
+                                    <option value="2024.1">2024.1</option>
+                                    <option value="2024.2">2024.2</option>
+                                    <option value="2025.1">2025.1</option>
+                                    <option value="2025.2">2025.2</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-property-item mb-3">
+                            <span class="modal-property-icon"><i class="bi bi-check2-circle"></i></span>
+                            <label for="principalDisciplinaStatus" class="modal-property-label">Status</label>
+                            <div class="input-wrapper">
+                                <select class="form-select modal-property-input" id="principalDisciplinaStatus" name="principalDisciplinaStatus" required>
+                                    <option value="Ativa" selected>Ativa</option>
+                                    <option value="Em Andamento">Em Andamento</option>
+                                    <option value="Concluída">Concluída</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer-custom modal-footer-studyflow">
+                        <button type="button" class="btn btn-modal-cancel" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-modal-save">Salvar Disciplina</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -417,8 +495,20 @@
     <script src="{{ url_for('static', filename='js/modal-configuracoes.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/modals/disciplinaModal.js') }}" defer></script> 
     <script src="{{ url_for('static', filename='js/modals/tarefaRapidaModal.js') }}" defer></script> 
-    <script src="{{ url_for('static', filename='js/modals/anotacaoModal.js') }}" defer></script> 
+    <!-- <script src="{{ url_for('static', filename='js/modals/anotacaoModal.js') }}" defer></script>  -->
     
     <script src="{{ url_for('static', filename='js/anotacao.js') }}" defer></script>
+
+    <script>
+        // Passa os dados do Flask para o JavaScript de forma segura
+        const initialData = {
+            anotacoes: {{ initial_anotacoes | tojson }},
+            disciplinas: {{ initial_disciplinas | tojson }},
+            tarefas: {{ initial_tarefas | tojson }}
+        };
+    </script>
+</body>
+</html>
+
 </body>
 </html>

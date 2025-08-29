@@ -2,6 +2,7 @@ import os
 from datetime import datetime, date
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 from dotenv import load_dotenv
+from flask_migrate import Migrate
 from extensions import db
 from models import Usuario, Disciplina, Tarefa, Anotacao, StatusDisciplina, StatusTarefa, TipoTarefa
 from flask_jwt_extended import JWTManager
@@ -19,6 +20,7 @@ def create_app():
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
     db.init_app(app)
+    Migrate(app, db)
     oauth = OAuth(app)
     jwt = JWTManager(app) # Descomente se for usar JWT no futuro
 
@@ -127,6 +129,7 @@ def create_app():
         
         session['user_id'] = user.id
         return redirect(url_for('rota_dashboard'))
+
     @app.route('/dashboard')
     def rota_dashboard():
         if 'user_id' not in session:
@@ -590,50 +593,90 @@ def create_app():
     def rota_calendario():
         return render_template('calendario.html')
 
+    # Em app.py
+
     @app.route('/anotacao')
     def rota_anotacao():
         if 'user_id' not in session:
             return redirect(url_for('rota_login'))
 
         usuario = Usuario.query.get(session['user_id'])
+        
+        # 1. Busca todos os dados necessários do banco
+        disciplinas = Disciplina.query.filter_by(usuario_id=session['user_id']).all()
+        
+        ids_disciplinas_usuario = [d.id for d in disciplinas]
+        tarefas = Tarefa.query.filter(Tarefa.disciplina_id.in_(ids_disciplinas_usuario)).all()
+        anotacoes = Anotacao.query.join(Disciplina).filter(Disciplina.usuario_id == session['user_id']).order_by(Anotacao.data_criacao.desc()).all()
 
-        # Pega os IDs de todas as disciplinas do usuário
-        ids_disciplinas_usuario = [d.id for d in usuario.disciplinas]
-        anotacoes = Anotacao.query.join(Disciplina).filter(Disciplina.usuario_id == session['user_id']).all()
+        # 2. Formata os dados para serem usados como JSON no frontend
+        disciplinas_json = [{"id": d.id, "nome": d.nome} for d in disciplinas]
+        tarefas_json = [{"id": t.id, "titulo": t.titulo, "disciplinaId": t.disciplina_id} for t in tarefas]
+        anotacoes_json = [{
+            "id": a.id, "titulo": a.titulo, "disciplinaId": a.disciplina_id,
+            "atividadeVinculadaId": a.tarefa_id, "conteudo": a.conteudo,
+            "dataCriacao": a.data_criacao.isoformat(),
+            "ultimaModificacao": a.data_criacao.isoformat()
+        } for a in anotacoes]
 
-        return render_template('anotacao.html', anotacoes=anotacoes, usuario=formatar_usuario_json(usuario))
+        # 3. Renderiza o template, passando os dados formatados
+        return render_template(
+            'anotacao.html', 
+            usuario=formatar_usuario_json(usuario),
+            initial_anotacoes=anotacoes_json,
+            initial_disciplinas=disciplinas_json,
+            initial_tarefas=tarefas_json
+        )
     
+    # Em app.py, modifique a rota /anotacoes/criar
+
     @app.route('/anotacoes/criar', methods=['POST'])
     def criar_anotacao():
         if 'user_id' not in session:
-            return redirect(url_for('rota_login'))
+            return jsonify({'success': False, 'error': 'Não autorizado'}), 401
 
-        # Pega os dados do formulário
-        titulo = request.form.get('principalAnotacaoTitulo')
-        conteudo = request.form.get('principalAnotacaoConteudo') # O TinyMCE atualiza o textarea com este name
-        disciplina_id = request.form.get('principalAnotacaoDisciplina')
-        tarefa_id = request.form.get('principalAnotacaoAtividade')
+        try:
+            # Pega os dados do formulário específico do modal de anotação
+            titulo = request.form.get('principalAnotacaoTitulo')
+            conteudo = request.form.get('principalAnotacaoConteudo')
+            disciplina_id = request.form.get('principalAnotacaoDisciplina')
+            tarefa_id = request.form.get('principalAnotacaoAtividade')
 
-        if not titulo:
-            # Em uma implementação real, trataríamos o erro de forma mais elegante
-            return "O título é obrigatório.", 400
+            if not titulo:
+                return jsonify({'success': False, 'error': 'O título é obrigatório.'}), 400
 
-        # Converte para int ou None se estiver vazio
-        disciplina_id = int(disciplina_id) if disciplina_id else None
-        tarefa_id = int(tarefa_id) if tarefa_id else None
+            nova_anotacao = Anotacao(
+                titulo=titulo,
+                conteudo=conteudo,
+                disciplina_id=int(disciplina_id) if disciplina_id else None,
+                tarefa_id=int(tarefa_id) if tarefa_id else None
+                # O model de Anotacao deve cuidar do usuario_id ou ser relacionado via disciplina
+            )
 
-        nova_anotacao = Anotacao(
-            titulo=titulo,
-            conteudo=conteudo,
-            disciplina_id=disciplina_id,
-            tarefa_id=tarefa_id
-        )
+            # Assumindo que a relação Anotacao -> Disciplina -> Usuario existe
+            # Se não, você pode precisar adicionar o usuario_id diretamente na Anotacao
 
-        db.session.add(nova_anotacao)
-        db.session.commit()
+            db.session.add(nova_anotacao)
+            db.session.commit()
 
-        # Redireciona para a página de anotações para ver o resultado
-        return redirect(request.referrer or url_for('rota_dashboard'))
+            # Retorna o objeto criado como JSON
+            return jsonify({
+                'success': True,
+                'message': 'Anotação criada com sucesso!',
+                'anotacao': {
+                    'id': nova_anotacao.id,
+                    'titulo': nova_anotacao.titulo,
+                    'disciplinaId': nova_anotacao.disciplina_id,
+                    'atividadeVinculadaId': nova_anotacao.tarefa_id,
+                    'conteudo': nova_anotacao.conteudo,
+                    'dataCriacao': nova_anotacao.data_criacao.isoformat(),
+                    'ultimaModificacao': nova_anotacao.data_criacao.isoformat()
+                }
+            }), 201
+
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'success': False, 'error': str(e)}), 500
 
     @app.route('/esqueceu_senha')
     def rota_esqueceu_senha():
@@ -643,9 +686,84 @@ def create_app():
     def rota_codigo():
         return render_template('codigo.html')
 
-    # -------------------------
+    @app.route('/api/anotacoes/<int:anotacao_id>', methods=['POST'])
+    def api_atualizar_anotacao(anotacao_id):
+        """Atualiza uma anotação existente."""
+        if 'user_id' not in session:
+            return jsonify({'success': False, 'error': 'Não autorizado'}), 401
+        
+        try:
+            # Garante que a anotação existe e pertence ao usuário
+            anotacao = db.session.query(Anotacao).join(Disciplina).filter(
+                Anotacao.id == anotacao_id,
+                Disciplina.usuario_id == session['user_id']
+            ).first()
+
+            if not anotacao:
+                return jsonify({'success': False, 'error': 'Anotação não encontrada'}), 404
+
+            # Pega os dados do formulário
+            anotacao.titulo = request.form.get('principalAnotacaoTitulo')
+            anotacao.conteudo = request.form.get('principalAnotacaoConteudo')
+            
+            disciplina_id = request.form.get('principalAnotacaoDisciplina')
+            anotacao.disciplina_id = int(disciplina_id) if disciplina_id else None
+            
+            tarefa_id = request.form.get('principalAnotacaoAtividade')
+            anotacao.tarefa_id = int(tarefa_id) if tarefa_id else None
+
+            db.session.commit()
+            
+            # Retorna a anotação atualizada
+            return jsonify({
+                'success': True,
+                'message': 'Anotação atualizada com sucesso!',
+                'anotacao': {
+                    'id': anotacao.id,
+                    'titulo': anotacao.titulo,
+                    'disciplinaId': anotacao.disciplina_id,
+                    'atividadeVinculadaId': anotacao.tarefa_id,
+                    'conteudo': anotacao.conteudo,
+                    'dataCriacao': anotacao.data_criacao.isoformat(),
+                    'ultimaModificacao': anotacao.data_modificacao.isoformat()
+                }
+            })
+
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'success': False, 'error': str(e)}), 500
+
+
+    @app.route('/api/anotacoes/<int:anotacao_id>', methods=['DELETE'])
+    def api_deletar_anotacao(anotacao_id):
+        """Deleta uma anotação."""
+        if 'user_id' not in session:
+            return jsonify({'success': False, 'error': 'Não autorizado'}), 401
+        
+        try:
+            # Garante que a anotação existe e pertence ao usuário
+            anotacao = db.session.query(Anotacao).join(Disciplina).filter(
+                Anotacao.id == anotacao_id,
+                Disciplina.usuario_id == session['user_id']
+            ).first()
+
+            if not anotacao:
+                return jsonify({'success': False, 'error': 'Anotação não encontrada'}), 404
+
+            db.session.delete(anotacao)
+            db.session.commit()
+            
+            return jsonify({'success': True, 'message': 'Anotação removida com sucesso!'})
+
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'success': False, 'error': str(e)}), 500
+    
 
     return app
+
+
+
 
 
 
