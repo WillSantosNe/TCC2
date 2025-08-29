@@ -698,32 +698,27 @@ def create_app():
             return jsonify({'success': False, 'error': 'Não autorizado'}), 401
 
         try:
-            try:
-            # Pega os dados do formulário específico do modal de anotação
-                titulo = request.form.get('principalAnotacaoTitulo')
-                conteudo = request.form.get('principalAnotacaoConteudo')
-                disciplina_id = request.form.get('principalAnotacaoDisciplina')
-                tarefa_id = request.form.get('principalAnotacaoAtividade')
+            titulo = request.form.get('principalAnotacaoTitulo')
+            conteudo = request.form.get('principalAnotacaoConteudo')
+            disciplina_id = request.form.get('principalAnotacaoDisciplina')
+            tarefa_id = request.form.get('principalAnotacaoAtividade')
 
             if not titulo:
                 flash('O título é obrigatório.', 'danger')
                 return redirect(request.referrer or url_for('rota_dashboard'))
 
-            # Converte para int ou None se estiver vazio
             disciplina_id = int(disciplina_id) if disciplina_id else None
             tarefa_id = int(tarefa_id) if tarefa_id else None
 
-            # Verifica se a disciplina pertence ao usuário (segurança)
             if disciplina_id:
                 disciplina = Disciplina.query.filter_by(
-                    id=disciplina_id, 
+                    id=disciplina_id,
                     usuario_id=session['user_id']
                 ).first()
                 if not disciplina:
                     flash('Disciplina inválida.', 'danger')
                     return redirect(request.referrer or url_for('rota_dashboard'))
 
-            # Verifica se a tarefa pertence ao usuário (segurança)
             if tarefa_id:
                 tarefa = Tarefa.query.join(Disciplina).filter(
                     Tarefa.id == tarefa_id,
@@ -740,34 +735,10 @@ def create_app():
                 disciplina_id=disciplina_id,
                 tarefa_id=tarefa_id
             )
-            if not titulo:
-                return jsonify({'success': False, 'error': 'O título é obrigatório.'}), 400
-
-            nova_anotacao = Anotacao(
-                titulo=titulo,
-                conteudo=conteudo,
-                disciplina_id=int(disciplina_id) if disciplina_id else None,
-                tarefa_id=int(tarefa_id) if tarefa_id else None
-                # O model de Anotacao deve cuidar do usuario_id ou ser relacionado via disciplina
-            )
-
-<<<<<<< HEAD
-            # Assumindo que a relação Anotacao -> Disciplina -> Usuario existe
-            # Se não, você pode precisar adicionar o usuario_id diretamente na Anotacao
-=======
-        nova_anotacao = Anotacao(
-            titulo=titulo,
-            conteudo=conteudo,
-            usuario_id=session['user_id'],
-            disciplina_id=disciplina_id,
-            tarefa_id=tarefa_id
-        )
->>>>>>> 2644b5b9555fa1e032a51266b9f52308b51deb78
 
             db.session.add(nova_anotacao)
             db.session.commit()
 
-            # Cria notificação de sucesso
             usuario = Usuario.query.get(session['user_id'])
             usuario.criar_notificacao(
                 titulo="Anotação Criada",
@@ -783,47 +754,6 @@ def create_app():
             db.session.rollback()
             flash(f'Erro ao criar anotação: {str(e)}', 'danger')
             return redirect(request.referrer or url_for('rota_dashboard'))
-                return jsonify({'success': False, 'error': 'O título é obrigatório.'}), 400
-
-            nova_anotacao = Anotacao(
-                titulo=titulo,
-                conteudo=conteudo,
-                disciplina_id=int(disciplina_id) if disciplina_id else None,
-                tarefa_id=int(tarefa_id) if tarefa_id else None
-                # O model de Anotacao deve cuidar do usuario_id ou ser relacionado via disciplina
-            )
-
-            # Assumindo que a relação Anotacao -> Disciplina -> Usuario existe
-            # Se não, você pode precisar adicionar o usuario_id diretamente na Anotacao
-        nova_anotacao = Anotacao(
-            titulo=titulo,
-            conteudo=conteudo,
-            usuario_id=session['user_id'],
-            disciplina_id=disciplina_id,
-            tarefa_id=tarefa_id
-        )
-
-            db.session.add(nova_anotacao)
-            db.session.commit()
-
-            # Retorna o objeto criado como JSON
-            return jsonify({
-                'success': True,
-                'message': 'Anotação criada com sucesso!',
-                'anotacao': {
-                    'id': nova_anotacao.id,
-                    'titulo': nova_anotacao.titulo,
-                    'disciplinaId': nova_anotacao.disciplina_id,
-                    'atividadeVinculadaId': nova_anotacao.tarefa_id,
-                    'conteudo': nova_anotacao.conteudo,
-                    'dataCriacao': nova_anotacao.data_criacao.isoformat(),
-                    'ultimaModificacao': nova_anotacao.data_criacao.isoformat()
-                }
-            }), 201
-
-        except Exception as e:
-            db.session.rollback()
-            return jsonify({'success': False, 'error': str(e)}), 500
 
     @app.route('/esqueceu_senha')
     def rota_esqueceu_senha():
