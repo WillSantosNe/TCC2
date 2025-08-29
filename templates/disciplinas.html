@@ -42,14 +42,44 @@
         <header class="sf-header position-relative">
             <button class="btn-menu me-auto d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-label="Abrir menu"> <i class="bi bi-list"></i> </button>
             <div class="sf-header-brand"> <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo"><span>StudyFlow</span> </div>
-            <div class="dropdown">
-                <button class="btn btn-sm btn-icon-only" id="userMenuBtn" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Menu do usuário"> <img src="{{ url_for('static', filename='img/avatar.png') }}" class="rounded-circle" style="width:40px;height:40px" alt="Avatar do usuário"> </button>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuBtn">
-                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#cModalConfig" data-modal-section="configuracoes"><i class="bi bi-gear me-2"></i>Configurações</a></li>
-                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#cModalConfig" data-modal-section="notificacoes"><i class="bi bi-bell me-2"></i>Notificações</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item text-danger" href="{{ url_for('rota_logout') }}"><i class="bi bi-box-arrow-right me-2"></i>Sair</a></li>
-                </ul>
+            <div class="d-flex align-items-center me-3">
+                <!-- Botão de notificações -->
+                <div class="dropdown me-2">
+                    <button class="btn btn-sm btn-icon-only position-relative" id="notificacoesBtn" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Notificações">
+                        <i class="bi bi-bell"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notificacoesContador" style="display: none;">
+                            0
+                        </span>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end" style="width: 400px; max-height: 500px; overflow-y: auto;">
+                        <div class="dropdown-header d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0">Notificações</h6>
+                            <button class="btn btn-sm btn-link text-decoration-none" id="marcarTodasLidas">
+                                Marcar todas como lidas
+                            </button>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div id="listaNotificacoes">
+                            <!-- As notificações serão carregadas aqui dinamicamente -->
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="text-center p-2">
+                            <a href="#" class="text-decoration-none" id="verTodasNotificacoes">Ver todas as notificações</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Dropdown do usuário -->
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-icon-only" id="userMenuBtn" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Menu do usuário"> 
+                        <img id="headerAvatar" src="{{ url_for('static', filename='img/avatar.png') }}" class="rounded-circle" style="width:40px;height:40px" alt="Avatar do usuário"> 
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuBtn">
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#cModalConfig" data-modal-section="configuracoes"><i class="bi bi-gear me-2"></i>Configurações</a></li>
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#cModalConfig" data-modal-section="notificacoes"><i class="bi bi-bell me-2"></i>Notificações</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="{{ url_for('rota_logout') }}"><i class="bi bi-box-arrow-right me-2"></i>Sair</a></li>
+                    </ul>
+                </div>
             </div>
         </header>
 
@@ -369,33 +399,60 @@
                         </div>
                         <div id="modal-trocar-senha" class="modal-section">
                             <h3>Trocar Senha</h3>
-                            <form>
+                            <form id="formTrocarSenha">
                                 <div class="mb-3">
                                     <label for="currentPassword" class="form-label">Senha Atual</label>
                                     <input type="password" class="form-control" id="currentPassword" required>
+                                    <div class="invalid-feedback">Senha atual é obrigatória.</div>
                                 </div>
                                 <div class="mb-3">
                                     <label for="newPassword" class="form-label">Nova Senha</label>
-                                    <input type="password" class="form-control" id="newPassword" required>
+                                    <input type="password" class="form-control" id="newPassword" required minlength="6">
+                                    <div class="invalid-feedback">Nova senha deve ter pelo menos 6 caracteres.</div>
                                 </div>
                                 <div class="mb-3">
                                     <label for="confirmNewPassword" class="form-label">Confirmar Nova Senha</label>
                                     <input type="password" class="form-control" id="confirmNewPassword" required>
+                                    <div class="invalid-feedback">Confirmação de senha é obrigatória.</div>
                                 </div>
-                                <button type="submit" class="btn btn-primary">Salvar Nova Senha</button>
+                                <button type="submit" class="btn btn-primary">Solicitar Alteração</button>
                             </form>
+                            
+                            <!-- Modal de confirmação -->
+                            <div id="modalConfirmacaoSenha" class="modal fade" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Confirmar Alteração de Senha</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Um email de confirmação foi enviado para sua conta. Clique no link do email para confirmar a alteração de senha.</p>
+                                            <p><strong>Token de confirmação:</strong> <span id="tokenConfirmacao"></span></p>
+                                            <p class="text-muted small">Em produção, este token seria enviado por email.</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                                            <button type="button" class="btn btn-primary" id="btnConfirmarSenha">Confirmar Alteração</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div id="modal-trocar-foto" class="modal-section">
                             <h3>Trocar Foto de Perfil</h3>
                             <div class="text-center mb-3">
-                                <img src="{{ url_for('static', filename='img/avatar.png') }}" class="rounded-circle mb-3" style="width:120px;height:120px;" alt="Foto de Perfil Atual">
-                                <input type="file" class="form-control" id="profilePictureInput" accept="image/*">
+                                <img id="fotoPerfilAtual" src="{{ url_for('static', filename='img/avatar.png') }}" class="rounded-circle mb-3" style="width:120px;height:120px;" alt="Foto de Perfil Atual">
+                                <div class="mb-3">
+                                    <input type="file" class="form-control" id="profilePictureInput" accept="image/*">
+                                    <div class="form-text">Formatos aceitos: PNG, JPG, JPEG, GIF. Tamanho máximo: 16MB</div>
+                                </div>
+                                <button type="button" class="btn btn-primary" id="btnSalvarFoto">Salvar Foto</button>
                             </div>
-                            <button type="submit" class="btn btn-primary">Salvar Foto</button>
                         </div>
                         <div id="modal-notificacoes" class="modal-section">
                             <h3>Configurações de Notificações</h3>
-                            <form>
+                            <form id="formNotificacoes">
                                 <div class="form-check form-switch mb-3">
                                     <input class="form-check-input" type="checkbox" id="emailNotificacoes" checked>
                                     <label class="form-check-label" for="emailNotificacoes">Notificações por Email</label>

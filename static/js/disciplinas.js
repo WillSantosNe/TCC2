@@ -523,6 +523,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 const bsModal = bootstrap.Modal.getInstance(modalDisciplinaAdicao);
                 if (bsModal) bsModal.hide();
 
+                // Atualiza o contador de notificações
+                atualizarContadorNotificacoes();
+
             } catch (error) {
                 mostrarNotificacao(error.message, 'error');
             }
@@ -596,6 +599,138 @@ document.addEventListener("DOMContentLoaded", function () {
                 popularSelect(anotacaoAtividadeSelect, todasAtividadesParaSelect, null, "Qualquer Atividade");
             }
         });
+
+        // Event listener para o formulário de anotação
+        const formAnotacao = document.getElementById('formAnotacaoPrincipal');
+        if (formAnotacao) {
+            formAnotacao.addEventListener('submit', async function (e) {
+                e.preventDefault();
+                
+                const titulo = document.getElementById('principalAnotacaoTituloInput').value.trim();
+                const disciplinaId = anotacaoDisciplinaSelect.value;
+                const atividadeId = anotacaoAtividadeSelect.value;
+                
+                if (!titulo) {
+                    mostrarNotificacao('Título da anotação é obrigatório', 'error');
+                    return;
+                }
+
+                // Pega o conteúdo do TinyMCE
+                const editor = tinymce.get('conteudoAnotacao');
+                const conteudo = editor ? editor.getContent() : '';
+
+                try {
+                    const formData = new FormData();
+                    formData.append('principalAnotacaoTitulo', titulo);
+                    formData.append('principalAnotacaoConteudo', conteudo);
+                    formData.append('principalAnotacaoDisciplina', disciplinaId);
+                    formData.append('principalAnotacaoAtividade', atividadeId);
+
+                    const response = await fetch('/anotacoes/criar', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        mostrarNotificacao('Anotação criada com sucesso!', 'success');
+                        
+                        // Fecha o modal
+                        const bsModal = bootstrap.Modal.getInstance(modalAnotacao);
+                        if (bsModal) bsModal.hide();
+                        
+                        // Limpa o formulário
+                        formAnotacao.reset();
+                        if (editor) {
+                            editor.setContent('');
+                        }
+                    } else {
+                        const errorData = await response.text();
+                        mostrarNotificacao('Erro ao criar anotação', 'error');
+                    }
+                } catch (error) {
+                    console.error('Erro ao criar anotação:', error);
+                    mostrarNotificacao('Erro ao criar anotação', 'error');
+                }
+            });
+        }
+    }
+
+    // Sistema de notificações básico
+    let notificacoes = [];
+    let contadorNotificacoes = 0;
+
+    async function buscarNotificacoes() {
+        try {
+            const response = await fetch('/api/notificacoes');
+            if (response.ok) {
+                notificacoes = await response.json();
+                renderizarNotificacoes();
+            }
+        } catch (error) {
+            console.error('Erro ao buscar notificações:', error);
+        }
+    }
+
+    async function atualizarContadorNotificacoes() {
+        try {
+            const response = await fetch('/api/notificacoes/contador');
+            if (response.ok) {
+                const data = await response.json();
+                contadorNotificacoes = data.contador;
+                
+                const contadorElement = document.getElementById('notificacoesContador');
+                if (contadorElement) {
+                    if (contadorNotificacoes > 0) {
+                        contadorElement.textContent = contadorNotificacoes;
+                        contadorElement.style.display = 'block';
+                    } else {
+                        contadorElement.style.display = 'none';
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('Erro ao atualizar contador:', error);
+        }
+    }
+
+    function renderizarNotificacoes() {
+        const listaNotificacoes = document.getElementById('listaNotificacoes');
+        if (!listaNotificacoes) return;
+
+        if (notificacoes.length === 0) {
+            listaNotificacoes.innerHTML = '<div class="text-center p-3 text-muted">Nenhuma notificação</div>';
+            return;
+        }
+
+        listaNotificacoes.innerHTML = notificacoes.map(notif => `
+            <div class="dropdown-item ${!notif.lida ? 'bg-light' : ''} p-3 border-bottom">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1 ${!notif.lida ? 'fw-bold' : ''}">${notif.titulo}</h6>
+                        <p class="mb-1 small text-muted">${notif.mensagem}</p>
+                        <small class="text-muted">
+                            <i class="bi bi-clock me-1"></i>
+                            ${new Date(notif.data_criacao).toLocaleString('pt-BR')}
+                        </small>
+                    </div>
+                    <div class="ms-2">
+                        <span class="badge bg-secondary">${notif.tipo}</span>
+                        ${!notif.lida ? '<span class="badge bg-primary ms-1">Nova</span>' : ''}
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function inicializarSistemaNotificacoes() {
+        buscarNotificacoes();
+        atualizarContadorNotificacoes();
+        
+        // Atualiza a cada 30 segundos
+        setInterval(() => {
+            buscarNotificacoes();
+            atualizarContadorNotificacoes();
+        }, 30000);
     }
 
     // --- INICIALIZAÇÃO DA APLICAÇÃO ---
@@ -612,6 +747,9 @@ document.addEventListener("DOMContentLoaded", function () {
             
             // Inicializa a tabela com os dados carregados
             inicializarDataTable();
+            
+            // Inicializa o sistema de notificações
+            inicializarSistemaNotificacoes();
             
             console.log('Aplicação inicializada com sucesso!');
         } catch (error) {

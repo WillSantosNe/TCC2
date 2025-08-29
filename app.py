@@ -6,9 +6,9 @@ from flask_migrate import Migrate
 from extensions import db
 from models import Usuario, Disciplina, Tarefa, Anotacao, StatusDisciplina, StatusTarefa, TipoTarefa, Notificacao, TipoNotificacao
 from flask_jwt_extended import JWTManager
-from authlib.integrations.flask_client import OAuth 
+from authlib.integrations.flask_client import OAuth
 import secrets
-import datetime
+# Removido 'import datetime' duplicado
 
 load_dotenv()
 
@@ -160,7 +160,7 @@ def create_app():
             token = oauth.google.authorize_access_token()
             user_info = token.get('userinfo')
             if not user_info:
-                 user_info = oauth.google.parse_id_token(token)
+                    user_info = oauth.google.parse_id_token(token)
 
         except Exception as e:
             flash(f"Ocorreu um erro durante a autenticação com o Google: {e}", "danger")
@@ -319,12 +319,11 @@ def create_app():
         # --- FIM DA FORMATAÇÃO ---
 
         return render_template('tarefas.html', 
-                            tarefas=tarefas_para_json, 
-                            disciplinas=disciplinas_para_json, # Passa a lista formatada
-                            usuario=formatar_usuario_json(usuario),
-                            disciplina_filtro_id=disciplina_id_filtro) # Passa o ID da disciplina filtrada
+                               tarefas=tarefas_para_json, 
+                               disciplinas=disciplinas_para_json, # Passa a lista formatada
+                               usuario=formatar_usuario_json(usuario),
+                               disciplina_filtro_id=disciplina_id_filtro) # Passa o ID da disciplina filtrada
     
-
     
     @app.route('/tarefas/criar', methods=['POST'])
     def criar_tarefa():
@@ -443,8 +442,6 @@ def create_app():
         db.session.commit()
         # flash('Tarefa atualizada com sucesso!', 'success')
         return redirect(url_for('rota_tarefas'))
-
-
 
     def formatar_usuario_json(usuario):
         return {
@@ -656,7 +653,6 @@ def create_app():
         return render_template('calendario.html')
 
     # Em app.py
-
     @app.route('/anotacao')
     def rota_anotacao():
         if 'user_id' not in session:
@@ -691,15 +687,15 @@ def create_app():
         )
     
     # Em app.py, modifique a rota /anotacoes/criar
-
     @app.route('/anotacoes/criar', methods=['POST'])
     def criar_anotacao():
         if 'user_id' not in session:
             return jsonify({'success': False, 'error': 'Não autorizado'}), 401
 
         try:
+            # Pega os dados do formulário
             titulo = request.form.get('principalAnotacaoTitulo')
-            conteudo = request.form.get('principalAnotacaoConteudo')
+            conteudo = request.form.get('principalAnotacaoConteudo') # O TinyMCE atualiza o textarea com este name
             disciplina_id = request.form.get('principalAnotacaoDisciplina')
             tarefa_id = request.form.get('principalAnotacaoAtividade')
 
@@ -707,18 +703,21 @@ def create_app():
                 flash('O título é obrigatório.', 'danger')
                 return redirect(request.referrer or url_for('rota_dashboard'))
 
+            # Converte para int ou None se estiver vazio
             disciplina_id = int(disciplina_id) if disciplina_id else None
             tarefa_id = int(tarefa_id) if tarefa_id else None
 
+            # Verifica se a disciplina pertence ao usuário (segurança)
             if disciplina_id:
                 disciplina = Disciplina.query.filter_by(
-                    id=disciplina_id,
+                    id=disciplina_id, 
                     usuario_id=session['user_id']
                 ).first()
                 if not disciplina:
                     flash('Disciplina inválida.', 'danger')
                     return redirect(request.referrer or url_for('rota_dashboard'))
 
+            # Verifica se a tarefa pertence ao usuário (segurança)
             if tarefa_id:
                 tarefa = Tarefa.query.join(Disciplina).filter(
                     Tarefa.id == tarefa_id,
@@ -739,6 +738,7 @@ def create_app():
             db.session.add(nova_anotacao)
             db.session.commit()
 
+            # Cria notificação de sucesso
             usuario = Usuario.query.get(session['user_id'])
             usuario.criar_notificacao(
                 titulo="Anotação Criada",
@@ -897,46 +897,6 @@ def create_app():
                     "email_notificacoes": usuario.email_notificacoes,
                     "app_notificacoes": usuario.app_notificacoes,
                     "frequencia_notificacoes": usuario.frequencia_notificacoes
-    @app.route('/api/anotacoes/<int:anotacao_id>', methods=['POST'])
-    def api_atualizar_anotacao(anotacao_id):
-        """Atualiza uma anotação existente."""
-        if 'user_id' not in session:
-            return jsonify({'success': False, 'error': 'Não autorizado'}), 401
-        
-        try:
-            # Garante que a anotação existe e pertence ao usuário
-            anotacao = db.session.query(Anotacao).join(Disciplina).filter(
-                Anotacao.id == anotacao_id,
-                Disciplina.usuario_id == session['user_id']
-            ).first()
-
-            if not anotacao:
-                return jsonify({'success': False, 'error': 'Anotação não encontrada'}), 404
-
-            # Pega os dados do formulário
-            anotacao.titulo = request.form.get('principalAnotacaoTitulo')
-            anotacao.conteudo = request.form.get('principalAnotacaoConteudo')
-            
-            disciplina_id = request.form.get('principalAnotacaoDisciplina')
-            anotacao.disciplina_id = int(disciplina_id) if disciplina_id else None
-            
-            tarefa_id = request.form.get('principalAnotacaoAtividade')
-            anotacao.tarefa_id = int(tarefa_id) if tarefa_id else None
-
-            db.session.commit()
-            
-            # Retorna a anotação atualizada
-            return jsonify({
-                'success': True,
-                'message': 'Anotação atualizada com sucesso!',
-                'anotacao': {
-                    'id': anotacao.id,
-                    'titulo': anotacao.titulo,
-                    'disciplinaId': anotacao.disciplina_id,
-                    'atividadeVinculadaId': anotacao.tarefa_id,
-                    'conteudo': anotacao.conteudo,
-                    'dataCriacao': anotacao.data_criacao.isoformat(),
-                    'ultimaModificacao': anotacao.data_modificacao.isoformat()
                 }
             })
 
@@ -1046,8 +1006,53 @@ def create_app():
 
         except Exception as e:
             return jsonify({"error": f"Erro ao buscar contador: {str(e)}"}), 500
+            
+    # --- ROTAS DE API PARA ANOTAÇÕES ---
+    
+    @app.route('/api/anotacoes/<int:anotacao_id>', methods=['POST'])
+    def api_atualizar_anotacao(anotacao_id):
+        """Atualiza uma anotação existente."""
+        if 'user_id' not in session:
+            return jsonify({'success': False, 'error': 'Não autorizado'}), 401
+        
+        try:
+            # Garante que a anotação existe e pertence ao usuário
+            anotacao = db.session.query(Anotacao).join(Disciplina).filter(
+                Anotacao.id == anotacao_id,
+                Disciplina.usuario_id == session['user_id']
+            ).first()
 
-    # -------------------------
+            if not anotacao:
+                return jsonify({'success': False, 'error': 'Anotação não encontrada'}), 404
+
+            # Pega os dados do formulário
+            anotacao.titulo = request.form.get('principalAnotacaoTitulo')
+            anotacao.conteudo = request.form.get('principalAnotacaoConteudo')
+            
+            disciplina_id = request.form.get('principalAnotacaoDisciplina')
+            anotacao.disciplina_id = int(disciplina_id) if disciplina_id else None
+            
+            tarefa_id = request.form.get('principalAnotacaoAtividade')
+            anotacao.tarefa_id = int(tarefa_id) if tarefa_id else None
+
+            db.session.commit()
+            
+            # Retorna a anotação atualizada
+            return jsonify({
+                'success': True,
+                'message': 'Anotação atualizada com sucesso!',
+                'anotacao': {
+                    'id': anotacao.id,
+                    'titulo': anotacao.titulo,
+                    'disciplinaId': anotacao.disciplina_id,
+                    'atividadeVinculadaId': anotacao.tarefa_id,
+                    'conteudo': anotacao.conteudo,
+                    'dataCriacao': anotacao.data_criacao.isoformat(),
+                    'ultimaModificacao': anotacao.data_modificacao.isoformat()
+                }
+            })
+        except Exception as e:
+            db.session.rollback()
             return jsonify({'success': False, 'error': str(e)}), 500
 
 
@@ -1075,17 +1080,8 @@ def create_app():
         except Exception as e:
             db.session.rollback()
             return jsonify({'success': False, 'error': str(e)}), 500
-    
 
     return app
-
-
-
-
-
-
-
-
 
 # Ponto de entrada para rodar a aplicação
 if __name__ == '__main__':
