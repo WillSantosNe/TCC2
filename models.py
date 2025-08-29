@@ -1,4 +1,5 @@
 # models.py
+from datetime import datetime
 import enum
 from extensions import db # CORREÇÃO APLICADA AQUI
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -64,6 +65,7 @@ class Anotacao(db.Model):
     titulo = db.Column(db.String(200), nullable=False)
     conteudo = db.Column(db.Text, nullable=True)
     data_criacao = db.Column(db.DateTime, server_default=db.func.now())
+    data_modificacao = db.Column(db.DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'), nullable=False)
     disciplina_id = db.Column(db.Integer, db.ForeignKey('disciplina.id'), nullable=True)
